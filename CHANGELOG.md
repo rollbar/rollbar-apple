@@ -25,16 +25,18 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 
 ## Release Notes
 
-**1.12.11**
-- fix: resolve #323: Warning payloads are reported as info payloads.
-
-**1.12.10**
-- chore: resolve #314: Deprecation warnings break app builds when "treat warnings as errors" is enabled
-
-**1.12.9**
-- feat: resolve #306: Define default scrub fields
-- refactor: resolve #309: Make sure all the public APIs that are to be removed in vNext-2.0.0 are marked for deprecation
-- refactor: resolve #307: Change WhitelistFileds into SafeListFields within the RollbarScrubbingOptions
+**2.0.0** Preliminary Notes
+- feat: added RollbarKSCrash
+- refactor: split out RollbarCommon, RollbarNotifier, RollbarDeploys
+- refactor: added use of lightweight generics
+- refactor: added use nullability attributes
+- refactor: removed RollbarConfiguration and replaced it with RollbarConfig
+- refactor: changed WhitelistFields into SafeListFields when it comes to the RollbarScrubbingOptions
+- refactor: removed all the deprecated API 
+- refactor: replace NSString-like log level parameters in RollbarLogger interface with RollbarLevel enum
+- refactor: replace sync-all log methods of Rollbar and RolbarLogger with ones dedicated to each type of payload: string-message, NSException, NSError, etc.
+- feat: defined default scrub fields
+- feat: explicit reporting of NSErrors 
 
 **1.12.8**
 - fix: resolve #283: Add RollbarFramework/* to source_files
