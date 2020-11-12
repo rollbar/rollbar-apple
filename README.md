@@ -21,6 +21,7 @@
 # Rollbar SDK for any Apple *OS
 
 Objective-C & Swift SDK for remote crash, exception, error reporting, and logging with [Rollbar](https://rollbar.com). 
+
 It works on all Apple *OS platforms (macOS, iOS, tvOS, watchOS, etc).
 
 NOTE:
