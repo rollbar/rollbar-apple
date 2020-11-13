@@ -24,7 +24,7 @@
 
 static NSString * const NOTIFIER_VERSION = @"2.0.0-alpha26";
 
-static NSString * const NOTIFIER_NAME = @"rollbar-*os";
+static NSString * const NOTIFIER_NAME = @"rollbar-apple";
 
 #define NOTIFIER_NAME_PREFIX = @"rollbar-";
 #if TARGET_OS_IPHONE | TARGET_OS_IOS
