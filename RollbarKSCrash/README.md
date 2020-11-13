@@ -1,3 +1,3 @@
 # RollbarKSCrash
 
-A description of this package.
+This is an SDK module implementing integration with [KSCrash reporter](https://github.com/kstenerud/KSCrash).
