@@ -1,4 +1,4 @@
-# Demos
+# Examples
 
 This folder contains numerous sample application projects categorized into relevant folders.
 
