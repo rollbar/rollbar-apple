@@ -53,6 +53,9 @@
    <Group
       location = "container:"
       name = "Demos">
+      <FileRef
+         location = "group:Demos/README.md">
+      </FileRef>
       <Group
          location = "container:"
          name = "iOS">
