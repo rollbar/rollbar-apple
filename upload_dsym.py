@@ -3,7 +3,7 @@ Python script that zips and uploads a dSYM file package to Rollbar
 during an iOS app's build process.
 
 For instructions on setting up this script for your app in Xcode, see
-the README at https://github.com/rollbar/rollbar-ios/blob/master/README.md.
+the README at https://github.com/rollbar/rollbar-apple/blob/master/README.md.
 """
 
 import os

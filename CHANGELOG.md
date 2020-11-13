@@ -1,6 +1,6 @@
 # CHANGELOG
 
-The change log has moved to this repo's [GitHub Releases Page](https://github.com/rollbar/rollbar-ios/releases).
+The change log has moved to this repo's [GitHub Releases Page](https://github.com/rollbar/rollbar-apple/releases).
 
 ## Release Notes Tagging Conventions
 

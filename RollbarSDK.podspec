@@ -28,7 +28,7 @@ Pod::Spec.new do |sdk|
     # sdk.author             = { "Andrey Kornich" => "akornich@gmail.com" }
     # Or just: sdk.author    = "Andrey Kornich"
     sdk.social_media_url   = "http://twitter.com/rollbar"
-    sdk.source             = { :git => "https://github.com/rollbar/rollbar-ios.git",
+    sdk.source             = { :git => "https://github.com/rollbar/rollbar-apple.git",
                                :tag => "v#{sdk.version}"
                                }
     sdk.resource = "rollbar-logo.png"
