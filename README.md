@@ -2,6 +2,15 @@
 
 # Rollbar SDK for any Apple *OS
 
+Objective-C & Swift SDK for remote crash, exception, error reporting, and logging with [Rollbar](https://rollbar.com). 
+
+It works on all Apple *OS platforms (macOS, iOS, tvOS, watchOS, etc).
+
+NOTE:
+This SDK is essentially a reincarnation of our [Rollbar-iOS SDK](https://github.com/rollbar/rollbar-ios) that will be available for awhile in its current v1 version 
+and will only maintained with fixes to bug or security issues if any.
+All the active development will be done within this SDK repository.
+
 [![GitHub all releases downloads total](https://img.shields.io/github/downloads/rollbar/rollbar-apple/total?logo=GitHub)]()
 
 [![SwiftPM compatible](https://img.shields.io/badge/SwiftPM-compatible-brightgreen.svg)](https://swift.org/package-manager)
@@ -21,16 +30,6 @@
 [![CocoaPods](https://img.shields.io/cocoapods/v/RollbarDeploys?label=RollbarDeploys)](https://cocoapods.org/pods/RollbarDeploys)
 [![CocoaPods](https://img.shields.io/cocoapods/v/RollbarCommon?label=RollbarCommon)](https://cocoapods.org/pods/RollbarCommon)
 [![CocoaPods](https://img.shields.io/cocoapods/v/RollbarKSCrash?label=RollbarKSCrash)](https://cocoapods.org/pods/RollbarKSCrash)
-
-
-Objective-C & Swift SDK for remote crash, exception, error reporting, and logging with [Rollbar](https://rollbar.com). 
-
-It works on all Apple *OS platforms (macOS, iOS, tvOS, watchOS, etc).
-
-NOTE:
-This SDK is essentially a reincarnation of our [Rollbar-iOS SDK](https://github.com/rollbar/rollbar-ios) that will be available for awhile in its current v1 version 
-and will only maintained with fixes to bug or security issues if any.
-All the active development will be done within this SDK repository.
 
 ## Setup Instructions
 
