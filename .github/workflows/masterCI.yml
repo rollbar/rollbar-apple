@@ -13,7 +13,26 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      
+    - name: CI RollbarCommon
+      run: cd RollbarCommon
     - name: Build
       run: swift build -v
-    - name: Run tests
+    - name: Unit Test
       run: swift test -v
+    - name: Back to root
+      run: cd ..
+      
+    - name: CI RollbarDeploys
+      run: cd RollbarDeploys
+    - name: Build
+      run: swift build -v
+    - name: Unit Test
+      run: swift test -v
+    - name: Back to root
+      run: cd ..
+      
+    #- name: Build
+    #  run: swift build -v
+    #- name: Run tests
+    #  run: swift test -v
