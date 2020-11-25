@@ -1,4 +1,4 @@
-name: Swift
+name: CI Build with Unit Tests
 
 on:
   push:
