@@ -14,23 +14,19 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       
-    - name: CI RollbarCommon
-      run: cd RollbarCommon
-    - name: Build
+    - name: Build RollbarCommon
+      working-directory: RollbarCommon
       run: swift build -v
-    - name: Unit Test
+    - name: Unit Test RollbarCommon
+      working-directory: RollbarCommon
       run: swift test -v
-    - name: Back to root
-      run: cd ..
       
-    - name: CI RollbarDeploys
-      run: cd RollbarDeploys
-    - name: Build
+    - name: Build RollbarDeploys
+      working-directory: RollbarDeploys
       run: swift build -v
-    - name: Unit Test
+    - name: Unit Test RollbarDeploys
+      working-directory: RollbarDeploys
       run: swift test -v
-    - name: Back to root
-      run: cd ..
       
     #- name: Build
     #  run: swift build -v
