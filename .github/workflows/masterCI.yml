@@ -13,7 +13,31 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build
+      
+    - name: Build RollbarCommon
+      working-directory: RollbarCommon
       run: swift build -v
-    - name: Run tests
+    - name: Unit Test RollbarCommon
+      working-directory: RollbarCommon
+      run: swift test -v
+      
+    - name: Build RollbarDeploys
+      working-directory: RollbarDeploys
+      run: swift build -v
+    - name: Unit Test RollbarDeploys
+      working-directory: RollbarDeploys
+      run: swift test -v
+
+    - name: Build RollbarNotifier
+      working-directory: RollbarNotifier
+      run: swift build -v
+    - name: Unit Test RollbarNotifier
+      working-directory: RollbarNotifier
+      run: swift test -v
+
+    - name: Build RollbarKSCrash
+      working-directory: RollbarKSCrash
+      run: swift build -v
+    - name: Unit Test RollbarKSCrash
+      working-directory: RollbarKSCrash
       run: swift test -v

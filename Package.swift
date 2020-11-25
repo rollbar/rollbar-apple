@@ -17,9 +17,9 @@ let package = Package(
         .library(
             name: "RollbarCommon",
             targets: ["RollbarCommon"]),
-        // .library(
-        //     name: "RollbarDeploys",
-        //     targets: ["RollbarDeploys"]),
+        .library(
+            name: "RollbarDeploys",
+            targets: ["RollbarDeploys"]),
         // .library(
         //     name: "RollbarNotifier",
         //     targets: ["RollbarNotifier"]),
@@ -60,32 +60,31 @@ let package = Package(
            ]
        ),
 
-
-        // .target(
-        //     name: "RollbarDeploys",
-        //     dependencies: ["RollbarCommon",],
-        //     path: "RollbarDeploys/Sources/RollbarDeploys",
-        //     publicHeadersPath: "include",
-        //     cSettings: [
-        //         .headerSearchPath("RollbarDeploys/Sources/RollbarDeploys/**"),
-        //     ]
-        // ),
-        // .testTarget(
-        //     name: "RollbarDeploysTests",
-        //     dependencies: ["RollbarDeploys"],
-        //     path: "RollbarDeploys/Sources/RollbarDeploysTests",
-        //     cSettings: [
-        //         .headerSearchPath("RollbarDeploys/Tests/RollbarDeploysTests/**"),
-        //     ]
-        // ),
-        // .testTarget(
-        //     name: "RollbarDeploysTests-ObjC",
-        //     dependencies: ["RollbarDeploys"],
-        //     path: "RollbarDeploys/Sources/RollbarDeploysTests-ObjC",
-        //     cSettings: [
-        //         .headerSearchPath("RollbarDeploys/Tests/RollbarDeploysTests-ObjC/**"),
-        //     ]
-        // ),
+        .target(
+            name: "RollbarDeploys",
+            dependencies: ["RollbarCommon",],
+            path: "RollbarDeploys/Sources/RollbarDeploys",
+            publicHeadersPath: "include",
+            cSettings: [
+                .headerSearchPath("RollbarDeploys/Sources/RollbarDeploys/**"),
+            ]
+        ),
+        .testTarget(
+            name: "RollbarDeploysTests",
+            dependencies: ["RollbarDeploys"],
+            path: "RollbarDeploys/Tests/RollbarDeploysTests",
+            cSettings: [
+                .headerSearchPath("RollbarDeploys/Tests/RollbarDeploysTests/**"),
+            ]
+        ),
+        .testTarget(
+            name: "RollbarDeploysTests-ObjC",
+            dependencies: ["RollbarDeploys"],
+            path: "RollbarDeploys/Tests/RollbarDeploysTests-ObjC",
+            cSettings: [
+                .headerSearchPath("RollbarDeploys/Tests/RollbarDeploysTests-ObjC/**"),
+            ]
+        ),
 
 
         // .target(
