@@ -72,7 +72,7 @@ let package = Package(
         .testTarget(
             name: "RollbarDeploysTests",
             dependencies: ["RollbarDeploys"],
-            path: "RollbarDeploys/Sources/RollbarDeploysTests",
+            path: "RollbarDeploys/Tests/RollbarDeploysTests",
             cSettings: [
                 .headerSearchPath("RollbarDeploys/Tests/RollbarDeploysTests/**"),
             ]
@@ -80,7 +80,7 @@ let package = Package(
         .testTarget(
             name: "RollbarDeploysTests-ObjC",
             dependencies: ["RollbarDeploys"],
-            path: "RollbarDeploys/Sources/RollbarDeploysTests-ObjC",
+            path: "RollbarDeploys/Tests/RollbarDeploysTests-ObjC",
             cSettings: [
                 .headerSearchPath("RollbarDeploys/Tests/RollbarDeploysTests-ObjC/**"),
             ]
