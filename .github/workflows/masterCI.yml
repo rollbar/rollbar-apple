@@ -1,4 +1,4 @@
-name: Swift
+name: CI Build with Unit Tests
 
 on:
   push:
@@ -13,7 +13,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-      
+    
+    - name: SonarCloud RollbaCommon
+      run: SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir sonar_build_wrapper_output xcodebuild -workspace RollbarSDK.xcworkspace -scheme RollbarCommon clean build
+    
     - name: Build RollbarCommon
       working-directory: RollbarCommon
       run: swift build -v

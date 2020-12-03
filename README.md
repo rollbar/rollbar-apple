@@ -11,7 +11,11 @@ This SDK is essentially a reincarnation of our [Rollbar-iOS SDK](https://github.
 and will only maintained with fixes to bug or security issues if any.
 All the active development will be done within this SDK repository.
 
+## CI Build Status
+
 ![CI Build Status](https://github.com/rollbar/rollbar-apple/workflows/Swift/badge.svg)
+
+## Package Distribution Systems Status
 
 [![GitHub all releases downloads total](https://img.shields.io/github/downloads/rollbar/rollbar-apple/total?logo=GitHub)]()
 
