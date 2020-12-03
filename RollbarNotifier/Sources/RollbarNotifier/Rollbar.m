@@ -6,6 +6,7 @@
 #import "RollbarLogger.h"
 #import "RollbarConfig.h"
 #import "RollbarDestination.h"
+#import "RollbarLoggingOptions.h"
 #import "RollbarTelemetryOptions.h"
 #import "RollbarTelemetryOptionsObserver.h"
 #import "RollbarScrubbingOptions.h"
@@ -92,11 +93,18 @@ static RollbarCrashProcessor *crashProcessor = nil;
 //        [telemetryOptionsObserver unregisterAsObserverForTelemetryOptions:logger.configuration.telemetry];
 //    }
 
+    NSUInteger oldReportingRate = 0;
+    
     if (logger) {
+        oldReportingRate = logger.configuration.loggingOptions.maximumReportsPerMinute;
         [logger updateConfiguration:configuration];
     }
     else {
         logger = [[RollbarLogger alloc] initWithConfiguration:configuration];
+    }
+    
+    if (oldReportingRate != configuration.loggingOptions.maximumReportsPerMinute) {
+        [logger updateReportingRate:configuration.loggingOptions.maximumReportsPerMinute];
     }
     
 //    if (logger && logger.configuration && logger.configuration.telemetry) {
