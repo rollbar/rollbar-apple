@@ -15,22 +15,25 @@
 @implementation RollbarTests
 
 - (void)setUp {
+    
     [super setUp];
+
     RollbarClearLogFile();
+
     if (!Rollbar.currentConfiguration) {
-        //[Rollbar initWithAccessToken:@""];
-        [Rollbar initWithAccessToken:@"2ffc7997ed864dda94f63e7b7daae0f3"];
-        Rollbar.currentConfiguration.destination.accessToken = @"2ffc7997ed864dda94f63e7b7daae0f3";
-        Rollbar.currentConfiguration.destination.environment = @"unit-tests";
-        Rollbar.currentConfiguration.developerOptions.transmit = YES;
-        Rollbar.currentConfiguration.developerOptions.logPayload = YES;
-        Rollbar.currentConfiguration.loggingOptions.maximumReportsPerMinute = 5000;
+
+        RollbarConfig *config = [[RollbarConfig alloc] init];
+        config.destination.accessToken = @"2ffc7997ed864dda94f63e7b7daae0f3";
+        config.destination.environment = @"unit-tests";
+        config.developerOptions.transmit = YES;
+        config.developerOptions.logPayload = YES;
+        config.loggingOptions.maximumReportsPerMinute = 5000;
         // for the stress test specifically:
-        Rollbar.currentConfiguration.telemetry.enabled = YES;
-        Rollbar.currentConfiguration.loggingOptions.captureIp = RollbarCaptureIpType_Full;
-        
-        id config = Rollbar.currentConfiguration;
+        config.telemetry.enabled = YES;
+        config.loggingOptions.captureIp = RollbarCaptureIpType_Full;
         NSLog(@"%@", config)
+
+        [Rollbar initWithConfiguration:config];
     }
 }
 
