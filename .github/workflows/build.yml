@@ -18,3 +18,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          
+          
+      - name: SonarCloud RollbarCommon
+        run: SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir sonar_build_wrapper_output xcodebuild -workspace RollbarSDK.xcworkspace -scheme RollbarCommon clean build
+    
+      - sonar-scanner
+      
