@@ -48,6 +48,6 @@ jobs:
 
 
     - name: Build with Xcode
-      run: xcodebuild -workspace RollbarSDK build
+      run: xcodebuild -workspace -scheme iosAppObjC RollbarSDK build
     - name: Unit Test with Xcode
       run: xcodebuild -workspace RollbarSDK test
