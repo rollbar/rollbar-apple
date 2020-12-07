@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+    name: CI build and test
 
     runs-on: macos-latest
 
@@ -17,30 +18,38 @@ jobs:
     - name: SonarCloud RollbaCommon
       run: SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir sonar_build_wrapper_output xcodebuild -workspace RollbarSDK.xcworkspace -scheme RollbarCommon clean build
     
-    - name: Build RollbarCommon
+    - name: Build RollbarCommon (SwiftPM)
       working-directory: RollbarCommon
       run: swift build -v
-    - name: Unit Test RollbarCommon
+    - name: Unit Test RollbarCommon (SwiftPM)
       working-directory: RollbarCommon
-      run: swift test -v
+      run: swift test -v -c release
       
-    - name: Build RollbarDeploys
+    - name: Build RollbarDeploys (SwiftPM)
       working-directory: RollbarDeploys
       run: swift build -v
-    - name: Unit Test RollbarDeploys
+    - name: Unit Test RollbarDeploys (SwiftPM)
       working-directory: RollbarDeploys
-      run: swift test -v
+      run: swift test -v -c release
 
-    - name: Build RollbarNotifier
+    - name: Build RollbarNotifier (SwiftPM)
       working-directory: RollbarNotifier
       run: swift build -v
-    - name: Unit Test RollbarNotifier
+    - name: Unit Test RollbarNotifier (SwiftPM)
       working-directory: RollbarNotifier
-      run: swift test -v
+      run: swift test -v -c release
 
-    - name: Build RollbarKSCrash
+    - name: Build RollbarKSCrash (SwiftPM)
       working-directory: RollbarKSCrash
       run: swift build -v
-    - name: Unit Test RollbarKSCrash
+    - name: Unit Test RollbarKSCrash (SwiftPM)
       working-directory: RollbarKSCrash
-      run: swift test -v
+      run: swift test -v -c release
+
+
+    - name: Build with Xcode
+      working-directory: RollbarKSCrash
+      run: xcodebuild build
+    - name: Unit Test with Xcode
+      working-directory: RollbarKSCrash
+      run: xcodebuild test
