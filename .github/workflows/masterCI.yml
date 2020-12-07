@@ -48,8 +48,6 @@ jobs:
 
 
     - name: Build with Xcode
-      working-directory: RollbarKSCrash
       run: xcodebuild build
     - name: Unit Test with Xcode
-      working-directory: RollbarKSCrash
       run: xcodebuild test
