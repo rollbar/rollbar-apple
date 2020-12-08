@@ -17,7 +17,7 @@ jobs:
     - name: Create DerivedData folder
       run: mkdir DerivedData
       
-    - name: SonarCloud RollbaCommon
+    - name: SonarCloud RollbarCommon
       run: SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir DerivedData/compilation-database 
            xcodebuild 
               -workspace RollbarSDK.xcworkspace 
@@ -26,7 +26,7 @@ jobs:
               clean build
 
     - name: Run SonarScanner Analysis
-      run: sonar-scanner
+      run: SonarCloud/sonar-scanner-4.4.0.2170-macosx/bin/sonar-scanner
 
 #    - name: Build RollbarCommon
 #      working-directory: RollbarCommon
