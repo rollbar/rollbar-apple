@@ -18,11 +18,11 @@ jobs:
       run: mkdir DerivedData
       
     - name: SonarCloud RollbaCommon
-      run: SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir DerivedData/compilation-database \
-           xcodebuild \
-              -workspace RollbarSDK.xcworkspace \
-              -scheme RollbarCommon \
-              -derivedDataPath DerivedData \
+      run: SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir DerivedData/compilation-database 
+           xcodebuild 
+              -workspace RollbarSDK.xcworkspace 
+              -scheme RollbarCommon 
+              -derivedDataPath DerivedData 
               clean build
 
     - name: Run SonarScanner Analysis
