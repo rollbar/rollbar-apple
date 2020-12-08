@@ -14,33 +14,44 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: SonarCloud RollbaCommon
-      run: SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir sonar_build_wrapper_output xcodebuild -workspace RollbarSDK.xcworkspace -scheme RollbarCommon clean build
-    
-    - name: Build RollbarCommon
-      working-directory: RollbarCommon
-      run: swift build -v
-    - name: Unit Test RollbarCommon
-      working-directory: RollbarCommon
-      run: swift test -v
+    - name: Create DerivedData folder
+      run: mkdir DerivedData
       
-    - name: Build RollbarDeploys
-      working-directory: RollbarDeploys
-      run: swift build -v
-    - name: Unit Test RollbarDeploys
-      working-directory: RollbarDeploys
-      run: swift test -v
+    - name: SonarCloud RollbaCommon
+      run: SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir DerivedData/compilation-database \
+           xcodebuild \
+              -workspace RollbarSDK.xcworkspace \
+              -scheme RollbarCommon \
+              -derivedDataPath DerivedData \
+              clean build
 
-    - name: Build RollbarNotifier
-      working-directory: RollbarNotifier
-      run: swift build -v
-    - name: Unit Test RollbarNotifier
-      working-directory: RollbarNotifier
-      run: swift test -v
+    - name: Run SonarScanner Analysis
+      run: sonar-scanner
 
-    - name: Build RollbarKSCrash
-      working-directory: RollbarKSCrash
-      run: swift build -v
-    - name: Unit Test RollbarKSCrash
-      working-directory: RollbarKSCrash
-      run: swift test -v
+#    - name: Build RollbarCommon
+#      working-directory: RollbarCommon
+#      run: swift build -v
+#    - name: Unit Test RollbarCommon
+#      working-directory: RollbarCommon
+#      run: swift test -v
+#      
+#    - name: Build RollbarDeploys
+#      working-directory: RollbarDeploys
+#      run: swift build -v
+#    - name: Unit Test RollbarDeploys
+#      working-directory: RollbarDeploys
+#      run: swift test -v
+#
+#    - name: Build RollbarNotifier
+#      working-directory: RollbarNotifier
+#      run: swift build -v
+#    - name: Unit Test RollbarNotifier
+#      working-directory: RollbarNotifier
+#      run: swift test -v
+#
+#    - name: Build RollbarKSCrash
+#      working-directory: RollbarKSCrash
+#      run: swift build -v
+#    - name: Unit Test RollbarKSCrash
+#      working-directory: RollbarKSCrash
+#      run: swift test -v
