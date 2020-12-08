@@ -22,6 +22,4 @@ jobs:
           
       - name: SonarCloud RollbarCommon
         run: SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir sonar_build_wrapper_output xcodebuild -workspace RollbarSDK.xcworkspace -scheme RollbarCommon clean build
-    
-      - sonar-scanner
-      
+ 
