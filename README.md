@@ -15,6 +15,8 @@ All the active development will be done within this SDK repository.
 
 ![CI Build Status](https://github.com/rollbar/rollbar-apple/workflows/Swift/badge.svg)
 
+![CI Build with Unit Tests](https://github.com/rollbar/rollbar-apple/workflows/CI%20Build%20with%20Unit%20Tests/badge.svg)
+
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-apple&metric=security_rating)](https://sonarcloud.io/dashboard?id=rollbar-apple)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-apple&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=rollbar-apple)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-apple&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=rollbar-apple)
