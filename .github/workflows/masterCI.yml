@@ -22,21 +22,49 @@ jobs:
     - name: Create DerivedData/compilation-database folder
       working-directory: DerivedData
       run: mkdir compilation-database
-        
-      
-#    - name: SonarCloud RollbarCommon
-#      run: SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir DerivedData/compilation-database 
-#           xcodebuild 
-#              -workspace RollbarSDK.xcworkspace 
-#              -scheme RollbarCommon 
-#              -derivedDataPath DerivedData 
-#               build
-#              # clean build
 
+    - name: Build RollbarCommon
+      working-directory: RollbarCommon
+      run: swift build -v --build-path ../DerivedData
     - name: Unit Test RollbarCommon
       working-directory: RollbarCommon
-      run:  ../SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir ../DerivedData/compilation-database 
-            swift test -v --build-path ../DerivedData
+      run: swift test -v --build-path ../DerivedData
+      
+    - name: Build RollbarDeploys
+      working-directory: RollbarDeploys
+      run: swift build -v
+    - name: Unit Test RollbarDeploys
+      working-directory: RollbarDeploys
+      run: swift test -v --build-path ../DerivedData
+
+    - name: Build RollbarNotifier
+      working-directory: RollbarNotifier
+      run: swift build -v
+    - name: Unit Test RollbarNotifier
+      working-directory: RollbarNotifier
+      run: swift test -v --build-path ../DerivedData
+
+    - name: Build RollbarKSCrash
+      working-directory: RollbarKSCrash
+      run: swift build -v
+    - name: Unit Test RollbarKSCrash
+      working-directory: RollbarKSCrash
+      run: swift test -v --build-path ../DerivedData
+
+#    - name: Unit Test RollbarCommon
+#      working-directory: RollbarCommon
+#      run:  ../SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir ../DerivedData/compilation-database 
+#            swift test -v --build-path ../DerivedData
+
+
+    - name: SonarCloud RollbarCommon
+      run: SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir DerivedData/compilation-database 
+           xcodebuild 
+              -workspace RollbarSDK.xcworkspace 
+              -scheme RollbarCommon 
+              -derivedDataPath DerivedData 
+               build
+              # clean build
 
 
     - name: SonarCloud RollbarDeploys
@@ -106,3 +134,18 @@ jobs:
 #    - name: Unit Test RollbarKSCrash
 #      working-directory: RollbarKSCrash
 #      run: swift test -v
+
+
+# Fron SonarCCloud Docs:
+
+# Execute the Build Wrapper as a prefix to your build command:
+# build-wrapper-macosx-x86 --out-dir bw-output <your clean build command>
+
+# Execute the SonarScanner:
+#sonar-scanner \
+#  -Dsonar.organization=rollbar \
+#  -Dsonar.projectKey=rollbar_rollbar-apple \
+#  -Dsonar.sources=. \
+#  -Dsonar.cfamily.build-wrapper-output=bw-output \
+#  -Dsonar.host.url=https://sonarcloud.io
+  
