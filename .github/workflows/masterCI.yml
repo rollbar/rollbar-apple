@@ -23,7 +23,35 @@ jobs:
               -workspace RollbarSDK.xcworkspace 
               -scheme RollbarCommon 
               -derivedDataPath DerivedData 
-              clean build
+               build
+              # clean build
+
+    - name: SonarCloud RollbarDeploys
+      run: SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir DerivedData/compilation-database 
+           xcodebuild 
+              -workspace RollbarSDK.xcworkspace 
+              -scheme RollbarDeploys 
+              -derivedDataPath DerivedData 
+               build
+              # clean build
+
+    - name: SonarCloud RollbarNotifier
+      run: SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir DerivedData/compilation-database 
+           xcodebuild 
+              -workspace RollbarSDK.xcworkspace 
+              -scheme RollbarNotifier 
+              -derivedDataPath DerivedData 
+               build
+              # clean build
+
+    - name: SonarCloud RollbarKSCrash
+      run: SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir DerivedData/compilation-database 
+           xcodebuild 
+              -workspace RollbarSDK.xcworkspace 
+              -scheme RollbarKSCrash 
+              -derivedDataPath DerivedData 
+               build
+              # clean build
 
     - name: Run SonarScanner Analysis
       run: SonarCloud/sonar-scanner-4.4.0.2170-macosx/bin/sonar-scanner -X
