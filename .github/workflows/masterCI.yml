@@ -101,7 +101,7 @@ jobs:
 #          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     - name: Run SonarScanner Analysis
-      run: SonarCloud/sonar-scanner-4.4.0.2170-macosx/bin/sonar-scanner
+      run: SonarCloud/sonar-scanner-4.4.0.2170-macosx/bin/sonar-scanner -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION_KEY }} -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
