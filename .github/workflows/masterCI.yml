@@ -25,7 +25,7 @@ jobs:
               -workspace RollbarSDK.xcworkspace 
               -scheme RollbarCommon 
               -derivedDataPath DerivedData 
-               build
+               test
               # clean build
 
     - name: SonarCloud RollbarDeploys
@@ -34,7 +34,7 @@ jobs:
               -workspace RollbarSDK.xcworkspace 
               -scheme RollbarDeploys 
               -derivedDataPath DerivedData 
-               build
+               test
               # clean build
 
     - name: SonarCloud RollbarNotifier
@@ -43,7 +43,7 @@ jobs:
               -workspace RollbarSDK.xcworkspace 
               -scheme RollbarNotifier 
               -derivedDataPath DerivedData 
-               build
+               test
               # clean build
 
     - name: SonarCloud RollbarKSCrash
@@ -52,7 +52,7 @@ jobs:
               -workspace RollbarSDK.xcworkspace 
               -scheme RollbarKSCrash 
               -derivedDataPath DerivedData 
-               build
+               test
               # clean build
 
     - name: Run SonarScanner Analysis
