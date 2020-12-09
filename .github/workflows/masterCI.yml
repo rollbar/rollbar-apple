@@ -30,7 +30,7 @@ jobs:
 
     - name: Unit Test RollbarCommon
       working-directory: RollbarCommon
-      run:  SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir DerivedData/compilation-database 
+      run:  ../SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir DerivedData/compilation-database 
             swift test -v --build-path ../DerivedData
 
 
