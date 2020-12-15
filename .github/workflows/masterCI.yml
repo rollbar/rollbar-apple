@@ -63,7 +63,12 @@ jobs:
               -workspace RollbarSDK.xcworkspace 
               -scheme RollbarCommon 
               -derivedDataPath DerivedData 
-               build
+              -enableCodeCoverage YES 
+              clean 
+              build 
+              test 
+              CODE_SIGN_IDENTITY="" 
+              CODE_SIGNING_REQUIRED=NO
               # clean build
 
 
@@ -73,7 +78,12 @@ jobs:
               -workspace RollbarSDK.xcworkspace 
               -scheme RollbarDeploys 
               -derivedDataPath DerivedData 
-               build
+              -enableCodeCoverage YES 
+              clean 
+              build 
+              test 
+              CODE_SIGN_IDENTITY="" 
+              CODE_SIGNING_REQUIRED=NO
               # clean build
 
     - name: SonarCloud RollbarNotifier
@@ -82,7 +92,12 @@ jobs:
               -workspace RollbarSDK.xcworkspace 
               -scheme RollbarNotifier 
               -derivedDataPath DerivedData 
-               build
+              -enableCodeCoverage YES 
+              clean 
+              build 
+              test 
+              CODE_SIGN_IDENTITY="" 
+              CODE_SIGNING_REQUIRED=NO
               # clean build
 
     - name: SonarCloud RollbarKSCrash
@@ -91,7 +106,12 @@ jobs:
               -workspace RollbarSDK.xcworkspace 
               -scheme RollbarKSCrash 
               -derivedDataPath DerivedData 
-               build
+              -enableCodeCoverage YES 
+              clean 
+              build 
+              test 
+              CODE_SIGN_IDENTITY="" 
+              CODE_SIGNING_REQUIRED=NO
               # clean build
 
 #    - name: Run SonarScanner Analysis
