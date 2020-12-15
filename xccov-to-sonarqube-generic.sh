@@ -1,3 +1,5 @@
+# This script converts XCode code coverage reports into SonarQube format
+
 #!/usr/bin/env bash
 set -euo pipefail
 
