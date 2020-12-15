@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1220"
+   LastUpgradeVersion = "1230"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "RollbarCommon"
-               BuildableName = "RollbarCommon"
-               BlueprintName = "RollbarCommon"
+               BlueprintIdentifier = "RollbarKSCrash"
+               BuildableName = "RollbarKSCrash"
+               BlueprintName = "RollbarKSCrash"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "RollbarCommonTests"
-               BuildableName = "RollbarCommonTests"
-               BlueprintName = "RollbarCommonTests"
+               BlueprintIdentifier = "RollbarKSCrashTests"
+               BuildableName = "RollbarKSCrashTests"
+               BlueprintName = "RollbarKSCrashTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
@@ -42,9 +42,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "RollbarCommonTests-ObjC"
-               BuildableName = "RollbarCommonTests-ObjC"
-               BlueprintName = "RollbarCommonTests-ObjC"
+               BlueprintIdentifier = "RollbarKSCrashTests-ObjC"
+               BuildableName = "RollbarKSCrashTests-ObjC"
+               BlueprintName = "RollbarKSCrashTests-ObjC"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
@@ -70,9 +70,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "RollbarCommon"
-            BuildableName = "RollbarCommon"
-            BlueprintName = "RollbarCommon"
+            BlueprintIdentifier = "RollbarKSCrash"
+            BuildableName = "RollbarKSCrash"
+            BlueprintName = "RollbarKSCrash"
             ReferencedContainer = "container:">
          </BuildableReference>
       </MacroExpansion>
