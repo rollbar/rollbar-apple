@@ -113,6 +113,9 @@ jobs:
               CODE_SIGN_IDENTITY="" 
               CODE_SIGNING_REQUIRED=NO
               # clean build
+              
+    - name: SonarCloud Test Coverage Conversion
+      run: bash xccov-to-sonarqube-generic.sh Build/Logs/Test/*.xcresult/ > sonarqube-generic-coverage.xml
 
 #    - name: Run SonarScanner Analysis
 #      run: SonarCloud/sonar-scanner-4.5.0.2216-macosx/bin/sonar-scanner -X
@@ -121,7 +124,7 @@ jobs:
 #          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     - name: Run SonarScanner Analysis
-      run: SonarCloud/sonar-scanner-4.4.0.2170-macosx/bin/sonar-scanner -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION_KEY }} -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+      run: SonarCloud/sonar-scanner-4.5.0.2216-macosx/bin/sonar-scanner -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION_KEY }} -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.coverageReportPaths=sonarqube-generic-coverage.xml
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
