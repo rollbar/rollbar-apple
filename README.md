@@ -21,6 +21,7 @@ All the active development will be done within this SDK repository.
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-apple&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=rollbar-apple)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-apple&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=rollbar-apple)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=rollbar-apple&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=rollbar-apple)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=rollbar-apple&metric=coverage)](https://sonarcloud.io/dashboard?id=rollbar-apple)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=rollbar-apple&metric=ncloc)](https://sonarcloud.io/dashboard?id=rollbar-apple)
 
 
