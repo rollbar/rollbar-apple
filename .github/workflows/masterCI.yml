@@ -64,7 +64,6 @@ jobs:
               -scheme RollbarCommon 
               -derivedDataPath DerivedData 
               -enableCodeCoverage YES 
-              clean 
               build 
               test 
               CODE_SIGN_IDENTITY="" 
@@ -79,7 +78,6 @@ jobs:
               -scheme RollbarDeploys 
               -derivedDataPath DerivedData 
               -enableCodeCoverage YES 
-              clean 
               build 
               test 
               CODE_SIGN_IDENTITY="" 
@@ -93,7 +91,6 @@ jobs:
               -scheme RollbarNotifier 
               -derivedDataPath DerivedData 
               -enableCodeCoverage YES 
-              clean 
               build 
               test 
               CODE_SIGN_IDENTITY="" 
@@ -107,7 +104,6 @@ jobs:
               -scheme RollbarKSCrash 
               -derivedDataPath DerivedData 
               -enableCodeCoverage YES 
-              clean 
               build 
               test 
               CODE_SIGN_IDENTITY="" 
