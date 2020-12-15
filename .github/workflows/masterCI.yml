@@ -40,9 +40,9 @@ jobs:
     - name: Build RollbarNotifier
       working-directory: RollbarNotifier
       run: swift build -v
-    - name: Unit Test RollbarNotifier
-      working-directory: RollbarNotifier
-      run: swift test -v --build-path ../DerivedData
+    #- name: Unit Test RollbarNotifier
+    #  working-directory: RollbarNotifier
+    #  run: swift test -v --build-path ../DerivedData
 
     - name: Build RollbarKSCrash
       working-directory: RollbarKSCrash
