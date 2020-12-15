@@ -26,16 +26,16 @@ jobs:
     - name: Build RollbarCommon
       working-directory: RollbarCommon
       run: swift build -v --build-path ../DerivedData
-    - name: Unit Test RollbarCommon
-      working-directory: RollbarCommon
-      run: swift test -v --enable-test-discovery --enable-code-coverage --build-path ../DerivedData
+    #- name: Unit Test RollbarCommon
+    #  working-directory: RollbarCommon
+    #  run: swift test -v --enable-test-discovery --enable-code-coverage --build-path ../DerivedData
       
     - name: Build RollbarDeploys
       working-directory: RollbarDeploys
       run: swift build -v
-    - name: Unit Test RollbarDeploys
-      working-directory: RollbarDeploys
-      run: swift test -v --enable-test-discovery --enable-code-coverage --build-path ../DerivedData
+    #- name: Unit Test RollbarDeploys
+    #  working-directory: RollbarDeploys
+    #  run: swift test -v --enable-test-discovery --enable-code-coverage --build-path ../DerivedData
 
     - name: Build RollbarNotifier
       working-directory: RollbarNotifier
@@ -47,9 +47,9 @@ jobs:
     - name: Build RollbarKSCrash
       working-directory: RollbarKSCrash
       run: swift build -v
-    - name: Unit Test RollbarKSCrash
-      working-directory: RollbarKSCrash
-      run: swift test -v --enable-test-discovery --enable-code-coverage --build-path ../DerivedData
+    #- name: Unit Test RollbarKSCrash
+    #  working-directory: RollbarKSCrash
+    #  run: swift test -v --enable-test-discovery --enable-code-coverage --build-path ../DerivedData
 
 #    - name: Unit Test RollbarCommon
 #      working-directory: RollbarCommon
