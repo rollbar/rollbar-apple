@@ -143,7 +143,16 @@
 
 - (RollbarDTO *)safelyGetDataTransferObjectByKey:(NSString *)key {
     
-    RollbarDTO *result = [[RollbarDTO alloc] initWithDictionary:[self getDataByKey:key]];
+    RollbarDTO *result = [RollbarDTO alloc];
+    
+    NSDictionary<NSString *, id> *data = [self getDataByKey:key];
+    if (data) {
+        result = [result initWithDictionary:[self getDataByKey:key]];
+    }
+    else {
+        result = [result init];
+    }
+    
     return result;
 }
 

@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSMutableDictionary *)safelyGetDictionaryByKey:(NSString *)key;
 - (NSMutableArray *)safelyGetArrayByKey:(NSString *)key;
 - (NSMutableString *)safelyGetStringByKey:(NSString *)key;
-- (NSNumber *)safelyGetNumberByKey:(NSString *)key;
+- (nullable NSNumber *)safelyGetNumberByKey:(NSString *)key;
 
 #pragma mark - Core API: data setters by key
 

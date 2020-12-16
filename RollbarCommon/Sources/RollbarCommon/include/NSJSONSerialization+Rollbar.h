@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Turns JSON-like object structure into a valid NSJSONSerialization structure
 /// @param obj JSON-like object
-+ (NSDictionary *)rollbar_safeDataFromJSONObject:(id)obj;
++ (NSMutableDictionary *)rollbar_safeDataFromJSONObject:(id)obj;
 
 /// Byte-length of a NSData representation of a JSON structure
 /// @param jsonData NSData representation of a JSON structure

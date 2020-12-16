@@ -40,15 +40,28 @@ NS_ASSUME_NONNULL_BEGIN
     
     NSMutableDictionary *safeData = [NSMutableDictionary new];
     [obj enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+        
         if ([obj isKindOfClass:[NSDictionary class]]) {
             [safeData setObject:[[self class] rollbar_safeDataFromJSONObject:obj] forKey:key];
+        } else if ([obj isKindOfClass:[NSArray class]]) {
+            [safeData setObject:((NSArray *)obj).mutableCopy forKey:key];
         } else if ([NSJSONSerialization isValidJSONObject:@{key:obj}]) {
+            [safeData setObject:obj forKey:key];
+        } else if ([obj isKindOfClass:[NSNumber class]]) {
+            [safeData setObject:obj forKey:key];
+        } else if ([obj isKindOfClass:[NSString class]]) {
             [safeData setObject:obj forKey:key];
         } else if ([obj isKindOfClass:[NSDate class]]) {
             [safeData setObject:[obj description] forKey:key];
         } else if ([obj isKindOfClass:[NSURL class]]) {
-            [safeData setObject:[obj absoluteString] forKey:key];
-        } else if ([obj isKindOfClass:[NSError class]]) {
+            NSString *url = [obj absoluteString];
+            if (url) {
+                [safeData setObject:[obj absoluteString] forKey:key];
+            }
+            else if([obj description]) {
+                [safeData setObject:[obj description] forKey:key];
+            }
+        } else if ([obj isKindOfClass:[NSError class]] && [obj userInfo]) {
             [safeData setObject:[[self class] rollbar_safeDataFromJSONObject:[obj userInfo]] forKey:key];
         } else if ([obj isKindOfClass:[NSHTTPURLResponse class]]) {
             [safeData setObject:[obj allHeaderFields] forKey:key];
