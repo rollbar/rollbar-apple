@@ -38,6 +38,16 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "RollbarCommonTests-ObjC"
+               BuildableName = "RollbarCommonTests-ObjC"
+               BlueprintName = "RollbarCommonTests-ObjC"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

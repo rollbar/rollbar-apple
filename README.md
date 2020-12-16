@@ -11,9 +11,20 @@ This SDK is essentially a reincarnation of our [Rollbar-iOS SDK](https://github.
 and will only maintained with fixes to bug or security issues if any.
 All the active development will be done within this SDK repository.
 
-## CI Build Status
+## Codebase status (code quality and CI build)
 
 ![CI Build Status](https://github.com/rollbar/rollbar-apple/workflows/Swift/badge.svg)
+
+![CI Build with Unit Tests](https://github.com/rollbar/rollbar-apple/workflows/CI%20Build%20with%20Unit%20Tests/badge.svg)
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=rollbar-apple&metric=alert_status)](https://sonarcloud.io/dashboard?id=rollbar-apple)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-apple&metric=security_rating)](https://sonarcloud.io/dashboard?id=rollbar-apple)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-apple&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=rollbar-apple)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-apple&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=rollbar-apple)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=rollbar-apple&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=rollbar-apple)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=rollbar-apple&metric=coverage)](https://sonarcloud.io/dashboard?id=rollbar-apple)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=rollbar-apple&metric=ncloc)](https://sonarcloud.io/dashboard?id=rollbar-apple)
+
 
 ## Package Distribution Systems Status
 
