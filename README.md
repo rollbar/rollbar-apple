@@ -24,6 +24,7 @@ All the active development will be done within this SDK repository.
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=rollbar-apple&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=rollbar-apple)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=rollbar-apple&metric=coverage)](https://sonarcloud.io/dashboard?id=rollbar-apple)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=rollbar-apple&metric=ncloc)](https://sonarcloud.io/dashboard?id=rollbar-apple)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=rollbar-apple&metric=bugs)](https://sonarcloud.io/dashboard?id=rollbar-apple)
 
 
 ## Package Distribution Systems Status
