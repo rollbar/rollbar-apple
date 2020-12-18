@@ -35,6 +35,9 @@
          location = "group:RollbarKSCrash.podspec">
       </FileRef>
       <FileRef
+         location = "group:RollbarPLCrashReporter.podspec">
+      </FileRef>
+      <FileRef
          location = "group:upload_dsym.py">
       </FileRef>
    </Group>
