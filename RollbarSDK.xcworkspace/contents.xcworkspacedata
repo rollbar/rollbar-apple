@@ -50,6 +50,9 @@
    <FileRef
       location = "group:RollbarKSCrash">
    </FileRef>
+   <FileRef
+      location = "group:RollbarPLCrashReporter">
+   </FileRef>
    <Group
       location = "container:"
       name = "Demos">

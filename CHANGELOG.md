@@ -26,7 +26,10 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 ## Release Notes
 
 **2.0.0** Preliminary Notes
-- feat: added RollbarKSCrash
+- feat: added RollbarPLCrashReporter module
+- feat: added RollbarKSCrash module
+- feat: explicit reporting of NSErrors 
+- feat: defined default scrub fields
 - refactor: split out RollbarCommon, RollbarNotifier, RollbarDeploys
 - refactor: added use of lightweight generics
 - refactor: added use nullability attributes
@@ -35,5 +38,3 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 - refactor: removed all the deprecated API 
 - refactor: replace NSString-like log level parameters in RollbarLogger interface with RollbarLevel enum
 - refactor: replace sync-all log methods of Rollbar and RolbarLogger with ones dedicated to each type of payload: string-message, NSException, NSError, etc.
-- feat: defined default scrub fields
-- feat: explicit reporting of NSErrors 
