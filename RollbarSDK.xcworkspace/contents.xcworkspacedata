@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Workspace
    version = "1.0">
-   <FileRef
-      location = "group:RollbarPLCrashReporter">
-   </FileRef>
    <Group
       location = "container:"
       name = "RollbarSDK">
@@ -55,6 +52,9 @@
    </FileRef>
    <FileRef
       location = "group:RollbarKSCrash">
+   </FileRef>
+   <FileRef
+      location = "group:RollbarPLCrashReporter">
    </FileRef>
    <Group
       location = "container:"
