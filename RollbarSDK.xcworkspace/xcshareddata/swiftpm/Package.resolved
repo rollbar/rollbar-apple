@@ -9,6 +9,15 @@
           "revision": "64229cfa482d135c109dc3c66db7b30d1da855fc",
           "version": null
         }
+      },
+      {
+        "package": "PLCrashReporter",
+        "repositoryURL": "https://github.com/microsoft/plcrashreporter.git",
+        "state": {
+          "branch": "master",
+          "revision": "ac7fe54ff8ecce90301708eef0f85bf1ba1d747e",
+          "version": null
+        }
       }
     ]
   },
