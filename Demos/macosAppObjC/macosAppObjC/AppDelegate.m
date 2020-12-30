@@ -11,6 +11,7 @@
 #import "RollbarDeploysDemoClient.h"
 
 @import RollbarNotifier;
+
 //@import RollbarKSCrash;
 @import RollbarPLCrashReporter;
 
@@ -26,6 +27,7 @@ __attribute__((noinline)) static void crashIt (void) {
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+    
     // Insert code here to initialize your application
     [self initRollbar];
     
@@ -42,7 +44,6 @@ __attribute__((noinline)) static void crashIt (void) {
              context:nil
          ];
     }
-
     
     @try {
         [self callTroublemaker];
@@ -65,6 +66,7 @@ __attribute__((noinline)) static void crashIt (void) {
 
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
+    
     // Insert code here to tear down your application
 
     [Rollbar infoMessage:@"The hosting application is terminating..."];
@@ -79,7 +81,9 @@ __attribute__((noinline)) static void crashIt (void) {
     config.destination.environment = @"samples";
     config.customData = @{ @"someKey": @"someValue", };
     // init Rollbar shared instance:
-    id<RollbarCrashCollector> crashCollector = [[RollbarPLCrashCollector alloc] init];
+    id<RollbarCrashCollector> crashCollector =
+    //[[RollbarKSCrashCollector alloc] init];
+    [[RollbarPLCrashCollector alloc] init];
     [Rollbar initWithConfiguration:config crashCollector:crashCollector];
     
     [Rollbar infoMessage:@"Rollbar is up and running! Enjoy your remote error and log monitoring..."];

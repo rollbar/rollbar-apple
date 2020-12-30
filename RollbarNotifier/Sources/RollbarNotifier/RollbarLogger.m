@@ -10,7 +10,6 @@
 #import "RollbarThread.h"
 #import "RollbarReachability.h"
 #import <sys/utsname.h>
-//#import "KSCrash.h"
 #import "RollbarTelemetry.h"
 #import "RollbarPayloadTruncator.h"
 #import "RollbarConfig.h"
@@ -53,9 +52,6 @@ static BOOL isNetworkReachable = YES;
 - (void)_test_doNothing;
 
 @end
-
-//#define IS_IOS7_OR_HIGHER (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1)
-//#define IS_MACOS10_10_OR_HIGHER (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber10_10)
 
 @implementation RollbarLogger {
     NSDate *nextSendTime;

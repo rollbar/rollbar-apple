@@ -5,11 +5,10 @@
 //  Created by Andrey Kornich on 2020-12-21.
 //
 @import CrashReporter;
+@import RollbarCommon;
 
 #import "RollbarPLCrashCollector.h"
 #import "RollbarCrashReportData.h"
-//#import "RollbarKSCrashInstallation.h"
-//#import "RollbarKSCrashReportSink.h"
 
 @implementation RollbarPLCrashCollector
 
@@ -18,6 +17,7 @@ static PLCrashReporter *sharedPLCrashReporter = nil;
 +(void)initialize {
     
     if (self == [RollbarPLCrashCollector class]) {
+        
         // Configure our reporter:
         PLCrashReporterSignalHandlerType signalHandlerType =
 #if !TARGET_OS_TV
@@ -25,22 +25,24 @@ static PLCrashReporter *sharedPLCrashReporter = nil;
 #else
             PLCrashReporterSignalHandlerTypeBSD;
 #endif
-        
         PLCrashReporterConfig *config =
         [[PLCrashReporterConfig alloc] initWithSignalHandlerType: signalHandlerType
                                            symbolicationStrategy: PLCrashReporterSymbolicationStrategyAll
         ];
         
+        // Allocate and init the PLCrashReporter:
         sharedPLCrashReporter =
         [[PLCrashReporter alloc] initWithConfiguration: config];
         
+        // Enable the reporter:
         BOOL success = [sharedPLCrashReporter enableCrashReporter];
+        if (!success) {
+            RollbarSdkLog(@"Couldn't enable PLCrashReporter!");
+        }
     }
 }
 
 -(void)collectCrashReportsWithObserver:(NSObject<RollbarCrashCollectorObserver> *)observer {
-    
-
     
     if (!sharedPLCrashReporter || ![sharedPLCrashReporter hasPendingCrashReport]) {
         return;
