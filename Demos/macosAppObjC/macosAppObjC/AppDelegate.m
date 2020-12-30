@@ -11,7 +11,13 @@
 #import "RollbarDeploysDemoClient.h"
 
 @import RollbarNotifier;
-@import RollbarKSCrash;
+//@import RollbarKSCrash;
+@import RollbarPLCrashReporter;
+
+__attribute__((noinline)) static void crashIt (void) {
+    /* Trigger a crash */
+    ((char *)NULL)[1] = 0;
+}
 
 @interface AppDelegate ()
 
@@ -51,8 +57,9 @@
 //    @throw NSInternalInconsistencyException;
 //    [self performSelector:@selector(die_die)];
 //    [self performSelector:NSSelectorFromString(@"crashme:") withObject:nil afterDelay:10];
-    assert(NO);
+    //assert(NO);
     //exit(0);
+    crashIt();
     
 }
 
@@ -72,7 +79,7 @@
     config.destination.environment = @"samples";
     config.customData = @{ @"someKey": @"someValue", };
     // init Rollbar shared instance:
-    id<RollbarCrashCollector> crashCollector = [[RollbarKSCrashCollector alloc] init];
+    id<RollbarCrashCollector> crashCollector = [[RollbarPLCrashCollector alloc] init];
     [Rollbar initWithConfiguration:config crashCollector:crashCollector];
     
     [Rollbar infoMessage:@"Rollbar is up and running! Enjoy your remote error and log monitoring..."];

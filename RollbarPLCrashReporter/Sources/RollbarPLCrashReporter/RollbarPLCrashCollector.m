@@ -13,33 +13,36 @@
 
 @implementation RollbarPLCrashCollector
 
+static PLCrashReporter *sharedPLCrashReporter = nil;
+
 +(void)initialize {
     
     if (self == [RollbarPLCrashCollector class]) {
-        //RollbarKSCrashInstallation *installation = [RollbarKSCrashInstallation sharedInstance];
-        //[installation install];
+        // Configure our reporter:
+        PLCrashReporterSignalHandlerType signalHandlerType =
+#if !TARGET_OS_TV
+            PLCrashReporterSignalHandlerTypeMach;
+#else
+            PLCrashReporterSignalHandlerTypeBSD;
+#endif
+        
+        PLCrashReporterConfig *config =
+        [[PLCrashReporterConfig alloc] initWithSignalHandlerType: signalHandlerType
+                                           symbolicationStrategy: PLCrashReporterSymbolicationStrategyAll
+        ];
+        
+        sharedPLCrashReporter =
+        [[PLCrashReporter alloc] initWithConfiguration: config];
+        
+        BOOL success = [sharedPLCrashReporter enableCrashReporter];
     }
 }
 
 -(void)collectCrashReportsWithObserver:(NSObject<RollbarCrashCollectorObserver> *)observer {
     
-    // Configure our reporter:
-    PLCrashReporterSignalHandlerType signalHandlerType =
-#if !TARGET_OS_TV
-        PLCrashReporterSignalHandlerTypeMach;
-#else
-        PLCrashReporterSignalHandlerTypeBSD;
-#endif
-    
-    PLCrashReporterConfig *config =
-    [[PLCrashReporterConfig alloc] initWithSignalHandlerType: signalHandlerType
-                                       symbolicationStrategy: PLCrashReporterSymbolicationStrategyAll
-    ];
-    PLCrashReporter *reporter =
-    [[PLCrashReporter alloc] initWithConfiguration: config];
 
     
-    if (!reporter || ![reporter hasPendingCrashReport]) {
+    if (!sharedPLCrashReporter || ![sharedPLCrashReporter hasPendingCrashReport]) {
         return;
     }
 
@@ -58,12 +61,12 @@
     }
 
     NSData *data =
-    [reporter loadPendingCrashReportDataAndReturnError: &error];
+    [sharedPLCrashReporter loadPendingCrashReportDataAndReturnError: &error];
     if (data == nil) {
         NSLog(@"Failed to load crash report data: %@", error);
         return;
     }
-    [reporter purgePendingCrashReport];
+    [sharedPLCrashReporter purgePendingCrashReport];
 
     PLCrashReport *report =
     [[PLCrashReport alloc] initWithData: data
