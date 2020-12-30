@@ -6,7 +6,16 @@
         "repositoryURL": "https://github.com/kstenerud/KSCrash.git",
         "state": {
           "branch": "master",
-          "revision": "64229cfa482d135c109dc3c66db7b30d1da855fc",
+          "revision": "498aa21d23541b0bb4990f8d3d20bea2c280a18b",
+          "version": null
+        }
+      },
+      {
+        "package": "PLCrashReporter",
+        "repositoryURL": "https://github.com/microsoft/plcrashreporter.git",
+        "state": {
+          "branch": "master",
+          "revision": "280cf16a19d85b707b6cc9fc235dde7457f6f7cc",
           "version": null
         }
       }
