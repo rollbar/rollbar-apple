@@ -9,9 +9,9 @@ Pod::Spec.new do |sdk|
 
     # Rollbar SDK:
     # ============
-    sdk.version      = "2.0.0-alpha27"
+    sdk.version      = "2.0.0-alpha28"
     sdk.name         = "RollbarSDK"
-    sdk.summary      = "Application or client side SDK for accessing the Rollbar API Server."
+    s.summary      = "Application or client side SDK for interacting with the Rollbar API Server."
     sdk.description  = <<-DESC
                       Find, fix, and resolve errors with Rollbar.
                       Easily send error data using Rollbar API.
