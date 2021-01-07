@@ -35,8 +35,8 @@
 }
 
 - (BOOL)tryAddKeyed:(NSString *)aKey Object:(NSObject *)aValue {
-    if ([RollbarDTO isTransferableObject:aValue]) {
-        [self->_data setValue:aValue forKey:aKey];
+    if ([RollbarDTO isTransferableDataValue:aValue]) {
+        self->_data[aKey] = aValue;
         return YES;
     }
     return NO;
