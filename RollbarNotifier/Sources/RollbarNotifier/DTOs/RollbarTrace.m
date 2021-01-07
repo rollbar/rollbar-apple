@@ -79,26 +79,12 @@ static NSString * const DFK_EXCEPTION = @"exception";
     
     NSMutableArray<RollbarCallStackFrame *> *frames = [NSMutableArray array];
     for (NSString *line in exception.callStackSymbols) {
-        NSMutableArray *components =
-        [NSMutableArray arrayWithArray:
-         [line componentsSeparatedByCharactersInSet:
-          [NSCharacterSet characterSetWithCharactersInString:@" "]]];
-        [components removeObject:@""];
-        [components removeObjectAtIndex:0];
-        if (components.count >= 4) {
-            NSString *method = [self methodNameFromStackTrace:components];
-            NSString *filename = [components componentsJoinedByString:@" "];
-            RollbarCallStackFrame *frame = [[RollbarCallStackFrame alloc] initWithFileName:filename];
-            frame.method = method;
-            frame.lineno = components[components.count-1];
-            [frame tryAddKeyed:@"library" Object:components[0]];
-            [frame tryAddKeyed:@"address" Object:components[1]];
-
-            [frames addObject:frame];
-        }
+        RollbarCallStackFrame *frame = [self buildStackFrameFromBacktraceLine:line];
+        [frames addObject:frame];
     }
     
-    self = [self initWithRollbarException:exceptionDto rollbarCallStackFrames:frames];
+    self = [self initWithRollbarException:exceptionDto
+                   rollbarCallStackFrames:frames];
     return self;
 }
 
@@ -122,9 +108,13 @@ static NSString * const DFK_EXCEPTION = @"exception";
 
     NSMutableArray<RollbarCallStackFrame *> *frames = [NSMutableArray array];
     for (NSString *line in (NSArray<NSString *> *) exceptionInfo[@(RollbarExceptionInfo_Backtraces)]) {
-        //TODO:
+        RollbarCallStackFrame *frame = [self buildStackFrameFromBacktraceLine:line];
+        [frames addObject:frame];
     }
-    //TODO:
+
+    self = [self initWithRollbarException:exceptionDto
+                   rollbarCallStackFrames:frames];
+    return self;
 }
 
 #pragma mark - Private methods
@@ -144,21 +134,30 @@ static NSString * const DFK_EXCEPTION = @"exception";
     }
 }
 
-- (NSString*)methodNameFromStackTrace:(NSArray*)stackTraceComponents {
-    int start = false;
-    NSString *buf;
-    for (NSString *component in stackTraceComponents) {
-        if (!start && [component hasPrefix:@"0x"]) {
-            start = true;
-        } else if (start && [component isEqualToString:@"+"]) {
-            break;
-        } else if (start) {
-            buf =
-            buf ? [NSString stringWithFormat:@"%@ %@", buf, component]
-            : component;
-        }
+- (nonnull RollbarCallStackFrame *)buildStackFrameFromBacktraceLine:(nonnull NSString *)backtraceLine {
+    
+    NSDictionary *backtrace = [RollbarCrashReportUtil extractComponentsFromBacktrace:backtraceLine];
+    NSString *library = backtrace[@(RollbarBacktraceComponent_Library)];
+    NSString *address = backtrace[@(RollbarBacktraceComponent_Address)];
+    NSString *method = backtrace[@(RollbarBacktraceComponent_Method)];
+    NSString *lineNo = backtrace[@(RollbarBacktraceComponent_LineNumber)];
+    
+    RollbarCallStackFrame *frame = [[RollbarCallStackFrame alloc] initWithFileName:backtraceLine];
+    if (library && library.length > 0) {
+        [frame tryAddKeyed:@"library" Object:library];
     }
-    return buf ? buf : @"Unknown";
+    if (address && address.length > 0) {
+        [frame tryAddKeyed:@"address" Object:address];
+    }
+    if (method && method.length > 0) {
+        frame.method = method;
+    }
+    if (lineNo && lineNo.length > 0) {
+        NSNumber *no = @([lineNo intValue]);
+        frame.lineno = no;
+    }
+    
+    return frame;
 }
 
 @end
