@@ -102,6 +102,31 @@ static NSString * const DFK_EXCEPTION = @"exception";
     return self;
 }
 
+-(instancetype)initWithCrashReport:(nonnull NSString *)crashReport {
+    
+    NSDictionary *exceptionInfo =
+    [RollbarCrashReportUtil extractExceptionInfoFromCrashReport:crashReport];
+    
+    NSString *exceptionTypePrefix = @"Exception Type: ";
+    NSString *exceptionClass = (NSString *) exceptionInfo[@(RollbarExceptionInfo_Type)];
+    exceptionClass = [exceptionClass stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+
+    NSString *exceptionCodesPrefix = @"Exception Codes: ";
+    NSString *exceptionMessage = (NSString *) exceptionInfo[@(RollbarExceptionInfo_Codes)];
+    exceptionMessage = [exceptionMessage stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+
+    RollbarException *exceptionDto =
+    [[RollbarException alloc] initWithExceptionClass:exceptionClass
+                                    exceptionMessage:exceptionMessage
+                                exceptionDescription:nil];
+
+    NSMutableArray<RollbarCallStackFrame *> *frames = [NSMutableArray array];
+    for (NSString *line in (NSArray<NSString *> *) exceptionInfo[@(RollbarExceptionInfo_Backtraces)]) {
+        //TODO:
+    }
+    //TODO:
+}
+
 #pragma mark - Private methods
 
 -(NSArray *)getJsonFriendlyDataFromFrames:(NSArray<RollbarCallStackFrame *> *)frames {

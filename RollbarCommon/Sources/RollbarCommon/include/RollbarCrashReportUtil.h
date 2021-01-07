@@ -18,11 +18,21 @@ typedef NS_ENUM(NSUInteger, RollbarExceptionInfo) {
     RollbarExceptionInfo_Backtraces
 };
 
+typedef NS_ENUM(NSUInteger, RollbarBacktraceComponent) {
+    RollbarBacktraceComponent_Index = 0,
+    RollbarBacktraceComponent_Library,
+    RollbarBacktraceComponent_Address,
+    RollbarBacktraceComponent_Method,
+    RollbarBacktraceComponent_LineNumber
+};
+
 @interface RollbarCrashReportUtil : NSObject
 
 + (nonnull NSArray<NSString *> *)extractLinesFromCrashReport:(nonnull NSString *)report;
 
 + (nonnull NSDictionary *)extractExceptionInfoFromCrashReport:(nonnull NSString *)crashReport;
+
++ (nonnull NSDictionary *)extractComponentsFromBacktrace:(nonnull NSString *)backtrace;
 
 #pragma mark - Initializers
 

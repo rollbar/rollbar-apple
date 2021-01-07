@@ -83,4 +83,33 @@ typedef NS_ENUM(NSUInteger, CrashReportBlock) {
     return [results copy];
 }
 
++ (nonnull NSDictionary *)extractComponentsFromBacktrace:(nonnull NSString *)backtrace {
+    
+    NSMutableDictionary *result =
+    [NSMutableDictionary dictionaryWithCapacity:(RollbarBacktraceComponent_LineNumber + 1)];
+    
+    NSMutableArray *components =
+    [backtrace componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]
+    .mutableCopy;
+    [components removeObject:@""];
+    
+    uint i = RollbarBacktraceComponent_Index;
+    while (i <= RollbarBacktraceComponent_Address) {
+        result[@(i)] = components[i];
+        i++;
+    }
+    if (components.count > i) {
+        // if we got here, the backtrace is symbolicated,
+        // let's extract method name and line number:
+        NSMutableString *method = [NSMutableString stringWithString:components[i]];
+        while(++i < components.count - 1 && ![components[i] isEqualToString:@"+"]) {
+            [method appendFormat:@" %@", components[i]];
+        }
+        result[@(RollbarBacktraceComponent_Method)] = method.copy;
+        result[@(RollbarBacktraceComponent_LineNumber)] = components[components.count - 1];
+    }
+    
+    return result.copy;
+}
+
 @end
