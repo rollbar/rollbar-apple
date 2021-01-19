@@ -142,6 +142,7 @@ static NSString * const DFK_CRASH_REPORT = @"crash_report";
         DFK_MESSAGE: [NSNull null],
         DFK_CRASH_REPORT: [[RollbarCrashReport alloc] initWithRawCrashReport:crashReport].jsonFriendlyData,
         DFK_TRACE: [NSNull null],
+        // if/when we do allow a trace side-by-side with the crash report use the following line instead of code line above:
         //DFK_TRACE: [[RollbarTrace alloc] initWithCrashReport:crashReport].jsonFriendlyData,
         DFK_TRACE_CHAIN: [NSNull null],
         DFK_TELEMETRY: [self snapTelemetryData],
