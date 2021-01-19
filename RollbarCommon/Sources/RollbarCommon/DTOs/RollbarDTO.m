@@ -32,6 +32,7 @@
         || [obj isKindOfClass:[NSArray class]]
         || [obj isKindOfClass:[NSDictionary class]]
         || [obj isKindOfClass:[NSNull class]]
+        || [self isTransferableObject:obj]
         ) {
         return YES;
     }

@@ -8,6 +8,8 @@
 
 @import Foundation;
 
+#import "TestData/CrashReports.h"
+
 #if !TARGET_OS_WATCH
 #import <XCTest/XCTest.h>
 
@@ -727,6 +729,28 @@
     XCTAssertEqual(dto.frames[0].filename, filename);
     XCTAssertEqual(dto.frames[1].filename, filename);
 }
+
+// if/when we do allow a trace side-by-side with the crash report uncomment this test:
+//-(void)testRollbarBodyDTO {
+//    
+//    RollbarBody *body = [[RollbarBody alloc] initWithCrashReport:CRASH_REPORT_PLCRASH_SYMBOLICATED];
+//    
+//    XCTAssertNotNil(body.crashReport);
+//    XCTAssertNotNil(body.trace);
+//    XCTAssertNil(body.traceChain);
+//    XCTAssertNil(body.message);
+//    
+//    XCTAssertNotNil(body.crashReport.rawCrashReport);
+//    XCTAssertTrue(body.crashReport.rawCrashReport.length > 0);
+//
+//    XCTAssertNotNil(body.trace.exception);
+//    XCTAssertNotNil(body.trace.exception.exceptionMessage);
+//    XCTAssertTrue(body.trace.exception.exceptionMessage > 0);
+//    XCTAssertNotNil(body.trace.exception.exceptionClass);
+//    XCTAssertTrue(body.trace.exception.exceptionClass > 0);
+//    XCTAssertNotNil(body.trace.frames);
+//    XCTAssertTrue(body.trace.frames.count > 0);
+//}
 
 -(void)testRollbarTelemetryEventDTO_properBodyBasedOnType {
     
