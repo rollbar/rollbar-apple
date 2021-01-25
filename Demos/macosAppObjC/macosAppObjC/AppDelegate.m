@@ -80,7 +80,7 @@ __attribute__((noinline)) static void crashIt (void) {
     config.destination.environment = @"samples";
     config.customData = @{ @"someKey": @"someValue", };
 
-    // optiona crash reporter:
+    // optional crash reporter:
     id<RollbarCrashCollector> crashCollector =
     //nil;
     //[[RollbarKSCrashCollector alloc] init];

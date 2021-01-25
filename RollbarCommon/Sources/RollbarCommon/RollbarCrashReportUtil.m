@@ -36,7 +36,7 @@ typedef NS_ENUM(NSUInteger, CrashReportBlock) {
     CrashReportBlock reportBlock = CrashReportBlock_Header;
     NSArray<NSString *> *reportLines = [RollbarCrashReportUtil extractLinesFromCrashReport:crashReport];
     NSMutableArray<NSString *> *backtraces = [NSMutableArray array];
-    for(NSString *reportLine in reportLines) {
+    for (NSString *reportLine in reportLines) {
         switch (reportBlock) {
             case CrashReportBlock_Start:
             case CrashReportBlock_Header:
