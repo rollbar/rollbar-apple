@@ -76,14 +76,17 @@ __attribute__((noinline)) static void crashIt (void) {
 
     // configure Rollbar:
     RollbarConfig *config = [RollbarConfig new];
-    
     config.destination.accessToken = @"2ffc7997ed864dda94f63e7b7daae0f3";
     config.destination.environment = @"samples";
     config.customData = @{ @"someKey": @"someValue", };
-    // init Rollbar shared instance:
+
+    // optional crash reporter:
     id<RollbarCrashCollector> crashCollector =
+    //nil;
     //[[RollbarKSCrashCollector alloc] init];
     [[RollbarPLCrashCollector alloc] init];
+    
+    // init Rollbar shared instance:
     [Rollbar initWithConfiguration:config crashCollector:crashCollector];
     
     [Rollbar infoMessage:@"Rollbar is up and running! Enjoy your remote error and log monitoring..."];

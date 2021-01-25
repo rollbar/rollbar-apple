@@ -32,6 +32,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 -(instancetype)initWithException:(nonnull NSException *)exception;
 
+-(instancetype)initWithCrashReport:(nonnull NSString *)crashReport;
+
 @end
 
 NS_ASSUME_NONNULL_END
