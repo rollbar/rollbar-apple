@@ -147,7 +147,7 @@
     
     NSDictionary<NSString *, id> *data = [self getDataByKey:key];
     if (data) {
-        result = [result initWithDictionary:[self getDataByKey:key]];
+        result = [result initWithDictionary:data];
     }
     else {
         result = [result init];
