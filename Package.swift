@@ -132,6 +132,7 @@ let package = Package(
         .target(
             name: "RollbarKSCrash",
             dependencies: ["RollbarCommon", "KSCrash"],
+            path: "RollbarKSCrash/Sources/RollbarKSCrash",
             publicHeadersPath: "include",
             cSettings: [
                 .headerSearchPath("RollbarKSCrash/Sources/RollbarKSCrash/**"),
@@ -141,6 +142,7 @@ let package = Package(
         .target(
             name: "RollbarPLCrashReporter",
             dependencies: ["RollbarCommon", .product(name: "CrashReporter", package: "PLCrashReporter")],
+            path: "RollbarPLCrashReporter/Sources/RollbarPLCrashReporter",
             publicHeadersPath: "include",
             cSettings: [
                 .headerSearchPath("RollbarPLCrashReporter/Sources/RollbarPLCrashReporter/**"),
