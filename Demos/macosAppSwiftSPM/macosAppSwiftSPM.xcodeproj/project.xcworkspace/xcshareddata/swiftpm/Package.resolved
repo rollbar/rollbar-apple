@@ -2,11 +2,29 @@
   "object": {
     "pins": [
       {
-        "package": "RollbarSDK",
-        "repositoryURL": "https://github.com/rollbar/rollbar-ios",
+        "package": "KSCrash",
+        "repositoryURL": "https://github.com/kstenerud/KSCrash.git",
         "state": {
-          "branch": "vNext-2.0.0",
-          "revision": "ceaca9ad83411d8661918aa6ed0929ee1796ee53",
+          "branch": "master",
+          "revision": "498aa21d23541b0bb4990f8d3d20bea2c280a18b",
+          "version": null
+        }
+      },
+      {
+        "package": "PLCrashReporter",
+        "repositoryURL": "https://github.com/microsoft/plcrashreporter.git",
+        "state": {
+          "branch": "master",
+          "revision": "280cf16a19d85b707b6cc9fc235dde7457f6f7cc",
+          "version": null
+        }
+      },
+      {
+        "package": "RollbarSDK",
+        "repositoryURL": "https://github.com/rollbar/rollbar-apple",
+        "state": {
+          "branch": "master",
+          "revision": "400af0840dcbd69454c3275e710445c5874084b5",
           "version": null
         }
       }
