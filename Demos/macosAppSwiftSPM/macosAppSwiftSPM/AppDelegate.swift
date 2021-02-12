@@ -33,7 +33,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
-        Rollbar.info("The hosting application is terminating...");
+        Rollbar.infoMessage("The hosting application is terminating...");
     }
 
     func initRollbar() {
@@ -47,7 +47,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         config.customData = [ "someKey": "someValue", ];
         // init Rollbar shared instance:
         Rollbar.initWithConfiguration(config);
-        Rollbar.info("Rollbar is up and running! Enjoy your remote error and log monitoring...");
+        Rollbar.infoMessage("Rollbar is up and running! Enjoy your remote error and log monitoring...");
     }
 
     func demonstrateDeployApiUsage() {

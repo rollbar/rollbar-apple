@@ -8,13 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		55C1787124A6A06500B28BDB /* RollbarDeploysDemoClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C1787024A6A06500B28BDB /* RollbarDeploysDemoClient.swift */; };
-		55D5368D24A5B37D008582C1 /* RollbarDeploys in Frameworks */ = {isa = PBXBuildFile; productRef = 55D5368C24A5B37D008582C1 /* RollbarDeploys */; };
-		55D5368F24A5B37D008582C1 /* RollbarCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 55D5368E24A5B37D008582C1 /* RollbarCommon */; };
-		55D5369124A5B37D008582C1 /* RollbarNotifier in Frameworks */ = {isa = PBXBuildFile; productRef = 55D5369024A5B37D008582C1 /* RollbarNotifier */; };
 		55E8B5E224A57B920082B70B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55E8B5E124A57B920082B70B /* AppDelegate.swift */; };
 		55E8B5E424A57B920082B70B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55E8B5E324A57B920082B70B /* ViewController.swift */; };
 		55E8B5E624A57B9B0082B70B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55E8B5E524A57B9B0082B70B /* Assets.xcassets */; };
 		55E8B5E924A57B9B0082B70B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 55E8B5E724A57B9B0082B70B /* Main.storyboard */; };
+		55EFBBF925D6035A00C3DF89 /* RollbarCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 55EFBBF825D6035A00C3DF89 /* RollbarCommon */; };
+		55EFBBFB25D6035A00C3DF89 /* RollbarNotifier in Frameworks */ = {isa = PBXBuildFile; productRef = 55EFBBFA25D6035A00C3DF89 /* RollbarNotifier */; };
+		55EFBBFD25D6035A00C3DF89 /* RollbarDeploys in Frameworks */ = {isa = PBXBuildFile; productRef = 55EFBBFC25D6035A00C3DF89 /* RollbarDeploys */; };
+		55EFBBFF25D6035A00C3DF89 /* RollbarPLCrashReporter in Frameworks */ = {isa = PBXBuildFile; productRef = 55EFBBFE25D6035A00C3DF89 /* RollbarPLCrashReporter */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,9 +34,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				55D5369124A5B37D008582C1 /* RollbarNotifier in Frameworks */,
-				55D5368F24A5B37D008582C1 /* RollbarCommon in Frameworks */,
-				55D5368D24A5B37D008582C1 /* RollbarDeploys in Frameworks */,
+				55EFBBFF25D6035A00C3DF89 /* RollbarPLCrashReporter in Frameworks */,
+				55EFBBF925D6035A00C3DF89 /* RollbarCommon in Frameworks */,
+				55EFBBFB25D6035A00C3DF89 /* RollbarNotifier in Frameworks */,
+				55EFBBFD25D6035A00C3DF89 /* RollbarDeploys in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -89,9 +91,10 @@
 			);
 			name = macosAppSwiftSPM;
 			packageProductDependencies = (
-				55D5368C24A5B37D008582C1 /* RollbarDeploys */,
-				55D5368E24A5B37D008582C1 /* RollbarCommon */,
-				55D5369024A5B37D008582C1 /* RollbarNotifier */,
+				55EFBBF825D6035A00C3DF89 /* RollbarCommon */,
+				55EFBBFA25D6035A00C3DF89 /* RollbarNotifier */,
+				55EFBBFC25D6035A00C3DF89 /* RollbarDeploys */,
+				55EFBBFE25D6035A00C3DF89 /* RollbarPLCrashReporter */,
 			);
 			productName = macosAppSwiftSPM;
 			productReference = 55E8B5DE24A57B920082B70B /* macosAppSwiftSPM.app */;
@@ -122,7 +125,7 @@
 			);
 			mainGroup = 55E8B5D524A57B920082B70B;
 			packageReferences = (
-				55D5368B24A5B37D008582C1 /* XCRemoteSwiftPackageReference "rollbar-ios" */,
+				55EFBBF725D6035A00C3DF89 /* XCRemoteSwiftPackageReference "rollbar-apple" */,
 			);
 			productRefGroup = 55E8B5DF24A57B920082B70B /* Products */;
 			projectDirPath = "";
@@ -351,31 +354,36 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		55D5368B24A5B37D008582C1 /* XCRemoteSwiftPackageReference "rollbar-ios" */ = {
+		55EFBBF725D6035A00C3DF89 /* XCRemoteSwiftPackageReference "rollbar-apple" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/rollbar/rollbar-ios";
+			repositoryURL = "https://github.com/rollbar/rollbar-apple";
 			requirement = {
-				branch = "vNext-2.0.0";
+				branch = master;
 				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		55D5368C24A5B37D008582C1 /* RollbarDeploys */ = {
+		55EFBBF825D6035A00C3DF89 /* RollbarCommon */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 55D5368B24A5B37D008582C1 /* XCRemoteSwiftPackageReference "rollbar-ios" */;
-			productName = RollbarDeploys;
-		};
-		55D5368E24A5B37D008582C1 /* RollbarCommon */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 55D5368B24A5B37D008582C1 /* XCRemoteSwiftPackageReference "rollbar-ios" */;
+			package = 55EFBBF725D6035A00C3DF89 /* XCRemoteSwiftPackageReference "rollbar-apple" */;
 			productName = RollbarCommon;
 		};
-		55D5369024A5B37D008582C1 /* RollbarNotifier */ = {
+		55EFBBFA25D6035A00C3DF89 /* RollbarNotifier */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 55D5368B24A5B37D008582C1 /* XCRemoteSwiftPackageReference "rollbar-ios" */;
+			package = 55EFBBF725D6035A00C3DF89 /* XCRemoteSwiftPackageReference "rollbar-apple" */;
 			productName = RollbarNotifier;
+		};
+		55EFBBFC25D6035A00C3DF89 /* RollbarDeploys */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 55EFBBF725D6035A00C3DF89 /* XCRemoteSwiftPackageReference "rollbar-apple" */;
+			productName = RollbarDeploys;
+		};
+		55EFBBFE25D6035A00C3DF89 /* RollbarPLCrashReporter */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 55EFBBF725D6035A00C3DF89 /* XCRemoteSwiftPackageReference "rollbar-apple" */;
+			productName = RollbarPLCrashReporter;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
