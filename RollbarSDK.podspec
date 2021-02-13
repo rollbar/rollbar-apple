@@ -9,7 +9,7 @@ Pod::Spec.new do |sdk|
 
     # Rollbar SDK:
     # ============
-    sdk.version      = "2.0.0-alpha30"
+    sdk.version      = "2.0.0-alpha31"
     sdk.name         = "RollbarSDK"
     s.summary      = "Application or client side SDK for interacting with the Rollbar API Server."
     sdk.description  = <<-DESC
@@ -70,6 +70,10 @@ Pod::Spec.new do |sdk|
       #   "USE_HEADERMAP" => "NO",
       #   "HEADER_SEARCH_PATHS" => "$(PODS_ROOT)/Sources/RollbarCommon/**"
       # }
+      common.pod_target_xcconfig  = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
+      common.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
+      common.tvos.pod_target_xcconfig  = { 'EXCLUDED_ARCHS[sdk=appletvsimulator*]' => 'arm64' }
+      common.tvos.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=appletvsimulator*]' => 'arm64' }
     end
 
     # RollbarDeploys module:
@@ -106,6 +110,10 @@ Pod::Spec.new do |sdk|
         #   "USE_HEADERMAP" => "NO",
         #   "HEADER_SEARCH_PATHS" => "$(PODS_ROOT)/Sources/RollbarDeploys/**"
         # }
+        deploys.pod_target_xcconfig  = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
+        deploys.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
+        deploys.tvos.pod_target_xcconfig  = { 'EXCLUDED_ARCHS[sdk=appletvsimulator*]' => 'arm64' }
+        deploys.tvos.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=appletvsimulator*]' => 'arm64' }
     end
 
     # RollbarNotifier module:
@@ -142,6 +150,10 @@ Pod::Spec.new do |sdk|
         #   "USE_HEADERMAP" => "NO",
         #   "HEADER_SEARCH_PATHS" => "$(PODS_ROOT)/Sources/RollbarNotifier/**"
         # }
+        notifier.pod_target_xcconfig  = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
+        notifier.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
+        notifier.tvos.pod_target_xcconfig  = { 'EXCLUDED_ARCHS[sdk=appletvsimulator*]' => 'arm64' }
+        notifier.tvos.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=appletvsimulator*]' => 'arm64' }
     end
 
     # RollbarKSCrash module:
@@ -177,6 +189,49 @@ Pod::Spec.new do |sdk|
         #   "USE_HEADERMAP" => "NO",
         #   "HEADER_SEARCH_PATHS" => "$(PODS_ROOT)/Sources/#{kscrash.name}/**"
         # }
+        kscrash.pod_target_xcconfig  = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
+        kscrash.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
+        kscrash.tvos.pod_target_xcconfig  = { 'EXCLUDED_ARCHS[sdk=appletvsimulator*]' => 'arm64' }
+        kscrash.tvos.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=appletvsimulator*]' => 'arm64' }
+    end
+
+    # RollbarPLCrashReporter module:
+    # ==============================
+    sdk.subspec "RollbarPLCrashReporter" do |plcrash|
+        plcrash.name         = "RollbarPLCrashReporter"
+
+        # Any platform, if omitted:
+        # plcrash.platform     = :ios
+        # plcrash.platform     = :ios, "5.0"
+
+        #  When using multiple platforms:
+        # plcrash.ios.deployment_target = "9.0"
+        # plcrash.osx.deployment_target = "10.10"
+        # plcrash.tvos.deployment_target = "11.0"
+        # plcrash.watchos.deployment_target = "4.0"
+
+        plcrash.source_files  = "#{plcrash.name}/Sources/#{plcrash.name}/**/*.{h,m}"
+        # plcrash.exclude_files = "Classes/Exclude"
+        plcrash.public_header_files = "#{plcrash.name}/Sources/#{plcrash.name}/include/*.h"
+        # plcrash.module_map = "#{plcrash.name}/Sources/#{plcrash.name}/include/module.modulemap"
+        # plcrash.resource = "../rollbar-logo.png"
+        # plcrash.resources = "Resources/*.png"
+        # plcrash.preserve_paths = "FilesToSave", "MoreFilesToSave"
+
+        plcrash.dependency "RollbarSDK/RollbarCommon"
+        plcrash.framework = "Foundation"
+        # plcrash.frameworks = "SomeFramework", "AnotherFramework"
+        # plcrash.library   = "iconv"
+        # plcrash.dependency "JSONKit", "~> 1.4"
+        plcrash.requires_arc = true
+        # plcrash.xcconfig = {
+        #   "USE_HEADERMAP" => "NO",
+        #   "HEADER_SEARCH_PATHS" => "$(PODS_ROOT)/Sources/#{plcrash.name}/**"
+        # }
+        plcrash.pod_target_xcconfig  = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
+        plcrash.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
+        plcrash.tvos.pod_target_xcconfig  = { 'EXCLUDED_ARCHS[sdk=appletvsimulator*]' => 'arm64' }
+        plcrash.tvos.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=appletvsimulator*]' => 'arm64' }
     end
 
 end
