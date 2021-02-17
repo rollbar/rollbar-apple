@@ -1,5 +1,5 @@
 #
-#  Be sure to run `pod spec lint RollbarSDK.podspec' to ensure this is a valid spec.
+#  Be sure to run `pod spec lint RollbarKSCrash.podspec' to ensure this is a valid spec.
 #
 #  To learn more about Podspec attributes see https://guides.cocoapods.org/syntax/podspec.html
 #  To see working Podspecs in the CocoaPods repo see https://github.com/CocoaPods/Specs/
@@ -8,7 +8,7 @@
 Pod::Spec.new do |s|
 
     s.version      = "2.0.0-alpha39"
-    s.name         = "RollbarNotifier"
+    s.name         = "RollbarKSCrash"
     s.summary      = "Application or client side SDK for interacting with the Rollbar API Server."
     s.description  = <<-DESC
                       Find, fix, and resolve errors with Rollbar.
@@ -49,6 +49,7 @@ Pod::Spec.new do |s|
 
     s.framework = "Foundation"
     s.dependency "RollbarCommon", "~> #{s.version}"
+    s.dependency "KSCrash", "~> 1.15.21"
     # s.frameworks = "SomeFramework", "AnotherFramework"
     # s.library   = "iconv"
     # s.libraries = "iconv", "xml2"
