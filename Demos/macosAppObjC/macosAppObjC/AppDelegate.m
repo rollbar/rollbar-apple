@@ -60,7 +60,7 @@ __attribute__((noinline)) static void crashIt (void) {
 //    [self performSelector:NSSelectorFromString(@"crashme:") withObject:nil afterDelay:10];
     //assert(NO);
     //exit(0);
-    crashIt();
+    //crashIt();
     
 }
 
@@ -78,13 +78,14 @@ __attribute__((noinline)) static void crashIt (void) {
     RollbarConfig *config = [RollbarConfig new];
     config.destination.accessToken = @"2ffc7997ed864dda94f63e7b7daae0f3";
     config.destination.environment = @"samples";
+    //config.developerOptions.suppressSdkInfoLogging = YES;
     config.customData = @{ @"someKey": @"someValue", };
 
     // optional crash reporter:
     id<RollbarCrashCollector> crashCollector =
-    //nil;
+      nil;
     //[[RollbarKSCrashCollector alloc] init];
-    [[RollbarPLCrashCollector alloc] init];
+    //[[RollbarPLCrashCollector alloc] init];
     
     // init Rollbar shared instance:
     [Rollbar initWithConfiguration:config crashCollector:crashCollector];

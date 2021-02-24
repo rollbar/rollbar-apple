@@ -29,6 +29,7 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 - feat: added RollbarPLCrashReporter module
 - feat: added RollbarKSCrash module
 - feat: explicit reporting of NSErrors 
+- feat: added new developer option: suppressSdkInfoLogging
 - feat: defined default scrub fields
 - refactor: split out RollbarCommon, RollbarNotifier, RollbarDeploys
 - refactor: added use of lightweight generics

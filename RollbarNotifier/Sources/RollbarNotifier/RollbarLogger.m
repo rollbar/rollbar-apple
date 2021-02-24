@@ -326,7 +326,9 @@ static RollbarLogger *sharedSingleton = nil;
     [fileHandle closeFile];
 
     if (!fileLength) {
-        RollbarSdkLog(@"Processing saved items: no queued items in the file!");
+        if (NO == self.configuration.developerOptions.suppressSdkInfoLogging) {
+            RollbarSdkLog(@"Processing saved items: no queued items in the file!");
+        }
         return;
     }
 
@@ -340,7 +342,9 @@ static RollbarLogger *sharedSingleton = nil;
         queueState[@"offset"] = [NSNumber numberWithUnsignedInteger:0];
         queueState[@"retry_count"] = [NSNumber numberWithUnsignedInteger:0];
         [RollbarLogger saveQueueState];
-        RollbarSdkLog(@"Processing saved items: emptied the queued items file.");
+        if (NO == self.configuration.developerOptions.suppressSdkInfoLogging) {
+            RollbarSdkLog(@"Processing saved items: emptied the queued items file.");
+        }
 
         return;
     }
@@ -753,10 +757,12 @@ static RollbarLogger *sharedSingleton = nil;
         [queueState[@"retry_count"] unsignedIntegerValue];
 
         if (0 == retryCount && YES == self.configuration.developerOptions.logPayload) {
-            RollbarSdkLog(@"About to send payload: %@",
-                       [[NSString alloc] initWithData:jsonPayload
-                                             encoding:NSUTF8StringEncoding]
-                       );
+            if (NO == self.configuration.developerOptions.suppressSdkInfoLogging) {
+                RollbarSdkLog(@"About to send payload: %@",
+                           [[NSString alloc] initWithData:jsonPayload
+                                                 encoding:NSUTF8StringEncoding]
+                           );
+            }
 
             // append-save this jsonPayload into the payloads log file:
             NSFileHandle *fileHandle =
@@ -962,7 +968,9 @@ static RollbarLogger *sharedSingleton = nil;
     } else {
         NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
         if ([httpResponse statusCode] == 200) {
-            RollbarSdkLog(@"Success");
+            if (NO == self.configuration.developerOptions.suppressSdkInfoLogging) {
+                RollbarSdkLog(@"Success");
+            }
             return YES;
         } else {
             RollbarSdkLog(@"There was a problem reporting to Rollbar");
