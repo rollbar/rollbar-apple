@@ -28,14 +28,14 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 **2.0.0** Preliminary Notes
 - feat: added RollbarPLCrashReporter module
 - feat: added RollbarKSCrash module
-- feat: explicit reporting of NSErrors 
+- feat: added explicit reporting of NSErrors 
 - feat: added new developer option: suppressSdkInfoLogging
 - feat: defined default scrub fields
 - refactor: split out RollbarCommon, RollbarNotifier, RollbarDeploys
 - refactor: added use of lightweight generics
-- refactor: added use nullability attributes
+- refactor: added use of nullability attributes
 - refactor: removed RollbarConfiguration and replaced it with RollbarConfig
 - refactor: changed WhitelistFields into SafeListFields when it comes to the RollbarScrubbingOptions
 - refactor: removed all the deprecated API 
-- refactor: replace NSString-like log level parameters in RollbarLogger interface with RollbarLevel enum
-- refactor: replace sync-all log methods of Rollbar and RolbarLogger with ones dedicated to each type of payload: string-message, NSException, NSError, etc.
+- refactor: replaced NSString-like log level parameters in RollbarLogger interface with RollbarLevel enum
+- refactor: replaced sync-all log methods of Rollbar and RolbarLogger with ones dedicated to each type of payload: string-message, NSException, NSError, etc.
