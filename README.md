@@ -2,7 +2,7 @@
 
 # Rollbar SDK for any Apple *OS
 
-# The SDK is officially in Beta. We are looking for beta-testers and feedback!!! 
+# The SDK is officially in Beta version. We are looking for beta-testers and feedback!!! 
 
 Objective-C & Swift SDK for remote crash, exception, error reporting, and logging with [Rollbar](https://rollbar.com). 
 
