@@ -54,14 +54,15 @@ __attribute__((noinline)) static void crashIt (void) {
     }
     
     // now, cause a crash:
-//    [self callTroublemaker];
-//    @throw NSInternalInconsistencyException;
-//    [self performSelector:@selector(die_die)];
-//    [self performSelector:NSSelectorFromString(@"crashme:") withObject:nil afterDelay:10];
+    
+    //[self callTroublemaker];
+    //@throw NSInternalInconsistencyException;
+    //[self performSelector:@selector(die_die)];
+    //[self performSelector:NSSelectorFromString(@"crashme:") withObject:nil afterDelay:10];
     //assert(NO);
     //exit(0);
     //crashIt();
-    
+
 }
 
 
@@ -84,8 +85,8 @@ __attribute__((noinline)) static void crashIt (void) {
     // optional crash reporter:
     id<RollbarCrashCollector> crashCollector =
       nil;
-    //[[RollbarKSCrashCollector alloc] init];
-    //[[RollbarPLCrashCollector alloc] init];
+      //[[RollbarKSCrashCollector alloc] init];
+      //[[RollbarPLCrashCollector alloc] init];
     
     // init Rollbar shared instance:
     [Rollbar initWithConfiguration:config crashCollector:crashCollector];
