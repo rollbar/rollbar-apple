@@ -51,6 +51,13 @@ jobs:
     #  working-directory: RollbarKSCrash
     #  run: swift test -v --enable-test-discovery --enable-code-coverage --build-path ../DerivedData
 
+    - name: Build RollbarPLCrashReporter
+      working-directory: RollbarPLCrashReporter
+      run: swift build -v
+    #- name: Unit Test RollbarPLCrashReporter
+    #  working-directory: RollbarPLCrashReporter
+    #  run: swift test -v --enable-test-discovery --enable-code-coverage --build-path ../DerivedData
+
 #    - name: Unit Test RollbarCommon
 #      working-directory: RollbarCommon
 #      run:  ../SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir ../DerivedData/compilation-database 
@@ -110,6 +117,19 @@ jobs:
               CODE_SIGNING_REQUIRED=NO
               # clean build
               
+    - name: SonarCloud RollbarPLCrashReporter
+      run: SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir DerivedData/compilation-database 
+           xcodebuild 
+              -workspace RollbarSDK.xcworkspace 
+              -scheme RollbarPLCrashReporter 
+              -derivedDataPath DerivedData 
+              -enableCodeCoverage YES 
+              build 
+              test 
+              CODE_SIGN_IDENTITY="" 
+              CODE_SIGNING_REQUIRED=NO
+              # clean build
+              
     - name: SonarCloud Test Coverage Conversion
       run: bash xccov-to-sonarqube-generic.sh DerivedData/Logs/Test/*.xcresult/ > sonarqube-generic-coverage.xml
 
@@ -120,7 +140,7 @@ jobs:
 #          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     - name: Run SonarScanner Analysis
-      run: SonarCloud/sonar-scanner-4.5.0.2216-macosx/bin/sonar-scanner -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION_KEY }} -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.coverageReportPaths=sonarqube-generic-coverage.xml 
+      run: SonarCloud/sonar-scanner-4.6.0.2311-macosx/bin/sonar-scanner -X -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION_KEY }} -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.coverageReportPaths=sonarqube-generic-coverage.xml 
       #-Dsonar.cfamily.build-wrapper-output.bypass=true
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
