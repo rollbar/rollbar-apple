@@ -73,7 +73,7 @@ jobs:
               -enableCodeCoverage YES 
               build 
               test 
-              CODE_SIGN_IDENTITY="" 
+              CODE_SIGN_IDENTITY="-" 
               CODE_SIGNING_REQUIRED=NO
               # clean build
 
@@ -87,7 +87,7 @@ jobs:
               -enableCodeCoverage YES 
               build 
               test 
-              CODE_SIGN_IDENTITY="" 
+              CODE_SIGN_IDENTITY="-" 
               CODE_SIGNING_REQUIRED=NO
               # clean build
 
@@ -100,7 +100,7 @@ jobs:
               -enableCodeCoverage YES 
               build 
               test 
-              CODE_SIGN_IDENTITY="" 
+              CODE_SIGN_IDENTITY="-" 
               CODE_SIGNING_REQUIRED=NO
               # clean build
 
@@ -113,7 +113,7 @@ jobs:
               -enableCodeCoverage YES 
               build 
               test 
-              CODE_SIGN_IDENTITY="" 
+              CODE_SIGN_IDENTITY="-" 
               CODE_SIGNING_REQUIRED=NO
               # clean build
               
@@ -126,7 +126,7 @@ jobs:
               -enableCodeCoverage YES 
               build 
               test 
-              CODE_SIGN_IDENTITY="" 
+              CODE_SIGN_IDENTITY="-" 
               CODE_SIGNING_REQUIRED=NO
               # clean build
               
