@@ -13,6 +13,7 @@
 
 static BOOL const DEFAULT_ENABLED_FLAG = YES;
 static BOOL const DEFAULT_TRANSMIT_FLAG = YES;
+static BOOL const DEFAULT_SUPPRESS_SDK_INFO_LOGGING_FLAG = NO;
 static BOOL const DEFAULT_LOG_PAYLOADS_FLAG = NO;
 static NSString * const DEFAULT_PAYLOAD_LOG_FILE = @"rollbar.payloads";
 
@@ -20,6 +21,7 @@ static NSString * const DEFAULT_PAYLOAD_LOG_FILE = @"rollbar.payloads";
 
 static NSString * const DFK_ENABLED = @"enabled";
 static NSString * const DFK_TRANSMIT = @"transmit";
+static NSString * const DFK_SUPPRESS_SDK_INFO_LOGGING = @"suppressSdkInfoLogging";
 static NSString * const DFK_LOG_PAYLOAD = @"logPayload";
 static NSString * const DFK_LOG_PAYLOAD_FILE = @"logPayloadFile";
 
@@ -37,6 +39,7 @@ static NSString * const DFK_LOG_PAYLOAD_FILE = @"logPayloadFile";
     self = [super initWithDictionary:@{
         DFK_ENABLED:[NSNumber numberWithBool:enabled],
         DFK_TRANSMIT:[NSNumber numberWithBool:transmit],
+        DFK_SUPPRESS_SDK_INFO_LOGGING:[NSNumber numberWithBool:DEFAULT_SUPPRESS_SDK_INFO_LOGGING_FLAG],
         DFK_LOG_PAYLOAD:[NSNumber numberWithBool:logPayload],
         DFK_LOG_PAYLOAD_FILE:payloadLogFile
     }];
@@ -82,6 +85,15 @@ static NSString * const DFK_LOG_PAYLOAD_FILE = @"logPayloadFile";
 
 - (void)setTransmit:(BOOL)value {
     [self setNumber:[[NSNumber alloc] initWithBool:value] forKey:DFK_TRANSMIT];
+}
+
+- (BOOL)suppressSdkInfoLogging {
+    NSNumber *result = [self safelyGetNumberByKey:DFK_SUPPRESS_SDK_INFO_LOGGING];
+    return [result boolValue];
+}
+
+- (void)setSuppressSdkInfoLogging:(BOOL)value {
+    [self setNumber:[[NSNumber alloc] initWithBool:value] forKey:DFK_SUPPRESS_SDK_INFO_LOGGING];
 }
 
 - (BOOL)logPayload {

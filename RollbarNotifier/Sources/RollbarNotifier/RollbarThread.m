@@ -4,6 +4,8 @@
 
 #import "RollbarThread.h"
 #import "RollbarLogger.h"
+#import "RollbarConfig.h"
+#import "RollbarDeveloperOptions.h"
 
 @implementation RollbarThread {
     @private RollbarLogger *_logger;
@@ -43,7 +45,9 @@
     }
     
     @autoreleasepool {
-        RollbarSdkLog(@"Checking items...");
+        if ((nil != _logger) && (NO == _logger.configuration.developerOptions.suppressSdkInfoLogging)) {
+            RollbarSdkLog(@"Checking items...");
+        }
         [_logger processSavedItems];
     }
 }

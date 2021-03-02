@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic) BOOL enabled;
 @property (nonatomic) BOOL transmit;
+@property (nonatomic) BOOL suppressSdkInfoLogging;
 @property (nonatomic) BOOL logPayload;
 @property (nonatomic, copy) NSString *payloadLogFile;
 
