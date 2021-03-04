@@ -5,6 +5,12 @@
       location = "container:"
       name = "RollbarSDK">
       <FileRef
+         location = "group:sonar-project.properties">
+      </FileRef>
+      <FileRef
+         location = "group:xccov-to-sonarqube-generic.sh">
+      </FileRef>
+      <FileRef
          location = "group:rollbar-logo.png">
       </FileRef>
       <FileRef
@@ -36,6 +42,9 @@
       </FileRef>
       <FileRef
          location = "group:RollbarPLCrashReporter.podspec">
+      </FileRef>
+      <FileRef
+         location = "group:RollbarSwift.podspec">
       </FileRef>
       <FileRef
          location = "group:upload_dsym.py">
