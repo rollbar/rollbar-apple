@@ -56,6 +56,9 @@
    <FileRef
       location = "group:RollbarPLCrashReporter">
    </FileRef>
+   <FileRef
+      location = "group:RollbarSwift">
+   </FileRef>
    <Group
       location = "container:"
       name = "Demos">
