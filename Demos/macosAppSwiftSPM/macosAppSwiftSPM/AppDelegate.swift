@@ -8,6 +8,7 @@
 
 import Cocoa
 import RollbarNotifier
+import RollbarPLCrashReporter
 //import SwiftTryCatch2
 
 @NSApplicationMain
@@ -33,7 +34,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
-        Rollbar.info("The hosting application is terminating...");
+        Rollbar.infoMessage("The hosting application is terminating...");
     }
 
     func initRollbar() {
@@ -41,13 +42,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // configure Rollbar:
         let config = RollbarConfig.init();
         
+        // define optional crash report collector:
+        let crashCollector = RollbarPLCrashCollector();
+        
         //config.crashLevel = @"critical";
         config.destination.accessToken = "2ffc7997ed864dda94f63e7b7daae0f3";
         config.destination.environment = "samples";
         config.customData = [ "someKey": "someValue", ];
         // init Rollbar shared instance:
-        Rollbar.initWithConfiguration(config);
-        Rollbar.info("Rollbar is up and running! Enjoy your remote error and log monitoring...");
+        Rollbar.initWithConfiguration(config, crashCollector: crashCollector);
+        //Rollbar.initWithConfiguration(config);
+        Rollbar.infoMessage("Rollbar is up and running! Enjoy your remote error and log monitoring...");
     }
 
     func demonstrateDeployApiUsage() {

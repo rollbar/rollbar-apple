@@ -56,13 +56,16 @@ NS_ASSUME_NONNULL_BEGIN
         } else if ([obj isKindOfClass:[NSURL class]]) {
             NSString *url = [obj absoluteString];
             if (url) {
-                [safeData setObject:[obj absoluteString] forKey:key];
+                [safeData setObject:url forKey:key];
             }
             else if([obj description]) {
                 [safeData setObject:[obj description] forKey:key];
             }
         } else if ([obj isKindOfClass:[NSError class]] && [obj userInfo]) {
-            [safeData setObject:[[self class] rollbar_safeDataFromJSONObject:[obj userInfo]] forKey:key];
+            NSDictionary* userInfoData = [[self class] rollbar_safeDataFromJSONObject:[obj userInfo]];
+            if (userInfoData) {
+                [safeData setObject:userInfoData forKey:key];
+            }
         } else if ([obj isKindOfClass:[NSHTTPURLResponse class]]) {
             [safeData setObject:[obj allHeaderFields] forKey:key];
         } else if ([obj isKindOfClass:[NSSet class]]) {
@@ -73,9 +76,11 @@ NS_ASSUME_NONNULL_BEGIN
                 [NSJSONSerialization JSONObjectWithData:obj
                                                 options:(NSJSONReadingMutableContainers | NSJSONReadingMutableLeaves)
                                                   error:&error];
-
             if (error == nil) {
-                [safeData setObject:[[self class] rollbar_safeDataFromJSONObject:json] forKey:key];
+                NSDictionary *jsonData = [[self class] rollbar_safeDataFromJSONObject:json];
+                if (jsonData) {
+                    [safeData setObject:jsonData forKey:key];
+                }
             } else {
                 RollbarSdkLog(@"Error serializing NSData: %@", [error localizedDescription]);
             }

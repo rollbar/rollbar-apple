@@ -1,5 +1,5 @@
 #
-#  Be sure to run `pod spec lint RollbarSDK.podspec' to ensure this is a valid spec.
+#  Be sure to run `pod spec lint RollbarSDK.podspec` to ensure this is a valid spec.
 #
 #  To learn more about Podspec attributes see https://guides.cocoapods.org/syntax/podspec.html
 #  To see working Podspecs in the CocoaPods repo see https://github.com/CocoaPods/Specs/
@@ -7,7 +7,7 @@
 
 Pod::Spec.new do |s|
 
-    s.version      = "2.0.0-alpha29"
+    s.version      = "2.0.0-beta2"
     s.name         = "RollbarCommon"
     s.summary      = "Application or client side SDK for interacting with the Rollbar API Server."
     s.description  = <<-DESC
@@ -58,5 +58,11 @@ Pod::Spec.new do |s|
     #   "USE_HEADERMAP" => "NO",
     #   "HEADER_SEARCH_PATHS" => "$(PODS_ROOT)/Sources/#{s.name}/**"
     # }
+
+    s.pod_target_xcconfig  = { "ONLY_ACTIVE_ARCH" => "YES", "EXCLUDED_ARCHS[sdk=iphonesimulator*]" => "arm64" }
+    s.user_target_xcconfig = { "ONLY_ACTIVE_ARCH" => "YES", "EXCLUDED_ARCHS[sdk=iphonesimulator*]" => "arm64" }
+
+    s.tvos.pod_target_xcconfig  = { "ONLY_ACTIVE_ARCH" => "YES", "EXCLUDED_ARCHS[sdk=appletvsimulator*]" => "arm64" }
+    s.tvos.user_target_xcconfig = { "ONLY_ACTIVE_ARCH" => "YES", "EXCLUDED_ARCHS[sdk=appletvsimulator*]" => "arm64" }
 
 end

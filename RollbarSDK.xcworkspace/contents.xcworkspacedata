@@ -20,7 +20,7 @@
          location = "group:Package.swift">
       </FileRef>
       <FileRef
-         location = "group:RollbarSDK.podspec">
+         location = "group:/Users/andrey/Dev/GitHub/WSC/rollbar-apple/RollbarSDK.experimental_podspec">
       </FileRef>
       <FileRef
          location = "group:RollbarCommon.podspec">
