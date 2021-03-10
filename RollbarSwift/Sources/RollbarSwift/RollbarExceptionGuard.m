@@ -13,10 +13,17 @@
     RollbarLogger *logger;
 }
 
+-(BOOL)execute:(nonnull void(NS_NOESCAPE^)(void))block {
+    
+    return [self tryExecute:block error:nil];
+}
+
 -(BOOL)tryExecute:(nonnull void(NS_NOESCAPE^)(void))tryBlock
             error:(__autoreleasing NSError * _Nullable * _Nullable)error {
     
-    __block BOOL success;
+    __block BOOL success = NO;
+    __block NSError* exceptionError = nil;
+    
     [RollbarTryCatch try:^(void){
         
         tryBlock();
@@ -24,12 +31,12 @@
     }
                    catch:^(NSException *exception){
         
-        error = [self convrtException:exception];
+        exceptionError = [self convrtException:exception];
         
         if (nil != self->logger) {
             
-            NSDictionary<NSString *, id> *customData = {
-                [NSString stringWithFormat:@"%s_%s", RollbarExceptionGuard.className, @"NSError"]: error,
+            NSDictionary<NSString *, id> *customData = @{
+                [NSString stringWithFormat:@"%@_%@", RollbarExceptionGuard.className, @"NSError"]: exceptionError,
             };
             [self->logger log:RollbarLevel_Critical
                     exception:exception
@@ -37,7 +44,7 @@
                       context:RollbarExceptionGuard.className
              ];
             [self->logger log:RollbarLevel_Critical
-                        error:error
+                        error:exceptionError
                          data:nil
                       context:RollbarExceptionGuard.className
              ];
@@ -47,6 +54,8 @@
     }
                  finally:^{}
      ];
+    
+    *error = exceptionError;
     
     return success;
 }
@@ -76,7 +85,7 @@
     
     if (nil != exception.reason) {
         
-       if (nil != [userInfo.allKeys containsObject:NSLocalizedFailureReasonErrorKey]) {
+       if (YES == [userInfo.allKeys containsObject:NSLocalizedFailureReasonErrorKey]) {
            
           [userInfo setObject:exception.reason
                        forKey:NSLocalizedFailureReasonErrorKey];

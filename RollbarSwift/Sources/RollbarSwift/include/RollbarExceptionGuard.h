@@ -15,6 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface RollbarExceptionGuard : NSObject
 
+-(BOOL)execute:(nonnull void(NS_NOESCAPE^)(void))block;
+
 -(BOOL)tryExecute:(nonnull void(NS_NOESCAPE^)(void))block
             error:(__autoreleasing NSError * _Nullable * _Nullable)error;
 
