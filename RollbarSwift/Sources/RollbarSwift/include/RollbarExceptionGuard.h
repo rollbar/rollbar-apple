@@ -13,11 +13,17 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+///  Aids Swift code in handling NSExceptions thrown from within Objective-C calls
 @interface RollbarExceptionGuard : NSObject
 
--(BOOL)execute:(nonnull void(NS_NOESCAPE^)(void))block;
+/// Allows to safely execute code that could potentially throw NSExceptions.
+/// @param block guarded code block
+-(BOOL)tryExecute:(nonnull void(NS_NOESCAPE^)(void))block;
 
--(BOOL)tryExecute:(nonnull void(NS_NOESCAPE^)(void))block
+/// Allows to safely execute code that could potentially throw NSExceptions.
+/// @param block guarded code block
+/// @param error NSError instance modeling corresponding NSException (if any thown from the guarded code block)
+-(BOOL)execute:(nonnull void(NS_NOESCAPE^)(void))block
             error:(__autoreleasing NSError * _Nullable * _Nullable)error;
 
 -(instancetype)initWithLogger:(nonnull RollbarLogger *)logger

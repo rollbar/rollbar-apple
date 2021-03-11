@@ -3,12 +3,17 @@ import XCTest
 
 final class RollbarSwiftTests: XCTestCase {
     
+    func safeCode() {
+        
+        NSLog("Nothing dangerous here.");
+    }
+
     func produceObjCException() {
         
         RollbarTryCatch.throw("Fake NSException");
     }
     
-    func testExample() {
+    func createGuard() -> RollbarExceptionGuard {
         
         let config = RollbarConfig();
         config.destination.accessToken = "2ffc7997ed864dda94f63e7b7daae0f3";
@@ -18,19 +23,47 @@ final class RollbarSwiftTests: XCTestCase {
         let logger = RollbarLogger(configuration: config);
         
         let exceptionGuard = RollbarExceptionGuard(logger: logger);
+
+        return exceptionGuard;
+    }
+    
+    func testExceptionGuard_tryExecute() {
+        
+        let exceptionGuard = createGuard();
+        
+        var success = true;
+        
+        success = exceptionGuard.tryExecute {
+            safeCode();
+        }
+        XCTAssertTrue(success);
+
+        success = exceptionGuard.tryExecute {
+            produceObjCException();
+        }
+        XCTAssertTrue(!success);
+        
+        Thread.sleep(forTimeInterval: 2);
+    }
+
+    func testExceptionGuard_execute() {
+        
+        let exceptionGuard = createGuard();
         
         do {
-            try exceptionGuard.tryExecute {
+            try exceptionGuard.execute {
                 produceObjCException();
             };
         } catch {
             NSLog(error.localizedDescription);
+            XCTAssertTrue(error.localizedDescription.contains("Fake NSException"));
         }
         
-        Thread.sleep(forTimeInterval: 5);
+        Thread.sleep(forTimeInterval: 2);
     }
 
     static var allTests = [
-        ("testExample", testExample),
+        ("testExceptionGuard_tryExecute", testExceptionGuard_tryExecute),
+        ("testExceptionGuard_execute", testExceptionGuard_execute),
     ]
 }

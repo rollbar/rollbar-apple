@@ -13,12 +13,12 @@
     RollbarLogger *logger;
 }
 
--(BOOL)execute:(nonnull void(NS_NOESCAPE^)(void))block {
-    
-    return [self tryExecute:block error:nil];
+-(BOOL)tryExecute:(nonnull void(NS_NOESCAPE^)(void))block {
+    NSError *error = nil;
+    return [self execute:block error:&error];
 }
 
--(BOOL)tryExecute:(nonnull void(NS_NOESCAPE^)(void))tryBlock
+-(BOOL)execute:(nonnull void(NS_NOESCAPE^)(void))tryBlock
             error:(__autoreleasing NSError * _Nullable * _Nullable)error {
     
     __block BOOL success = NO;
