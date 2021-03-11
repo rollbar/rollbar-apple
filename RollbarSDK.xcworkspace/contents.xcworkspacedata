@@ -85,6 +85,9 @@
          location = "container:"
          name = "macOS">
          <FileRef
+            location = "group:Demos/macosAppSwift/macosAppSwift.xcodeproj">
+         </FileRef>
+         <FileRef
             location = "group:Demos/macosAppObjC/macosAppObjC.xcodeproj">
          </FileRef>
       </Group>
