@@ -26,9 +26,12 @@ NS_ASSUME_NONNULL_BEGIN
 -(BOOL)execute:(nonnull void(NS_NOESCAPE^)(void))block
             error:(__autoreleasing NSError * _Nullable * _Nullable)error;
 
+/// Designated initializer
+/// @param logger RollbarLogger instance to use when reporting intercepted NSExceptions captured by this guard instance
 -(instancetype)initWithLogger:(nonnull RollbarLogger *)logger
 NS_DESIGNATED_INITIALIZER;
 
+/// Unavailable initializer
 -(instancetype)init
 NS_UNAVAILABLE;
 

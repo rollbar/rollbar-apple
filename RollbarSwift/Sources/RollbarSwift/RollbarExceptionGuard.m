@@ -31,7 +31,7 @@
     }
                    catch:^(NSException *exception){
         
-        exceptionError = [self convrtException:exception];
+        exceptionError = [self convertException:exception];
         
         if (nil != self->logger) {
             
@@ -72,7 +72,7 @@
     return self;
 }
 
-- (NSError *)convrtException:(nonnull NSException *)exception {
+- (NSError *)convertException:(nonnull NSException *)exception {
         
     NSMutableDictionary *userInfo =
     [[NSMutableDictionary alloc] init];

@@ -35,27 +35,31 @@
 
 @implementation RollbarTryCatch
 
-+ (void)try:(__attribute__((noescape)) void(^ _Nullable)(void))try
-      catch:(__attribute__((noescape)) void(^ _Nullable)(NSException* exception))catch
-    finally:(__attribute__((noescape)) void(^ _Nullable)(void))finally {
++ (void)try:(__attribute__((noescape)) void(^ _Nullable)(void))tryBlock
+      catch:(__attribute__((noescape)) void(^ _Nullable)(NSException* exception))catchBlock
+    finally:(__attribute__((noescape)) void(^ _Nullable)(void))finallyBlock {
     
     @try {
-        if (NULL != try) try();
+        if (NULL != tryBlock) tryBlock();
     }
     @catch (NSException *exception) {
-        if (NULL != catch) {
-            catch(exception);
+        if (NULL != catchBlock) {
+            catchBlock(exception);
         }
     }
     @finally {
-        if (NULL != finally) {
-            finally();
+        if (NULL != finallyBlock) {
+            finallyBlock();
         }
     }
 }
 
 + (void)throwString:(NSString*)string {
-    @throw [NSException exceptionWithName:string reason:string userInfo:nil];
+    
+    NSException *exception = [NSException exceptionWithName:string
+                                                     reason:string
+                                                   userInfo:nil];
+    [RollbarTryCatch throwException:exception];
 }
 
 + (void)throwException:(NSException*)exception {

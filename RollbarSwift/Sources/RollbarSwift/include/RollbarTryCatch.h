@@ -33,18 +33,23 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// Swift-friendly try-catch-finally equivalent for handling NSExceptions within the try-block
 @interface RollbarTryCatch : NSObject
 
-/**
- Provides try catch functionality for swift by wrapping around Objective-C
- */
+/// Thows NSException using provided string as the exception message
+/// @param tryBlock code block to try
+/// @param catchBlock exception handling code block
+/// @param finallyBlock finally-excuted code block
++ (void)try:(__attribute__((noescape)) void(^ _Nullable)(void))tryBlock
+      catch:(__attribute__((noescape)) void(^ _Nullable)(NSException* exception))catchBlock
+    finally:(__attribute__((noescape)) void(^ _Nullable)(void))finallyBlock;
 
-+ (void)try:(__attribute__((noescape)) void(^ _Nullable)(void))try
-      catch:(__attribute__((noescape)) void(^ _Nullable)(NSException* exception))catch
-    finally:(__attribute__((noescape)) void(^ _Nullable)(void))finally;
-
+/// Thows NSException using provided string as the exception message
+/// @param string exception message
 + (void)throwString:(NSString*)string;
 
+/// Throws NSException
+/// @param exception specified NSException instance
 + (void)throwException:(NSException*)exception;
 
 @end

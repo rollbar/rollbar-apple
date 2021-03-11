@@ -52,6 +52,14 @@ final class RollbarSwiftTests: XCTestCase {
         
         do {
             try exceptionGuard.execute {
+                safeCode();
+            };
+        } catch {
+            XCTFail("Should never get here! Completely safe code was tried!");
+        }
+
+        do {
+            try exceptionGuard.execute {
                 produceObjCException();
             };
         } catch {
