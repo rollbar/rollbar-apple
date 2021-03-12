@@ -35,12 +35,9 @@
         
         if (nil != self->logger) {
             
-            NSDictionary<NSString *, id> *customData = @{
-                [NSString stringWithFormat:@"%@_%@", RollbarExceptionGuard.className, @"NSError"]: exceptionError,
-            };
             [self->logger log:RollbarLevel_Critical
                     exception:exception
-                         data:customData
+                         data:nil
                       context:RollbarExceptionGuard.className
              ];
             [self->logger log:RollbarLevel_Critical
@@ -74,10 +71,10 @@
 
 - (NSError *)convertException:(nonnull NSException *)exception {
         
-    NSMutableDictionary *userInfo =
+    NSMutableDictionary *userInfo = //NULL
     [[NSMutableDictionary alloc] init];
     
-    if (nil != exception.userInfo) {
+    if (nil != exception.userInfo && exception.userInfo.count > 0) {
         
        userInfo =
         [[NSMutableDictionary alloc] initWithDictionary:exception.userInfo];

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -11,6 +11,9 @@
 		55098C6725FA930D0045C180 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55098C6625FA930D0045C180 /* ContentView.swift */; };
 		55098C6925FA93110045C180 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55098C6825FA93110045C180 /* Assets.xcassets */; };
 		55098C6C25FA93110045C180 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55098C6B25FA93110045C180 /* Preview Assets.xcassets */; };
+		5544A01F25FB074300C710A1 /* RollbarCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 5544A01E25FB074300C710A1 /* RollbarCommon */; };
+		5544A02125FB074300C710A1 /* RollbarNotifier in Frameworks */ = {isa = PBXBuildFile; productRef = 5544A02025FB074300C710A1 /* RollbarNotifier */; };
+		5544A02325FB074300C710A1 /* RollbarSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 5544A02225FB074300C710A1 /* RollbarSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +31,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5544A01F25FB074300C710A1 /* RollbarCommon in Frameworks */,
+				5544A02125FB074300C710A1 /* RollbarNotifier in Frameworks */,
+				5544A02325FB074300C710A1 /* RollbarSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -39,6 +45,7 @@
 			children = (
 				55098C6325FA930D0045C180 /* macosAppSwift */,
 				55098C6225FA930D0045C180 /* Products */,
+				5544A01D25FB074300C710A1 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -71,6 +78,13 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		5544A01D25FB074300C710A1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -87,6 +101,11 @@
 			dependencies = (
 			);
 			name = macosAppSwift;
+			packageProductDependencies = (
+				5544A01E25FB074300C710A1 /* RollbarCommon */,
+				5544A02025FB074300C710A1 /* RollbarNotifier */,
+				5544A02225FB074300C710A1 /* RollbarSwift */,
+			);
 			productName = macosAppSwift;
 			productReference = 55098C6125FA930D0045C180 /* macosAppSwift.app */;
 			productType = "com.apple.product-type.application";
@@ -329,6 +348,21 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		5544A01E25FB074300C710A1 /* RollbarCommon */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RollbarCommon;
+		};
+		5544A02025FB074300C710A1 /* RollbarNotifier */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RollbarNotifier;
+		};
+		5544A02225FB074300C710A1 /* RollbarSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RollbarSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 55098C5925FA930D0045C180 /* Project object */;
 }
