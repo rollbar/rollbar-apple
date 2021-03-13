@@ -40,15 +40,23 @@
     finally:(__attribute__((noescape)) void(^ _Nullable)(void))finallyBlock {
     
     @try {
-        if (NULL != tryBlock) tryBlock();
+        
+        if (NULL != tryBlock) {
+            
+            tryBlock();
+        }
     }
     @catch (NSException *exception) {
+        
         if (NULL != catchBlock) {
+            
             catchBlock(exception);
         }
     }
     @finally {
+        
         if (NULL != finallyBlock) {
+            
             finallyBlock();
         }
     }
@@ -63,6 +71,7 @@
 }
 
 + (void)throwException:(NSException*)exception {
+    
     @throw exception;
 }
 

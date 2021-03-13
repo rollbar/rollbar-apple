@@ -9,8 +9,8 @@
 
 @implementation RollbarSwiftTests
 
-- (void)testBasics {
-}
+//- (void)testBasics {
+//}
 
 @end
 

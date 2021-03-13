@@ -34,13 +34,17 @@ final class RollbarSwiftTests: XCTestCase {
         var success = true;
         
         success = exceptionGuard.tryExecute {
+            
             safeCode();
         }
+        
         XCTAssertTrue(success);
 
         success = exceptionGuard.tryExecute {
+            
             produceObjCException();
         }
+        
         XCTAssertTrue(!success);
         
         Thread.sleep(forTimeInterval: 2);
@@ -51,18 +55,24 @@ final class RollbarSwiftTests: XCTestCase {
         let exceptionGuard = createGuard();
         
         do {
+            
             try exceptionGuard.execute {
+                
                 safeCode();
             };
         } catch {
+            
             XCTFail("Should never get here! Completely safe code was tried!");
         }
 
         do {
+            
             try exceptionGuard.execute {
+                
                 produceObjCException();
             };
         } catch {
+            
             NSLog(error.localizedDescription);
             XCTAssertTrue(error.localizedDescription.contains("Fake NSException"));
         }

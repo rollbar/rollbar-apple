@@ -11,16 +11,21 @@ import RollbarSwift
 struct ContentView: View {
     
     var body: some View {
+        
         VStack(content: {
+            
             Text("Hello, world!")
                 .multilineTextAlignment(.center)
                 .padding()
+            
             Button("Handle Swift Error") {
                 self.handleSwiftError()
             }
+            
             Button("Handle Obj-C Exception") {
                 self.handleObjCException()
             }
+            
             Button("Handle Obj-C Exception with Rollbar") {
                 self.handleObjCExceptionWithRollbar()
             }
@@ -28,7 +33,9 @@ struct ContentView: View {
     }
     
 func handleSwiftError() {
+    
         do {
+            
             try self.generateSwiftError();
         }
         catch AppError.problem1 {
@@ -38,24 +45,30 @@ func handleSwiftError() {
             
         }
         catch {
+            
             print("Unexpected error: \(error).")
         }
     }
     
     func generateSwiftError() throws {
+        
         throw AppError.limitExceeded(limit: 5)
     }
     
     func handleObjCException() {
+        
         do {
+            
             self.generateObjCException();
         }
         catch {
+            
             print("Unexpected error: \(error).")
         }
     }
         
     func generateObjCException() {
+        
         RollbarTryCatch.throw("NSException from Obj-C...")
     }
 
@@ -66,6 +79,7 @@ func handleSwiftError() {
         var success = true;
         
         success = exceptionGuard.tryExecute {
+            
             self.generateObjCException();
         }
 
@@ -88,7 +102,9 @@ func handleSwiftError() {
 }
 
 struct ContentView_Previews: PreviewProvider {
+    
     static var previews: some View {
+        
         ContentView()
     }
 }

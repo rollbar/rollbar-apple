@@ -24,32 +24,35 @@
     __block BOOL success = NO;
     __block NSError* exceptionError = nil;
     
-    [RollbarTryCatch try:^(void){
-        
-        tryBlock();
-        success = YES;
-    }
-                   catch:^(NSException *exception){
-        
-        exceptionError = [self convertException:exception];
-        
-        if (nil != self->logger) {
+    [RollbarTryCatch try:^(void) {
             
-            [self->logger log:RollbarLevel_Critical
-                    exception:exception
-                         data:nil
-                      context:RollbarExceptionGuard.className
-             ];
-            [self->logger log:RollbarLevel_Critical
-                        error:exceptionError
-                         data:nil
-                      context:RollbarExceptionGuard.className
-             ];
+            tryBlock();
+            success = YES;
         }
-        
-        success = NO;
-    }
-                 finally:^{}
+                       catch:^(NSException *exception) {
+            
+            exceptionError = [self convertException:exception];
+            
+            if (nil != self->logger) {
+                
+                [self->logger log:RollbarLevel_Critical
+                        exception:exception
+                             data:nil
+                          context:RollbarExceptionGuard.className
+                 ];
+                
+                [self->logger log:RollbarLevel_Critical
+                            error:exceptionError
+                             data:nil
+                          context:RollbarExceptionGuard.className
+                 ];
+            }
+            
+            success = NO;
+        }
+                     finally:^{
+            
+        }
      ];
     
     *error = exceptionError;
@@ -71,10 +74,9 @@
 
 - (NSError *)convertException:(nonnull NSException *)exception {
         
-    NSMutableDictionary *userInfo = //NULL
-    [[NSMutableDictionary alloc] init];
+    NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
     
-    if (nil != exception.userInfo && exception.userInfo.count > 0) {
+    if ((nil != exception.userInfo) && (0 < exception.userInfo.count)) {
         
        userInfo =
         [[NSMutableDictionary alloc] initWithDictionary:exception.userInfo];
