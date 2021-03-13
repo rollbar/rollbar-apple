@@ -1,0 +1,8 @@
+module RollbarSwift {
+	umbrella "."
+	
+	export *
+	module * { export * }
+
+    requires objc
+}

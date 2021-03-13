@@ -5,6 +5,12 @@
       location = "container:"
       name = "RollbarSDK">
       <FileRef
+         location = "group:sonar-project.properties">
+      </FileRef>
+      <FileRef
+         location = "group:xccov-to-sonarqube-generic.sh">
+      </FileRef>
+      <FileRef
          location = "group:rollbar-logo.png">
       </FileRef>
       <FileRef
@@ -38,6 +44,9 @@
          location = "group:RollbarPLCrashReporter.podspec">
       </FileRef>
       <FileRef
+         location = "group:RollbarSwift.podspec">
+      </FileRef>
+      <FileRef
          location = "group:upload_dsym.py">
       </FileRef>
    </Group>
@@ -56,6 +65,9 @@
    <FileRef
       location = "group:RollbarPLCrashReporter">
    </FileRef>
+   <FileRef
+      location = "group:RollbarSwift">
+   </FileRef>
    <Group
       location = "container:"
       name = "Demos">
@@ -72,6 +84,9 @@
       <Group
          location = "container:"
          name = "macOS">
+         <FileRef
+            location = "group:Demos/macosAppSwift/macosAppSwift.xcodeproj">
+         </FileRef>
          <FileRef
             location = "group:Demos/macosAppObjC/macosAppObjC.xcodeproj">
          </FileRef>

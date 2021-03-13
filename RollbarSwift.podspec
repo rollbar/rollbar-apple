@@ -8,7 +8,7 @@
 Pod::Spec.new do |s|
 
     s.version      = "2.0.0-beta3"
-    s.name         = "RollbarDeploys"
+    s.name         = "RollbarSwift"
     s.summary      = "Application or client side SDK for interacting with the Rollbar API Server."
     s.description  = <<-DESC
                       Find, fix, and resolve errors with Rollbar.

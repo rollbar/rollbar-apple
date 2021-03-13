@@ -29,6 +29,9 @@ let package = Package(
         .library(
             name: "RollbarPLCrashReporter",
             targets: ["RollbarPLCrashReporter"]),
+        .library(
+            name: "RollbarSwift",
+            targets: ["RollbarSwift"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -92,6 +95,15 @@ let package = Package(
             publicHeadersPath: "include",
             cSettings: [
                 .headerSearchPath("RollbarPLCrashReporter/Sources/RollbarPLCrashReporter/**"),
+            ]
+        ),
+
+        .target(
+            name: "RollbarSwift",
+            dependencies: ["RollbarCommon", "RollbarNotifier"],
+            publicHeadersPath: "include",
+            cSettings: [
+                .headerSearchPath("RollbarSwift/Sources/RollbarSwift/**"),
             ]
         ),
 
