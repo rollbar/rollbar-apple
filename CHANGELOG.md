@@ -25,11 +25,16 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 
 ## Release Notes
 
-**2.0.0** Preliminary Notes
+**2.0.0-beta3**
+- feat: added RollbarSwift
+
+**2.0.0-beta2**
+- feat: added new developer option: suppressSdkInfoLogging
+
+**2.0.0-beta1** - comparing to Rollbar-iOS
 - feat: added RollbarPLCrashReporter module
 - feat: added RollbarKSCrash module
 - feat: added explicit reporting of NSErrors 
-- feat: added new developer option: suppressSdkInfoLogging
 - feat: defined default scrub fields
 - refactor: split out RollbarCommon, RollbarNotifier, RollbarDeploys
 - refactor: added use of lightweight generics

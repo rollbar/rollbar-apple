@@ -58,6 +58,13 @@ jobs:
     #  working-directory: RollbarPLCrashReporter
     #  run: swift test -v --enable-test-discovery --enable-code-coverage --build-path ../DerivedData
 
+    - name: Build RollbarSwift
+      working-directory: RollbarSwift
+      run: swift build -v
+    #- name: Unit Test RollbarSwift
+    #  working-directory: RollbarSwift
+    #  run: swift test -v --enable-test-discovery --enable-code-coverage --build-path ../DerivedData
+
 #    - name: Unit Test RollbarCommon
 #      working-directory: RollbarCommon
 #      run:  ../SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir ../DerivedData/compilation-database 
@@ -76,7 +83,6 @@ jobs:
               CODE_SIGN_IDENTITY="-" 
               CODE_SIGNING_REQUIRED=NO
               # clean build
-
 
     - name: SonarCloud RollbarDeploys
       run: SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir DerivedData/compilation-database 
@@ -130,6 +136,19 @@ jobs:
               CODE_SIGNING_REQUIRED=NO
               # clean build
               
+    - name: SonarCloud RollbarSwift
+      run: SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir DerivedData/compilation-database 
+           xcodebuild 
+              -workspace RollbarSDK.xcworkspace 
+              -scheme RollbarSwift 
+              -derivedDataPath DerivedData 
+              -enableCodeCoverage YES 
+              build 
+              test 
+              CODE_SIGN_IDENTITY="-" 
+              CODE_SIGNING_REQUIRED=NO
+              # clean build
+              
     - name: SonarCloud Test Coverage Conversion
       run: bash xccov-to-sonarqube-generic.sh DerivedData/Logs/Test/*.xcresult/ > sonarqube-generic-coverage.xml
 
@@ -175,7 +194,7 @@ jobs:
 #      run: swift test -v
 
 
-# Fron SonarCCloud Docs:
+# From SonarCCloud Docs:
 
 # Execute the Build Wrapper as a prefix to your build command:
 # build-wrapper-macosx-x86 --out-dir bw-output <your clean build command>
