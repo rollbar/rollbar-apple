@@ -83,7 +83,7 @@ func handleSwiftError() {
             self.generateObjCException();
         }
 
-        print("Guearded execution succeeded: \(success).")
+        print("Guarded execution succeeded: \(success).")
     }
     
     func createGuard() -> RollbarExceptionGuard {
