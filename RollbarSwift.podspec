@@ -7,7 +7,7 @@
 
 Pod::Spec.new do |s|
 
-    s.version      = "2.0.0-beta3"
+    s.version      = "2.0.0-beta4"
     s.name         = "RollbarSwift"
     s.summary      = "Application or client side SDK for interacting with the Rollbar API Server."
     s.description  = <<-DESC
@@ -49,6 +49,7 @@ Pod::Spec.new do |s|
 
     s.framework = "Foundation"
     s.dependency "RollbarCommon", "~> #{s.version}"
+    s.dependency "RollbarNotifier", "~> #{s.version}"
     # s.frameworks = "SomeFramework", "AnotherFramework"
     # s.library   = "iconv"
     # s.libraries = "iconv", "xml2"

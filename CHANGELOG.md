@@ -25,6 +25,9 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 
 ## Release Notes
 
+**2.0.0-beta4**
+- fix: RollbarSwift.podspec
+
 **2.0.0-beta3**
 - feat: added RollbarSwift
 
