@@ -7,7 +7,7 @@
 
 Pod::Spec.new do |s|
 
-    s.version      = "2.0.0-beta7"
+    s.version      = "2.0.0-beta8"
     s.name         = "RollbarDeploys"
     s.summary      = "Application or client side SDK for interacting with the Rollbar API Server."
     s.description  = <<-DESC
@@ -20,7 +20,7 @@ Pod::Spec.new do |s|
     # s.screenshots  = "www.example.com/screenshots_1.gif", "www.example.com/screenshots_2.gif"
     s.license      = { :type => "MIT", :file => "LICENSE" }
     # s.license      = "MIT (example)"
-    s.documentation_url = "https://docs.rollbar.com/docs/ios"
+    s.documentation_url = "https://docs.rollbar.com/docs/apple"
     s.authors            = { "Andrey Kornich (Wide Spectrum Computing LLC)" => "akornich@gmail.com",
                               "Rollbar" => "support@rollbar.com" }
     # s.author             = { "Andrey Kornich" => "akornich@gmail.com" }
