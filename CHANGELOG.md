@@ -25,6 +25,9 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 
 ## Release Notes
 
+**2.0.0-beta8**
+- fix: point all the Cocoapods podspecs to proper documentation site.
+
 **2.0.0-beta7**
 **2.0.0-beta6**
 **2.0.0-beta5**
