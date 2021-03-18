@@ -7,7 +7,7 @@
 
 Pod::Spec.new do |s|
 
-    s.version      = "2.0.0-beta6"
+    s.version      = "2.0.0-beta7"
     s.name         = "RollbarSwift"
     s.summary      = "Application or client side SDK for interacting with the Rollbar API Server."
     s.description  = <<-DESC
@@ -56,10 +56,10 @@ Pod::Spec.new do |s|
     # s.dependency "JSONKit", "~> 1.4"
     
     s.requires_arc = true
-    # s.xcconfig = {
-    #   "USE_HEADERMAP" => "NO",
-    #   "HEADER_SEARCH_PATHS" => "$(PODS_ROOT)/Sources/#{s.name}/**"
-    # }
+    s.xcconfig = {
+      "USE_HEADERMAP" => "NO",
+      "HEADER_SEARCH_PATHS" => "$(PODS_ROOT)/#{s.name}/#{s.name}/Sources/#{s.name}/**"
+    }
 
     s.pod_target_xcconfig  = { "ONLY_ACTIVE_ARCH" => "YES", "EXCLUDED_ARCHS[sdk=iphonesimulator*]" => "arm64" }
     s.user_target_xcconfig = { "ONLY_ACTIVE_ARCH" => "YES", "EXCLUDED_ARCHS[sdk=iphonesimulator*]" => "arm64" }

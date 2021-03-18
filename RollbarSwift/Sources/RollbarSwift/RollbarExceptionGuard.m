@@ -41,13 +41,13 @@
             [self->logger log:RollbarLevel_Critical
                     exception:exception
                          data:nil
-                      context:RollbarExceptionGuard.className
+                      context:NSStringFromClass([self class])
              ];
             
             [self->logger log:RollbarLevel_Critical
                         error:exceptionError
                          data:nil
-                      context:RollbarExceptionGuard.className
+                      context:NSStringFromClass([self class])
              ];
         }
         
