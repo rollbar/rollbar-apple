@@ -6,7 +6,8 @@
 //
 
 @import Foundation;
-@import RollbarNotifier;
+
+@class RollbarLogger;
 
 NS_ASSUME_NONNULL_BEGIN
 
