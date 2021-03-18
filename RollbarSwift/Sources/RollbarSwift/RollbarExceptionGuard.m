@@ -8,6 +8,8 @@
 #import "RollbarExceptionGuard.h"
 #import "RollbarTryCatch.h"
 
+@import RollbarNotifier;
+
 @implementation RollbarExceptionGuard {    
 @private
     RollbarLogger *logger;
