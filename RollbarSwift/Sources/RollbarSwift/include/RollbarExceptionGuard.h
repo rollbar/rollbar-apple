@@ -5,11 +5,8 @@
 //  Created by Andrey Kornich on 2021-03-04.
 //
 
-#import <Foundation/Foundation.h>
-
+@import Foundation;
 @import RollbarNotifier;
-
-@class RollbarLogger;
 
 NS_ASSUME_NONNULL_BEGIN
 
