@@ -8,51 +8,54 @@
 #import "RollbarExceptionGuard.h"
 #import "RollbarTryCatch.h"
 
-@implementation RollbarExceptionGuard {
+@import RollbarNotifier;
+
+@implementation RollbarExceptionGuard {    
 @private
     RollbarLogger *logger;
 }
 
 -(BOOL)tryExecute:(nonnull void(NS_NOESCAPE^)(void))block {
+    
     NSError *error = nil;
     return [self execute:block error:&error];
 }
 
 -(BOOL)execute:(nonnull void(NS_NOESCAPE^)(void))tryBlock
-            error:(__autoreleasing NSError * _Nullable * _Nullable)error {
+         error:(__autoreleasing NSError * _Nullable * _Nullable)error {
     
     __block BOOL success = NO;
     __block NSError* exceptionError = nil;
     
     [RollbarTryCatch try:^(void) {
+        
+        tryBlock();
+        success = YES;
+    }
+                   catch:^(NSException *exception) {
+        
+        exceptionError = [self convertException:exception];
+        
+        if (nil != self->logger) {
             
-            tryBlock();
-            success = YES;
+            [self->logger log:RollbarLevel_Critical
+                    exception:exception
+                         data:nil
+                      context:NSStringFromClass([self class])
+             ];
+            
+            [self->logger log:RollbarLevel_Critical
+                        error:exceptionError
+                         data:nil
+                      context:NSStringFromClass([self class])
+             ];
         }
-                       catch:^(NSException *exception) {
-            
-            exceptionError = [self convertException:exception];
-            
-            if (nil != self->logger) {
-                
-                [self->logger log:RollbarLevel_Critical
-                        exception:exception
-                             data:nil
-                          context:RollbarExceptionGuard.className
-                 ];
-                
-                [self->logger log:RollbarLevel_Critical
-                            error:exceptionError
-                             data:nil
-                          context:RollbarExceptionGuard.className
-                 ];
-            }
-            
-            success = NO;
-        }
-                     finally:^{
-            
-        }
+        
+        success = NO;
+    }
+                 finally:^{
+        
+    }
      ];
     
     *error = exceptionError;

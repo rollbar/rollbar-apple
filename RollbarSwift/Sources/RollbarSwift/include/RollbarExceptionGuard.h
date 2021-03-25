@@ -5,9 +5,7 @@
 //  Created by Andrey Kornich on 2021-03-04.
 //
 
-#import <Foundation/Foundation.h>
-
-@import RollbarNotifier;
+@import Foundation;
 
 @class RollbarLogger;
 

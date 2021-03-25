@@ -1,4 +1,5 @@
 import XCTest
+import RollbarNotifier
 @testable import RollbarSwift
 
 final class RollbarSwiftTests: XCTestCase {
