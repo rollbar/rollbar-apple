@@ -22,7 +22,9 @@
 
 - (void)testAUL {
     
-    NSDate *date = [NSDate date];
+    NSDate *date = [[NSDate date] dateByAddingTimeInterval:-1.0];
+    
+    [self buildPredicateStartingAt:date];
     
     // Log a message to the default log and default log level.os_log(OS_LOG_DEFAULT, "This is a default message.");
         
@@ -32,11 +34,13 @@
     // Log an error to a custom log object.
     os_log_t customLog = os_log_create("com.your_company.your_subsystem", "your_category_name");
     int i = 0;
-    while (i++ < 1) {
+    while (i++ < 2) {
         NSDateFormatter *timestampFormatter = [[NSDateFormatter alloc] init];
         [timestampFormatter setDateFormat:@"YYYY-MM-dd 'at' HH:mm:ss.SSSSSSXX"];
         //NSString *msg = [NSString stringWithFormat:@"An error occurred at %@!", [timestampFormatter stringFromDate:[NSDate date]] ];
         os_log_error(customLog, "An error occurred at %@!", [timestampFormatter stringFromDate:[NSDate date]]);
+        os_log_debug(customLog, "An error occurred at %@!", [timestampFormatter stringFromDate:[NSDate date]]);
+        NSLog(@"Test NSLog");
     }
     
     NSError *error = nil;
@@ -45,21 +49,21 @@
         
     }
     
-    [NSThread sleepForTimeInterval:3.0f];
+    //[NSThread sleepForTimeInterval:1.0f];
     
     OSLogPosition *logPosition = [osLogStore positionWithDate:date];
     //NSTimeInterval timeInterval = 3.0;
     //OSLogPosition *logPosition = [osLogStore positionWithTimeIntervalSinceEnd:timeInterval];
     
     //NSPredicate *datePredicate = [NSPredicate predicateWithFormat:@"(date >= %@) AND (date <= %@)", startDate, endDate];
-    NSPredicate *datePredicate = [NSPredicate predicateWithFormat:@"date >= %@", date];
+    //NSPredicate *datePredicate = [NSPredicate predicateWithFormat:@"date >= %@", date];
     NSPredicate *subsystemPredicate = [NSPredicate predicateWithFormat:@"subsystem == %@", @"com.your_company.your_subsystem"];
     NSPredicate *categoryPredicate = [NSPredicate predicateWithFormat:@"category == %@", @"your_category_name"];
-    NSPredicate *levelPredicate = [NSPredicate predicateWithFormat:@"level == %@", [NSNumber numberWithUnsignedInteger:OS_LOG_TYPE_ERROR] ];
+    NSPredicate *levelPredicate = [NSPredicate predicateWithFormat:@"level == %@", [NSNumber numberWithUnsignedInteger:OS_LOG_TYPE_DEFAULT] ];
     //NSPredicate *predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[levelPredicate, subsystemPredicate, categoryPredicate]];
     NSPredicate *predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[subsystemPredicate, categoryPredicate]];
 
-    [NSThread sleepForTimeInterval:3.0f];
+    //[NSThread sleepForTimeInterval:1.0f];
     
     OSLogEnumerator *logEnumerator = [osLogStore entriesEnumeratorWithOptions:0
                                                                      position:logPosition
@@ -69,7 +73,7 @@
         
     }
     
-    [NSThread sleepForTimeInterval:3.0f];
+    //[NSThread sleepForTimeInterval:1.0f];
     
     //NSUInteger count = logEnumerator.allObjects.count;
     int count = 0;
@@ -88,6 +92,17 @@
     NSDateFormatter *timestampFormatter = [[NSDateFormatter alloc] init];
     [timestampFormatter setDateFormat:@"YYYY-MM-dd 'at' HH:mm:ss.SSSSSSXX"];
     NSLog(@">>>>> Timestamp: %@", [timestampFormatter stringFromDate:timestamp]);
+
+}
+
+- (OSLogEnumerator *)aulLogEntriesSinceLastBootAndReturnError:(NSError **)error {
+    
+    OSLogStore *osLogStore = [OSLogStore localStoreAndReturnError:error];
+    if (nil != error) {
+        return nil;
+    }
+    
+    //OSLogPosition *logPosition = [osLogStore positionWithTimeIntervalSinceLatestBoot:<#(NSTimeInterval)#>:date];
 }
 
 @end
