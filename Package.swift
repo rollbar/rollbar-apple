@@ -101,6 +101,7 @@ let package = Package(
         .target(
             name: "RollbarSwift",
             dependencies: ["RollbarCommon", "RollbarNotifier"],
+            path: "RollbarSwift/Sources/RollbarSwift",
             publicHeadersPath: "include",
             cSettings: [
                 .headerSearchPath("RollbarSwift/Sources/RollbarSwift/**"),
