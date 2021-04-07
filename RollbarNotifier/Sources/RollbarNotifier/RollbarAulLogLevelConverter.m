@@ -21,7 +21,7 @@
         case RollbarLevel_Error:
             return OS_LOG_TYPE_ERROR;
         case RollbarLevel_Critical:
-            return OS_LOG_TYPE_ERROR;
+            return OS_LOG_TYPE_FAULT;
     }
 }
 
