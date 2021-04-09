@@ -44,4 +44,23 @@
     }
 }
 
++ (NSString *) OSLogEntryLogLevelToString:(OSLogEntryLogLevel)value {
+    
+    switch (value) {
+            
+        case OSLogEntryLogLevelUndefined:
+            return @"OSLogEntryLogLevelUndefined";
+        case OSLogEntryLogLevelDebug:
+            return @"OSLogEntryLogLevelDebug";
+        case OSLogEntryLogLevelInfo:
+            return @"OSLogEntryLogLevelInfo";
+        case OSLogEntryLogLevelNotice:
+            return @"OSLogEntryLogLevelNotice";
+        case OSLogEntryLogLevelError:
+            return @"OSLogEntryLogLevelError";
+        case OSLogEntryLogLevelFault:
+            return @"OSLogEntryLogLevelFault";
+    }
+}
+
 @end

@@ -158,7 +158,7 @@
         return;
     }
     
-    snapshot[@"level"] = [NSNumber numberWithInteger:entry.level];
+    snapshot[@"level"] = [RollbarAulOSLogEntryLogLevelConverter OSLogEntryLogLevelToString:entry.level];
 }
 
 // make it private
