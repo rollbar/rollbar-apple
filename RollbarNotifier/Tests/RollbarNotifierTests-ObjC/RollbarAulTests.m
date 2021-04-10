@@ -20,6 +20,28 @@
     [super tearDown];
 }
 
+- (void)testSampleAULEntries {
+    
+    NSDate *date = [[NSDate date] dateByAddingTimeInterval:-60.0];
+    
+    [self traceTimestamp:date];
+    
+    NSError *error = nil;
+    OSLogStore *logStore = [OSLogStore localStoreAndReturnError:&error];
+    if (nil != error) {
+        NSLog(@"AUL ERROR: %@", error);
+    }
+
+    OSLogPosition *logPosition = [logStore positionWithDate:date];
+
+    OSLogEnumerator *logEnumerator = [self buildAulLogEnumeratorWithinLogStore:logStore
+                                                             staringAtPosition:logPosition
+                                                                  forSubsystem:nil //@"com.your_company.your_subsystem"
+                                                                andForCategory:nil]; //@"your_category_name"];
+    int count = [self processLogEntries:logEnumerator];
+    NSLog(@"Total AUL entries: %d", count);
+}
+
 - (void)testAUL {
     
     NSDate *date = [[NSDate date] dateByAddingTimeInterval:-1.0];
