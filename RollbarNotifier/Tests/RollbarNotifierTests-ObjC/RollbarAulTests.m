@@ -22,7 +22,7 @@
 
 - (void)testSampleAULEntries {
     
-    NSDate *date = [[NSDate date] dateByAddingTimeInterval:-60.0];
+    NSDate *date = [[NSDate date] dateByAddingTimeInterval:-3.0];
     
     [self traceTimestamp:date];
     
