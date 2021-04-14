@@ -56,7 +56,8 @@
     // Log an error to a custom log object.
     os_log_t customLog = os_log_create("com.your_company.your_subsystem", "your_category_name");
     int i = 0;
-    while (i++ < 2) {
+    int maxIterations = 4;
+    while (i++ < maxIterations) {
         NSDateFormatter *timestampFormatter = [[NSDateFormatter alloc] init];
         [timestampFormatter setDateFormat:@"YYYY-MM-dd 'at' HH:mm:ss.SSSSSSXX"];
         //NSString *msg = [NSString stringWithFormat:@"An error occurred at %@!", [timestampFormatter stringFromDate:[NSDate date]] ];
@@ -124,7 +125,7 @@
                                                                 andForCategory:@"your_category_name"];
     int count = [self processLogEntries:logEnumerator];
     NSLog(@"Total AUL entries: %d", count);
-    XCTAssertEqual(count, 4);
+    XCTAssertEqual(count, 2 * maxIterations);
 }
 
 #pragma mark - RollbarNotifier RollbarAulEntrySnapper
