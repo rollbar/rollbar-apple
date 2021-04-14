@@ -61,7 +61,7 @@ NS_ASSUME_NONNULL_BEGIN
             else if([obj description]) {
                 [safeData setObject:[obj description] forKey:key];
             }
-        } else if ([obj isKindOfClass:[NSError class]] && [obj userInfo]) {
+        } else if ([obj isKindOfClass:[NSError class]] && (nil != [obj userInfo])) {
             NSDictionary* userInfoData = [[self class] rollbar_safeDataFromJSONObject:[obj userInfo]];
             if (userInfoData) {
                 [safeData setObject:userInfoData forKey:key];
@@ -76,7 +76,7 @@ NS_ASSUME_NONNULL_BEGIN
                 [NSJSONSerialization JSONObjectWithData:obj
                                                 options:(NSJSONReadingMutableContainers | NSJSONReadingMutableLeaves)
                                                   error:&error];
-            if (error == nil) {
+            if ((error == nil) && (nil != json)) {
                 NSDictionary *jsonData = [[self class] rollbar_safeDataFromJSONObject:json];
                 if (jsonData) {
                     [safeData setObject:jsonData forKey:key];

@@ -27,7 +27,7 @@ static NSString * const DFK_LOCALS = @"locals";
 #pragma mark - Properties
 
 -(nonnull NSString *)filename {
-    return [self getDataByKey:DFK_FILENAME];
+    return [self safelyGetStringByKey:DFK_FILENAME];;
 }
 
 -(void)setFilename:(nonnull NSString *)value {
