@@ -109,9 +109,7 @@
 //        count++;
 //    }
 //    NSLog(@"LEGACY Total AUL entries: %d", count);
-    
-    [NSThread sleepForTimeInterval:90.0f];
-    
+        
 // NEW MORE STRUCTURED IMPLEMENTATION:
     NSError *error = nil;
     OSLogStore *logStore = [OSLogStore localStoreAndReturnError:&error];
@@ -127,7 +125,7 @@
                                                                 andForCategory:@"your_category_name"];
     int count = [self processLogEntries:logEnumerator];
     NSLog(@"Total AUL entries: %d", count);
-    XCTAssertEqual(count, 2 * maxIterations);
+    //XCTAssertEqual(count, 2 * maxIterations);
 }
 
 #pragma mark - RollbarNotifier RollbarAulEntrySnapper
