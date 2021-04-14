@@ -110,6 +110,8 @@
 //    }
 //    NSLog(@"LEGACY Total AUL entries: %d", count);
     
+    [NSThread sleepForTimeInterval:3.0f];
+    
 // NEW MORE STRUCTURED IMPLEMENTATION:
     NSError *error = nil;
     OSLogStore *logStore = [OSLogStore localStoreAndReturnError:&error];
