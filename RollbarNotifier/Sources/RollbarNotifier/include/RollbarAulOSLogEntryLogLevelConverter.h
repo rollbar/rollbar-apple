@@ -12,7 +12,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-API_AVAILABLE(macos(10.15)) API_UNAVAILABLE(ios, tvos, watchos)
+API_AVAILABLE(macos(10.15))
+API_UNAVAILABLE(ios, tvos, watchos)
 @interface RollbarAulOSLogEntryLogLevelConverter : NSObject
 
 + (OSLogEntryLogLevel) RollbarLevelToOSLogEntryLogLevel:(RollbarLevel)value;
