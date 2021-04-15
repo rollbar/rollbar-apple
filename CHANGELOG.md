@@ -25,6 +25,9 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 
 ## Release Notes
 
+**2.0.0-beta10**
+- fix: resolve #66 - App terminated due to signal 5 instantiating RollbarPLCrashCollector
+
 **2.0.0-beta8**
 - fix: point all the Cocoapods podspecs to proper documentation site.
 
