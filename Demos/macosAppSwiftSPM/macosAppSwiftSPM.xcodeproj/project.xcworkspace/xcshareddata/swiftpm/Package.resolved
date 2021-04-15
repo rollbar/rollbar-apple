@@ -15,7 +15,7 @@
         "repositoryURL": "https://github.com/microsoft/plcrashreporter.git",
         "state": {
           "branch": "master",
-          "revision": "2afa27e23452171b971f67730821b7befa96842b",
+          "revision": "b7b88ee14bbc25ce408ae05464cb6f1cdd747948",
           "version": null
         }
       },
@@ -24,7 +24,7 @@
         "repositoryURL": "https://github.com/rollbar/rollbar-apple",
         "state": {
           "branch": "master",
-          "revision": "f32c08cf61692a2fbe7de5e0aedf49a1d1534683",
+          "revision": "50a7ef4569dd43619651c40dd11ccd16c67950b0",
           "version": null
         }
       }

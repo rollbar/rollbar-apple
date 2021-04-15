@@ -43,7 +43,7 @@ static NSString * const DFK_NOTIFIER = @"notifier";
 #pragma mark - properties
 
 - (NSString *)environment {
-    return [self getDataByKey:DFK_ENVIRONMENT];
+    return [self safelyGetStringByKey:DFK_ENVIRONMENT];
 }
 
 - (void)setEnvironment:(NSString *)environment {
@@ -63,7 +63,7 @@ static NSString * const DFK_NOTIFIER = @"notifier";
 }
 
 -(RollbarLevel)level {
-    NSString *result = [self getDataByKey:DFK_LEVEL];
+    NSString *result = [self safelyGetStringByKey:DFK_LEVEL];
     return [RollbarLevelUtil RollbarLevelFromString:result];
 }
 
@@ -85,7 +85,7 @@ static NSString * const DFK_NOTIFIER = @"notifier";
 }
 
 -(NSString *)codeVersion {
-    NSString *result = [self getDataByKey:DFK_CODE_VERSION];
+    NSString *result = [self safelyGetStringByKey:DFK_CODE_VERSION];
     return result;
 }
 
@@ -103,7 +103,7 @@ static NSString * const DFK_NOTIFIER = @"notifier";
 }
 
 -(RollbarAppLanguage)language {
-    NSString *result = [self getDataByKey:DFK_LANGUAGE];
+    NSString *result = [self safelyGetStringByKey:DFK_LANGUAGE];
     return [RollbarAppLanguageUtil RollbarAppLanguageFromString:result];
 }
 
