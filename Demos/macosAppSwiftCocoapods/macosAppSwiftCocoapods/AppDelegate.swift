@@ -44,7 +44,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         config.destination.environment = "samples";
         config.customData = [ "someKey": "someValue", ];
         
-        let crashCollector = RollbarPLCrashCollector();
+        //let crashCollector = RollbarPLCrashCollector();
         
         // init Rollbar shared instance:
         Rollbar.initWithConfiguration(config, crashCollector: nil);//crashCollector);
