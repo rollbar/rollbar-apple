@@ -8,6 +8,7 @@
 
 import Cocoa
 import RollbarNotifier
+import RollbarPLCrashReporter
 import SwiftTryCatch2
 
 @NSApplicationMain
@@ -22,29 +23,33 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             self.callTroublemaker();
         },
         catchRun: { (exception) in
-            Rollbar.error("Got an exception!", exception: exception)
+            Rollbar.log(RollbarLevel.error, exception: exception!)
         },
         finallyRun: {
-            Rollbar.info("Post-trouble notification!");
+            Rollbar.log(RollbarLevel.info, message:"Post-trouble notification!");
         })
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
-        Rollbar.info("The hosting application is terminating...");
+        Rollbar.log(RollbarLevel.info, message:"The hosting application is terminating...");
     }
 
     func initRollbar() {
 
         // configure Rollbar:
-        let config = RollbarConfiguration.init();
-        
+        let config = RollbarConfig();
         //config.crashLevel = @"critical";
-        config.environment = "samples";
-        config.asRollbarConfig().customData = [ "someKey": "someValue", ];
+        config.destination.accessToken = "2ffc7997ed864dda94f63e7b7daae0f3";
+        config.destination.environment = "samples";
+        config.customData = [ "someKey": "someValue", ];
+        
+        let crashCollector = RollbarPLCrashCollector();
+        
         // init Rollbar shared instance:
-        Rollbar.initWithAccessToken("2ffc7997ed864dda94f63e7b7daae0f3", configuration: config);
-        Rollbar.info("Rollbar is up and running! Enjoy your remote error and log monitoring...");
+        Rollbar.initWithConfiguration(config, crashCollector: nil);//crashCollector);
+        Rollbar.log(RollbarLevel.info,
+                    message:"Rollbar is up and running! Enjoy your remote error and log monitoring...");
     }
 
     func demonstrateDeployApiUasege() {

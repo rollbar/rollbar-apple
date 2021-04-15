@@ -45,18 +45,18 @@ class RollbarDeploysObserver
 }
 
 class RollbarDeploysDemoClient {
-
+    
     func demoDeploymentRegistration() {
-
+        
         let dateFormatter = DateFormatter();
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss";
-
+        
         let environment = "unit-tests123";
         let comment = "a new deploy at \(dateFormatter.string(from: Date()))";
         let revision = "a_revision";
         let localUsername = "UnitTestRunner";
         let rollbarUsername = "rollbar";
-
+        
         let observer = RollbarDeploysObserver()
         let deployment = RollbarDeployment(
             environment: environment,
@@ -70,11 +70,11 @@ class RollbarDeploysDemoClient {
             deploymentRegistrationObserver: (observer as! NSObjectProtocol & RollbarDeploymentRegistrationObserver),
             deploymentDetailsObserver: (observer as! NSObjectProtocol & RollbarDeploymentDetailsObserver),
             deploymentDetailsPageObserver: (observer as! NSObjectProtocol & RollbarDeploymentDetailsPageObserver));
-        deploysManager!.register(deployment!)
+        deploysManager.register(deployment!)
     }
-
+    
     func demoGetDeploymentDetailsById() {
-
+        
         let testDeploymentId = "9961771";
         let observer = RollbarDeploysObserver();
         let deploysManager = RollbarDeploysManager(
@@ -83,11 +83,11 @@ class RollbarDeploysDemoClient {
             deploymentRegistrationObserver: (observer as! NSObjectProtocol & RollbarDeploymentRegistrationObserver),
             deploymentDetailsObserver: (observer as! NSObjectProtocol & RollbarDeploymentDetailsObserver),
             deploymentDetailsPageObserver: (observer as! NSObjectProtocol & RollbarDeploymentDetailsPageObserver));
-        deploysManager!.getDeploymentWithDeployId(testDeploymentId);
+        deploysManager.getDeploymentWithDeployId(testDeploymentId);
     }
-
+    
     func demoGetDeploymentsPage() {
-
+        
         let observer = RollbarDeploysObserver();
         let deploysManager = RollbarDeploysManager(
             writeAccessToken: "0d7ef175a2e14bc9b48732af2b2652f9",
@@ -95,7 +95,7 @@ class RollbarDeploysDemoClient {
             deploymentRegistrationObserver: (observer as! NSObjectProtocol & RollbarDeploymentRegistrationObserver),
             deploymentDetailsObserver: (observer as! NSObjectProtocol & RollbarDeploymentDetailsObserver),
             deploymentDetailsPageObserver: (observer as! NSObjectProtocol & RollbarDeploymentDetailsPageObserver));
-        deploysManager!.getDeploymentsPageNumber(1);
+        deploysManager.getDeploymentsPageNumber(1);
     }
 }
 
