@@ -20,11 +20,12 @@ static PLCrashReporter *sharedPLCrashReporter = nil;
         
         // Configure our reporter:
         PLCrashReporterSignalHandlerType signalHandlerType =
-#if !TARGET_OS_TV
-            PLCrashReporterSignalHandlerTypeMach;
-#else
+//#if !TARGET_OS_TV
+//#if !TARGET_OS_SIMULATOR
+//            PLCrashReporterSignalHandlerTypeMach;
+//#else
             PLCrashReporterSignalHandlerTypeBSD;
-#endif
+//#endif
         PLCrashReporterConfig *config =
         [[PLCrashReporterConfig alloc] initWithSignalHandlerType: signalHandlerType
                                            symbolicationStrategy: PLCrashReporterSymbolicationStrategyAll

@@ -84,9 +84,9 @@ __attribute__((noinline)) static void crashIt (void) {
 
     // optional crash reporter:
     id<RollbarCrashCollector> crashCollector =
-      nil;
+      //nil;
       //[[RollbarKSCrashCollector alloc] init];
-      //[[RollbarPLCrashCollector alloc] init];
+      [[RollbarPLCrashCollector alloc] init];
     
     // init Rollbar shared instance:
     [Rollbar initWithConfiguration:config crashCollector:crashCollector];
