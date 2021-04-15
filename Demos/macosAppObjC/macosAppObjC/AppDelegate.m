@@ -12,7 +12,7 @@
 
 @import RollbarNotifier;
 
-//@import RollbarKSCrash;
+@import RollbarKSCrash;
 @import RollbarPLCrashReporter;
 
 __attribute__((noinline)) static void crashIt (void) {
@@ -55,14 +55,14 @@ __attribute__((noinline)) static void crashIt (void) {
     
     // now, cause a crash:
     
-    //[self callTroublemaker];
-    //@throw NSInternalInconsistencyException;
-    //[self performSelector:@selector(die_die)];
-    //[self performSelector:NSSelectorFromString(@"crashme:") withObject:nil afterDelay:10];
-    //assert(NO);
-    //exit(0);
-    //crashIt();
-
+    [self callTroublemaker];
+    @throw NSInternalInconsistencyException;
+    [self performSelector:@selector(die_die)];
+    [self performSelector:NSSelectorFromString(@"crashme:") withObject:nil afterDelay:10];
+    assert(NO);
+    exit(0);
+    crashIt();
+    
 }
 
 

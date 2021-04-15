@@ -20,12 +20,17 @@ static PLCrashReporter *sharedPLCrashReporter = nil;
         
         // Configure our reporter:
         PLCrashReporterSignalHandlerType signalHandlerType =
-//#if !TARGET_OS_TV
-//#if !TARGET_OS_SIMULATOR
-//            PLCrashReporterSignalHandlerTypeMach;
+        // NOTE: looking at comments around the PLCRASH_FEATURE_MACH_EXCEPTIONS
+        //       definition in PLCrashReporter and matching it with actual experiences
+        //       on the current Apple OSs releases we should only use
+        //       the PLCrashReporterSignalHandlerTypeBSD option for now.
+        //       Leaving the alternative commented out for the reference in the future.
+//#if PLCRASH_FEATURE_MACH_EXCEPTIONS
+//        PLCrashReporterSignalHandlerTypeMach;
 //#else
-            PLCrashReporterSignalHandlerTypeBSD;
+        PLCrashReporterSignalHandlerTypeBSD;
 //#endif
+        
         PLCrashReporterConfig *config =
         [[PLCrashReporterConfig alloc] initWithSignalHandlerType: signalHandlerType
                                            symbolicationStrategy: PLCrashReporterSymbolicationStrategyAll
