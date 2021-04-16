@@ -27,7 +27,7 @@ Pod::Spec.new do |s|
     # Or just: s.author    = "Andrey Kornich"
     s.social_media_url   = "http://twitter.com/rollbar"
     s.source             = { :git => "https://github.com/rollbar/rollbar-apple.git",
-                             :tag => "v#{s.version}"
+                             :tag => "#{s.version}"
                              }
     s.resource = "rollbar-logo.png"
     # s.resources = "Resources/*.png"
