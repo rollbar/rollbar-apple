@@ -3,10 +3,6 @@
 <plist version="1.0">
 <dict>
 	<key>com.apple.developer.networking.networkextension</key>
-	<array>
-		<string>app-proxy-provider</string>
-		<string>content-filter-provider</string>
-		<string>packet-tunnel-provider</string>
-	</array>
+	<array/>
 </dict>
 </plist>
