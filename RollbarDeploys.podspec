@@ -7,7 +7,7 @@
 
 Pod::Spec.new do |s|
 
-    s.version      = "2.0.0-beta.10"
+    s.version      = "2.0.0-beta.11"
     s.name         = "RollbarDeploys"
     s.summary      = "Application or client side SDK for interacting with the Rollbar API Server."
     s.description  = <<-DESC
