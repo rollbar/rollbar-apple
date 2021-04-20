@@ -25,6 +25,7 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 
 ## Release Notes
 
+**2.0.0-beta.13**
 **2.0.0-beta.12**
 **2.0.0-beta.11**
 - fix: resolve #72 - Rollbar* pods 2.0.0-beta.10 not all published
