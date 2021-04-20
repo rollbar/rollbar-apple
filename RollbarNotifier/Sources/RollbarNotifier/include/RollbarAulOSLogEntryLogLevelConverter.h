@@ -20,11 +20,20 @@ API_AVAILABLE(macos(10.15))
 API_UNAVAILABLE(ios, tvos, watchos)
 @interface RollbarAulOSLogEntryLogLevelConverter : NSObject
 
-+ (OSLogEntryLogLevel) RollbarLevelToOSLogEntryLogLevel:(RollbarLevel)value;
++ (OSLogEntryLogLevel) RollbarLevelToOSLogEntryLogLevel:(RollbarLevel)value
+API_AVAILABLE(macos(10.15))
+API_UNAVAILABLE(ios, tvos, watchos)
+;
 
-+ (RollbarLevel) RollbarLevelFromOSLogEntryLogLevel:(OSLogEntryLogLevel)value;
++ (RollbarLevel) RollbarLevelFromOSLogEntryLogLevel:(OSLogEntryLogLevel)value
+API_AVAILABLE(macos(10.15))
+API_UNAVAILABLE(ios, tvos, watchos)
+;
 
-+ (NSString *) OSLogEntryLogLevelToString:(OSLogEntryLogLevel)value;
++ (NSString *) OSLogEntryLogLevelToString:(OSLogEntryLogLevel)value
+API_AVAILABLE(macos(10.15))
+API_UNAVAILABLE(ios, tvos, watchos)
+;
 
 @end
 
