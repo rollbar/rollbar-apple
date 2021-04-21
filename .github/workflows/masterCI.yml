@@ -58,6 +58,18 @@ jobs:
     #  working-directory: RollbarPLCrashReporter
     #  run: swift test -v --enable-test-discovery --enable-code-coverage --build-path ../DerivedData
 
+    - name: Build RollbarAUL
+      working-directory: RollbarAUL
+      run: swift build -v
+    #- name: Unit Test RollbarAUL
+    #  working-directory: RollbarAUL
+    #  run: swift test -v --enable-test-discovery --enable-code-coverage --build-path ../DerivedData
+
+#    - name: Unit Test RollbarCommon
+#      working-directory: RollbarCommon
+#      run:  ../SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir ../DerivedData/compilation-database 
+#            swift test -v --build-path ../DerivedData
+
     - name: Build RollbarSwift
       working-directory: RollbarSwift
       run: swift build -v
@@ -128,6 +140,19 @@ jobs:
            xcodebuild 
               -workspace RollbarSDK.xcworkspace 
               -scheme RollbarPLCrashReporter 
+              -derivedDataPath DerivedData 
+              -enableCodeCoverage YES 
+              build 
+              test 
+              CODE_SIGN_IDENTITY="-" 
+              CODE_SIGNING_REQUIRED=NO
+              # clean build
+              
+    - name: SonarCloud RollbarAUL
+      run: SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir DerivedData/compilation-database 
+           xcodebuild 
+              -workspace RollbarSDK.xcworkspace 
+              -scheme RollbarAUL 
               -derivedDataPath DerivedData 
               -enableCodeCoverage YES 
               build 
