@@ -44,6 +44,9 @@
          location = "group:RollbarPLCrashReporter.podspec">
       </FileRef>
       <FileRef
+         location = "group:RollbarAUL.podspec">
+      </FileRef>
+      <FileRef
          location = "group:RollbarSwift.podspec">
       </FileRef>
       <FileRef
@@ -64,6 +67,9 @@
    </FileRef>
    <FileRef
       location = "group:RollbarPLCrashReporter">
+   </FileRef>
+   <FileRef
+      location = "group:RollbarAUL">
    </FileRef>
    <FileRef
       location = "group:RollbarSwift">

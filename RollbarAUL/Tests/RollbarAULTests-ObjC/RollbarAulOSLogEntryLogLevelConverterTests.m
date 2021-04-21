@@ -1,11 +1,10 @@
 @import Foundation;
 @import OSLog;
 @import RollbarNotifier;
+@import RollbarAUL;
 
 #if !TARGET_OS_WATCH
 #import <XCTest/XCTest.h>
-
-@import RollbarNotifier;
 
 @interface RollbarAulOSLogEntryLogLevelConverterTests : XCTestCase
 

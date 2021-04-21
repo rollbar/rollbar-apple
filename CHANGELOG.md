@@ -25,6 +25,10 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 
 ## Release Notes
 
+**2.0.0-beta.14**
+- feat: allocated new RollbarAUL module project
+- fix: resolve #72 - Rollbar* pods 2.0.0-beta.10 not all published
+
 **2.0.0-beta.13**
 **2.0.0-beta.12**
 **2.0.0-beta.11**

@@ -7,11 +7,11 @@
 
 #import "RollbarAulLogLevelConverter.h"
 
-API_AVAILABLE(macos(10.11), ios(9.0), watchos(2.0), tvos(9.0))
+API_AVAILABLE(macos(10.11), ios(9.0), tvos(9.0), watchos(2.0))
 @implementation RollbarAulLogLevelConverter
 
 + (os_log_type_t) RollbarLevelToAulLevel:(RollbarLevel)value 
-API_AVAILABLE(macos(10.11), ios(9.0), watchos(2.0), tvos(9.0)) {
+API_AVAILABLE(macos(10.11), ios(9.0), tvos(9.0), watchos(2.0)) {
 
     switch (value) {
         case RollbarLevel_Debug:
@@ -28,7 +28,7 @@ API_AVAILABLE(macos(10.11), ios(9.0), watchos(2.0), tvos(9.0)) {
 }
 
 + (RollbarLevel) RollbarLevelFromAulLevel:(os_log_type_t)value
-API_AVAILABLE(macos(10.11), ios(9.0), watchos(2.0), tvos(9.0)) {
+API_AVAILABLE(macos(10.11), ios(9.0), tvos(9.0), watchos(2.0)) {
 
     switch (value) {
         case OS_LOG_TYPE_DEBUG:

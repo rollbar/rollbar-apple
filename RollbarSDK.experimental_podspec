@@ -9,7 +9,7 @@ Pod::Spec.new do |sdk|
 
     # Rollbar SDK:
     # ============
-    sdk.version      = "2.0.0-beta.13"
+    sdk.version      = "2.0.0-beta.14"
     sdk.name         = "RollbarSDK"
     s.summary      = "Application or client side SDK for interacting with the Rollbar API Server."
     sdk.description  = <<-DESC
@@ -232,6 +232,46 @@ Pod::Spec.new do |sdk|
         plcrash.user_target_xcconfig = { "ONLY_ACTIVE_ARCH" => "YES", "EXCLUDED_ARCHS[sdk=iphonesimulator*]" => "arm64" }
         plcrash.tvos.pod_target_xcconfig  = { "ONLY_ACTIVE_ARCH" => "YES", "EXCLUDED_ARCHS[sdk=appletvsimulator*]" => "arm64" }
         plcrash.tvos.user_target_xcconfig = { "ONLY_ACTIVE_ARCH" => "YES", "EXCLUDED_ARCHS[sdk=appletvsimulator*]" => "arm64" }
+    end
+
+    # RollbarSwift module:
+    # =====================
+    sdk.subspec "RollbarAUL" do |aul|
+        swift.name         = "RollbarAUL"
+
+        # Any platform, if omitted:
+        # swift.platform     = :ios
+        # swift.platform     = :ios, "5.0"
+
+        #  When using multiple platforms:
+        # swift.ios.deployment_target = "9.0"
+        # swift.osx.deployment_target = "10.10"
+        # swift.tvos.deployment_target = "11.0"
+        # swift.watchos.deployment_target = "4.0"
+
+        swift.source_files  = "RollbarAUL/Sources/RollbarAUL/**/*.{h,m}"
+        # swift.exclude_files = "Classes/Exclude"
+        swift.public_header_files = "RollbarAUL/Sources/RollbarAUL/include/*.h"
+        # swift.module_map = "RollbarAUL/Sources/RollbarAUL/include/module.modulemap"
+        # swift.resource = "../rollbar-logo.png"
+        # swift.resources = "Resources/*.png"
+        # swift.preserve_paths = "FilesToSave", "MoreFilesToSave"
+
+        swift.dependency "RollbarSDK/RollbarCommon"
+        swift.framework = "Foundation"
+        # swift.frameworks = "SomeFramework", "AnotherFramework"
+        # swift.library   = "iconv"
+        # swift.libraries = "iconv", "xml2"
+        # swift.dependency "JSONKit", "~> 1.4"
+        swift.requires_arc = true
+        # swift.xcconfig = {
+        #   "USE_HEADERMAP" => "NO",
+        #   "HEADER_SEARCH_PATHS" => "$(PODS_ROOT)/Sources/RollbarAUL/**"
+        # }
+        swift.pod_target_xcconfig  = { "ONLY_ACTIVE_ARCH" => "YES", "EXCLUDED_ARCHS[sdk=iphonesimulator*]" => "arm64" }
+        swift.user_target_xcconfig = { "ONLY_ACTIVE_ARCH" => "YES", "EXCLUDED_ARCHS[sdk=iphonesimulator*]" => "arm64" }
+        swift.tvos.pod_target_xcconfig  = { "ONLY_ACTIVE_ARCH" => "YES", "EXCLUDED_ARCHS[sdk=appletvsimulator*]" => "arm64" }
+        swift.tvos.user_target_xcconfig = { "ONLY_ACTIVE_ARCH" => "YES", "EXCLUDED_ARCHS[sdk=appletvsimulator*]" => "arm64" }
     end
 
     # RollbarSwift module:

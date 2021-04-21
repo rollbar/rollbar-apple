@@ -1,5 +1,5 @@
 #
-#  Be sure to run `pod spec lint RollbarSDK.podspec` to ensure this is a valid spec.
+#  Be sure to run `pod spec lint RollbarSDK.podspec' to ensure this is a valid spec.
 #
 #  To learn more about Podspec attributes see https://guides.cocoapods.org/syntax/podspec.html
 #  To see working Podspecs in the CocoaPods repo see https://github.com/CocoaPods/Specs/
@@ -8,7 +8,7 @@
 Pod::Spec.new do |s|
 
     s.version      = "2.0.0-beta.14"
-    s.name         = "RollbarCommon"
+    s.name         = "RollbarAUL"
     s.summary      = "Application or client side SDK for interacting with the Rollbar API Server."
     s.description  = <<-DESC
                       Find, fix, and resolve errors with Rollbar.
@@ -33,10 +33,10 @@ Pod::Spec.new do |s|
     # s.resources = "Resources/*.png"
 
     #  When using multiple platforms:
-    s.ios.deployment_target = "9.0"
     s.osx.deployment_target = "10.10"
-    s.tvos.deployment_target = "11.0"
-    s.watchos.deployment_target = "4.0"
+    # s.ios.deployment_target = "9.0"
+    # s.tvos.deployment_target = "11.0"
+    # s.watchos.deployment_target = "4.0"
     # Any platform, if omitted:
     # s.platform     = :ios
     # s.platform     = :ios, "5.0"
@@ -48,16 +48,18 @@ Pod::Spec.new do |s|
     # s.preserve_paths = "FilesToSave", "MoreFilesToSave"
 
     s.framework = "Foundation"
+    s.dependency "RollbarCommon", "~> #{s.version}"
+    s.dependency "RollbarNotifier", "~> #{s.version}"
     # s.frameworks = "SomeFramework", "AnotherFramework"
     # s.library   = "iconv"
     # s.libraries = "iconv", "xml2"
     # s.dependency "JSONKit", "~> 1.4"
     
     s.requires_arc = true
-    # s.xcconfig = {
-    #   "USE_HEADERMAP" => "NO",
-    #   "HEADER_SEARCH_PATHS" => "$(PODS_ROOT)/Sources/#{s.name}/**"
-    # }
+    s.xcconfig = {
+      "USE_HEADERMAP" => "NO",
+      "HEADER_SEARCH_PATHS" => "$(PODS_ROOT)/#{s.name}/#{s.name}/Sources/#{s.name}/**"
+    }
 
     s.pod_target_xcconfig  = { "ONLY_ACTIVE_ARCH" => "YES", "EXCLUDED_ARCHS[sdk=iphonesimulator*]" => "arm64" }
     s.user_target_xcconfig = { "ONLY_ACTIVE_ARCH" => "YES", "EXCLUDED_ARCHS[sdk=iphonesimulator*]" => "arm64" }

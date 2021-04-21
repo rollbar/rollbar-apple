@@ -1,0 +1,8 @@
+module RollbarAUL {
+	umbrella "."
+	
+	export *
+	module * { export * }
+
+    requires objc
+}
