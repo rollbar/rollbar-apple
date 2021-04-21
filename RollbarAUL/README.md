@@ -1,3 +1,3 @@
 # RollbarAUL
 
-A description of this package.
+This is an SDK module implements RollbarNotifier integration with Apple Unified Logging (AUL).

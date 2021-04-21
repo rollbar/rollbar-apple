@@ -6,7 +6,7 @@ final class RollbarAULTests: XCTestCase {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
-        XCTAssertEqual(RollbarAUL().text, "Hello, World!")
+        //XCTAssertEqual(RollbarAUL().text, "Hello, World!")
     }
 
     static var allTests = [
