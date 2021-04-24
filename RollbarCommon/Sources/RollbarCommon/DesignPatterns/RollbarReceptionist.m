@@ -9,9 +9,9 @@
 
 @implementation RollbarReceptionist
 
-#pragma mark Properties
+#pragma mark - Properties
 
-#pragma mark Lifecycle
+#pragma mark - Lifecycle
 
 + (instancetype)receptionistForKeyPath:(NSString *)path
                                 object:(id)obj
@@ -30,7 +30,7 @@
     return receptionist;
 }
 
-#pragma mark Operations
+#pragma mark - Operations
 
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object
@@ -42,7 +42,7 @@
     }];
 }
 
-#pragma mark NSObject
+#pragma mark - NSObject
 
 - (NSString *)description {
     return super.description;

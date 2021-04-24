@@ -5,6 +5,7 @@
 #import <XCTest/XCTest.h>
 
 @import RollbarNotifier;
+@import RollbarAUL;
 
 @interface RollbarAulTests : XCTestCase
 
