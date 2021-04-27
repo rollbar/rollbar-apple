@@ -41,11 +41,11 @@ let package = Package(
         // .package(url: /* package url */, from: "1.0.0"),
         .package(name:"KSCrash",
                  url: "https://github.com/kstenerud/KSCrash.git",
-                 Package.Dependency.Requirement.branch("master")
+                 from: "1.15.24" //Package.Dependency.Requirement.branch("master")
         ),
         .package(name:"PLCrashReporter",
                  url: "https://github.com/microsoft/plcrashreporter.git",
-                 Package.Dependency.Requirement.branch("master")
+                 from: "1.8.1" //Package.Dependency.Requirement.branch("master")
         ),
     ],
     targets: [
@@ -104,10 +104,10 @@ let package = Package(
         .target(
             name: "RollbarAUL",
             dependencies: ["RollbarCommon", "RollbarNotifier"],
-            path: "RollbarSwift/Sources/RollbarAUL",
+            path: "RollbarAUL/Sources/RollbarAUL",
             publicHeadersPath: "include",
             cSettings: [
-                .headerSearchPath("RollbarSwift/Sources/RollbarAUL/**"),
+                .headerSearchPath("RollbarAUL/Sources/RollbarAUL/**"),
             ]
         ),
 
