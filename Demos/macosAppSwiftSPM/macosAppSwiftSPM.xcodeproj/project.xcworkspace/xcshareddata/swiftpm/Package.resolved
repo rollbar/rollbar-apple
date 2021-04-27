@@ -6,7 +6,7 @@
         "repositoryURL": "https://github.com/kstenerud/KSCrash.git",
         "state": {
           "branch": "master",
-          "revision": "498aa21d23541b0bb4990f8d3d20bea2c280a18b",
+          "revision": "bba17ee3fab2961e8ed10ac79994dd438555da6c",
           "version": null
         }
       },
@@ -24,7 +24,7 @@
         "repositoryURL": "https://github.com/rollbar/rollbar-apple",
         "state": {
           "branch": "master",
-          "revision": "50a7ef4569dd43619651c40dd11ccd16c67950b0",
+          "revision": "ded7824e98bc788a926002c796ce802773b934ac",
           "version": null
         }
       }

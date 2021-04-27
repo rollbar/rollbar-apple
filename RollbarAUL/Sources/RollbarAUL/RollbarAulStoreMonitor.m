@@ -15,6 +15,7 @@ static RollbarAulStoreMonitor *theOnlyInstance;
 
 
 #pragma mark - RollbarAulStoreMonitoring
+
 - (void)configureWithOptions:(nonnull RollbarAulStoreMonitorOptions *)optiond {
     //TODO: implement
 }

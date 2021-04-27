@@ -1,19 +1,19 @@
 PODS:
   - PLCrashReporter (1.8.1)
-  - RollbarCommon (2.0.0-beta9)
-  - RollbarDeploys (2.0.0-beta9):
-    - RollbarCommon (~> 2.0.0-beta9)
-  - RollbarNotifier (2.0.0-beta9):
-    - RollbarCommon (~> 2.0.0-beta9)
-  - RollbarPLCrashReporter (2.0.0-beta9):
+  - RollbarCommon (2.0.0-beta.14)
+  - RollbarDeploys (2.0.0-beta.14):
+    - RollbarCommon (~> 2.0.0-beta.14)
+  - RollbarNotifier (2.0.0-beta.14):
+    - RollbarCommon (~> 2.0.0-beta.14)
+  - RollbarPLCrashReporter (2.0.0-beta.14):
     - PLCrashReporter (~> 1.8.1)
-    - RollbarCommon (~> 2.0.0-beta9)
+    - RollbarCommon (~> 2.0.0-beta.14)
   - SwiftTryCatch2 (2.0.2)
 
 DEPENDENCIES:
-  - RollbarDeploys (~> 2.0.0-beta9)
-  - RollbarNotifier (~> 2.0.0-beta9)
-  - RollbarPLCrashReporter (~> 2.0.0-beta9)
+  - RollbarDeploys (~> 2.0.0-beta.14)
+  - RollbarNotifier (~> 2.0.0-beta.14)
+  - RollbarPLCrashReporter (~> 2.0.0-beta.14)
   - SwiftTryCatch2 (~> 2.0.2)
 
 SPEC REPOS:
@@ -27,12 +27,12 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   PLCrashReporter: ea2d252e930f538a9f70f0b81bc9cce656651fbf
-  RollbarCommon: 0afe35e303d8ddb05bd0d5e24761fc3affee7000
-  RollbarDeploys: 5eb0141692dc8b26f85c23594fdb4cb5eefd5592
-  RollbarNotifier: d77402ae53edca08e6dcc272147965b2dfc99788
-  RollbarPLCrashReporter: 21f3104db1322d8b712aa16f282d9d79c0db9bb0
+  RollbarCommon: 485e9f1842e9ac257036c02a01fd137b27d647c1
+  RollbarDeploys: 40017735f0813ce73c73f2f2553f955a0e585d0c
+  RollbarNotifier: a7bc32dda72a4c192d1122464a55efd20b72ee35
+  RollbarPLCrashReporter: 74a7038fc0c535487289f6afb0e33f175583f365
   SwiftTryCatch2: a1b6e301b0b1cc1c1af9849f13969979c706ff5e
 
-PODFILE CHECKSUM: d66c1189dc3566db72d76263a3cf457dfe83e099
+PODFILE CHECKSUM: 77469ba010ea90116273663518cde54945f7fc4d
 
 COCOAPODS: 1.10.1
