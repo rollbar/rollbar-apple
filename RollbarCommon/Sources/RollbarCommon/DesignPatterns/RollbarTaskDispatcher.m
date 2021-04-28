@@ -9,9 +9,9 @@
 
 @implementation RollbarTaskDispatcher
 
-#pragma mark Properties
+#pragma mark - Properties
 
-#pragma mark Lifecycle
+#pragma mark - Lifecycle
 
 + (instancetype)dispatcherForQueue:(NSOperationQueue *)queue
                               task:(RollbarTaskBlock)task
@@ -25,7 +25,7 @@
     return dispatcher;
 }
 
-#pragma mark Operations
+#pragma mark - Operations
 
 - (void)dispatchTask:(RollbarTaskBlock)task input:(id)taskInput {
     
@@ -43,7 +43,7 @@
     [self dispatchInput:self->taskInput];
 }
 
-#pragma mark NSObject
+#pragma mark - NSObject
 
 - (NSString *)description {
     return super.description;

@@ -358,8 +358,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/rollbar/rollbar-apple";
 			requirement = {
-				branch = master;
-				kind = branch;
+				kind = exactVersion;
+				version = "2.0.0-beta.14";
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
