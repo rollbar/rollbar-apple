@@ -7,6 +7,7 @@
 
 @import Foundation;
 @import RollbarCommon;
+@import RollbarNotifier;
 
 @class RollbarAulStoreMonitorOptions;
 
@@ -15,9 +16,10 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol RollbarAulStoreMonitoring
 
 @required
-- (void)configureWithOptions:(RollbarAulStoreMonitorOptions *)options;
+- (id<RollbarAulStoreMonitoring>)configureWithOptions:(RollbarAulStoreMonitorOptions *)options;
 
 @optional
+- (id<RollbarAulStoreMonitoring>)configureRollbarLogger:(RollbarLogger *)logger;
 
 @end
 

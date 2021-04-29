@@ -29,13 +29,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithAulSubsystem:(nonnull NSString *)aulSubsystem
                        aulCategories:(nullable NSArray<NSString *> *)aulCategories;
-//NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)initWithArray:(NSArray *)data
 NS_UNAVAILABLE;
-
-//- (instancetype)init
-//NS_UNAVAILABLE;
 
 @end
 

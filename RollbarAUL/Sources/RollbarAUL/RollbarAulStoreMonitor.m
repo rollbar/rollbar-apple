@@ -5,20 +5,53 @@
 //  Created by Andrey Kornich on 2021-04-23.
 //
 
-@import RollbarCommon;
-
 #import "RollbarAulStoreMonitor.h"
+#import "RollbarAulStoreMonitorOptions.h"
 
 
 static RollbarAulStoreMonitor *theOnlyInstance;
 
 
-@implementation RollbarAulStoreMonitor
+@implementation RollbarAulStoreMonitor {
+    @private
+    RollbarLogger *_logger;
+    RollbarAulStoreMonitorOptions *_options;
+}
+
+#pragma mark - AUL integrators
+
+- (void)setupMonitoringWithOptions:(nonnull RollbarAulStoreMonitorOptions *)options {
+    
+    NSString            *subSystem  = theOnlyInstance->_options.aulSubsystem.copy;
+    NSArray<NSString *> *categories = theOnlyInstance->_options.aulCategories.copy;
+    
+    //TODO: implement
+    
+}
 
 #pragma mark - RollbarAulStoreMonitoring
 
-- (void)configureWithOptions:(nonnull RollbarAulStoreMonitorOptions *)options {
-    //TODO: implement
+- (id<RollbarAulStoreMonitoring>)configureWithOptions:(nonnull RollbarAulStoreMonitorOptions *)options {
+
+    @synchronized (theOnlyInstance) {
+
+        if (nil != theOnlyInstance) {
+            
+            theOnlyInstance->_options = options;
+            [self setupMonitoringWithOptions:options];
+        }
+    }
+}
+
+- (id<RollbarAulStoreMonitoring>)configureRollbarLogger:(RollbarLogger *)logger {
+
+    @synchronized (theOnlyInstance) {
+
+        if (nil != theOnlyInstance) {
+            
+            theOnlyInstance->_logger = logger;
+        }
+    }
 }
 
 #pragma mark - Singleton Pattern
@@ -29,10 +62,16 @@ static RollbarAulStoreMonitor *theOnlyInstance;
 
     @synchronized (theOnlyInstance) {
         
-        if (theOnlyInstance == nil) {
+        if (nil == theOnlyInstance) {
             
             theOnlyInstance = [[[self class] hiddenAlloc] init];
-            // any other special initialization as required here
+
+            // let's complete the only instance initialization:
+            if (nil != theOnlyInstance) {
+
+                theOnlyInstance->_options = [RollbarAulStoreMonitorOptions new];
+                theOnlyInstance->_logger = Rollbar.currentLogger;
+            }
         }
         
         return theOnlyInstance;
