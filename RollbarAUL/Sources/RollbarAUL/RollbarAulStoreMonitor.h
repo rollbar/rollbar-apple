@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol RollbarAulStoreMonitoring
 
 @required
-- (void)configureWithOptions:(RollbarAulStoreMonitorOptions *)optiond;
+- (void)configureWithOptions:(RollbarAulStoreMonitorOptions *)options;
 
 @optional
 
@@ -23,24 +23,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 @interface RollbarAulStoreMonitor : NSObject<RollbarAulStoreMonitoring, RollbarSingleInstancing>
-
-//#pragma mark - Singleton
-//
-//+ (instancetype)sharedInstance;
-//
-//+ (instancetype)alloc NS_UNAVAILABLE;
-//
-//+ (instancetype)new NS_UNAVAILABLE;
-//
-//+ (instancetype)allocWithZone:(NSZone *)zone NS_UNAVAILABLE;
-//
-//- (instancetype)copy NS_UNAVAILABLE;
-//
-//- (instancetype)copyWithZone:(NSZone *)zone NS_UNAVAILABLE;
-//
-//- (instancetype)mutableCopy NS_UNAVAILABLE;
-//
-//- (instancetype)mutableCopyWithZone:(NSZone *)zone NS_UNAVAILABLE;
 
 @end
 

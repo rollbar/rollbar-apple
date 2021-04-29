@@ -527,8 +527,8 @@ static void TMReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkRea
 
 - (NSString *) description
 {
-    NSString *description = [NSString stringWithFormat:@"<%@: %#x>",
-                             NSStringFromClass([self class]), (unsigned int) self];
+    NSString *description = [NSString stringWithFormat:@"<%@: %#lx>",
+                             NSStringFromClass([self class]), (unsigned long) self];
     return description;
 }
 

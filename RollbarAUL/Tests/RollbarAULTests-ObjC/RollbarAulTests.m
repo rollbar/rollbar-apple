@@ -67,49 +67,6 @@
         NSLog(@"Test NSLog");
     }
 
-// LEGACY WORKING VERSION:
-//    NSError *error = nil;
-//    id osLogStore = [OSLogStore localStoreAndReturnError:&error];
-//    if (nil != error) {
-//        NSLog(@"AUL ERROR: %@", error);
-//    }
-//
-//    //[NSThread sleepForTimeInterval:1.0f];
-//
-//    OSLogPosition *logPosition = [osLogStore positionWithDate:date];
-//    //NSTimeInterval timeInterval = 3.0;
-//    //OSLogPosition *logPosition = [osLogStore positionWithTimeIntervalSinceEnd:timeInterval];
-//
-//    //NSPredicate *datePredicate = [NSPredicate predicateWithFormat:@"(date >= %@) AND (date <= %@)", startDate, endDate];
-//    //NSPredicate *datePredicate = [NSPredicate predicateWithFormat:@"date >= %@", date];
-//    NSPredicate *subsystemPredicate = [NSPredicate predicateWithFormat:@"subsystem == %@", @"com.your_company.your_subsystem"];
-//    NSPredicate *categoryPredicate = [NSPredicate predicateWithFormat:@"category == %@", @"your_category_name"];
-//    NSPredicate *levelPredicate = [NSPredicate predicateWithFormat:@"level == %@", [NSNumber numberWithUnsignedInteger:OS_LOG_TYPE_DEFAULT] ];
-//    //NSPredicate *predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[levelPredicate, subsystemPredicate, categoryPredicate]];
-//    NSPredicate *predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[subsystemPredicate, categoryPredicate]];
-//
-//    //[NSThread sleepForTimeInterval:1.0f];
-//
-//    OSLogEnumerator *logEnumerator = [osLogStore entriesEnumeratorWithOptions:0
-//                                                                     position:logPosition
-//                                                                    predicate:predicate
-//                                                                        error:&error];
-//    if (nil != error) {
-//        NSLog(@"AUL ERROR: %@", error);
-//    }
-//
-//    //[NSThread sleepForTimeInterval:1.0f];
-//
-//    //NSUInteger count = logEnumerator.allObjects.count;
-//    int count = 0;
-//    for (OSLogEntryLog *entry in logEnumerator) {
-//
-//        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-//        [formatter setDateFormat:@"YYYY-MM-dd 'at' HH:mm:ss.SSSSSSXX"];
-//        NSLog(@">>>>> %@: %@", [formatter stringFromDate:entry.date], entry.composedMessage);
-//        count++;
-//    }
-//    NSLog(@"LEGACY Total AUL entries: %d", count);
         
 // NEW MORE STRUCTURED IMPLEMENTATION:
     NSError *error = nil;

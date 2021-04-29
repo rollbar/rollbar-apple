@@ -9,14 +9,15 @@
 
 #import "RollbarAulStoreMonitor.h"
 
+
 static RollbarAulStoreMonitor *theOnlyInstance;
+
 
 @implementation RollbarAulStoreMonitor
 
-
 #pragma mark - RollbarAulStoreMonitoring
 
-- (void)configureWithOptions:(nonnull RollbarAulStoreMonitorOptions *)optiond {
+- (void)configureWithOptions:(nonnull RollbarAulStoreMonitorOptions *)options {
     //TODO: implement
 }
 
@@ -58,28 +59,5 @@ static RollbarAulStoreMonitor *theOnlyInstance;
     
     return [super alloc];
 }
-
-//+ (instancetype)alloc {
-//    NSLog(@"%@: use +sharedInstance instead of +alloc!", [self objectClassName]);
-//    return nil;
-//}
-//
-//+ (instancetype)new {
-//    return [self alloc];
-//}
-//
-//+ (instancetype)allocWithZone:(NSZone *)zone {
-//    return [self alloc];
-//}
-//
-//- (instancetype)copyWithZone:(NSZone *)zone {
-//    // -copy inhereted from NSObject calls -copyWithZone:
-//    NSLog(@"%@: -copy does not apply to a Singleton!", [self className]);
-//}
-//
-//- (instancetype)mutableCopyWithZone:(NSZone *)zone {
-//    // -mutableCopy inhereted from NSObject calls -mutableCopyWithZone:
-//    return [self copyWithZone:zone];
-//}
 
 @end
