@@ -7,26 +7,41 @@
 
 #import "RollbarAulStoreMonitor.h"
 #import "RollbarAulStoreMonitorOptions.h"
-
+#import "RollbarAulPredicateBuilder.h"
+#import "RollbarAulClient.h"
 
 static RollbarAulStoreMonitor *theOnlyInstance;
 
 
 @implementation RollbarAulStoreMonitor {
     @private
-    RollbarLogger *_logger;
-    RollbarAulStoreMonitorOptions *_options;
+    // configurable data fields:
+    RollbarLogger       *_logger;
+    //NSString            *_aulSubsystem;
+    //NSArray<NSString *> *_aulCategories;
+    NSPredicate         *_aulSubsystemCategoryPredicate;
+    // dynamically calculated data fields:
+    NSDate *_aulStartTimestamp; //= [[NSDate date] dateByAddingTimeInterval:-1.0];
+    NSDate *_aulEndTimestamp;
 }
 
 #pragma mark - AUL integrators
 
-- (void)setupMonitoringWithOptions:(nonnull RollbarAulStoreMonitorOptions *)options {
++ (void)setupMonitor:(nonnull RollbarAulStoreMonitor *)monitor
+             options:(nonnull RollbarAulStoreMonitorOptions *)options {
     
-    NSString            *subSystem  = theOnlyInstance->_options.aulSubsystem.copy;
-    NSArray<NSString *> *categories = theOnlyInstance->_options.aulCategories.copy;
+    // snap the new options into the provided AUL monitor:
+    //monitor->_aulSubsystem  = options.aulSubsystem.copy;
+    //monitor->_aulCategories = options.aulCategories.copy;
+    monitor->_aulSubsystemCategoryPredicate =
+    [RollbarAulPredicateBuilder buildRollbarAulPredicateForSubsystem:options.aulSubsystem.copy
+                                                      andForCategory:options.aulCategories.copy];
+}
+
+- (void)setupWithOptions:(nonnull RollbarAulStoreMonitorOptions *)options {
     
-    //TODO: implement
-    
+    [RollbarAulStoreMonitor setupMonitor:self
+                                 options:options];
 }
 
 #pragma mark - RollbarAulStoreMonitoring
@@ -37,8 +52,7 @@ static RollbarAulStoreMonitor *theOnlyInstance;
 
         if (nil != theOnlyInstance) {
             
-            theOnlyInstance->_options = options;
-            [self setupMonitoringWithOptions:options];
+            [self setupWithOptions:options];
         }
     }
 }
@@ -58,8 +72,6 @@ static RollbarAulStoreMonitor *theOnlyInstance;
 
 + (RollbarAulStoreMonitor *)sharedInstance {
    
-    //static RollbarAulStoreMonitor *theOnlyInstance = nil;
-
     @synchronized (theOnlyInstance) {
         
         if (nil == theOnlyInstance) {
@@ -69,7 +81,12 @@ static RollbarAulStoreMonitor *theOnlyInstance;
             // let's complete the only instance initialization:
             if (nil != theOnlyInstance) {
 
-                theOnlyInstance->_options = [RollbarAulStoreMonitorOptions new];
+                [RollbarAulStoreMonitor setupMonitor:theOnlyInstance
+                                             options:[RollbarAulStoreMonitorOptions new]];
+                
+                theOnlyInstance->_aulStartTimestamp =
+                [[NSDate date] dateByAddingTimeInterval:-1.0];
+
                 theOnlyInstance->_logger = Rollbar.currentLogger;
             }
         }
