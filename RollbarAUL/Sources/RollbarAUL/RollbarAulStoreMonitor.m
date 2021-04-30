@@ -10,6 +10,8 @@
 #import "RollbarAulPredicateBuilder.h"
 #import "RollbarAulClient.h"
 
+static NSTimeInterval const DEFAULT_AUL_MONITORING_INTERVAL_IN_SECS = 3.0;
+
 static RollbarAulStoreMonitor *theOnlyInstance;
 
 
@@ -23,6 +25,8 @@ static RollbarAulStoreMonitor *theOnlyInstance;
     // dynamically calculated data fields:
     NSDate *_aulStartTimestamp; //= [[NSDate date] dateByAddingTimeInterval:-1.0];
     NSDate *_aulEndTimestamp;
+    // internal mechanics:
+    NSTimer *_aulMonitoringTimer;
 }
 
 #pragma mark - AUL integrators
@@ -42,6 +46,55 @@ static RollbarAulStoreMonitor *theOnlyInstance;
     
     [RollbarAulStoreMonitor setupMonitor:self
                                  options:options];
+}
+
+- (void)onTimerTick:(NSTimer *)timer {
+    
+    NSDate *currentMonitoringTimestamp = [NSDate date];
+    
+    //TODO: candidate for async processing!!!
+    //START async processing block:
+    NSError *error = nil;
+    OSLogStore *logStore = [OSLogStore localStoreAndReturnError:&error];
+    if (nil == logStore) {
+        RollbarLog(@"ERROR referencing the local AUL log store: %@", error);
+        return;
+    }
+
+    OSLogPosition *logPosition = [logStore positionWithDate:self->_aulStartTimestamp];
+    if (nil == logPosition) {
+        RollbarLog(@"ERROR referencing the local AUL log store position.");
+        return;
+    }
+
+    NSPredicate *monitoringTimeframePredicate =
+    [RollbarAulPredicateBuilder buildAulTimeIntervalPredicateStartingAt:self->_aulStartTimestamp
+                                                               endingAt:currentMonitoringTimestamp];
+    NSPredicate *logEnumeratorPredicate =
+    [NSCompoundPredicate andPredicateWithSubpredicates:@[self->_aulSubsystemCategoryPredicate, monitoringTimeframePredicate]];
+    
+    OSLogEnumerator *logEnumerator =
+    [RollbarAulClient buildAulLogEnumeratorWithinLogStore:logStore
+                                        staringAtPosition:logPosition
+                                           usingPredicate:logEnumeratorPredicate];
+    
+    int count = [self processLogEntries:logEnumerator];
+    RollbarLog(@"Total AUL entries: %d", count);
+    //END async processing block:
+
+    self->_aulStartTimestamp = currentMonitoringTimestamp;
+}
+
+- (int)processLogEntries:(OSLogEnumerator *)logEnumerator {
+    
+    int count = 0;
+    for (OSLogEntryLog *entry in logEnumerator) {
+        
+        //TODO: reimplement to forward the log entries to Rollbar!!!
+
+        count++;
+    }
+    return count;
 }
 
 #pragma mark - RollbarAulStoreMonitoring
@@ -88,6 +141,13 @@ static RollbarAulStoreMonitor *theOnlyInstance;
                 [[NSDate date] dateByAddingTimeInterval:-1.0];
 
                 theOnlyInstance->_logger = Rollbar.currentLogger;
+                
+                theOnlyInstance->_aulMonitoringTimer =
+                [NSTimer scheduledTimerWithTimeInterval:DEFAULT_AUL_MONITORING_INTERVAL_IN_SECS
+                                                 target:theOnlyInstance//self
+                                               selector:@selector(onTimerTick:)
+                                               userInfo:nil
+                                                repeats:YES];
             }
         }
         
@@ -114,6 +174,18 @@ static RollbarAulStoreMonitor *theOnlyInstance;
 + (instancetype)hiddenAlloc {
     
     return [super alloc];
+}
+
+#pragma mark - destructor
+
+- (void)dealloc {
+    
+    // cleanup the monitoring timer:
+    [self->_aulMonitoringTimer invalidate];
+    self->_aulMonitoringTimer = nil;
+    
+    // do the basics (not needed with ARC):
+    //[super dealloc];
 }
 
 @end
