@@ -12,6 +12,31 @@
 @implementation RollbarAulPredicateBuilder
 
 + (nullable NSPredicate *)buildRollbarAulPredicateForSubsystem:(nullable NSString *)subsystem
+                                              andForCategories:(nullable NSArray<NSString *> *)categories {
+
+    NSPredicate *subsystemPredicate = [self buildAulSubsystemPredicate:subsystem];
+    NSPredicate *categoriesPredicate  = [self buildAulCategoriesPredicate:categories];
+
+    if ((nil != subsystemPredicate) && (nil != categoriesPredicate)) {
+        
+        NSPredicate *predicate =
+        [NSCompoundPredicate andPredicateWithSubpredicates:@[subsystemPredicate, categoriesPredicate]];
+        return predicate;
+    }
+    else if (nil != subsystemPredicate) {
+        
+        return subsystemPredicate;
+    }
+    else if (nil != categoriesPredicate) {
+        
+        return categoriesPredicate;
+    }
+    else {
+        return nil;
+    }
+}
+
++ (nullable NSPredicate *)buildRollbarAulPredicateForSubsystem:(nullable NSString *)subsystem
                                                 andForCategory:(nullable NSString *)category {
     
     NSPredicate *subsystemPredicate = [self buildAulSubsystemPredicate:subsystem];
@@ -46,6 +71,22 @@
         
         predicate = [RollbarPredicateBuilder buildStringPredicateWithValue:subsystem
                                                                forProperty:@"subsystem"];
+    }
+
+    return predicate;
+}
+
++ (nullable NSPredicate *)buildAulCategoriesPredicate:(nullable NSArray<NSString *> *)categories {
+    
+    //TODO: implement...
+    NSPredicate *predicate = nil;
+    
+    if (nil != categories) {
+        
+        //predicate = [NSPredicate predicateWithFormat:@"category == %@", category];
+
+        predicate = [RollbarPredicateBuilder buildStringPredicateWithValueList:categories
+                                                                   forProperty:@"category"];
     }
 
     return predicate;

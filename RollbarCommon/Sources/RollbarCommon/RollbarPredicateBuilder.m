@@ -26,6 +26,13 @@
     return predicate;
 }
 
++ (nullable NSPredicate *)buildStringPredicateWithValueList:(nullable NSArray<NSString *> *)values
+                                                forProperty:(nullable NSString *)property {
+    
+    //TODO: implement...
+}
+
+
 + (nullable NSPredicate *)buildLessThanDatePredicateWithValue:(nullable NSDate *)value
                                                   forProperty:(nullable NSString *)property {
     

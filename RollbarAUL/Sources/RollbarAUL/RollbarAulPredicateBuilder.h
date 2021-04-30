@@ -14,9 +14,14 @@ NS_ASSUME_NONNULL_BEGIN
 + (nullable NSPredicate *)buildRollbarAulPredicateForSubsystem:(nullable NSString *)subsystem
                                                 andForCategory:(nullable NSString *)category;
 
++ (nullable NSPredicate *)buildRollbarAulPredicateForSubsystem:(nullable NSString *)subsystem
+                                              andForCategories:(nullable NSArray<NSString *> *)categories;
+
 + (nullable NSPredicate *)buildAulSubsystemPredicate:(nullable NSString *)subsystem;
 
 + (nullable NSPredicate *)buildAulCategoryPredicate:(nullable NSString *)category;
+
++ (nullable NSPredicate *)buildAulCategoriesPredicate:(nullable NSArray<NSString *> *)categories;
 
 + (nullable NSPredicate *)buildAulTimeIntervalPredicateStartingAt:(nullable NSDate *)startTime
                                                          endingAt:(nullable NSDate *)endTime;

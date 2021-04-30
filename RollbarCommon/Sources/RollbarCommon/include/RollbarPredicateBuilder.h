@@ -14,6 +14,9 @@ NS_ASSUME_NONNULL_BEGIN
 + (nullable NSPredicate *)buildStringPredicateWithValue:(nullable NSString *)value
                                             forProperty:(nullable NSString *)property;
 
++ (nullable NSPredicate *)buildStringPredicateWithValueList:(nullable NSArray<NSString *> *)values
+                                                forProperty:(nullable NSString *)property;
+
 + (nullable NSPredicate *)buildLessThanDatePredicateWithValue:(nullable NSDate *)value
                                                   forProperty:(nullable NSString *)property;
 
