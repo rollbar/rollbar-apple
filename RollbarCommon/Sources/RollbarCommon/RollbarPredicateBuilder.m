@@ -29,7 +29,18 @@
 + (nullable NSPredicate *)buildStringPredicateWithValueList:(nullable NSArray<NSString *> *)values
                                                 forProperty:(nullable NSString *)property {
     
-    //TODO: implement...
+    NSPredicate *predicate = nil;
+    
+    if ((nil != property) && (nil != values)) {
+        
+        predicate = [NSPredicate predicateWithFormat:@"%K IN %@", property, values];
+    }
+//    else if (nil != property) {
+//
+//        predicate = [NSPredicate predicateWithFormat:@"%K == nil", property, value];
+//    }
+
+    return predicate;
 }
 
 
@@ -61,21 +72,25 @@
         return nil;
     }
     
-    NSPredicate *predicate = nil;
-    
-    if ((nil != startTime) && (nil != endTime)) {
-        
-        predicate = [NSPredicate predicateWithFormat:@"(%K >= %@) AND (%K <= %@)", property, startTime, property, endTime];
-    }
-    else if (nil != startTime) {
-        
-        predicate = [NSPredicate predicateWithFormat:@"%K >= %@", property, startTime];
-    }
-    else if (nil != endTime) {
-        
-        predicate = [NSPredicate predicateWithFormat:@"%K <= %@", property, endTime];
-    }
-
+//    NSPredicate *predicate = nil;
+//
+//    if ((nil != startTime) && (nil != endTime)) {
+//
+//        predicate = [NSPredicate predicateWithFormat:@"(%K >= %@) AND (%K <= %@)", property, startTime, property, endTime];
+//    }
+//    else if (nil != startTime) {
+//
+//        predicate = [NSPredicate predicateWithFormat:@"%K >= %@", property, startTime];
+//    }
+//    else if (nil != endTime) {
+//
+//        predicate = [NSPredicate predicateWithFormat:@"%K <= %@", property, endTime];
+//    }
+    NSPredicate *predicate = [RollbarPredicateBuilder buildTimeIntervalPredicateStartingAt:startTime
+                                                                               inclusively:YES
+                                                                                  endingAt:endTime
+                                                                               inclusively:YES
+                                                                               forProperty:property];
     return predicate;
 }
 
