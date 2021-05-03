@@ -49,22 +49,26 @@ static NSString *configurationFilePath = nil;
         return nil;
     }
     if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
-        *error = [NSError errorWithDomain:[NSString stringWithFormat:@"filePath %@ does not exist.", filePath]
-                                     code:0
-                                 userInfo:nil];
+        if (nil != error) {
+            *error = [NSError errorWithDomain:[NSString stringWithFormat:@"filePath %@ does not exist.", filePath]
+                                         code:0
+                                     userInfo:nil];
+        }
         return nil;
     }
     NSData *configData = [NSData dataWithContentsOfFile:filePath
                                                 options:nil
                                                   error:error];
-    if (configData) {
+    if (nil != configData) {
         RollbarConfig *config = [[RollbarConfig alloc] initWithJSONData:configData];
         return config;
     }
-    if (!error) {
-        RollbarSdkLog(@"Error loading RollbarConfig from %@: %@", filePath, [*error localizedDescription]);
+    else {
+        if (nil != error) {
+            RollbarSdkLog(@"Error loading RollbarConfig from %@: %@", filePath, [*error localizedDescription]);
+        }
+        return nil;
     }
-    return nil;
 }
 
 + (nullable RollbarConfig *)createRollbarConfigFromDefaultFile:(NSError * _Nullable *)error {
@@ -87,7 +91,7 @@ static NSString *configurationFilePath = nil;
     }
     NSData *configData = [rollbarConfig serializeToJSONData];
     BOOL success = [configData writeToFile:filePath atomically:YES];
-    if (!success) {
+    if ((NO == success) && (nil != error)) {
         *error =
         [NSError errorWithDomain:[NSString stringWithFormat:@"Can't write RollbarConfig to file: %@", filePath]
                             code:0
@@ -110,13 +114,13 @@ static NSString *configurationFilePath = nil;
     if (fileExists) {
         BOOL success = [fileManager removeItemAtPath:filePath
                                                error:error];
-        if (!error) {
+        if (NO == success) {
+            RollbarSdkLog(@"Error while deleting file %@", filePath);
+        }
+        if ((NO == success) && (nil != error)) {
             RollbarSdkLog(@"Error while deleting file %@: %@",
                           filePath,
                           [*error localizedDescription]);
-        }
-        if (!success) {
-            RollbarSdkLog(@"Error while deleting file %@", filePath);
         }
         return success;
     }

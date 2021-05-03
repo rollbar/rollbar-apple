@@ -41,7 +41,7 @@ static NSString * const DFK_AUL_CATEGORIES = @"aul_categories";
     
     self = [self initWithDictionary:@{
         DFK_AUL_SUBSYSTEM:aulSubsystem,
-        DFK_AUL_CATEGORIES:aulCategories,
+        DFK_AUL_CATEGORIES:(nil != aulCategories) ? aulCategories : [NSNull null],
     }];
     return self;
 }

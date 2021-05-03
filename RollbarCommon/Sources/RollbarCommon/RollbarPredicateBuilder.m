@@ -107,8 +107,8 @@
     
     NSPredicate *predicate = nil;
     
-    NSString *startCondition = (YES == stratInclusively) ? @">=" : @">";
-    NSString *endCondition = (YES == endInclusively) ? @"<=" : @"<";
+    //NSString *startCondition = (YES == stratInclusively) ? @">=" : @">";
+    //NSString *endCondition = (YES == endInclusively) ? @"<=" : @"<";
 
     if ((nil != startTime) && (nil != endTime)) {
         

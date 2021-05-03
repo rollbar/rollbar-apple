@@ -183,9 +183,9 @@ static RollbarLogger *sharedSingleton = nil;
             payloadsFilePath =
             [cachesDirectory stringByAppendingPathComponent:PAYLOADS_FILE_NAME];
         }
-    }
 
-    self->nextSendTime = [[NSDate alloc] init];
+        self->nextSendTime = [[NSDate alloc] init];
+    }
 
     return self;
 }
@@ -217,7 +217,7 @@ static RollbarLogger *sharedSingleton = nil;
         return;
     }
 
-    RollbarConfig *config = self.configuration;
+    //RollbarConfig *config = self.configuration;
     
     RollbarPayload *payload = [self buildRollbarPayloadWithLevel:level
                                                          message:message
@@ -239,7 +239,7 @@ static RollbarLogger *sharedSingleton = nil;
         return;
     }
     
-    RollbarConfig *config = self.configuration;
+    //RollbarConfig *config = self.configuration;
     
     RollbarPayload *payload = [self buildRollbarPayloadWithLevel:level
                                                          message:nil
@@ -261,7 +261,7 @@ static RollbarLogger *sharedSingleton = nil;
         return;
     }
     
-    RollbarConfig *config = self.configuration;
+    //RollbarConfig *config = self.configuration;
     
     RollbarPayload *payload = [self buildRollbarPayloadWithLevel:level
                                                          message:nil
