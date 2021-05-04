@@ -16,18 +16,23 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol RollbarAulStoreMonitoring
 
 @required
+
 - (id<RollbarAulStoreMonitoring>)configureWithOptions:(RollbarAulStoreMonitorOptions *)options;
+- (id<RollbarAulStoreMonitoring>)configureRollbarLogger:(RollbarLogger *)logger;
+
+- (void)start;
+- (void)cancel;
 
 @optional
-- (id<RollbarAulStoreMonitoring>)configureRollbarLogger:(RollbarLogger *)logger;
+
+// add optionals...
 
 @end
 
 
 @interface RollbarAulStoreMonitor : NSThread<RollbarAulStoreMonitoring, RollbarSingleInstancing>
 
-@property(atomic) BOOL active;
-
+//@property(atomic, readonly) BOOL active;
 
 @end
 

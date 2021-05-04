@@ -20,6 +20,7 @@
                              selector:@selector(run)
                                object:nil])) {
         
+        self.name = @"RollbarThread";
         _logger = logger;
         
         if(reportsPerMinute > 0) {

@@ -20,11 +20,9 @@ static RollbarAulStoreMonitor *theOnlyInstance;
     @private
     // configurable data fields:
     RollbarLogger       *_logger;
-    //NSString            *_aulSubsystem;
-    //NSArray<NSString *> *_aulCategories;
     NSPredicate         *_aulSubsystemCategoryPredicate;
     // dynamically calculated data fields:
-    NSDate *_aulStartTimestamp; //= [[NSDate date] dateByAddingTimeInterval:-1.0];
+    NSDate *_aulStartTimestamp;
     NSDate *_aulEndTimestamp;
     // internal mechanics:
     NSTimer *_aulMonitoringTimer;
@@ -36,15 +34,8 @@ static RollbarAulStoreMonitor *theOnlyInstance;
     if ((self = [super initWithTarget:self
                              selector:@selector(run)
                                object:nil])) {
-//
-//        _logger = logger;
-//
-//        if(reportsPerMinute > 0) {
-//            _maxReportsPerMinute = reportsPerMinute;
-//        } else {
-//            _maxReportsPerMinute = 60;
-//        }
-//
+
+        self.name = @"RollbarAulStoreMonitor";
         self->_logger = logger;
         RollbarAulStoreMonitorOptions *validOptions = options;
         if (nil == validOptions) {
@@ -56,7 +47,7 @@ static RollbarAulStoreMonitor *theOnlyInstance;
         self->_aulStartTimestamp =
         [[NSDate date] dateByAddingTimeInterval:-1.0];
 
-        self.active = YES;
+        //self.active = YES;
     }
 
     return self;
@@ -76,7 +67,7 @@ static RollbarAulStoreMonitor *theOnlyInstance;
         NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
         [runLoop addTimer:self->_aulMonitoringTimer forMode:NSDefaultRunLoopMode];
         
-        while (self.active) {
+        while (NO == self.cancelled) {
             [runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
         }
     }
@@ -88,8 +79,6 @@ static RollbarAulStoreMonitor *theOnlyInstance;
              options:(nonnull RollbarAulStoreMonitorOptions *)options {
     
     // snap the new options into the provided AUL monitor:
-    //monitor->_aulSubsystem  = options.aulSubsystem.copy;
-    //monitor->_aulCategories = options.aulCategories.copy;
     monitor->_aulSubsystemCategoryPredicate =
     [RollbarAulPredicateBuilder buildRollbarAulPredicateForSubsystem:options.aulSubsystem.copy
                                                     andForCategories:options.aulCategories.copy];
@@ -103,7 +92,7 @@ static RollbarAulStoreMonitor *theOnlyInstance;
 
 - (void)onTimerTick:(NSTimer *)timer {
     
-    if (self.cancelled) {
+    if (YES == self.cancelled) {
         if (self->_aulMonitoringTimer) {
             [self->_aulMonitoringTimer invalidate];
             self->_aulMonitoringTimer = nil;
@@ -113,8 +102,6 @@ static RollbarAulStoreMonitor *theOnlyInstance;
 
     NSDate *currentMonitoringTimestamp = [NSDate date];
     
-    //TODO: candidate for async processing!!!
-    //START async processing block:
     NSError *error = nil;
     OSLogStore *logStore = [OSLogStore localStoreAndReturnError:&error];
     if (nil == logStore) {
@@ -134,7 +121,7 @@ static RollbarAulStoreMonitor *theOnlyInstance;
                                                                endingAt:currentMonitoringTimestamp];
     NSPredicate *logEnumeratorPredicate =
     [NSCompoundPredicate andPredicateWithSubpredicates:@[self->_aulSubsystemCategoryPredicate, monitoringTimeframePredicate]];
-    RollbarSdkLog(@"Log predicate: %@", logEnumeratorPredicate);
+    //RollbarSdkLog(@"Log predicate: %@", logEnumeratorPredicate);
 
     OSLogEnumerator *logEnumerator =
     [RollbarAulClient buildAulLogEnumeratorWithinLogStore:logStore
@@ -144,15 +131,14 @@ static RollbarAulStoreMonitor *theOnlyInstance;
 
     int count = [self processLogEntries:logEnumerator];
     //RollbarLog(@"Total AUL entries: %d", count);
-    //END async processing block:
 
-    NSDateFormatter *timestampFormatter = [[NSDateFormatter alloc] init];
-    [timestampFormatter setDateFormat:@"YYYY-MM-dd 'at' HH:mm:ss.SSSSSSXX"];
-    RollbarSdkLog(@"Total of %d AUL events at [%@, %@)",
-                  count,
-                  [timestampFormatter stringFromDate:self->_aulStartTimestamp],
-                  [timestampFormatter stringFromDate:currentMonitoringTimestamp]
-                  );
+//    NSDateFormatter *timestampFormatter = [[NSDateFormatter alloc] init];
+//    [timestampFormatter setDateFormat:@"YYYY-MM-dd 'at' HH:mm:ss.SSSSSSXX"];
+//    RollbarSdkLog(@"Total of %d AUL events at [%@, %@)",
+//                  count,
+//                  [timestampFormatter stringFromDate:self->_aulStartTimestamp],
+//                  [timestampFormatter stringFromDate:currentMonitoringTimestamp]
+//                  );
 
     self->_aulStartTimestamp = currentMonitoringTimestamp;
 }
@@ -214,33 +200,8 @@ static RollbarAulStoreMonitor *theOnlyInstance;
         
         if (nil == theOnlyInstance) {
             
-            //theOnlyInstance = [[[self class] hiddenAlloc] init];
-            theOnlyInstance = [[[self class] hiddenAlloc] initWithLogger:nil andOptions:nil];
-
-//            theOnlyInstance = [[[self class] hiddenAlloc] initWithTarget:theOnlyInstance
-//                                                                selector:@selector(run)
-//                                                                  object:nil];
-
-            // let's complete the only instance initialization:
-//            if (nil != theOnlyInstance) {
-//
-//                [RollbarAulStoreMonitor setupMonitor:theOnlyInstance
-//                                             options:[RollbarAulStoreMonitorOptions new]];
-//                
-//                theOnlyInstance->_aulStartTimestamp =
-//                [[NSDate date] dateByAddingTimeInterval:-1.0];
-//
-//                theOnlyInstance->_logger = Rollbar.currentLogger;
-//                
-//                theOnlyInstance.active = YES;
-//                [theOnlyInstance start];
-////                theOnlyInstance->_aulMonitoringTimer =
-////                [NSTimer scheduledTimerWithTimeInterval:DEFAULT_AUL_MONITORING_INTERVAL_IN_SECS
-////                                                 target:theOnlyInstance//self
-////                                               selector:@selector(onTimerTick:)
-////                                               userInfo:nil
-////                                                repeats:YES];
-//            }
+            theOnlyInstance = [[[self class] hiddenAlloc] initWithLogger:nil
+                                                              andOptions:nil];
         }
         
         return theOnlyInstance;
@@ -272,6 +233,7 @@ static RollbarAulStoreMonitor *theOnlyInstance;
 
 - (void)dealloc {
     
+    [self cancel];
     // cleanup the monitoring timer:
     [self->_aulMonitoringTimer invalidate];
     self->_aulMonitoringTimer = nil;
