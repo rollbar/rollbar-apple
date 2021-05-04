@@ -24,7 +24,10 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 
-@interface RollbarAulStoreMonitor : NSObject<RollbarAulStoreMonitoring, RollbarSingleInstancing>
+@interface RollbarAulStoreMonitor : NSThread<RollbarAulStoreMonitoring, RollbarSingleInstancing>
+
+@property(atomic) BOOL active;
+
 
 @end
 
