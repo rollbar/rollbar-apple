@@ -73,9 +73,10 @@
     
     [self generateLogEntries];
     
-    [NSThread sleepForTimeInterval:10.0f];
+    [NSThread sleepForTimeInterval:25.0f];
     
     XCTAssertEqual(10, [RollbarTelemetry.sharedInstance getAllData].count);
+    //XCTAssertTrue(([RollbarTelemetry.sharedInstance getAllData].count > 0) && ([RollbarTelemetry.sharedInstance getAllData].count <= 10));
         
     [Rollbar log:RollbarLevel_Warning message:@"This payload should come with AUL Telemetry events!"];
 
