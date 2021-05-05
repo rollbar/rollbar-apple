@@ -16,9 +16,13 @@
 
 static NSTimeInterval const DEFAULT_AUL_MONITORING_INTERVAL_IN_SECS = 3.0;
 
+API_AVAILABLE(macos(10.15))
+API_UNAVAILABLE(ios, tvos, watchos)
 static RollbarAulStoreMonitor *theOnlyInstance;
 
 
+API_AVAILABLE(macos(10.15))
+API_UNAVAILABLE(ios, tvos, watchos)
 @implementation RollbarAulStoreMonitor {
     @private
     // configurable data fields:

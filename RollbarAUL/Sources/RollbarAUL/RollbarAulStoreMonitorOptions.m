@@ -9,9 +9,16 @@
 
 #pragma mark - data field keys
 
+API_AVAILABLE(macos(10.15))
+API_UNAVAILABLE(ios, tvos, watchos)
 static NSString * const DFK_AUL_SUBSYSTEM = @"aul_sysbsystem";
+
+API_AVAILABLE(macos(10.15))
+API_UNAVAILABLE(ios, tvos, watchos)
 static NSString * const DFK_AUL_CATEGORIES = @"aul_categories";
 
+API_AVAILABLE(macos(10.15))
+API_UNAVAILABLE(ios, tvos, watchos)
 @implementation RollbarAulStoreMonitorOptions
 
 #pragma mark - initializers

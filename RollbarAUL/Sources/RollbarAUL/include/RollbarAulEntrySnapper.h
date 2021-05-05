@@ -6,10 +6,16 @@
 //
 
 @import Foundation;
-@import OSLog;
+
+//@import OSLog;
+#if __has_include(<OSLog/OSLog.h>)
+  #include <OSLog/OSLog.h>
+#endif
 
 NS_ASSUME_NONNULL_BEGIN
 
+API_AVAILABLE(macos(10.15))
+API_UNAVAILABLE(ios, tvos, watchos)
 @interface RollbarAulEntrySnapper : NSObject
 
 - (void)captureOSLogEntry:(nullable OSLogEntry *)entry

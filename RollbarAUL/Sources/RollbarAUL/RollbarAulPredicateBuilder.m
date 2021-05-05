@@ -9,6 +9,8 @@
 
 @import RollbarCommon;
 
+API_AVAILABLE(macos(10.15))
+API_UNAVAILABLE(ios, tvos, watchos)
 @implementation RollbarAulPredicateBuilder
 
 + (nullable NSPredicate *)buildRollbarAulPredicateForSubsystem:(nullable NSString *)subsystem

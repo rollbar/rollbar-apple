@@ -9,6 +9,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+API_AVAILABLE(macos(10.15))
+API_UNAVAILABLE(ios, tvos, watchos)
 @interface RollbarAulPredicateBuilder : NSObject
 
 + (nullable NSPredicate *)buildRollbarAulPredicateForSubsystem:(nullable NSString *)subsystem

@@ -13,6 +13,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+API_AVAILABLE(macos(10.15))
+API_UNAVAILABLE(ios, tvos, watchos)
 @protocol RollbarAulStoreMonitoring
 
 @required
@@ -30,6 +32,8 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 
+API_AVAILABLE(macos(10.15))
+API_UNAVAILABLE(ios, tvos, watchos)
 @interface RollbarAulStoreMonitor : NSThread<RollbarAulStoreMonitoring, RollbarSingleInstancing>
 
 @end

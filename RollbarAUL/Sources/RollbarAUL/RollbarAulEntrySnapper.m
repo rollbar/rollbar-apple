@@ -7,7 +7,10 @@
 
 #import "RollbarAulEntrySnapper.h"
 #import "RollbarAulOSLogEntryLogLevelConverter.h"
+@import RollbarCommon;
 
+API_AVAILABLE(macos(10.15))
+API_UNAVAILABLE(ios, tvos, watchos)
 @implementation RollbarAulEntrySnapper
 
 - (void)captureOSLogEntry:(nullable OSLogEntry *)entry
@@ -21,7 +24,7 @@
     [formatter setDateFormat:@"YYYY-MM-dd 'at' HH:mm:ss.SSSSSSXX"];
 
     snapshot[@"date"] = [formatter stringFromDate:entry.date];
-    snapshot[@"className"] = entry.className;
+    snapshot[@"className"] = entry.objectClassName;
     snapshot[@"composedMessage"] = entry.composedMessage;
     //snapShot[@""] = entry.storeCategory;
     

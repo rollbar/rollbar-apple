@@ -8,6 +8,8 @@
 #import "RollbarAulClient.h"
 #import "RollbarAulPredicateBuilder.h"
 
+API_AVAILABLE(macos(10.15))
+API_UNAVAILABLE(ios, tvos, watchos)
 @implementation RollbarAulClient
 
 + (nullable OSLogEnumerator *)buildAulLogEnumeratorWithinLogStore:(nullable OSLogStore *)logStore
