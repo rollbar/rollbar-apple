@@ -10,7 +10,6 @@
 
 @implementation RollbarAulEntrySnapper
 
-// make it public
 - (void)captureOSLogEntry:(nullable OSLogEntry *)entry
              intoSnapshot:(nonnull NSMutableDictionary<NSString *, id> *)snapshot {
     
@@ -31,29 +30,32 @@
         [self captureOSLogEntryLog:(OSLogEntryLog *)entry
                       intoSnapshot:snapshot];
     }
-    else if ([entry isKindOfClass:[OSLogEntryActivity class]]) {
+    
+    if ([entry isKindOfClass:[OSLogEntryActivity class]]) {
         
         [self captureOSLogEntryActivity:(OSLogEntryActivity *)entry
                            intoSnapshot:snapshot];
     }
-    else if ([entry isKindOfClass:[OSLogEntrySignpost class]]) {
+    
+    if ([entry isKindOfClass:[OSLogEntrySignpost class]]) {
         
         [self captureOSLogEntrySignpost:(OSLogEntrySignpost *)entry
                            intoSnapshot:snapshot];
     }
-    else if ([entry conformsToProtocol:@protocol(OSLogEntryFromProcess)]) {
+    
+    if ([entry conformsToProtocol:@protocol(OSLogEntryFromProcess)]) {
         
         [self captureOSLogEntryFromProcess:(OSLogEntry<OSLogEntryFromProcess> *)entry
                               intoSnapshot:snapshot];
     }
-    else if ([entry conformsToProtocol:@protocol(OSLogEntryWithPayload)]) {
+    
+    if ([entry conformsToProtocol:@protocol(OSLogEntryWithPayload)]) {
         
         [self captureOSLogEntryWithPayload:(OSLogEntry<OSLogEntryWithPayload> *)entry
                               intoSnapshot:snapshot];
     }
 }
 
-// make it private
 - (void)captureOSLogEntryLog:(nullable OSLogEntryLog *)entry
                 intoSnapshot:(nonnull NSMutableDictionary<NSString *, id> *)snapshot {
     
@@ -64,7 +66,6 @@
     snapshot[@"level"] = [RollbarAulOSLogEntryLogLevelConverter OSLogEntryLogLevelToString:entry.level];
 }
 
-// make it private
 - (void)captureOSLogEntryActivity:(nullable OSLogEntryActivity *)entry
                      intoSnapshot:(nonnull NSMutableDictionary<NSString *, id> *)snapshot {
 
@@ -75,7 +76,6 @@
     snapshot[@"parentActivityIdentifier"] = [NSNumber numberWithUnsignedInt:entry.parentActivityIdentifier];
 }
 
-// make it private
 - (void)captureOSLogEntrySignpost:(nullable OSLogEntrySignpost *)entry
                      intoSnapshot:(nonnull NSMutableDictionary<NSString *, id> *)snapshot {
 
@@ -88,7 +88,6 @@
     snapshot[@"signpostType"] = [NSNumber numberWithInteger:entry.signpostType];
 }
 
-// make it private
 - (void)captureOSLogEntryFromProcess:(nullable OSLogEntry<OSLogEntryFromProcess> *)entry
                         intoSnapshot:(nonnull NSMutableDictionary<NSString *, id> *)snapshot {
 
@@ -103,7 +102,6 @@
     snapshot[@"threadIdentifier"] = [NSNumber numberWithUnsignedInt:entry.threadIdentifier];
 }
 
-// make it private
 - (void)captureOSLogEntryWithPayload:(nullable OSLogEntry<OSLogEntryWithPayload> *)entry
                         intoSnapshot:(nonnull NSMutableDictionary<NSString *, id> *)snapshot {
 

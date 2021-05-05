@@ -10,6 +10,9 @@
 #import "RollbarAulPredicateBuilder.h"
 #import "RollbarAulClient.h"
 #import "RollbarAulEntrySnapper.h"
+#import "RollbarAulOSLogEntryLogLevelConverter.h"
+
+@import RollbarNotifier;
 
 static NSTimeInterval const DEFAULT_AUL_MONITORING_INTERVAL_IN_SECS = 3.0;
 
@@ -46,8 +49,6 @@ static RollbarAulStoreMonitor *theOnlyInstance;
 
         self->_aulStartTimestamp =
         [[NSDate date] dateByAddingTimeInterval:-1.0];
-
-        //self.active = YES;
     }
 
     return self;
@@ -150,21 +151,42 @@ static RollbarAulStoreMonitor *theOnlyInstance;
 
     for (OSLogEntryLog *entry in logEnumerator) {
         
-        //TODO: reimplement to forward the log entries to Rollbar!!!
-        NSLog(@"");
-        NSLog(@"=== START AUL ENTRY ===");
-        NSMutableDictionary<NSString *, id> *entrySnapshot = [NSMutableDictionary<NSString *, id> dictionaryWithCapacity:20];
+        NSMutableDictionary<NSString *, id> *entrySnapshot =
+        [NSMutableDictionary<NSString *, id> dictionaryWithCapacity:20];
         
-        [entrySnapper captureOSLogEntry:entry intoSnapshot:entrySnapshot];
-        for (NSString *key in entrySnapshot) {
-            id value = entrySnapshot[key];
-            NSLog(@"   %@: %@", key, value);
+        [entrySnapper captureOSLogEntry:entry
+                           intoSnapshot:entrySnapshot];
+
+//        NSLog(@"");
+//        NSLog(@"=== START AUL ENTRY ===");
+//        for (NSString *key in entrySnapshot) {
+//            id value = entrySnapshot[key];
+//            NSLog(@"   %@: %@", key, value);
+//        }
+//        NSLog(@"=== END AUL ENTRY ===");
+//        NSLog(@"");
+        
+        // To start with, let's report as Telemetry events for now:
+        if ((nil != self->_logger)
+            && (nil != self->_logger.configuration)
+            && (nil != self->_logger.configuration.telemetry)
+            && (YES == self->_logger.configuration.telemetry.enabled)
+            && (YES == self->_logger.configuration.telemetry.captureLog)
+            ) {
+
+            RollbarLevel rollbarLevel =
+            [RollbarAulOSLogEntryLogLevelConverter RollbarLevelFromOSLogEntryLogLevel:entry.level];
+            
+            [RollbarTelemetry.sharedInstance recordLogEventForLevel:rollbarLevel
+                                                            message:entry.composedMessage
+                                                          extraData:entrySnapshot];
         }
-        NSLog(@"=== END AUL ENTRY ===");
-        NSLog(@"");
+
+        
 
         count++;
     }
+
     return count;
 }
 

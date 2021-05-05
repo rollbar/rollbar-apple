@@ -83,8 +83,6 @@
     
     if (nil != categories) {
         
-        //predicate = [NSPredicate predicateWithFormat:@"category == %@", category];
-
         predicate = [RollbarPredicateBuilder buildStringPredicateWithValueList:categories
                                                                    forProperty:@"category"];
     }
@@ -98,8 +96,6 @@
     
     if (nil != category) {
         
-        //predicate = [NSPredicate predicateWithFormat:@"category == %@", category];
-
         predicate = [RollbarPredicateBuilder buildStringPredicateWithValue:category
                                                                forProperty:@"category"];
     }

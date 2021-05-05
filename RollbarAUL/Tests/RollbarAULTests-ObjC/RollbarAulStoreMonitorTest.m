@@ -49,17 +49,37 @@
 }
 
 - (void)testRollbarAulStoreMonitor {
+    
+    RollbarConfig *rollbarConfig = [[RollbarConfig alloc] init];
+    rollbarConfig.destination.accessToken = @"2ffc7997ed864dda94f63e7b7daae0f3";
+    rollbarConfig.destination.environment = @"unit-tests";
+    rollbarConfig.telemetry.enabled = YES;
+    rollbarConfig.telemetry.captureLog = YES;
+    rollbarConfig.developerOptions.transmit = YES;
+//    rollbarConfig.developerOptions.logPayload = YES;
+//    rollbarConfig.loggingOptions.maximumReportsPerMinute = 5000;
 
+    [Rollbar initWithConfiguration:rollbarConfig];
+
+    
+    
     RollbarAulStoreMonitorOptions *aulMonitorOptions =
     [[RollbarAulStoreMonitorOptions alloc] init];
     [aulMonitorOptions addAulCategory:@"test_category"];
     
     [RollbarAulStoreMonitor.sharedInstance configureWithOptions:aulMonitorOptions];
+    [RollbarAulStoreMonitor.sharedInstance configureRollbarLogger:Rollbar.currentLogger];
     [RollbarAulStoreMonitor.sharedInstance start];
     
     [self generateLogEntries];
     
     [NSThread sleepForTimeInterval:10.0f];
+    
+    XCTAssertEqual(10, [RollbarTelemetry.sharedInstance getAllData].count);
+        
+    [Rollbar log:RollbarLevel_Warning message:@"This payload should come with AUL Telemetry events!"];
+
+    [NSThread sleepForTimeInterval:5.0f];
 }
 
 - (void)testPerformanceExample {

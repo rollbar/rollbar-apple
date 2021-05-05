@@ -7,7 +7,6 @@
 
 @import Foundation;
 
-//@import OSLog;
 #if __has_include(<oslog/OSLog.h>)
   #include <oslog/OSLog.h>
 #endif
