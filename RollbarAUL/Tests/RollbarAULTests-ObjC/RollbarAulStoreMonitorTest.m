@@ -43,7 +43,7 @@
         NSDateFormatter *timestampFormatter = [[NSDateFormatter alloc] init];
         [timestampFormatter setDateFormat:@"YYYY-MM-dd 'at' HH:mm:ss.SSSSSSXX"];
         os_log_error(customLog, "An error occurred at %@!", [timestampFormatter stringFromDate:[NSDate date]]);
-        [NSThread sleepForTimeInterval:2.0f];
+        [NSThread sleepForTimeInterval:1.0f];
     }
 
 }
@@ -73,10 +73,10 @@
     
     [self generateLogEntries];
     
-    [NSThread sleepForTimeInterval:25.0f];
+    [NSThread sleepForTimeInterval:15.0f];
     
-    //XCTAssertEqual(10, [RollbarTelemetry.sharedInstance getAllData].count);
-    XCTAssertTrue(([RollbarTelemetry.sharedInstance getAllData].count > 0) && ([RollbarTelemetry.sharedInstance getAllData].count <= 10));
+    XCTAssertEqual(10, [RollbarTelemetry.sharedInstance getAllData].count);
+    //XCTAssertTrue(([RollbarTelemetry.sharedInstance getAllData].count > 0) && ([RollbarTelemetry.sharedInstance getAllData].count <= 10));
         
     [Rollbar log:RollbarLevel_Warning message:@"This payload should come with AUL Telemetry events!"];
 
