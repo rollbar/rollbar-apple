@@ -11,7 +11,7 @@
 
 API_AVAILABLE(macos(10.15))
 API_UNAVAILABLE(ios, tvos, watchos)
-static NSString * const DFK_AUL_SUBSYSTEM = @"aul_sysbsystem";
+static NSString * const DFK_AUL_SUBSYSTEMS = @"aul_subsystems";
 
 API_AVAILABLE(macos(10.15))
 API_UNAVAILABLE(ios, tvos, watchos)
@@ -25,29 +25,32 @@ API_UNAVAILABLE(ios, tvos, watchos)
 
 - (instancetype)init {
  
-    // by default, we only want to monitor AUL events/entries that are
-    // relevant to the currently running application/main bundle:
-    
-    NSBundle *mainBundle =
-    [NSBundle mainBundle];
-    
-    NSString *bundleIdentifier =
-    [mainBundle objectForInfoDictionaryKey:(NSString *)kCFBundleIdentifierKey];
-    
-    return [self initWithAulSubsystem:bundleIdentifier];
+//    // by default, we only want to monitor AUL events/entries that are
+//    // relevant to the currently running application/main bundle:
+//
+//    NSBundle *mainBundle =
+//    [NSBundle mainBundle];
+//
+//    NSString *bundleIdentifier =
+//    [mainBundle objectForInfoDictionaryKey:(NSString *)kCFBundleIdentifierKey];
+//
+//    return [self initWithAulSubsystem:bundleIdentifier];
+
+    return [self initWithAulSubsystems:nil
+                         aulCategories:nil];
 }
 
-- (instancetype)initWithAulSubsystem:(nonnull NSString *)aulSubsystem {
+- (instancetype)initWithAulSubsystems:(nullable NSArray<NSString *> *)aulSubsystems {
     
-    return [self initWithAulSubsystem:aulSubsystem
-                        aulCategories:nil];
+    return [self initWithAulSubsystems:aulSubsystems
+                         aulCategories:nil];
 }
 
-- (instancetype)initWithAulSubsystem:(nonnull NSString *)aulSubsystem
-                       aulCategories:(nullable NSArray<NSString *> *)aulCategories {
+- (instancetype)initWithAulSubsystems:(nullable NSArray<NSString *> *)aulSubsystems
+                        aulCategories:(nullable NSArray<NSString *> *)aulCategories {
     
     self = [self initWithDictionary:@{
-        DFK_AUL_SUBSYSTEM:aulSubsystem,
+        DFK_AUL_SUBSYSTEMS:(nil != aulSubsystems) ? aulSubsystems : [NSNull null],
         DFK_AUL_CATEGORIES:(nil != aulCategories) ? aulCategories : [NSNull null],
     }];
     return self;
@@ -63,18 +66,33 @@ API_UNAVAILABLE(ios, tvos, watchos)
     @throw nil;
 }
 
-#pragma mark - property accessors
+#pragma mark - subsystems
 
-- (NSString *)aulSubsystem {
+- (NSArray<NSString *> *)aulSubsystems {
     
-    NSString *result = [self safelyGetStringByKey:DFK_AUL_SUBSYSTEM];
+    NSArray *result = [self safelyGetArrayByKey:DFK_AUL_SUBSYSTEMS];
     return result;
 }
 
-- (void)setAulSubsystem:(NSString *)value {
+- (void)setAulSubsystems:(NSArray<NSString *> *)subsystems {
     
-    [self setString:value forKey:DFK_AUL_SUBSYSTEM];
+    [self setArray:subsystems forKey:DFK_AUL_SUBSYSTEMS];
 }
+
+- (void)addAulSubsystem:(NSString *)subsystem {
+    
+    self.aulSubsystems =
+    [self.aulSubsystems arrayByAddingObject:subsystem];
+}
+
+- (void)removeAulSubsystem:(NSString *)subsystem {
+    
+    NSMutableArray *mutableCopy = self.aulSubsystems.mutableCopy;
+    [mutableCopy removeObject:subsystem];
+    self.aulSubsystems = mutableCopy.copy;
+}
+
+#pragma mark - categories
 
 - (NSArray<NSString *> *)aulCategories {
     
@@ -82,21 +100,21 @@ API_UNAVAILABLE(ios, tvos, watchos)
     return result;
 }
 
-- (void)setAulCategories:(NSArray<NSString *> *)scrubFields {
+- (void)setAulCategories:(NSArray<NSString *> *)categories {
     
-    [self setArray:scrubFields forKey:DFK_AUL_CATEGORIES];
+    [self setArray:categories forKey:DFK_AUL_CATEGORIES];
 }
 
-- (void)addAulCategory:(NSString *)field {
+- (void)addAulCategory:(NSString *)category {
     
     self.aulCategories =
-    [self.aulCategories arrayByAddingObject:field];
+    [self.aulCategories arrayByAddingObject:category];
 }
 
-- (void)removeAulCategory:(NSString *)field {
+- (void)removeAulCategory:(NSString *)category {
     
     NSMutableArray *mutableCopy = self.aulCategories.mutableCopy;
-    [mutableCopy removeObject:field];
+    [mutableCopy removeObject:category];
     self.aulCategories = mutableCopy.copy;
 }
 

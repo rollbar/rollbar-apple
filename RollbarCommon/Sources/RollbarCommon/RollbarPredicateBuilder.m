@@ -71,7 +71,7 @@
     
     NSPredicate *predicate = nil;
     
-    if ((nil != property) && (nil != values)) {
+    if ((nil != property) && (nil != values) && (values.count > 0)) {
         
         predicate = [NSPredicate predicateWithFormat:@"%K IN %@", property, values];
     }

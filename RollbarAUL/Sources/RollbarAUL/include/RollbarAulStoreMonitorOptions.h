@@ -16,21 +16,25 @@ API_UNAVAILABLE(ios, tvos, watchos)
 
 #pragma mark - properties
 
-@property (nonatomic, copy) NSString *aulSubsystem;
+@property (nonatomic, copy) NSArray<NSString *> *aulSubsystems;
 @property (nonatomic, copy) NSArray<NSString *> *aulCategories;
 
 #pragma mark - updaters
 
-- (void)addAulCategory:(NSString *)field;
+- (void)addAulSubsystem:(NSString *)subsystem;
 
-- (void)removeAulCategory:(NSString *)field;
+- (void)removeAulSubsystem:(NSString *)subsystem;
+
+- (void)addAulCategory:(NSString *)category;
+
+- (void)removeAulCategory:(NSString *)category;
 
 #pragma mark - initializers
 
-- (instancetype)initWithAulSubsystem:(nonnull NSString *)aulSubsystem;
+- (instancetype)initWithAulSubsystems:(nullable NSArray<NSString *> *)aulSubsystems;
 
-- (instancetype)initWithAulSubsystem:(nonnull NSString *)aulSubsystem
-                       aulCategories:(nullable NSArray<NSString *> *)aulCategories;
+- (instancetype)initWithAulSubsystems:(nullable NSArray<NSString *> *)aulSubsystems
+                        aulCategories:(nullable NSArray<NSString *> *)aulCategories;
 
 - (instancetype)initWithArray:(NSArray *)data
 NS_UNAVAILABLE;

@@ -63,11 +63,12 @@
 
     
     
-    RollbarAulStoreMonitorOptions *aulMonitorOptions =
-    [[RollbarAulStoreMonitorOptions alloc] init];
-    [aulMonitorOptions addAulCategory:@"test_category"];
+//    RollbarAulStoreMonitorOptions *aulMonitorOptions =
+//    [[RollbarAulStoreMonitorOptions alloc] init];
+//    [aulMonitorOptions addAulSubsystem:@"com.apple.dt.xctest.tool"];
+//    [aulMonitorOptions addAulCategory:@"test_category"];
+//    [RollbarAulStoreMonitor.sharedInstance configureWithOptions:aulMonitorOptions];
     
-    [RollbarAulStoreMonitor.sharedInstance configureWithOptions:aulMonitorOptions];
     [RollbarAulStoreMonitor.sharedInstance configureRollbarLogger:Rollbar.currentLogger];
     [RollbarAulStoreMonitor.sharedInstance start];
     
@@ -75,7 +76,7 @@
     
     [NSThread sleepForTimeInterval:5.0f];
     
-    XCTAssertEqual(5, [RollbarTelemetry.sharedInstance getAllData].count);
+    XCTAssertTrue([RollbarTelemetry.sharedInstance getAllData].count > 5);
     //XCTAssertTrue(([RollbarTelemetry.sharedInstance getAllData].count > 0) && ([RollbarTelemetry.sharedInstance getAllData].count <= 10));
         
     [Rollbar log:RollbarLevel_Warning message:@"This payload should come with AUL Telemetry events!"];

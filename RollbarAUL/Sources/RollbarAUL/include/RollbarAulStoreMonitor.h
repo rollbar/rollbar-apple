@@ -19,8 +19,8 @@ API_UNAVAILABLE(ios, tvos, watchos)
 
 @required
 
-- (id<RollbarAulStoreMonitoring>)configureWithOptions:(RollbarAulStoreMonitorOptions *)options;
-- (id<RollbarAulStoreMonitoring>)configureRollbarLogger:(RollbarLogger *)logger;
+- (id<RollbarAulStoreMonitoring>)configureWithOptions:(nullable RollbarAulStoreMonitorOptions *)options;
+- (id<RollbarAulStoreMonitoring>)configureRollbarLogger:(nullable RollbarLogger *)logger;
 
 - (void)start;
 - (void)cancel;

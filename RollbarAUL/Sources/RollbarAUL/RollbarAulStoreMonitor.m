@@ -90,8 +90,8 @@ API_UNAVAILABLE(ios, tvos, watchos)
     
     // snap the new options into the provided AUL monitor:
     monitor->_aulSubsystemCategoryPredicate =
-    [RollbarAulPredicateBuilder buildRollbarAulPredicateForSubsystem:options.aulSubsystem.copy
-                                                    andForCategories:options.aulCategories.copy];
+    [RollbarAulPredicateBuilder buildRollbarAulPredicateForSubsystems:options.aulSubsystems.copy
+                                                     andForCategories:options.aulCategories.copy];
 }
 
 - (void)setupWithOptions:(nonnull RollbarAulStoreMonitorOptions *)options {
@@ -129,12 +129,19 @@ API_UNAVAILABLE(ios, tvos, watchos)
     NSPredicate *monitoringTimeframePredicate =
     [RollbarAulPredicateBuilder buildAulTimeIntervalPredicateStartingAt:self->_aulStartTimestamp
                                                                endingAt:currentMonitoringTimestamp];
+    
+    NSMutableArray *predicates = [NSMutableArray arrayWithCapacity:3];
+    if (nil != self->_aulProcessPredicate) {
+        [predicates addObject:self->_aulProcessPredicate];
+    }
+    if (nil != self->_aulSubsystemCategoryPredicate) {
+        [predicates addObject:self->_aulSubsystemCategoryPredicate];
+    }
+    if (nil != monitoringTimeframePredicate) {
+        [predicates addObject:monitoringTimeframePredicate];
+    }
     NSPredicate *logEnumeratorPredicate =
-    [NSCompoundPredicate andPredicateWithSubpredicates:@[
-        self->_aulProcessPredicate,
-        self->_aulSubsystemCategoryPredicate,
-        monitoringTimeframePredicate]
-     ];
+    [NSCompoundPredicate andPredicateWithSubpredicates:predicates];
     //RollbarSdkLog(@"Log predicate: %@", logEnumeratorPredicate);
 
     OSLogEnumerator *logEnumerator =
@@ -187,8 +194,11 @@ API_UNAVAILABLE(ios, tvos, watchos)
             && (YES == self->_logger.configuration.telemetry.captureLog)
             ) {
 
-            RollbarLevel rollbarLevel =
-            [RollbarAulOSLogEntryLogLevelConverter RollbarLevelFromOSLogEntryLogLevel:entry.level];
+            RollbarLevel rollbarLevel = RollbarLevel_Info;
+            if ([entry respondsToSelector:@selector(level)]) {
+                rollbarLevel =
+                [RollbarAulOSLogEntryLogLevelConverter RollbarLevelFromOSLogEntryLogLevel:entry.level];
+            }
             
             [RollbarTelemetry.sharedInstance recordLogEventForLevel:rollbarLevel
                                                             message:entry.composedMessage
@@ -205,18 +215,18 @@ API_UNAVAILABLE(ios, tvos, watchos)
 
 #pragma mark - RollbarAulStoreMonitoring
 
-- (id<RollbarAulStoreMonitoring>)configureWithOptions:(nonnull RollbarAulStoreMonitorOptions *)options {
+- (id<RollbarAulStoreMonitoring>)configureWithOptions:(nullable RollbarAulStoreMonitorOptions *)options {
 
     @synchronized (theOnlyInstance) {
 
         if (nil != theOnlyInstance) {
             
-            [self setupWithOptions:options];
+            [self setupWithOptions:(nil != options) ? options : [RollbarAulStoreMonitorOptions new] ];
         }
     }
 }
 
-- (id<RollbarAulStoreMonitoring>)configureRollbarLogger:(RollbarLogger *)logger {
+- (id<RollbarAulStoreMonitoring>)configureRollbarLogger:(nullable RollbarLogger *)logger {
 
     @synchronized (theOnlyInstance) {
 
