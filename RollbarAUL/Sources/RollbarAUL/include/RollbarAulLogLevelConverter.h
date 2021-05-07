@@ -16,6 +16,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 API_AVAILABLE(macos(10.11), ios(9.0), tvos(9.0), watchos(2.0))
+/// Rollbar level to/from AUL log type converter
 @interface RollbarAulLogLevelConverter : NSObject
 
 + (os_log_type_t) RollbarLevelToAulLevel:(RollbarLevel)value

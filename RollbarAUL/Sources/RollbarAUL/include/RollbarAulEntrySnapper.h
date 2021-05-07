@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 API_AVAILABLE(macos(10.15))
 API_UNAVAILABLE(ios, tvos, watchos)
+/// Rollbar class for capturing AUL entries as NSDictionaries
 @interface RollbarAulEntrySnapper : NSObject
 
 - (void)captureOSLogEntry:(nullable OSLogEntry *)entry

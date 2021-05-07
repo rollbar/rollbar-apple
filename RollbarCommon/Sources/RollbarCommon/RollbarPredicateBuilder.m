@@ -30,19 +30,6 @@
     NSPredicate *predicate = [RollbarPredicateBuilder safelyBuildObjectPredicateWithValue:value
                                                                               forProperty:property];
     return predicate;
-    
-//    NSPredicate *predicate = nil;
-//
-//    if ((nil != property) && (nil != value)) {
-//
-//        predicate = [NSPredicate predicateWithFormat:@"%K == %@", property, value];
-//    }
-//    else if (nil != property) {
-//
-//        predicate = [NSPredicate predicateWithFormat:@"%K == nil", property, value];
-//    }
-//
-//    return predicate;
 }
 
 + (nullable NSPredicate *)buildStringPredicateWithValue:(nullable NSString *)value
@@ -51,19 +38,6 @@
     NSPredicate *predicate = [RollbarPredicateBuilder safelyBuildObjectPredicateWithValue:value
                                                                               forProperty:property];
     return predicate;
-
-//    NSPredicate *predicate = nil;
-//    
-//    if ((nil != property) && (nil != value)) {
-//        
-//        predicate = [NSPredicate predicateWithFormat:@"%K == %@", property, value];
-//    }
-//    else if (nil != property) {
-//        
-//        predicate = [NSPredicate predicateWithFormat:@"%K == nil", property, value];
-//    }
-//
-//    return predicate;
 }
 
 + (nullable NSPredicate *)buildStringPredicateWithValueList:(nullable NSArray<NSString *> *)values
@@ -75,10 +49,6 @@
         
         predicate = [NSPredicate predicateWithFormat:@"%K IN %@", property, values];
     }
-//    else if (nil != property) {
-//
-//        predicate = [NSPredicate predicateWithFormat:@"%K == nil", property, value];
-//    }
 
     return predicate;
 }
@@ -86,8 +56,7 @@
 
 + (nullable NSPredicate *)buildLessThanDatePredicateWithValue:(nullable NSDate *)value
                                                   forProperty:(nullable NSString *)property {
-    
-    
+        
     if (nil == property) {
         
         return nil;
@@ -112,20 +81,6 @@
         return nil;
     }
     
-//    NSPredicate *predicate = nil;
-//
-//    if ((nil != startTime) && (nil != endTime)) {
-//
-//        predicate = [NSPredicate predicateWithFormat:@"(%K >= %@) AND (%K <= %@)", property, startTime, property, endTime];
-//    }
-//    else if (nil != startTime) {
-//
-//        predicate = [NSPredicate predicateWithFormat:@"%K >= %@", property, startTime];
-//    }
-//    else if (nil != endTime) {
-//
-//        predicate = [NSPredicate predicateWithFormat:@"%K <= %@", property, endTime];
-//    }
     NSPredicate *predicate = [RollbarPredicateBuilder buildTimeIntervalPredicateStartingAt:startTime
                                                                                inclusively:YES
                                                                                   endingAt:endTime
@@ -147,9 +102,6 @@
     
     NSPredicate *predicate = nil;
     
-    //NSString *startCondition = (YES == stratInclusively) ? @">=" : @">";
-    //NSString *endCondition = (YES == endInclusively) ? @"<=" : @"<";
-
     if ((nil != startTime) && (nil != endTime)) {
         
         if ((YES == stratInclusively) && (YES == endInclusively)) {

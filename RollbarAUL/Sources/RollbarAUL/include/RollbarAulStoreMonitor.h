@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 API_AVAILABLE(macos(10.15))
 API_UNAVAILABLE(ios, tvos, watchos)
+/// Defines Rollbar AUL store monitor's protocol
 @protocol RollbarAulStoreMonitoring
 
 @required
@@ -34,6 +35,7 @@ API_UNAVAILABLE(ios, tvos, watchos)
 
 API_AVAILABLE(macos(10.15))
 API_UNAVAILABLE(ios, tvos, watchos)
+/// Defines Rollbar AUL store monitor
 @interface RollbarAulStoreMonitor : NSThread<RollbarAulStoreMonitoring, RollbarSingleInstancing>
 
 @end

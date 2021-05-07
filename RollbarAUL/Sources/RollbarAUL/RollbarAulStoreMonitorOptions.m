@@ -25,17 +25,6 @@ API_UNAVAILABLE(ios, tvos, watchos)
 
 - (instancetype)init {
  
-//    // by default, we only want to monitor AUL events/entries that are
-//    // relevant to the currently running application/main bundle:
-//
-//    NSBundle *mainBundle =
-//    [NSBundle mainBundle];
-//
-//    NSString *bundleIdentifier =
-//    [mainBundle objectForInfoDictionaryKey:(NSString *)kCFBundleIdentifierKey];
-//
-//    return [self initWithAulSubsystem:bundleIdentifier];
-
     return [self initWithAulSubsystems:nil
                          aulCategories:nil];
 }

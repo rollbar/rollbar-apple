@@ -13,6 +13,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// Defines a protocol of a Singleton
 @protocol RollbarSingleInstancing
 
 @required

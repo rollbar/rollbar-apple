@@ -126,7 +126,6 @@ API_UNAVAILABLE(ios, tvos, watchos)
         RollbarLog(@"ERROR referencing the local AUL log store position.");
         return;
     }
-    //RollbarSdkLog(@"Log position: %@", logPosition);
     
     NSPredicate *monitoringTimeframePredicate =
     [RollbarAulPredicateBuilder buildAulTimeIntervalPredicateStartingAt:self->_aulStartTimestamp
@@ -144,24 +143,13 @@ API_UNAVAILABLE(ios, tvos, watchos)
     }
     NSPredicate *logEnumeratorPredicate =
     [NSCompoundPredicate andPredicateWithSubpredicates:predicates];
-    //RollbarSdkLog(@"Log predicate: %@", logEnumeratorPredicate);
 
     OSLogEnumerator *logEnumerator =
     [RollbarAulClient buildAulLogEnumeratorWithinLogStore:logStore
                                         staringAtPosition:logPosition
                                            usingPredicate:logEnumeratorPredicate];
-    //RollbarSdkLog(@"Log enumerator: %@", logEnumerator);
 
     int count = [self processLogEntries:logEnumerator];
-    //RollbarLog(@"Total AUL entries: %d", count);
-
-//    NSDateFormatter *timestampFormatter = [[NSDateFormatter alloc] init];
-//    [timestampFormatter setDateFormat:@"YYYY-MM-dd 'at' HH:mm:ss.SSSSSSXX"];
-//    RollbarSdkLog(@"Total of %d AUL events at [%@, %@)",
-//                  count,
-//                  [timestampFormatter stringFromDate:self->_aulStartTimestamp],
-//                  [timestampFormatter stringFromDate:currentMonitoringTimestamp]
-//                  );
 
     // Let's also get faults regardless of the process identifier:
     logEnumerator =
@@ -186,15 +174,6 @@ API_UNAVAILABLE(ios, tvos, watchos)
         [entrySnapper captureOSLogEntry:entry
                            intoSnapshot:entrySnapshot];
 
-//        NSLog(@"");
-//        NSLog(@"=== START AUL ENTRY ===");
-//        for (NSString *key in entrySnapshot) {
-//            id value = entrySnapshot[key];
-//            NSLog(@"   %@: %@", key, value);
-//        }
-//        NSLog(@"=== END AUL ENTRY ===");
-//        NSLog(@"");
-        
         // To start with, let's report as Telemetry events for now:
         if ((nil != self->_logger)
             && (nil != self->_logger.configuration)

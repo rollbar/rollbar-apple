@@ -9,6 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// Builder of useful predicate objects
 @interface RollbarPredicateBuilder : NSObject
 
 + (nullable NSPredicate *)buildIntegerPredicateWithValue:(NSInteger)value

@@ -17,7 +17,7 @@ API_UNAVAILABLE(ios, tvos, watchos)
                                                 endingAtTimestamp:(nullable NSDate *)endTimestamp
                                                      forSubsystem:(nullable NSString *)subsystem
                                                    andForCategory:(nullable NSString *)category {
-    
+
     
     if (nil == logStore) {
         

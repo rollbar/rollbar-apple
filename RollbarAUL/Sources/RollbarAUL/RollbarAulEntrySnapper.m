@@ -25,7 +25,7 @@ API_UNAVAILABLE(ios, tvos, watchos)
 
     //Basic OSLogEntry properties:
     snapshot[@"aul_date"] = [formatter stringFromDate:entry.date];
-    snapshot[@"aul_className"] = entry.objectClassName;
+    snapshot[@"aul_className"] = entry.rollbar_objectClassName;
     snapshot[@"aul_composedMessage"] = entry.composedMessage;
     //snapShot[@""] = entry.storeCategory;
     

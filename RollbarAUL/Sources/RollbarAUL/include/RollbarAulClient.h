@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 API_AVAILABLE(macos(10.15))
 API_UNAVAILABLE(ios, tvos, watchos)
+/// Rollbar client for enumerating relevant entries within specified AUL store
 @interface RollbarAulClient : NSObject
 
 + (nullable OSLogEnumerator *)buildAulLogEnumeratorWithinLogStore:(nullable OSLogStore *)logStore

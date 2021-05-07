@@ -9,7 +9,8 @@
 
 @implementation NSObject (Rollbar)
 
-- (nonnull NSString *)objectClassName {
+- (nonnull NSString *)rollbar_objectClassName {
+    
     return NSStringFromClass(self.class);
 }
 

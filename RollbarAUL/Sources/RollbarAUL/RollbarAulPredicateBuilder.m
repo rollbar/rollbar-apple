@@ -62,8 +62,6 @@ API_UNAVAILABLE(ios, tvos, watchos)
     
     if (nil != subsystem) {
         
-        //predicate = [NSPredicate predicateWithFormat:@"subsystem == %@", subsystem];
-        
         predicate = [RollbarPredicateBuilder buildStringPredicateWithValue:subsystem
                                                                forProperty:@"subsystem"];
     }
@@ -124,19 +122,6 @@ API_UNAVAILABLE(ios, tvos, watchos)
 
 + (nullable NSPredicate *)buildAulProcessPredicate {
     
-//    NSString *processName = [RollbarHostingProcessUtil getHostingProcessName];
-//    NSPredicate *processNamePredicate = [RollbarPredicateBuilder buildStringPredicateWithValue:processName
-//                                                                                   forProperty:@"process"];
-//
-//    int processIdentifier = [RollbarHostingProcessUtil getHostingProcessIdentifier];
-//    NSPredicate *processIdentifirePredicate = [RollbarPredicateBuilder buildIntegerPredicateWithValue:processIdentifier
-//                                                                                          forProperty:@"processIdentifier"];
-//
-//    NSPredicate *predicate = [RollbarAulPredicateBuilder safelyCombinePredicate:processName
-//                                                                   andPredicate:processIdentifier];
-//
-//    return predicate;
-
     int processIdentifier = [RollbarHostingProcessUtil getHostingProcessIdentifier];
     NSPredicate *processIdentifirePredicate = [RollbarPredicateBuilder buildIntegerPredicateWithValue:processIdentifier
                                                                                           forProperty:@"processIdentifier"];
