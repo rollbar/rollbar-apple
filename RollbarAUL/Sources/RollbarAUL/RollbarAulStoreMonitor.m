@@ -29,6 +29,7 @@ API_UNAVAILABLE(ios, tvos, watchos)
     RollbarLogger       *_logger;
     NSPredicate         *_aulSubsystemCategoryPredicate;
     NSPredicate         *_aulProcessPredicate;
+    NSPredicate         *_aulFaultsPredicate;
     // dynamically calculated data fields:
     NSDate *_aulStartTimestamp;
     NSDate *_aulEndTimestamp;
@@ -45,7 +46,8 @@ API_UNAVAILABLE(ios, tvos, watchos)
 
         self.name = @"RollbarAulStoreMonitor";
         
-        self->_aulProcessPredicate = [RollbarAulPredicateBuilder buildAulProcessPredicate];
+        self->_aulProcessPredicate  = [RollbarAulPredicateBuilder buildAulProcessPredicate];
+        self->_aulFaultsPredicate   = [RollbarAulPredicateBuilder buildAulFaultsPredicate];
         
         self->_logger = logger;
         
@@ -161,6 +163,13 @@ API_UNAVAILABLE(ios, tvos, watchos)
 //                  [timestampFormatter stringFromDate:currentMonitoringTimestamp]
 //                  );
 
+    // Let's also get faults regardless of the process identifier:
+    logEnumerator =
+    [RollbarAulClient buildAulLogEnumeratorWithinLogStore:logStore
+                                        staringAtPosition:logPosition
+                                           usingPredicate:self->_aulFaultsPredicate];
+    count = count + [self processLogEntries:logEnumerator];
+    
     self->_aulStartTimestamp = currentMonitoringTimestamp;
 }
 

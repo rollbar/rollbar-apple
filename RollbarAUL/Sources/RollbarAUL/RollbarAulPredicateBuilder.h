@@ -35,6 +35,8 @@ API_UNAVAILABLE(ios, tvos, watchos)
 
 + (nullable NSPredicate *)buildAulProcessPredicate;
 
++ (nullable NSPredicate *)buildAulFaultsPredicate;
+
 - (instancetype)init NS_UNAVAILABLE; // This is static utility class. No instances needed...
 
 @end

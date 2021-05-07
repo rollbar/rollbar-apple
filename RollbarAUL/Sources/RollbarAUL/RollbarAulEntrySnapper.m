@@ -23,9 +23,10 @@ API_UNAVAILABLE(ios, tvos, watchos)
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"YYYY-MM-dd 'at' HH:mm:ss.SSSSSSXX"];
 
-    snapshot[@"date"] = [formatter stringFromDate:entry.date];
-    snapshot[@"className"] = entry.objectClassName;
-    snapshot[@"composedMessage"] = entry.composedMessage;
+    //Basic OSLogEntry properties:
+    snapshot[@"aul_date"] = [formatter stringFromDate:entry.date];
+    snapshot[@"aul_className"] = entry.objectClassName;
+    snapshot[@"aul_composedMessage"] = entry.composedMessage;
     //snapShot[@""] = entry.storeCategory;
     
     if ([entry isKindOfClass:[OSLogEntryLog class]]) {
@@ -66,7 +67,7 @@ API_UNAVAILABLE(ios, tvos, watchos)
         return;
     }
     
-    snapshot[@"level"] = [RollbarAulOSLogEntryLogLevelConverter OSLogEntryLogLevelToString:entry.level];
+    snapshot[@"aul_level"] = [RollbarAulOSLogEntryLogLevelConverter OSLogEntryLogLevelToString:entry.level];
 }
 
 - (void)captureOSLogEntryActivity:(nullable OSLogEntryActivity *)entry
@@ -76,7 +77,7 @@ API_UNAVAILABLE(ios, tvos, watchos)
         return;
     }
     
-    snapshot[@"parentActivityIdentifier"] = [NSNumber numberWithUnsignedInt:entry.parentActivityIdentifier];
+    snapshot[@"aul_parentActivityIdentifier"] = [NSNumber numberWithUnsignedInt:entry.parentActivityIdentifier];
 }
 
 - (void)captureOSLogEntrySignpost:(nullable OSLogEntrySignpost *)entry
@@ -86,9 +87,9 @@ API_UNAVAILABLE(ios, tvos, watchos)
         return;
     }
     
-    snapshot[@"signpostIdentifier"] = [NSNumber numberWithUnsignedInt:entry.signpostIdentifier];
-    snapshot[@"signpostName"] = entry.signpostName;
-    snapshot[@"signpostType"] = [NSNumber numberWithInteger:entry.signpostType];
+    snapshot[@"aul_signpostIdentifier"] = [NSNumber numberWithUnsignedInt:entry.signpostIdentifier];
+    snapshot[@"aul_signpostName"] = entry.signpostName;
+    snapshot[@"aul_signpostType"] = [NSNumber numberWithInteger:entry.signpostType];
 }
 
 - (void)captureOSLogEntryFromProcess:(nullable OSLogEntry<OSLogEntryFromProcess> *)entry
@@ -98,11 +99,11 @@ API_UNAVAILABLE(ios, tvos, watchos)
         return;
     }
     
-    snapshot[@"activityIdentifier"] = [NSNumber numberWithUnsignedInt:entry.activityIdentifier]; //uint64
-    snapshot[@"process"] = entry.process;
-    snapshot[@"processIdentifier"] = [NSNumber numberWithInt:entry.processIdentifier];
-    snapshot[@"sender"] = entry.sender;
-    snapshot[@"threadIdentifier"] = [NSNumber numberWithUnsignedInt:entry.threadIdentifier];
+    snapshot[@"aul_activityIdentifier"] = [NSNumber numberWithUnsignedInt:entry.activityIdentifier]; //uint64
+    snapshot[@"aul_process"] = entry.process;
+    snapshot[@"aul_processIdentifier"] = [NSNumber numberWithInt:entry.processIdentifier];
+    snapshot[@"aul_sender"] = entry.sender;
+    snapshot[@"aul_threadIdentifier"] = [NSNumber numberWithUnsignedInt:entry.threadIdentifier];
 }
 
 - (void)captureOSLogEntryWithPayload:(nullable OSLogEntry<OSLogEntryWithPayload> *)entry
@@ -112,8 +113,8 @@ API_UNAVAILABLE(ios, tvos, watchos)
         return;
     }
     
-    snapshot[@"category"] = entry.category;
-    snapshot[@"subsystem"] = entry.subsystem;
+    snapshot[@"aul_category"] = entry.category;
+    snapshot[@"aul_subsystem"] = entry.subsystem;
 }
 
 @end

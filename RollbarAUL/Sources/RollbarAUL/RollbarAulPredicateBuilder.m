@@ -7,6 +7,11 @@
 
 #import "RollbarAulPredicateBuilder.h"
 
+//@import OSLog;
+#if __has_include(<OSLog/OSLog.h>)
+  #include <OSLog/OSLog.h>
+#endif
+
 @import RollbarCommon;
 
 API_AVAILABLE(macos(10.15))
@@ -136,6 +141,13 @@ API_UNAVAILABLE(ios, tvos, watchos)
     NSPredicate *processIdentifirePredicate = [RollbarPredicateBuilder buildIntegerPredicateWithValue:processIdentifier
                                                                                           forProperty:@"processIdentifier"];
     return processIdentifirePredicate;
+}
+
++ (nullable NSPredicate *)buildAulFaultsPredicate {
+    
+    NSPredicate *faultsPredicate = [RollbarPredicateBuilder buildIntegerPredicateWithValue:OSLogEntryLogLevelFault
+                                                                                          forProperty:@"level"];
+    return faultsPredicate;
 }
 
 #pragma mark - private methods

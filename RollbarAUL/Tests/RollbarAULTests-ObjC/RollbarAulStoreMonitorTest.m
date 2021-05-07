@@ -43,6 +43,7 @@
         NSDateFormatter *timestampFormatter = [[NSDateFormatter alloc] init];
         [timestampFormatter setDateFormat:@"YYYY-MM-dd 'at' HH:mm:ss.SSSSSSXX"];
         os_log_error(customLog, "An error occurred at %@!", [timestampFormatter stringFromDate:[NSDate date]]);
+        os_log_fault(OS_LOG_DEFAULT, "An FAULT occurred at %@!", [timestampFormatter stringFromDate:[NSDate date]]);
         [NSThread sleepForTimeInterval:0.5f];
     }
 
@@ -55,6 +56,7 @@
     rollbarConfig.destination.environment = @"unit-tests";
     rollbarConfig.telemetry.enabled = YES;
     rollbarConfig.telemetry.captureLog = YES;
+    rollbarConfig.telemetry.maximumTelemetryData = 100;
     rollbarConfig.developerOptions.transmit = YES;
 //    rollbarConfig.developerOptions.logPayload = YES;
 //    rollbarConfig.loggingOptions.maximumReportsPerMinute = 5000;
@@ -76,7 +78,7 @@
     
     [NSThread sleepForTimeInterval:5.0f];
     
-    XCTAssertTrue([RollbarTelemetry.sharedInstance getAllData].count > 5);
+    XCTAssertTrue([RollbarTelemetry.sharedInstance getAllData].count >= 5);
     //XCTAssertTrue(([RollbarTelemetry.sharedInstance getAllData].count > 0) && ([RollbarTelemetry.sharedInstance getAllData].count <= 10));
         
     [Rollbar log:RollbarLevel_Warning message:@"This payload should come with AUL Telemetry events!"];
