@@ -43,7 +43,7 @@
         NSDateFormatter *timestampFormatter = [[NSDateFormatter alloc] init];
         [timestampFormatter setDateFormat:@"YYYY-MM-dd 'at' HH:mm:ss.SSSSSSXX"];
         os_log_error(customLog, "An error occurred at %@!", [timestampFormatter stringFromDate:[NSDate date]]);
-        os_log_fault(OS_LOG_DEFAULT, "An FAULT occurred at %@!", [timestampFormatter stringFromDate:[NSDate date]]);
+        os_log_fault(OS_LOG_DEFAULT, "A FAULT occurred at %@!", [timestampFormatter stringFromDate:[NSDate date]]);
         [NSThread sleepForTimeInterval:0.5f];
     }
 
