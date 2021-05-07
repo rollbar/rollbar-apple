@@ -14,18 +14,24 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly) NSString *firstName;
 @property (readonly) NSString *lastName;
 @property (readonly) NSDate *birthDate;
+@property (readonly) NSNumber *ssn;
 @property (readonly) NSInteger age;
 
 - (instancetype)init NS_UNAVAILABLE;
 
 - (instancetype)initWithFirstName:(NSString *)firstName
                          lastName:(NSString *)lastName
-                             adge:(NSInteger)age
+                              age:(NSInteger)age
 NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)initWithFirstName:(NSString *)firstName
                          lastName:(NSString *)lastName
                         birthDate:(NSDate *)birthDate
+NS_DESIGNATED_INITIALIZER;
+
+- (instancetype)initWithFirstName:(NSString *)firstName
+                         lastName:(NSString *)lastName
+                              ssn:(NSNumber *)ssn
 NS_DESIGNATED_INITIALIZER;
 
 @end

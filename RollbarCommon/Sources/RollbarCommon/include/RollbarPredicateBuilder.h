@@ -11,6 +11,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface RollbarPredicateBuilder : NSObject
 
++ (nullable NSPredicate *)buildIntegerPredicateWithValue:(NSInteger)value
+                                             forProperty:(nullable NSString *)property;
+
++ (nullable NSPredicate *)buildNumberPredicateWithValue:(nullable NSNumber *)value
+                                            forProperty:(nullable NSString *)property;
+
 + (nullable NSPredicate *)buildStringPredicateWithValue:(nullable NSString *)value
                                             forProperty:(nullable NSString *)property;
 

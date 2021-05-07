@@ -30,7 +30,7 @@
     
     Person *person = [[Person alloc] initWithFirstName:@"First"
                                               lastName:@"Last"
-                                                  adge:@100];
+                                                   age:@100];
     
     NSPredicate *predicate = [RollbarPredicateBuilder buildStringPredicateWithValue:@"First"
                                                                         forProperty:@"firstName"];
@@ -49,14 +49,14 @@
     
     Person *person = [[Person alloc] initWithFirstName:@"First"
                                               lastName:@"Last"
-                                                  adge:@100];
+                                                   age:@100];
     NSPredicate *predicate = [RollbarPredicateBuilder buildStringPredicateWithValueList:@[@"First", @"Last"]
                                                                             forProperty:@"firstName"];
     XCTAssertTrue([predicate evaluateWithObject:person]);
     
     person = [[Person alloc] initWithFirstName:@"NotInList"
                                       lastName:@"Last"
-                                          adge:@100];
+                                           age:@100];
     XCTAssertFalse([predicate evaluateWithObject:person]);
 }
 
@@ -137,6 +137,56 @@
                                                       inclusively:NO
                                                       forProperty:@"birthDate"];
     XCTAssertFalse([predicate evaluateWithObject:person]);
+}
+
+- (void)testBuildNumberPredicateWithValue {
+
+    Person *person  = [[Person alloc] initWithFirstName:@"First"
+                                               lastName:@"Last"
+                                                    ssn:@5];
+
+    NSPredicate *predicate = [RollbarPredicateBuilder buildNumberPredicateWithValue:[NSNumber numberWithInt:5]
+                                                                        forProperty:@"ssn"];
+    XCTAssertTrue([predicate evaluateWithObject:person]);
+
+    predicate = [RollbarPredicateBuilder buildNumberPredicateWithValue:[NSNumber numberWithInt:6]
+                                                           forProperty:@"ssn"];
+    XCTAssertFalse([predicate evaluateWithObject:person]);
+
+    predicate = [RollbarPredicateBuilder buildNumberPredicateWithValue:[NSNumber numberWithInt:5]
+                                                           forProperty:@"age"];
+    XCTAssertFalse([predicate evaluateWithObject:person]);
+
+    predicate = [RollbarPredicateBuilder buildNumberPredicateWithValue:@6
+                                                           forProperty:@"ssn"];
+    XCTAssertFalse([predicate evaluateWithObject:person]);
+
+    predicate = [RollbarPredicateBuilder buildNumberPredicateWithValue:@5
+                                                           forProperty:@"ssn"];
+    XCTAssertTrue([predicate evaluateWithObject:person]);
+}
+
+- (void)testBuildIntegerPredicateWithValue {
+    
+    Person *person  = [[Person alloc] initWithFirstName:@"First"
+                                               lastName:@"Last"
+                                                    age:5];
+
+    NSPredicate *predicate = [RollbarPredicateBuilder buildIntegerPredicateWithValue:5
+                                                                        forProperty:@"age"];
+    XCTAssertTrue([predicate evaluateWithObject:person]);
+
+    predicate = [RollbarPredicateBuilder buildIntegerPredicateWithValue:6
+                                                            forProperty:@"age"];
+    XCTAssertFalse([predicate evaluateWithObject:person]);
+
+    predicate = [RollbarPredicateBuilder buildIntegerPredicateWithValue:5
+                                                            forProperty:@"ssn"];
+    XCTAssertFalse([predicate evaluateWithObject:person]);
+
+    predicate = [RollbarPredicateBuilder buildIntegerPredicateWithValue:5
+                                                            forProperty:@"age"];
+    XCTAssertTrue([predicate evaluateWithObject:person]);
 }
 
 - (void)testExample {

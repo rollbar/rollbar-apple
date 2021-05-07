@@ -19,7 +19,12 @@ API_UNAVAILABLE(ios, tvos, watchos)
 + (nullable NSPredicate *)buildRollbarAulPredicateForSubsystem:(nullable NSString *)subsystem
                                               andForCategories:(nullable NSArray<NSString *> *)categories;
 
++ (nullable NSPredicate *)buildRollbarAulPredicateForSubsystems:(nullable NSArray<NSString *> *)subsystems
+                                               andForCategories:(nullable NSArray<NSString *> *)categories;
+
 + (nullable NSPredicate *)buildAulSubsystemPredicate:(nullable NSString *)subsystem;
+
++ (nullable NSPredicate *)buildAulSubsystemsPredicate:(nullable NSArray<NSString *> *)subsystems;
 
 + (nullable NSPredicate *)buildAulCategoryPredicate:(nullable NSString *)category;
 
@@ -27,6 +32,8 @@ API_UNAVAILABLE(ios, tvos, watchos)
 
 + (nullable NSPredicate *)buildAulTimeIntervalPredicateStartingAt:(nullable NSDate *)startTime
                                                          endingAt:(nullable NSDate *)endTime;
+
++ (nullable NSPredicate *)buildAulProcessPredicate;
 
 - (instancetype)init NS_UNAVAILABLE; // This is static utility class. No instances needed...
 

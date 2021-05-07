@@ -28,6 +28,7 @@ API_UNAVAILABLE(ios, tvos, watchos)
     // configurable data fields:
     RollbarLogger       *_logger;
     NSPredicate         *_aulSubsystemCategoryPredicate;
+    NSPredicate         *_aulProcessPredicate;
     // dynamically calculated data fields:
     NSDate *_aulStartTimestamp;
     NSDate *_aulEndTimestamp;
@@ -43,7 +44,11 @@ API_UNAVAILABLE(ios, tvos, watchos)
                                object:nil])) {
 
         self.name = @"RollbarAulStoreMonitor";
+        
+        self->_aulProcessPredicate = [RollbarAulPredicateBuilder buildAulProcessPredicate];
+        
         self->_logger = logger;
+        
         RollbarAulStoreMonitorOptions *validOptions = options;
         if (nil == validOptions) {
             [RollbarAulStoreMonitorOptions new];
@@ -125,7 +130,11 @@ API_UNAVAILABLE(ios, tvos, watchos)
     [RollbarAulPredicateBuilder buildAulTimeIntervalPredicateStartingAt:self->_aulStartTimestamp
                                                                endingAt:currentMonitoringTimestamp];
     NSPredicate *logEnumeratorPredicate =
-    [NSCompoundPredicate andPredicateWithSubpredicates:@[self->_aulSubsystemCategoryPredicate, monitoringTimeframePredicate]];
+    [NSCompoundPredicate andPredicateWithSubpredicates:@[
+        self->_aulProcessPredicate,
+        self->_aulSubsystemCategoryPredicate,
+        monitoringTimeframePredicate]
+     ];
     //RollbarSdkLog(@"Log predicate: %@", logEnumeratorPredicate);
 
     OSLogEnumerator *logEnumerator =

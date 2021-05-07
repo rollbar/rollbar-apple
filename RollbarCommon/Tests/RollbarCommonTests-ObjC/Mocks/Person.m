@@ -11,7 +11,7 @@
 
 - (instancetype)initWithFirstName:(NSString *)firstName
                          lastName:(NSString *)lastName
-                             adge:(NSInteger)age {
+                              age:(NSInteger)age {
     
     self = [super init];
     if (self == nil) {
@@ -40,5 +40,22 @@
     
     return self;
 }
+
+- (instancetype)initWithFirstName:(NSString *)firstName
+                         lastName:(NSString *)lastName
+                              ssn:(NSNumber *)ssn {
+    
+    self = [super init];
+    if (self == nil) {
+        return nil;
+    }
+
+    _firstName = firstName;
+    _lastName = lastName;
+    _ssn = ssn;
+    
+    return self;
+}
+
 
 @end

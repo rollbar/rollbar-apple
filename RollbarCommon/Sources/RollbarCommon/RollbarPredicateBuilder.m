@@ -9,21 +9,61 @@
 
 @implementation RollbarPredicateBuilder
 
-+ (nullable NSPredicate *)buildStringPredicateWithValue:(nullable NSString *)value
-                                            forProperty:(nullable NSString *)property {
+#pragma mark - public
+
++ (nullable NSPredicate *)buildIntegerPredicateWithValue:(NSInteger)value
+                                             forProperty:(nullable NSString *)property {
     
     NSPredicate *predicate = nil;
     
-    if ((nil != property) && (nil != value)) {
+    if (nil != property) {
         
-        predicate = [NSPredicate predicateWithFormat:@"%K == %@", property, value];
-    }
-    else if (nil != property) {
-        
-        predicate = [NSPredicate predicateWithFormat:@"%K == nil", property, value];
+        predicate = [NSPredicate predicateWithFormat:@"%K == %d", property, value];
     }
 
     return predicate;
+}
+
++ (nullable NSPredicate *)buildNumberPredicateWithValue:(nullable NSNumber *)value
+                                            forProperty:(nullable NSString *)property {
+    
+    NSPredicate *predicate = [RollbarPredicateBuilder safelyBuildObjectPredicateWithValue:value
+                                                                              forProperty:property];
+    return predicate;
+    
+//    NSPredicate *predicate = nil;
+//
+//    if ((nil != property) && (nil != value)) {
+//
+//        predicate = [NSPredicate predicateWithFormat:@"%K == %@", property, value];
+//    }
+//    else if (nil != property) {
+//
+//        predicate = [NSPredicate predicateWithFormat:@"%K == nil", property, value];
+//    }
+//
+//    return predicate;
+}
+
++ (nullable NSPredicate *)buildStringPredicateWithValue:(nullable NSString *)value
+                                            forProperty:(nullable NSString *)property {
+    
+    NSPredicate *predicate = [RollbarPredicateBuilder safelyBuildObjectPredicateWithValue:value
+                                                                              forProperty:property];
+    return predicate;
+
+//    NSPredicate *predicate = nil;
+//    
+//    if ((nil != property) && (nil != value)) {
+//        
+//        predicate = [NSPredicate predicateWithFormat:@"%K == %@", property, value];
+//    }
+//    else if (nil != property) {
+//        
+//        predicate = [NSPredicate predicateWithFormat:@"%K == nil", property, value];
+//    }
+//
+//    return predicate;
 }
 
 + (nullable NSPredicate *)buildStringPredicateWithValueList:(nullable NSArray<NSString *> *)values
@@ -142,6 +182,25 @@
         else {
             predicate = [NSPredicate predicateWithFormat:@"%K < %@", property, endTime];
         }
+    }
+
+    return predicate;
+}
+
+#pragma mark - private
+
++ (nullable NSPredicate *)safelyBuildObjectPredicateWithValue:(nullable NSObject *)value
+                                                  forProperty:(nullable NSString *)property {
+    
+    NSPredicate *predicate = nil;
+    
+    if ((nil != property) && (nil != value)) {
+        
+        predicate = [NSPredicate predicateWithFormat:@"%K == %@", property, value];
+    }
+    else if (nil != property) {
+        
+        predicate = [NSPredicate predicateWithFormat:@"%K == nil", property, value];
     }
 
     return predicate;
