@@ -22,39 +22,47 @@ static NSString *const DFK_GUESS_UNCAUGHT_FRAMES = @"guess_uncaught_frames";
 #pragma mark - Properties
 
 -(NSString *)browser {
+    
     NSString *result = [self getDataByKey:DFK_BROWSER];
     return result;
 }
 
 -(void)setBrowser:(NSString *)browser {
+    
     [self setData:browser byKey:DFK_BROWSER];
 }
 
 -(NSString *)codeVersion {
+    
     NSString *result = [self getDataByKey:DFK_CODE_VERSION];
     return result;
 }
 
 -(void)setCodeVersion:(NSString *)codeVersion {
+    
     [self setData:codeVersion byKey:DFK_CODE_VERSION];
 }
 
 -(RollbarTriStateFlag)sourceMapEnabled {
+    
     NSString *result = [self getDataByKey:DFK_SOURCE_MAP_ENABLED];
     return [RollbarTriStateFlagUtil TriStateFlagFromString:result];
 }
 
 -(void)setSourceMapEnabled:(RollbarTriStateFlag)sourceMapEnabled {
+    
     [self setData:[RollbarTriStateFlagUtil TriStateFlagToString:sourceMapEnabled]
             byKey:DFK_SOURCE_MAP_ENABLED];
 }
 
 -(RollbarTriStateFlag)guessUncaughtFrames {
+    
     NSString *result = [self getDataByKey:DFK_GUESS_UNCAUGHT_FRAMES];
     return [RollbarTriStateFlagUtil TriStateFlagFromString:result];
 }
 
 -(void)setGuessUncaughtFrames:(RollbarTriStateFlag)guessUncaughtFrames {
+    
     [self setData:[RollbarTriStateFlagUtil TriStateFlagToString:guessUncaughtFrames]
             byKey:DFK_GUESS_UNCAUGHT_FRAMES];
 }

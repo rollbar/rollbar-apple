@@ -67,26 +67,33 @@ static NSString * const DFK_EMAIL = @"email";
 #pragma mark - property accessors
 
 - (NSString *)ID {
-    return [self getDataByKey:DFK_ID];
+    
+    NSString *result = [self getDataByKey:DFK_ID];
+    return (nil != result) ? result : @"";
 }
 
 - (void)setID:(NSString *)value {
+    
     [self setData:value byKey:DFK_ID];
 }
 
 - (NSString *)username {
+    
     return [self getDataByKey:DFK_USERNAME];
 }
 
 - (void)setUsername:(NSString *)value {
+    
     [self setData:value byKey:DFK_USERNAME];
 }
 
 - (NSString *)email {
+    
     return [self getDataByKey:DFK_EMAIL];
 }
 
 - (void)setEmail:(NSString *)value {
+    
     [self setData:value byKey:DFK_EMAIL];
 }
 

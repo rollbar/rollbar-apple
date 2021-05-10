@@ -11,6 +11,7 @@
 @implementation RollbarTriStateFlagUtil
 
 + (NSString *) TriStateFlagToString:(RollbarTriStateFlag)value {
+    
     switch (value) {
         case RollbarTriStateFlag_On:
             return @"ON";
@@ -23,7 +24,11 @@
 }
 
 + (RollbarTriStateFlag) TriStateFlagFromString:(NSString *)value {
-    if (NSOrderedSame == [value caseInsensitiveCompare:@"ON"]) {
+    
+    if (nil == value) {
+        return RollbarTriStateFlag_None;
+    }
+    else if (NSOrderedSame == [value caseInsensitiveCompare:@"ON"]) {
         return RollbarTriStateFlag_On;
     }
     else if (NSOrderedSame == [value caseInsensitiveCompare:@"OFF"]) {
