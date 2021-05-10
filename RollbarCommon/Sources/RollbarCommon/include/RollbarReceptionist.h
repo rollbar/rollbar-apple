@@ -52,10 +52,10 @@ typedef void (^RollbarReceptionistTaskBlock)(NSString *keyPath, id object, NSDic
 /// Defines the Receptionist interface
 @interface RollbarReceptionist : NSObject {
     @private
-    id observedObject;
-    NSString *observedKeyPath;
-    RollbarReceptionistTaskBlock task;
-    NSOperationQueue *queue;
+    id _observedObject;
+    NSString *_observedKeyPath;
+    RollbarReceptionistTaskBlock _task;
+    NSOperationQueue *_queue;
 }
 
 /// Creates a fully-configured Receptionist instance

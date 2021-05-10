@@ -18,14 +18,18 @@ static NSString * const DFK_DESCRIPTION = @"description";
 #pragma mark - Properties
 
 - (nonnull NSString *)exceptionClass {
-    return [self getDataByKey:DFK_CLASS];
+    
+    NSString *result = [self getDataByKey:DFK_CLASS];
+    return (nil != result) ? result : @"";
 }
 
 - (void)setExceptionClass:(nonnull NSString *)exceptionClass {
+    
     [self setData:exceptionClass byKey:DFK_CLASS];
 }
 
 - (nullable NSString *)exceptionMessage {
+    
     return [self getDataByKey:DFK_MESSAGE];
 }
 
@@ -34,10 +38,12 @@ static NSString * const DFK_DESCRIPTION = @"description";
 }
 
 - (nullable NSString *)exceptionDescription {
+    
     return [self getDataByKey:DFK_DESCRIPTION];
 }
 
 - (void)setExceptionDescription:(nullable NSString *)exceptionDescription {
+    
     [self setData:exceptionDescription byKey:DFK_DESCRIPTION];
 }
 

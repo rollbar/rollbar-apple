@@ -135,7 +135,6 @@
     NSDictionary *notificationText = @{
                                        @"error": @[@"testing-error-with-message"],
                                        @"debug": @[@"testing-debug"],
-                                       @"error": @[@"testing-error"],
                                        @"info": @[@"testing-info"],
                                        @"critical": @[@"testing-critical"]
                                        };

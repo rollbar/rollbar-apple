@@ -141,7 +141,7 @@
     return self->_data;
 }
 
-- (NSData *)serializeToJSONData {
+- (nullable NSData *)serializeToJSONData {
 
     BOOL hasValidData = [NSJSONSerialization isValidJSONObject:self->_data];
     if (!hasValidData) {
@@ -165,10 +165,15 @@
     return jsonData;
 }
 
-- (nonnull NSString *)serializeToJSONString {
+- (nullable NSString *)serializeToJSONString {
     
     NSData *jsonData = [self serializeToJSONData];
-    NSString *result = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    if (nil == jsonData) {
+        return nil;
+    }
+    
+    NSString *result = [[NSString alloc] initWithData:jsonData
+                                             encoding:NSUTF8StringEncoding];
     return result;
 }
 

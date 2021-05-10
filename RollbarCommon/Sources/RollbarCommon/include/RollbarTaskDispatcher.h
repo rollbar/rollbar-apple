@@ -41,9 +41,9 @@ typedef void (^RollbarTaskBlock)(id taskInput);
 
 @interface RollbarTaskDispatcher : NSObject {
     @private
-        RollbarTaskBlock task;
-        NSOperationQueue *queue;
-        id taskInput;
+        RollbarTaskBlock _task;
+        NSOperationQueue *_queue;
+        id _taskInput;
 }
 
 + (instancetype)dispatcherForQueue:(NSOperationQueue *)queue
