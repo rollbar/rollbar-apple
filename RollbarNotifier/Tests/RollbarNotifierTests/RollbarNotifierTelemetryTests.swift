@@ -235,23 +235,10 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
         XCTAssertTrue("My Password".compare(telemetryEvents[1].body.getDataByKey("content") as! String) == .orderedSame);
     }
     
-    //NOTE: enable the test below after telemetry of os_log is added!!!
-//    @available(OSX 10.14, *)
-//    func testOsLogAsTelemetry() {
-//        Rollbar.currentConfiguration().telemetryEnabled = true;
-//        Rollbar.currentConfiguration().captureLogAsTelemetryEvents = true;
-//
-//        os_log("Variadic function is unavailable", log: OSLog(subsystem: "UnitTest", category: .pointsOfInterest), type: .default);
-//        let telemetryEvents = RollbarTelemetry.sharedInstance().getAllData();
-//        XCTAssertEqual(telemetryEvents!.count, 1);
-//    }
-
-//    @available(OSX 10.14, *)
     static var allTests = [
         ("testTelemetryCapture", testTelemetryCapture),
         ("testErrorReportingWithTelemetry", testErrorReportingWithTelemetry),
         ("testTelemetryViewEventScrubbing", testTelemetryViewEventScrubbing),
-//        ("testOsLogAsTelemetry", testOsLogAsTelemetry),
     ]
 }
 #endif

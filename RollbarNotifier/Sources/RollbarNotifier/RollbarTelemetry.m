@@ -143,6 +143,7 @@ static dispatch_queue_t fileQueue = nil;
     }
     
     dispatch_async(queue, ^{
+ 
         [self->_dataArray addObject:event.jsonFriendlyData];
         [self trimDataArray];
         NSData *data = [self serializedDataArray];
@@ -379,34 +380,44 @@ static dispatch_queue_t fileQueue = nil;
     NSArray *telemetryData = [self getAllData];
     NSMutableArray<RollbarTelemetryEvent*> *events =
         [NSMutableArray arrayWithCapacity:telemetryData ? telemetryData.count : 0];
-    if (!telemetryData) {
+    if (nil == telemetryData) {
+        
         return events;
     }
+    
     for (NSDictionary *dataItem in telemetryData) {
+        
         RollbarTelemetryType eventType =
             [RollbarTelemetryTypeUtil RollbarTelemetryTypeFromString:dataItem[@"type"]];
         RollbarTelemetryBody *eventBody =
             [RollbarTelemetryEvent createTelemetryBodyWithType:eventType data:dataItem[@"body"]];
-        RollbarLevel eventLevel = [RollbarLevelUtil RollbarLevelFromString:dataItem[@"level"]];
-        RollbarSource eventSource = [RollbarSourceUtil RollbarSourceFromString:dataItem[@"source"]];
-        RollbarTelemetryEvent *event = [[RollbarTelemetryEvent alloc] initWithLevel:eventLevel
-                                                                             source:eventSource
-                                                                               body:eventBody];
-        [events addObject:event];
+        if (nil != eventBody) {
+            
+            RollbarLevel eventLevel = [RollbarLevelUtil RollbarLevelFromString:dataItem[@"level"]];
+            RollbarSource eventSource = [RollbarSourceUtil RollbarSourceFromString:dataItem[@"source"]];
+            RollbarTelemetryEvent *event = [[RollbarTelemetryEvent alloc] initWithLevel:eventLevel
+                                                                                 source:eventSource
+                                                                                   body:eventBody];
+            [events addObject:event];
+        }
     }
     return events;
 }
 
 - (NSArray *)getAllData {
+    
     __block NSArray *dataCopy = nil;
     dispatch_sync(queue, ^{
+        
         dataCopy = [self->_dataArray copy];
     });
     return dataCopy;
 }
 
 - (void)clearAllData {
+    
     dispatch_async(queue, ^{
+        
         [self->_dataArray removeAllObjects];
         NSData *data = [self serializedDataArray];
         dispatch_async(fileQueue, ^{
@@ -422,6 +433,7 @@ static dispatch_queue_t fileQueue = nil;
 // on the internal queue to serialize the dataArray read, but the result
 // is free to be used anywhere
 - (NSData *)serializedDataArray {
+    
     if (@available(iOS 10.0, macOS 10.12, *)) {
         dispatch_assert_queue_debug(queue);
     }
@@ -443,9 +455,12 @@ static dispatch_queue_t fileQueue = nil;
 // would present a race condition because dataArray is modified without
 // protecting which thread/queue we are being called from
 - (void)loadTelemetryData {
+    
     if ([[NSFileManager defaultManager] fileExistsAtPath:_dataFilePath]) {
+        
         NSData *data = [NSData dataWithContentsOfFile:_dataFilePath];
         if (data) {
+            
             NSArray *telemetryDataList = [NSJSONSerialization JSONObjectWithData:data
                                                                          options:NSJSONReadingMutableContainers
                                                                            error:nil];
