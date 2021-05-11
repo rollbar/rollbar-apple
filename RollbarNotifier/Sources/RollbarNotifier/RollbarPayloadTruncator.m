@@ -106,6 +106,10 @@ static const unsigned long maxTraceFrames = 1;
 withExceptionMessageLimit:(unsigned long)exeptionMessageLimit
       andTraceFramesLimit:(unsigned long)traceFramesLimit {
     
+    if (nil == payload) {
+        return FALSE;
+    }
+    
     if (![RollbarPayloadTruncator isTruncationNeeded:payload forLimit:payloadLimit]) {
         return FALSE;  //payload is small enough, no need to truncate further...
     }

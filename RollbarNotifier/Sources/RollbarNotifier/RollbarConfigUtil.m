@@ -64,7 +64,7 @@ static NSString *configurationFilePath = nil;
         return config;
     }
     else {
-        if (nil != error) {
+        if ((nil != error) && (nil != *error)) {
             RollbarSdkLog(@"Error loading RollbarConfig from %@: %@", filePath, [*error localizedDescription]);
         }
         return nil;
@@ -117,7 +117,7 @@ static NSString *configurationFilePath = nil;
         if (NO == success) {
             RollbarSdkLog(@"Error while deleting file %@", filePath);
         }
-        if ((NO == success) && (nil != error)) {
+        if ((NO == success) && (nil != error) && (nil != *error)) {
             RollbarSdkLog(@"Error while deleting file %@: %@",
                           filePath,
                           [*error localizedDescription]);
