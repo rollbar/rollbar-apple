@@ -75,6 +75,7 @@ static NSString *const DFK_GUESS_UNCAUGHT_FRAMES = @"guess_uncaught_frames";
            guessUncaughtFrames:(RollbarTriStateFlag)guessUncaughtFrames {
     
     self = [super initWithDictionary:@{
+        
         DFK_BROWSER:browser,
         DFK_CODE_VERSION:codeVersion ? codeVersion : [NSNull null],
         DFK_SOURCE_MAP_ENABLED:[RollbarTriStateFlagUtil TriStateFlagToString:sourceMapEnabled],

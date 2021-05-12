@@ -42,35 +42,49 @@ NS_ASSUME_NONNULL_BEGIN
     [obj enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
         
         if ([obj isKindOfClass:[NSDictionary class]]) {
+            
             [safeData setObject:[[self class] rollbar_safeDataFromJSONObject:obj] forKey:key];
         } else if ([obj isKindOfClass:[NSArray class]]) {
+            
             [safeData setObject:((NSArray *)obj).mutableCopy forKey:key];
         } else if ([NSJSONSerialization isValidJSONObject:@{key:obj}]) {
+            
             [safeData setObject:obj forKey:key];
         } else if ([obj isKindOfClass:[NSNumber class]]) {
+            
             [safeData setObject:obj forKey:key];
         } else if ([obj isKindOfClass:[NSString class]]) {
+            
             [safeData setObject:obj forKey:key];
         } else if ([obj isKindOfClass:[NSDate class]]) {
+            
             [safeData setObject:[obj description] forKey:key];
         } else if ([obj isKindOfClass:[NSURL class]]) {
+            
             NSString *url = [obj absoluteString];
             if (url) {
+                
                 [safeData setObject:url forKey:key];
             }
             else if([obj description]) {
+                
                 [safeData setObject:[obj description] forKey:key];
             }
         } else if ([obj isKindOfClass:[NSError class]] && (nil != [obj userInfo])) {
+            
             NSDictionary* userInfoData = [[self class] rollbar_safeDataFromJSONObject:[obj userInfo]];
             if (userInfoData) {
+                
                 [safeData setObject:userInfoData forKey:key];
             }
         } else if ([obj isKindOfClass:[NSHTTPURLResponse class]]) {
+            
             [safeData setObject:[obj allHeaderFields] forKey:key];
         } else if ([obj isKindOfClass:[NSSet class]]) {
+            
             [safeData setObject:[[obj allObjects] componentsJoinedByString:@","] forKey:key];
         } else if ([obj isKindOfClass:[NSData class]]) {
+            
             NSError* error = nil;
             NSMutableDictionary* json =
                 [NSJSONSerialization JSONObjectWithData:obj
@@ -79,12 +93,15 @@ NS_ASSUME_NONNULL_BEGIN
             if ((error == nil) && (nil != json)) {
                 NSDictionary *jsonData = [[self class] rollbar_safeDataFromJSONObject:json];
                 if (jsonData) {
+                    
                     [safeData setObject:jsonData forKey:key];
                 }
             } else {
+                
                 RollbarSdkLog(@"Error serializing NSData: %@", [error localizedDescription]);
             }
         } else {
+            
             RollbarSdkLog(@"Error serializing class '%@' using NSJSONSerialization",
                        NSStringFromClass([obj class]));
         }

@@ -36,34 +36,48 @@
 }
 
 + (RollbarHttpMethod) HttpMethodFromString:(NSString *)value {
-    if (NSOrderedSame == [value caseInsensitiveCompare:@"HEAD"]) {
+    if (nil == value) {
+        
+        return RollbarHttpMethod_Trace; // default case...
+    }
+    else if (NSOrderedSame == [value caseInsensitiveCompare:@"HEAD"]) {
+        
         return RollbarHttpMethod_Head;
     }
     else  if (NSOrderedSame == [value caseInsensitiveCompare:@"GET"]) {
+        
         return RollbarHttpMethod_Get;
     }
     else  if (NSOrderedSame == [value caseInsensitiveCompare:@"POST"]) {
+        
         return RollbarHttpMethod_Post;
     }
     if (NSOrderedSame == [value caseInsensitiveCompare:@"PUT"]) {
+        
         return RollbarHttpMethod_Put;
     }
     else  if (NSOrderedSame == [value caseInsensitiveCompare:@"PATCH"]) {
+        
         return RollbarHttpMethod_Patch;
     }
     else  if (NSOrderedSame == [value caseInsensitiveCompare:@"DELETE"]) {
+        
         return RollbarHttpMethod_Delete;
     }
     if (NSOrderedSame == [value caseInsensitiveCompare:@"CONNECT"]) {
+        
         return RollbarHttpMethod_Connect;
     }
     else  if (NSOrderedSame == [value caseInsensitiveCompare:@"OPTIONS"]) {
+        
         return RollbarHttpMethod_Options;
     }
     else  if (NSOrderedSame == [value caseInsensitiveCompare:@"TRACE"]) {
+        
         return RollbarHttpMethod_Trace;
     }
     else {
+
         return RollbarHttpMethod_Trace; // default case...
     }
 }

@@ -144,7 +144,8 @@
 - (nullable NSData *)serializeToJSONData {
 
     BOOL hasValidData = [NSJSONSerialization isValidJSONObject:self->_data];
-    if (!hasValidData) {
+    if (NO == hasValidData) {
+        
         RollbarSdkLog(@"JSON-invalid internal data.");
     }
     
@@ -152,6 +153,7 @@
 #ifdef DEBUG
     opt |= NSJSONWritingPrettyPrinted;
     if (@available(iOS 11, macOS 10.13, *)) {
+        
         opt |= NSJSONWritingSortedKeys;
     } else {
         // Fallback on earlier versions
@@ -159,7 +161,8 @@
 #endif
     NSError *error = nil;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self->_data options:opt error:&error];
-    if (error) {
+    if ((nil == jsonData) && (nil != error)) {
+        
         RollbarSdkLog(@"Error serializing NSData: %@", [error localizedDescription]);
     }
     return jsonData;
@@ -169,6 +172,7 @@
     
     NSData *jsonData = [self serializeToJSONData];
     if (nil == jsonData) {
+        
         return nil;
     }
     

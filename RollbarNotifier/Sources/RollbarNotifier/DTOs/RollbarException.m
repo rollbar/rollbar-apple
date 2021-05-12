@@ -54,6 +54,7 @@ static NSString * const DFK_DESCRIPTION = @"description";
                   exceptionDescription:(nullable NSString *)exceptionDescription {
     
     self = [super initWithDictionary:@{
+        
         DFK_CLASS: exceptionClass ? exceptionClass : [NSNull null],
         DFK_MESSAGE: exceptionMessage ? exceptionMessage : [NSNull null],
         DFK_DESCRIPTION: exceptionDescription ? exceptionDescription : [NSNull null]

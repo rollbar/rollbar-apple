@@ -30,11 +30,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Convert RollbarHttpMethod to a string
 /// @param value RollbarHttpMethod value
-+ (NSString *) HttpMethodToString:(RollbarHttpMethod)value;
++ (nonnull NSString *) HttpMethodToString:(RollbarHttpMethod)value;
 
 /// Convert RollbarHttpMethod value from a string
 /// @param value string representation of a RollbarHttpMethod value
-+ (RollbarHttpMethod) HttpMethodFromString:(NSString *)value;
++ (RollbarHttpMethod) HttpMethodFromString:(nullable NSString *)value;
 
 @end
 
