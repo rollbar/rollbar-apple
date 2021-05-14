@@ -217,8 +217,6 @@ static RollbarLogger *sharedSingleton = nil;
         return;
     }
 
-    //RollbarConfig *config = self.configuration;
-    
     RollbarPayload *payload = [self buildRollbarPayloadWithLevel:level
                                                          message:message
                                                        exception:nil
@@ -239,8 +237,6 @@ static RollbarLogger *sharedSingleton = nil;
         return;
     }
     
-    //RollbarConfig *config = self.configuration;
-    
     RollbarPayload *payload = [self buildRollbarPayloadWithLevel:level
                                                          message:nil
                                                        exception:exception
@@ -260,8 +256,6 @@ static RollbarLogger *sharedSingleton = nil;
     if (YES == [self shouldSkipReporting:level]) {
         return;
     }
-    
-    //RollbarConfig *config = self.configuration;
     
     RollbarPayload *payload = [self buildRollbarPayloadWithLevel:level
                                                          message:nil
