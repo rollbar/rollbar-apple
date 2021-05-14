@@ -22,20 +22,20 @@ final class RollbarNotifierDTOsTests: XCTestCase {
                         "Payload instance"
                         );
         XCTAssertTrue(.orderedSame == payloadAtOnce.accessToken.compare("ACCESS_TOKEN", options: .caseInsensitive),
-            "Access token field [\(payloadAtOnce.accessToken)] of payload: \(payloadAtOnce.serializeToJSONString())."
+                      "Access token field [\(payloadAtOnce.accessToken)] of payload: \(payloadAtOnce.serializeToJSONString() ?? "<nil>")."
                       );
         XCTAssertNotNil(payloadAtOnce.data,
-                        "Data field of payload: \(payloadAtOnce.serializeToJSONString())."
+                        "Data field of payload: \(payloadAtOnce.serializeToJSONString() ?? "<nil>")."
                         );
         XCTAssertTrue(.orderedSame == payloadAtOnce.data.environment.compare("ENV", options: .caseInsensitive),
-                      "Environment field [\(payloadAtOnce.data.environment)] of payload: \(payloadAtOnce.serializeToJSONString())."
+                      "Environment field [\(payloadAtOnce.data.environment)] of payload: \(payloadAtOnce.serializeToJSONString() ?? "<nil>")."
                       );
 
         let payload = RollbarPayload(jsonString: jsonPayload);
         let payloadData = RollbarData(jsonString: jsonData);
         payload.data = payloadData;
-        XCTAssertTrue(.orderedSame == payloadAtOnce.serializeToJSONString().compare(payload.serializeToJSONString()),
-                      "payloadAtOnce [\(payloadAtOnce.serializeToJSONString())] must match payload: [\(payload.serializeToJSONString())]."
+        XCTAssertTrue(.orderedSame == payloadAtOnce.serializeToJSONString()!.compare(payload.serializeToJSONString()!),
+                      "payloadAtOnce [\(payloadAtOnce.serializeToJSONString() ?? "<nil>")] must match payload: [\(payload.serializeToJSONString() ?? "<nil>")]."
                       );
 
         XCTAssertTrue(!payload.hasSameDefinedProperties(as: payloadData),
@@ -346,7 +346,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         rc.setServerHost("SERVERHOST", root:"SERVERROOT", branch: "SERVERBRANCH", codeVersion: "SERVERCODEVERSION");
         rc.setNotifierName("NOTIFIERNAME", version: "NOTIFIERVERSION");
         
-        var rcClone = RollbarConfig(jsonString: rc.serializeToJSONString());
+        var rcClone = RollbarConfig(jsonString: rc.serializeToJSONString()!);
         
     //    id scrubList = rc.scrubFields;
     //    id scrubListClone = rcClone.scrubFields;
@@ -370,12 +370,12 @@ final class RollbarNotifierDTOsTests: XCTestCase {
     //                  [rcClone serializeToJSONString]
     //                  );
 
-        rcClone = RollbarConfig(jsonString: rc.serializeToJSONString());
+        rcClone = RollbarConfig(jsonString: rc.serializeToJSONString()!);
         rcClone.httpProxy.proxyUrl = "SOME_OTHER_ONE";
         XCTAssertTrue(!rc.isEqual(rcClone),
                       "Two DTOs are NOT expected to be equal"
                       );
-        XCTAssertTrue(rcClone.isEqual(RollbarConfig(jsonString: rcClone.serializeToJSONString())),
+        XCTAssertTrue(rcClone.isEqual(RollbarConfig(jsonString: rcClone.serializeToJSONString()!)),
                       "Two DTOs (clone and its clone) are expected to be equal"
                       );
     }

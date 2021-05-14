@@ -9,9 +9,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// Rollbar category for NSObject
 @interface NSObject (Rollbar)
 
-- (nonnull NSString *)objectClassName;
+/// Returns object's class name
+- (nonnull NSString *)rollbar_objectClassName;
 
 @end
 

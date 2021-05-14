@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - via JSON-friendly NSData
 
 /// Serialize into JSON-friendly NSData instance
-- (NSData *)serializeToJSONData;
+- (nullable NSData *)serializeToJSONData;
 
 /// Desrialize from JSON-friendly NSData instance
 /// @param jsonData JSON-friendly NSData instance
@@ -31,7 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - via JSON string
 
 /// Serialize into a JSON string
-- (NSString *)serializeToJSONString;
+- (nullable NSString *)serializeToJSONString;
 
 /// Deserialize from a JSON string
 /// @param jsonString JSON string

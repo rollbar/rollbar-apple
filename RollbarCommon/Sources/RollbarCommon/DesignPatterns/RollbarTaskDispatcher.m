@@ -18,9 +18,9 @@
                          taskInput:(id)taskInput {
     
     RollbarTaskDispatcher *dispatcher = [RollbarTaskDispatcher new];
-    dispatcher->task = [task copy];
-    dispatcher->queue = queue;
-    dispatcher->taskInput = taskInput;
+    dispatcher->_task = [task copy];
+    dispatcher->_queue = queue;
+    dispatcher->_taskInput = taskInput;
     
     return dispatcher;
 }
@@ -29,18 +29,18 @@
 
 - (void)dispatchTask:(RollbarTaskBlock)task input:(id)taskInput {
     
-    [queue addOperationWithBlock:^{
-        task(taskInput);
+    [self->_queue addOperationWithBlock:^{
+        self->_task(self->_taskInput);
     }];
 }
 
 - (void)dispatchInput:(id)taskInput {
     
-    [self dispatchTask:self->task input:taskInput];
+    [self dispatchTask:self->_task input:taskInput];
 }
 
 - (void)dispatch {
-    [self dispatchInput:self->taskInput];
+    [self dispatchInput:self->_taskInput];
 }
 
 #pragma mark - NSObject

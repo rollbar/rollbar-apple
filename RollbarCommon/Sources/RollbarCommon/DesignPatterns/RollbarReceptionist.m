@@ -19,10 +19,10 @@
                                   task:(RollbarReceptionistTaskBlock)task {
     
     RollbarReceptionist *receptionist = [RollbarReceptionist new];
-    receptionist->task = [task copy];
-    receptionist->observedKeyPath = [path copy];
-    receptionist->observedObject = obj;
-    receptionist->queue = queue;
+    receptionist->_task = [task copy];
+    receptionist->_observedKeyPath = [path copy];
+    receptionist->_observedObject = obj;
+    receptionist->_queue = queue;
     [obj addObserver:receptionist
           forKeyPath:path
              options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
@@ -37,8 +37,8 @@
                         change:(NSDictionary *)change
                        context:(void *)context {
 
-    [queue addOperationWithBlock:^{
-        task(keyPath, object, change);
+    [self->_queue addOperationWithBlock:^{
+        self->_task(keyPath, object, change);
     }];
 }
 

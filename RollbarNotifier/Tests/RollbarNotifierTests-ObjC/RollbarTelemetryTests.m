@@ -155,6 +155,7 @@
     [Rollbar reapplyConfiguration];
 
     [RollbarTelemetry.sharedInstance clearAllData];
+    [NSThread sleepForTimeInterval:2.0f];
     NSNumber *counter = [NSNumber numberWithInt:123];
     RollbarLog(@"Logging with telemetry %@", counter);
     NSArray *telemetryEvents = [RollbarTelemetry.sharedInstance getAllData];

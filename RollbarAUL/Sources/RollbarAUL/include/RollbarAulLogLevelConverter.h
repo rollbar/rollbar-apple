@@ -7,13 +7,6 @@
 
 @import Foundation;
 
-//@import OSLog;
-//#if MAC_OS_X_VERSION_MIN_REQUIRED >= __IPHONE_6_0 //or 90000 // ios(9.0) and above
-//@import OSLog;
-//#endif
-//#if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_6_0 //or 90000 // ios(9.0) and above
-//@import OSLog;
-//#endif
 #if __has_include(<os/log.h>)
   #include <os/log.h>
 #endif
@@ -22,9 +15,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-//API_AVAILABLE(macos(10.15))
-//API_UNAVAILABLE(ios, tvos, watchos)
 API_AVAILABLE(macos(10.11), ios(9.0), tvos(9.0), watchos(2.0))
+/// Rollbar level to/from AUL log type converter
 @interface RollbarAulLogLevelConverter : NSObject
 
 + (os_log_type_t) RollbarLevelToAulLevel:(RollbarLevel)value

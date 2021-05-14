@@ -13,7 +13,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)rollbar_valuePresentForKey:(nonnull NSString *)key
-         className:(nullable NSString *)className {
+                         className:(nullable NSString *)className {
     
     id value = self[key];
     if (nil != value) {
