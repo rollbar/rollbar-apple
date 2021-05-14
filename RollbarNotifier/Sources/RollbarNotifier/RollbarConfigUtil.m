@@ -22,34 +22,43 @@ static NSString *configurationFilePath = nil;
 @implementation RollbarConfigUtil
 
 + (void)initialize {
+    
     if (self == [RollbarConfigUtil class]) {
+        
         configurationDirectory = [RollbarCachesDirectory directory];
         configurationFilePath = [configurationDirectory stringByAppendingPathComponent:CONFIGURATION_FILENAME];
     }
 }
 
 + (nonnull NSString *)getDefaultConfigFileName {
+    
     return CONFIGURATION_FILENAME;
 }
 
 + (nonnull NSString *)getDefaultConfigDirectory {
+    
     return configurationDirectory;
 }
 
 + (nonnull NSString *)getDefaultConfigFilePath {
+    
     return configurationFilePath;
 }
 
 + (nullable RollbarConfig *)createRollbarConfigFromFile:(nonnull NSString *)filePath
                                                   error:(NSError * _Nullable *)error {
+    
     if (!filePath) {
+        
         *error = [NSError errorWithDomain:@"filePath is nil"
                                      code:0
                                  userInfo:nil];
         return nil;
     }
     if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+        
         if (nil != error) {
+            
             *error = [NSError errorWithDomain:[NSString stringWithFormat:@"filePath %@ does not exist.", filePath]
                                          code:0
                                      userInfo:nil];
@@ -60,11 +69,14 @@ static NSString *configurationFilePath = nil;
                                                 options:nil
                                                   error:error];
     if (nil != configData) {
+        
         RollbarConfig *config = [[RollbarConfig alloc] initWithJSONData:configData];
         return config;
     }
     else {
+        
         if ((nil != error) && (nil != *error)) {
+            
             RollbarSdkLog(@"Error loading RollbarConfig from %@: %@", filePath, [*error localizedDescription]);
         }
         return nil;
@@ -72,6 +84,7 @@ static NSString *configurationFilePath = nil;
 }
 
 + (nullable RollbarConfig *)createRollbarConfigFromDefaultFile:(NSError * _Nullable *)error {
+    
     return [RollbarConfigUtil createRollbarConfigFromFile:configurationFilePath
                                                     error:error];
 }
@@ -79,7 +92,9 @@ static NSString *configurationFilePath = nil;
 + (BOOL)saveRollbarConfig:(RollbarConfig *)rollbarConfig
                    toFile:(nonnull NSString *)filePath
                     error:(NSError * _Nullable *)error {
+    
     if (!rollbarConfig) {
+        
         *error =
         [NSError errorWithDomain:@"Can't save uninitialized RollbarConfig"
                             code:0
@@ -87,11 +102,13 @@ static NSString *configurationFilePath = nil;
         return YES; // nothing bad happened
     }
     if ([filePath hasPrefix:@"~"]) {
+        
         filePath = [filePath stringByExpandingTildeInPath];
     }
     NSData *configData = [rollbarConfig serializeToJSONData];
     BOOL success = [configData writeToFile:filePath atomically:YES];
     if ((NO == success) && (nil != error)) {
+        
         *error =
         [NSError errorWithDomain:[NSString stringWithFormat:@"Can't write RollbarConfig to file: %@", filePath]
                             code:0
@@ -102,6 +119,7 @@ static NSString *configurationFilePath = nil;
 
 + (BOOL)saveRollbarConfig:(RollbarConfig *)rollbarConfig
                     error:(NSError * _Nullable *)error {
+    
     return [RollbarConfigUtil saveRollbarConfig:rollbarConfig
                                          toFile:configurationFilePath
                                           error:error];
@@ -109,25 +127,34 @@ static NSString *configurationFilePath = nil;
 
 + (BOOL)deleteFile:(nonnull NSString *)filePath
              error:(NSError * _Nullable *)error {
+    
     NSFileManager *fileManager = [NSFileManager defaultManager];
     BOOL fileExists = [fileManager fileExistsAtPath:filePath];
     if (fileExists) {
+        
         BOOL success = [fileManager removeItemAtPath:filePath
                                                error:error];
         if (NO == success) {
-            RollbarSdkLog(@"Error while deleting file %@", filePath);
+            
+            if ((nil != error) && (nil != *error)) {
+                
+                RollbarSdkLog(@"Error while deleting file %@: %@",
+                              filePath,
+                              [*error localizedDescription]);
+            }
+            else {
+                
+                RollbarSdkLog(@"Error while deleting file %@", filePath);
+            }
         }
-        if ((NO == success) && (nil != error) && (nil != *error)) {
-            RollbarSdkLog(@"Error while deleting file %@: %@",
-                          filePath,
-                          [*error localizedDescription]);
-        }
+        
         return success;
     }
     return YES; // nothing bad happened
 }
 
 + (BOOL)deleteDefaultRollbarConfigFile:(NSError * _Nullable *)error {
+    
     return [RollbarConfigUtil deleteFile:configurationFilePath
                                    error:error];
 }
