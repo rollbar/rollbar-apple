@@ -5,6 +5,9 @@
 //  Created by Andrey Kornich on 2021-05-03.
 //
 
+#ifndef RollbarAulEntrySnapper_h
+#define RollbarAulEntrySnapper_h
+
 @import Foundation;
 
 //@import OSLog;
@@ -25,3 +28,5 @@ API_UNAVAILABLE(ios, tvos, watchos)
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarAulEntrySnapper_h

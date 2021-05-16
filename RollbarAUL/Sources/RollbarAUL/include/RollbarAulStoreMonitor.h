@@ -5,6 +5,9 @@
 //  Created by Andrey Kornich on 2021-04-23.
 //
 
+#ifndef RollbarAulStoreMonitor_h
+#define RollbarAulStoreMonitor_h
+
 @import Foundation;
 @import RollbarCommon;
 @import RollbarNotifier;
@@ -41,3 +44,5 @@ API_UNAVAILABLE(ios, tvos, watchos)
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarAulStoreMonitor_h

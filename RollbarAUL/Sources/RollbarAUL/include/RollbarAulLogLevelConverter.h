@@ -5,6 +5,9 @@
 //  Created by Andrey Kornich on 2021-03-24.
 //
 
+#ifndef RollbarAulLogLevelConverter_h
+#define RollbarAulLogLevelConverter_h
+
 @import Foundation;
 
 #if __has_include(<os/log.h>)
@@ -30,3 +33,5 @@ API_AVAILABLE(macos(10.11), ios(9.0), tvos(9.0), watchos(2.0))
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarAulLogLevelConverter_h

@@ -5,6 +5,9 @@
 //  Created by Andrey Kornich on 2021-04-29.
 //
 
+#ifndef RollbarAulClient_h
+#define RollbarAulClient_h
+
 @import Foundation;
 
 //@import OSLog;
@@ -50,3 +53,5 @@ API_UNAVAILABLE(ios, tvos, watchos)
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarAulClient_h

@@ -1,5 +1,8 @@
 //  Copyright (c) 2018 Rollbar, Inc. All rights reserved.
 
+#ifndef Rollbar_h
+#define Rollbar_h
+
 @import Foundation;
 
 #import "RollbarLevel.h"
@@ -226,3 +229,5 @@
                          withData:(nullable NSDictionary<NSString *, id> *)extraData;
 
 @end
+
+#endif //Rollbar_h

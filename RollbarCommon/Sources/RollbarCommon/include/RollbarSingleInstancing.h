@@ -5,8 +5,8 @@
 //  Created by Andrey Kornich on 2021-04-23.
 //
 
-#ifndef Header_h
-#define Header_h
+#ifndef RollbarSingleInstancing_h
+#define RollbarSingleInstancing_h
 
 #import <Foundation/Foundation.h>
 
@@ -46,4 +46,4 @@ NS_ASSUME_NONNULL_BEGIN
 
 NS_ASSUME_NONNULL_END
 
-#endif /* Header_h */
+#endif //RollbarSingleInstancing_h

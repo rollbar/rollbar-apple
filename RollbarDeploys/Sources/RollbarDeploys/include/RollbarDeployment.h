@@ -1,5 +1,8 @@
 //  Copyright © 2018 Rollbar. All rights reserved.
 
+#ifndef RollbarDeployment_h
+#define RollbarDeployment_h
+
 @import Foundation;
 @import RollbarCommon;
 
@@ -51,3 +54,5 @@ NS_UNAVAILABLE;
 NS_UNAVAILABLE;
 
 @end
+
+#endif //RollbarDeployment_h

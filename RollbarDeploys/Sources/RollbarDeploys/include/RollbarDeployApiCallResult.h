@@ -1,5 +1,8 @@
 //  Copyright © 2018 Rollbar. All rights reserved.
 
+#ifndef RollbarDeployApiCallResult_h
+#define RollbarDeployApiCallResult_h
+
 #import "RollbarDeployApiCallOutcome.h"
 
 @import Foundation;
@@ -97,3 +100,5 @@ NS_DESIGNATED_INITIALIZER;
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarDeployApiCallResult_h

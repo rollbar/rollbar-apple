@@ -5,6 +5,9 @@
 //  Created by Andrey Kornich on 2021-04-23.
 //
 
+#ifndef RollbarAulStoreMonitorOptions_h
+#define RollbarAulStoreMonitorOptions_h
+
 @import Foundation;
 @import RollbarCommon;
 
@@ -46,3 +49,5 @@ NS_UNAVAILABLE;
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarAulStoreMonitorOptions_h

@@ -5,6 +5,9 @@
 //  Created by Andrey Kornich on 2021-03-24.
 //
 
+#ifndef RollbarAulOSLogEntryLogLevelConverter_h
+#define RollbarAulOSLogEntryLogLevelConverter_h
+
 @import Foundation;
 
 #if __has_include(<oslog/OSLog.h>)
@@ -38,3 +41,5 @@ API_UNAVAILABLE(ios, tvos, watchos)
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarAulOSLogEntryLogLevelConverter_h

@@ -5,6 +5,9 @@
 //  Created by Andrey Kornich on 2021-03-04.
 //
 
+#ifndef RollbarExceptionGuard_h
+#define RollbarExceptionGuard_h
+
 @import Foundation;
 
 @class RollbarLogger;
@@ -36,3 +39,5 @@ NS_UNAVAILABLE;
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarExceptionGuard_h

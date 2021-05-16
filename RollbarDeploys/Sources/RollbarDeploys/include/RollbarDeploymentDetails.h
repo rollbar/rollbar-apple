@@ -1,5 +1,8 @@
 //  Copyright © 2018 Rollbar. All rights reserved.
 
+#ifndef RollbarDeploymentDetails_h
+#define RollbarDeploymentDetails_h
+
 #import "RollbarDeployment.h"
 
 @import Foundation;
@@ -23,3 +26,5 @@
 @property (readonly, copy) NSString *status;
 
 @end
+
+#endif //RollbarDeploymentDetails_h

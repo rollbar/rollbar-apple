@@ -6,6 +6,9 @@
 //  Copyright © 2019 Rollbar. All rights reserved.
 //
 
+#ifndef RollbarDeployApiCallOutcome_h
+#define RollbarDeployApiCallOutcome_h
+
 @import Foundation;
 
 typedef NS_ENUM(NSInteger, RollbarDeployApiCallOutcome) {
@@ -29,3 +32,5 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarDeployApiCallOutcome_h
