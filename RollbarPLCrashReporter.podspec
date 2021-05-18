@@ -7,7 +7,7 @@
 
 Pod::Spec.new do |s|
 
-    s.version      = "2.0.0-beta.18"
+    s.version      = "2.0.0-beta.19"
     s.name         = "RollbarPLCrashReporter"
     s.summary      = "Application or client side SDK for interacting with the Rollbar API Server."
     s.description  = <<-DESC
