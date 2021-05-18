@@ -1,5 +1,8 @@
 //  Copyright © 2018 Rollbar. All rights reserved.
 
+#ifndef RollbarDeploysProtocol_h
+#define RollbarDeploysProtocol_h
+
 @import Foundation;
 
 @class RollbarDeployment;
@@ -64,3 +67,5 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarDeploysProtocol_h

@@ -5,6 +5,9 @@
 //  Created by Andrey Kornich on 2021-04-29.
 //
 
+#ifndef RollbarAulPredicateBuilder_h
+#define RollbarAulPredicateBuilder_h
+
 #import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -42,3 +45,5 @@ API_UNAVAILABLE(ios, tvos, watchos)
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarAulPredicateBuilder_h
