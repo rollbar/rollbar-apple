@@ -9,12 +9,11 @@
 #define RollbarAulLogLevelConverter_h
 
 @import Foundation;
+@import RollbarNotifier;
 
 #if __has_include(<os/log.h>)
   #include <os/log.h>
 #endif
-
-#import "RollbarLevel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
