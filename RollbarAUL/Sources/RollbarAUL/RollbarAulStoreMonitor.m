@@ -193,8 +193,6 @@ API_UNAVAILABLE(ios, tvos, watchos)
                                                           extraData:entrySnapshot];
         }
 
-        
-
         count++;
     }
 
@@ -212,6 +210,8 @@ API_UNAVAILABLE(ios, tvos, watchos)
             [self setupWithOptions:(nil != options) ? options : [RollbarAulStoreMonitorOptions new] ];
         }
     }
+    
+    return theOnlyInstance;
 }
 
 - (id<RollbarAulStoreMonitoring>)configureRollbarLogger:(nullable RollbarLogger *)logger {
@@ -223,6 +223,8 @@ API_UNAVAILABLE(ios, tvos, watchos)
             theOnlyInstance->_logger = logger;
         }
     }
+    
+    return theOnlyInstance;
 }
 
 #pragma mark - Singleton Pattern
