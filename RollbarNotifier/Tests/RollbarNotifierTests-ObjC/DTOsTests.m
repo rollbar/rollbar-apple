@@ -8,8 +8,6 @@
 
 @import Foundation;
 
-#import "TestData/CrashReports.h"
-
 #if !TARGET_OS_WATCH
 #import <XCTest/XCTest.h>
 

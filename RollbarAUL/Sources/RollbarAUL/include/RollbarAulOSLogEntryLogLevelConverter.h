@@ -9,6 +9,9 @@
 #define RollbarAulOSLogEntryLogLevelConverter_h
 
 @import Foundation;
+
+#if TARGET_OS_OSX
+
 @import RollbarNotifier;
 
 #if __has_include(<oslog/OSLog.h>)
@@ -42,3 +45,5 @@ API_UNAVAILABLE(ios, tvos, watchos)
 NS_ASSUME_NONNULL_END
 
 #endif //RollbarAulOSLogEntryLogLevelConverter_h
+
+#endif //TARGET_OS_OSX

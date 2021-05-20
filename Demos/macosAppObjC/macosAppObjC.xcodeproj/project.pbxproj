@@ -14,6 +14,7 @@
 		55759A732477561100ED3F04 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55759A722477561100ED3F04 /* Assets.xcassets */; };
 		55759A762477561100ED3F04 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 55759A742477561100ED3F04 /* Main.storyboard */; };
 		55759A792477561100ED3F04 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 55759A782477561100ED3F04 /* main.m */; };
+		55847E682655C2990062C242 /* RollbarAUL in Frameworks */ = {isa = PBXBuildFile; productRef = 55847E672655C2990062C242 /* RollbarAUL */; };
 		55A02A60259AAAE40071D60D /* RollbarPLCrashReporter in Frameworks */ = {isa = PBXBuildFile; productRef = 55A02A5F259AAAE40071D60D /* RollbarPLCrashReporter */; };
 		55FD0711247860F1000BBC22 /* RollbarDeploys in Frameworks */ = {isa = PBXBuildFile; productRef = 55FD0710247860F1000BBC22 /* RollbarDeploys */; };
 		55FD07142478614B000BBC22 /* RollbarDeploysDemoClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 55FD07132478614B000BBC22 /* RollbarDeploysDemoClient.m */; };
@@ -43,6 +44,7 @@
 				55684F5A2553981600F82F34 /* RollbarKSCrash in Frameworks */,
 				55FD0711247860F1000BBC22 /* RollbarDeploys in Frameworks */,
 				5547273924903EB7005018BD /* RollbarNotifier in Frameworks */,
+				55847E682655C2990062C242 /* RollbarAUL in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +114,7 @@
 				5547273824903EB7005018BD /* RollbarNotifier */,
 				55684F592553981600F82F34 /* RollbarKSCrash */,
 				55A02A5F259AAAE40071D60D /* RollbarPLCrashReporter */,
+				55847E672655C2990062C242 /* RollbarAUL */,
 			);
 			productName = macosAppObjC;
 			productReference = 55759A692477560D00ED3F04 /* macosAppObjC.app */;
@@ -369,6 +372,10 @@
 		55684F592553981600F82F34 /* RollbarKSCrash */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RollbarKSCrash;
+		};
+		55847E672655C2990062C242 /* RollbarAUL */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RollbarAUL;
 		};
 		55A02A5F259AAAE40071D60D /* RollbarPLCrashReporter */ = {
 			isa = XCSwiftPackageProductDependency;

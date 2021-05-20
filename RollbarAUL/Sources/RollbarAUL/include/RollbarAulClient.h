@@ -10,6 +10,8 @@
 
 @import Foundation;
 
+#if TARGET_OS_OSX
+
 //@import OSLog;
 #if __has_include(<OSLog/OSLog.h>)
   #include <OSLog/OSLog.h>
@@ -55,3 +57,5 @@ API_UNAVAILABLE(ios, tvos, watchos)
 NS_ASSUME_NONNULL_END
 
 #endif //RollbarAulClient_h
+
+#endif //TARGET_OS_OSX

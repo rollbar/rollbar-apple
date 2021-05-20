@@ -6,8 +6,12 @@
 //
 
 #import "RollbarAulEntrySnapper.h"
-#import "RollbarAulOSLogEntryLogLevelConverter.h"
+
+#if TARGET_OS_OSX
+
 @import RollbarCommon;
+
+#import "RollbarAulOSLogEntryLogLevelConverter.h"
 
 API_AVAILABLE(macos(10.15))
 API_UNAVAILABLE(ios, tvos, watchos)
@@ -118,3 +122,5 @@ API_UNAVAILABLE(ios, tvos, watchos)
 }
 
 @end
+
+#endif //TARGET_OS_OSX

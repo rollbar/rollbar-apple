@@ -7,6 +7,8 @@
 
 #import "RollbarAulStoreMonitorOptions.h"
 
+#if TARGET_OS_OSX
+
 #pragma mark - data field keys
 
 API_AVAILABLE(macos(10.15))
@@ -108,3 +110,5 @@ API_UNAVAILABLE(ios, tvos, watchos)
 }
 
 @end
+
+#endif //TARGET_OS_OSX

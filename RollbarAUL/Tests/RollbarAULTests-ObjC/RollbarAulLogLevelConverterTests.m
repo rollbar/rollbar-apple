@@ -1,8 +1,10 @@
 @import Foundation;
+
+#if TARGET_OS_OSX
+
 @import OSLog;
 @import RollbarAUL;
 @import RollbarNotifier;
-
 
 #if !TARGET_OS_WATCH
 #import <XCTest/XCTest.h>
@@ -64,4 +66,7 @@
 }
 
 @end
-#endif
+
+#endif // !TARGET_OS_WATCH
+
+#endif //TARGET_OS_OSX
