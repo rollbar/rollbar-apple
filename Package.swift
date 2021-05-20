@@ -104,9 +104,6 @@ let package = Package(
         .target(
             name: "RollbarAUL",
             dependencies: ["RollbarCommon", "RollbarNotifier"],
-            platforms: [
-                .macOS(.v10_15),
-            ],
             path: "RollbarAUL/Sources/RollbarAUL",
             publicHeadersPath: "include",
             cSettings: [

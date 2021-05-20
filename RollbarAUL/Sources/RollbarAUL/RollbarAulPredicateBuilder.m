@@ -7,6 +7,8 @@
 
 #import "RollbarAulPredicateBuilder.h"
 
+#if TARGET_OS_OSX
+
 //@import OSLog;
 #if __has_include(<OSLog/OSLog.h>)
   #include <OSLog/OSLog.h>
@@ -130,8 +132,9 @@ API_UNAVAILABLE(ios, tvos, watchos)
 
 + (nullable NSPredicate *)buildAulFaultsPredicate {
     
-    NSPredicate *faultsPredicate = [RollbarPredicateBuilder buildIntegerPredicateWithValue:OSLogEntryLogLevelFault
-                                                                                          forProperty:@"level"];
+    NSPredicate *faultsPredicate =
+    [RollbarPredicateBuilder buildIntegerPredicateWithValue:OSLogEntryLogLevelFault
+                                                forProperty:@"level"];
     return faultsPredicate;
 }
 
@@ -182,3 +185,5 @@ API_UNAVAILABLE(ios, tvos, watchos)
 }
 
 @end
+
+#endif //TARGET_OS_OSX

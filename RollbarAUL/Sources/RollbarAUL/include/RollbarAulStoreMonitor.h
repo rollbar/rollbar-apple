@@ -9,6 +9,9 @@
 #define RollbarAulStoreMonitor_h
 
 @import Foundation;
+
+#if TARGET_OS_OSX
+
 @import RollbarCommon;
 @import RollbarNotifier;
 
@@ -46,3 +49,5 @@ API_UNAVAILABLE(ios, tvos, watchos)
 NS_ASSUME_NONNULL_END
 
 #endif //RollbarAulStoreMonitor_h
+
+#endif //TARGET_OS_OSX

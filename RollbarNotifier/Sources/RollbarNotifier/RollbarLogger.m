@@ -1,10 +1,12 @@
 //  Copyright (c) 2018 Rollbar, Inc. All rights reserved.
 
-@import RollbarCommon;
+@import Foundation;
 
 #if TARGET_OS_IOS | TARGET_OS_TV | TARGET_OS_MACCATALYST
 @import UIKit;
 #endif
+
+@import RollbarCommon;
 
 #import "RollbarLogger.h"
 #import "RollbarThread.h"

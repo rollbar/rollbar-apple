@@ -7,10 +7,11 @@
 //
 
 
+@import Foundation;
+
 #if !TARGET_OS_WATCH
 #import <XCTest/XCTest.h>
 
-@import Foundation;
 @import RollbarCommon;
 #import "Mocks/Calculator.h"
 

@@ -6,6 +6,9 @@
 //
 
 #import "RollbarAulStoreMonitor.h"
+
+#if TARGET_OS_OSX
+
 #import "RollbarAulStoreMonitorOptions.h"
 #import "RollbarAulPredicateBuilder.h"
 #import "RollbarAulClient.h"
@@ -278,3 +281,5 @@ API_UNAVAILABLE(ios, tvos, watchos)
 }
 
 @end
+
+#endif //TARGET_OS_OSX

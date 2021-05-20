@@ -8,7 +8,9 @@
 #ifndef RollbarAulPredicateBuilder_h
 #define RollbarAulPredicateBuilder_h
 
-#import <Foundation/Foundation.h>
+@import Foundation;
+
+#if TARGET_OS_OSX
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -38,7 +40,10 @@ API_UNAVAILABLE(ios, tvos, watchos)
 
 + (nullable NSPredicate *)buildAulProcessPredicate;
 
-+ (nullable NSPredicate *)buildAulFaultsPredicate;
++ (nullable NSPredicate *)buildAulFaultsPredicate
+API_AVAILABLE(macos(10.15))
+API_UNAVAILABLE(ios, tvos, watchos)
+;
 
 - (instancetype)init NS_UNAVAILABLE; // This is static utility class. No instances needed...
 
@@ -47,3 +52,5 @@ API_UNAVAILABLE(ios, tvos, watchos)
 NS_ASSUME_NONNULL_END
 
 #endif //RollbarAulPredicateBuilder_h
+
+#endif //TARGET_OS_OSX

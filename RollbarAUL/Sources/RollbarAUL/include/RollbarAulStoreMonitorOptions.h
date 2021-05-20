@@ -9,6 +9,9 @@
 #define RollbarAulStoreMonitorOptions_h
 
 @import Foundation;
+
+#if TARGET_OS_OSX
+
 @import RollbarCommon;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -51,3 +54,5 @@ NS_UNAVAILABLE;
 NS_ASSUME_NONNULL_END
 
 #endif //RollbarAulStoreMonitorOptions_h
+
+#endif //TARGET_OS_OSX

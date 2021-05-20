@@ -6,6 +6,9 @@
 //
 
 #import "RollbarAulClient.h"
+
+#if TARGET_OS_OSX
+
 #import "RollbarAulPredicateBuilder.h"
 
 API_AVAILABLE(macos(10.15))
@@ -126,3 +129,5 @@ API_UNAVAILABLE(ios, tvos, watchos)
 }
 
 @end
+
+#endif //TARGET_OS_OSX

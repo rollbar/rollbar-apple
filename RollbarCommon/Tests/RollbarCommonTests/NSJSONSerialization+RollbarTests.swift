@@ -56,7 +56,7 @@ final class NSJSONSerializationRollbarTests: XCTestCase {
             "scrubFields": NSSet.init(array: ["password", "secret", "CCV"]),
             ] as [String : Any];
         
-        if #available(OSX 10.13, *) {
+        if #available(OSX 10.13, iOS 11.0, *) {
             data["innerData"] = JSONSerialization.rollbar_data(
                 withJSONObject: data,
                 options: .sortedKeys,
@@ -75,7 +75,7 @@ final class NSJSONSerializationRollbarTests: XCTestCase {
         let safeJson = JSONSerialization.rollbar_safeData(fromJSONObject: payload);
 
         do {
-            if #available(OSX 10.13, *) {
+            if #available(OSX 10.13, iOS 11.0, *) {
                 let jsonData = try JSONSerialization.data(withJSONObject: safeJson, options: .sortedKeys)
                 let result = String.init(data: jsonData, encoding: .utf8);
                 XCTAssertEqual(goldenStandard, result);

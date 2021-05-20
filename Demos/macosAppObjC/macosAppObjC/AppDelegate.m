@@ -11,7 +11,7 @@
 #import "RollbarDeploysDemoClient.h"
 
 @import RollbarNotifier;
-
+@import RollbarAUL;
 @import RollbarKSCrash;
 @import RollbarPLCrashReporter;
 
@@ -81,6 +81,9 @@ __attribute__((noinline)) static void crashIt (void) {
     config.destination.environment = @"samples";
     //config.developerOptions.suppressSdkInfoLogging = YES;
     config.customData = @{ @"someKey": @"someValue", };
+    
+    [RollbarAulStoreMonitor.sharedInstance configureRollbarLogger:Rollbar.currentLogger];
+    [RollbarAulStoreMonitor.sharedInstance start];
 
     // optional crash reporter:
     id<RollbarCrashCollector> crashCollector =

@@ -1,4 +1,7 @@
 @import Foundation;
+
+#if TARGET_OS_OSX
+
 @import OSLog;
 
 #if !TARGET_OS_WATCH
@@ -129,4 +132,8 @@
 }
 
 @end
-#endif
+
+#endif //!TARGET_OS_WATCH
+
+#endif //TARGET_OS_OSX
+

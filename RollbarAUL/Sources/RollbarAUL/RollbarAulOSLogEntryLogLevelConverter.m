@@ -7,6 +7,8 @@
 
 #import "RollbarAulOSLogEntryLogLevelConverter.h"
 
+#if TARGET_OS_OSX
+
 API_AVAILABLE(macos(10.15))
 API_UNAVAILABLE(ios, tvos, watchos)
 @implementation RollbarAulOSLogEntryLogLevelConverter
@@ -72,3 +74,5 @@ API_UNAVAILABLE(ios, tvos, watchos) {
 }
 
 @end
+
+#endif //TARGET_OS_OSX
