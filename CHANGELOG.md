@@ -25,6 +25,10 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 
 ## Release Notes
 
+**2.0.0-beta.22**
+**2.0.0-beta.21**
+- feat: new RollbarAUL module is code complete
+
 **2.0.0-beta.15**
 - fix: resolve #81 - SPM - Resolving Package Graph Failed
 
