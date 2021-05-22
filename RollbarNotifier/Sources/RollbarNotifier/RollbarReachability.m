@@ -115,6 +115,11 @@ static void TMReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkRea
 
 +(RollbarReachability*)reachabilityWithHostname:(NSString*)hostname
 {
+    if ((nil == hostname) || (nil == [hostname UTF8String])) {
+        
+        return nil;
+    }
+    
     SCNetworkReachabilityRef ref = SCNetworkReachabilityCreateWithName(NULL, [hostname UTF8String]);
     if (ref)
     {

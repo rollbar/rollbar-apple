@@ -13,12 +13,17 @@ NS_ASSUME_NONNULL_BEGIN
                                            safe:(BOOL)safe {
     
     if (safe) {
+        
         if ([obj isKindOfClass:[NSArray class]]) {
+            
             NSMutableArray *newArr = [NSMutableArray array];
             for (id item in obj) {
+                
                 if ([item isKindOfClass:[NSDictionary class]]) {
+                    
                     [newArr addObject:[[self class] rollbar_safeDataFromJSONObject:item]];
                 } else {
+                    
                     [newArr addObject:item];
                 }
             }
@@ -26,19 +31,26 @@ NS_ASSUME_NONNULL_BEGIN
                                                    options:opt
                                                      error:error];
         } else if ([obj isKindOfClass:[NSDictionary class]]) {
+            
             return [NSJSONSerialization dataWithJSONObject:[[self class] rollbar_safeDataFromJSONObject:obj]
                                                    options:opt
                                                      error:error];
         }
     }
+    
     return [NSJSONSerialization dataWithJSONObject:obj
                                            options:opt
                                              error:error];
 }
 
-+ (NSMutableDictionary *)rollbar_safeDataFromJSONObject:(id)obj {
++ (nonnull NSMutableDictionary *)rollbar_safeDataFromJSONObject:(nullable id)obj {
     
     NSMutableDictionary *safeData = [NSMutableDictionary new];
+    if (nil == obj) {
+        
+        return safeData;
+    }
+    
     [obj enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
         
         if ([obj isKindOfClass:[NSDictionary class]]) {
@@ -73,7 +85,7 @@ NS_ASSUME_NONNULL_BEGIN
         } else if ([obj isKindOfClass:[NSError class]] && (nil != [obj userInfo])) {
             
             NSDictionary* userInfoData = [[self class] rollbar_safeDataFromJSONObject:[obj userInfo]];
-            if (userInfoData) {
+            if (nil != userInfoData) {
                 
                 [safeData setObject:userInfoData forKey:key];
             }
@@ -91,6 +103,7 @@ NS_ASSUME_NONNULL_BEGIN
                                                 options:(NSJSONReadingMutableContainers | NSJSONReadingMutableLeaves)
                                                   error:&error];
             if ((error == nil) && (nil != json)) {
+                
                 NSDictionary *jsonData = [[self class] rollbar_safeDataFromJSONObject:json];
                 if (jsonData) {
                     
@@ -106,6 +119,7 @@ NS_ASSUME_NONNULL_BEGIN
                        NSStringFromClass([obj class]));
         }
     }];
+    
     return safeData;
 }
 

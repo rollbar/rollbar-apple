@@ -8,6 +8,7 @@
 import SwiftUI
 import RollbarNotifier
 import RollbarSwift
+import RollbarAUL
 
 struct ContentView: View {
     
@@ -92,7 +93,21 @@ func handleSwiftError() {
         let config = RollbarConfig();
         config.destination.accessToken = "2ffc7997ed864dda94f63e7b7daae0f3";
         config.destination.environment = "samples";
-        config.developerOptions.transmit = true;
+        
+        // AUL capture setup:
+//        config.developerOptions.transmit = true;
+//        config.telemetry.enabled = true;
+//        config.telemetry.captureLog = true;
+//
+//        Rollbar.initWithConfiguration(config);
+//        RollbarAulStoreMonitor.sharedInstance().configureRollbarLogger(Rollbar.currentLogger());
+//        let aulOptions = RollbarAulStoreMonitorOptions();
+//        aulOptions.addAulSubsystem("DataAccessLayer");
+//        aulOptions.addAulSubsystem("Model");
+//        aulOptions.addAulCategory("CompanyOrg");
+//        RollbarAulStoreMonitor.sharedInstance().configure(with: aulOptions);
+//
+//        RollbarAulStoreMonitor.sharedInstance().start();
         
         let logger = RollbarLogger(configuration: config);
         

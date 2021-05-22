@@ -11,6 +11,8 @@
 		55098C6725FA930D0045C180 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55098C6625FA930D0045C180 /* ContentView.swift */; };
 		55098C6925FA93110045C180 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55098C6825FA93110045C180 /* Assets.xcassets */; };
 		55098C6C25FA93110045C180 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55098C6B25FA93110045C180 /* Preview Assets.xcassets */; };
+		552689F12657381B004D6036 /* RollbarAUL in Frameworks */ = {isa = PBXBuildFile; productRef = 552689F02657381B004D6036 /* RollbarAUL */; };
+		552689F326573831004D6036 /* RollbarPLCrashReporter in Frameworks */ = {isa = PBXBuildFile; productRef = 552689F226573831004D6036 /* RollbarPLCrashReporter */; };
 		5544A01F25FB074300C710A1 /* RollbarCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 5544A01E25FB074300C710A1 /* RollbarCommon */; };
 		5544A02125FB074300C710A1 /* RollbarNotifier in Frameworks */ = {isa = PBXBuildFile; productRef = 5544A02025FB074300C710A1 /* RollbarNotifier */; };
 		5544A02325FB074300C710A1 /* RollbarSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 5544A02225FB074300C710A1 /* RollbarSwift */; };
@@ -33,6 +35,8 @@
 			files = (
 				5544A01F25FB074300C710A1 /* RollbarCommon in Frameworks */,
 				5544A02125FB074300C710A1 /* RollbarNotifier in Frameworks */,
+				552689F326573831004D6036 /* RollbarPLCrashReporter in Frameworks */,
+				552689F12657381B004D6036 /* RollbarAUL in Frameworks */,
 				5544A02325FB074300C710A1 /* RollbarSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -105,6 +109,8 @@
 				5544A01E25FB074300C710A1 /* RollbarCommon */,
 				5544A02025FB074300C710A1 /* RollbarNotifier */,
 				5544A02225FB074300C710A1 /* RollbarSwift */,
+				552689F02657381B004D6036 /* RollbarAUL */,
+				552689F226573831004D6036 /* RollbarPLCrashReporter */,
 			);
 			productName = macosAppSwift;
 			productReference = 55098C6125FA930D0045C180 /* macosAppSwift.app */;
@@ -352,6 +358,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		552689F02657381B004D6036 /* RollbarAUL */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RollbarAUL;
+		};
+		552689F226573831004D6036 /* RollbarPLCrashReporter */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RollbarPLCrashReporter;
+		};
 		5544A01E25FB074300C710A1 /* RollbarCommon */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RollbarCommon;

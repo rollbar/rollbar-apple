@@ -34,6 +34,7 @@ static const unsigned long maxTraceFrames = 1;
 
 +(void)truncatePayloads:(NSArray*)payloads
           toMaxByteSize:(unsigned long)maxByteSize {
+    
     [payloads enumerateObjectsUsingBlock: ^(id item, NSUInteger idx, BOOL *stop) {
         
         [RollbarPayloadTruncator truncatePayload:item toTotalBytes:maxByteSize];
@@ -41,11 +42,13 @@ static const unsigned long maxTraceFrames = 1;
 }
 
 +(void)truncatePayload:(NSMutableDictionary*)payload {
+    
     [RollbarPayloadTruncator truncatePayload:payload toTotalBytes:payloadTotalBytesLimit];
 }
 
 +(void)truncatePayload:(NSMutableDictionary*)payload
           toTotalBytes:(unsigned long) limit {
+    
     BOOL continueTruncation =
         [RollbarPayloadTruncator truncatePayload:payload
                                     toTotalBytes:limit
@@ -54,6 +57,7 @@ static const unsigned long maxTraceFrames = 1;
                                keepingTailsCount:payloadTailFramesToKeep
          ];
     if (continueTruncation) {
+        
         continueTruncation =
             [RollbarPayloadTruncator truncatePayload:payload
                                         toTotalBytes:limit
@@ -65,6 +69,7 @@ static const unsigned long maxTraceFrames = 1;
 
     unsigned long stringLimit = maxStringBytesLimit;
     while (continueTruncation && (stringLimit >= minStringBytesLimit)) {
+        
         continueTruncation = [RollbarPayloadTruncator truncatePayload:payload
                                                          toTotalBytes:limit
                                                 byLimitingStringBytes:stringLimit
@@ -73,6 +78,7 @@ static const unsigned long maxTraceFrames = 1;
     }
 
     if (continueTruncation) {
+        
         continueTruncation = [RollbarPayloadTruncator truncatePayload:payload
                                                          toTotalBytes:limit
                                             withExceptionMessageLimit:maxExceptionMessageChars
@@ -81,21 +87,28 @@ static const unsigned long maxTraceFrames = 1;
     }
 
     if (continueTruncation) {
+        
         [RollbarPayloadTruncator limitRawCrashReportInPayload:payload];
     }
 }
 
 +(void)limitRawCrashReportInPayload:(NSMutableDictionary *)payload {
+    
     id raw = [payload valueForKeyPath:pathToRaw];
     if (!raw || raw == [NSNull null]) {
+        
         return;
     }
+    
     if ([raw isKindOfClass:[NSMutableString class]] && ![RollbarPayloadTruncator isMutable:raw]) {
+        
         NSMutableString *mutableRaw = [raw mutableCopy];
         payload[@"body"][@"crash_report"][@"raw"] = mutableRaw;
         [mutableRaw setString:[RollbarPayloadTruncator truncateString:mutableRaw
                                                          toTotalBytes:minRawStringByteLimit]];
-    } else {
+    }
+    else {
+        
         [raw setString:[RollbarPayloadTruncator truncateString:raw
                                                          toTotalBytes:minRawStringByteLimit]];
     }
@@ -107,35 +120,46 @@ withExceptionMessageLimit:(unsigned long)exeptionMessageLimit
       andTraceFramesLimit:(unsigned long)traceFramesLimit {
     
     if (nil == payload) {
+        
         return FALSE;
     }
     
     if (![RollbarPayloadTruncator isTruncationNeeded:payload forLimit:payloadLimit]) {
+        
         return FALSE;  //payload is small enough, no need to truncate further...
     }
     
     id value = [payload valueForKeyPath:pathToTraceChain];
-    if (value == [NSNull null] || value == nil)
-    {
-        value = [NSMutableArray arrayWithObject:[payload valueForKeyPath:pathToTrace]];
+    if (value == [NSNull null] || value == nil) {
+        
+        id traceElement = [payload valueForKeyPath:pathToTrace];
+        if (nil != traceElement) {
+            
+            value = [NSMutableArray arrayWithObject:traceElement];
+        }
     }
     
     if (value == nil || value == [NSNull null]) {
+        
         return TRUE;
     }
     
     NSMutableArray *traces = (NSMutableArray *) value;
     [traces enumerateObjectsUsingBlock:^(id item, NSUInteger idx, BOOL *stop) {
+        
         NSMutableDictionary *exception = [item objectForKey:@"exception"];
         if (nil != exception) {
+            
             [exception removeObjectForKey:@"description"];
             NSMutableString *message = [exception objectForKey:@"message"];
             if (nil != message && message.length > exeptionMessageLimit) {
+                
                 [exception setObject:[message substringWithRange:NSMakeRange(0, exeptionMessageLimit)] forKey:@"message"];
             }
         }
         NSMutableArray *frames = [item objectForKey:@"frames"];
         if (frames) {
+            
             [frames removeObjectsInRange:NSMakeRange(traceFramesLimit, frames.count - traceFramesLimit)];
         }
     }];
@@ -148,6 +172,7 @@ withExceptionMessageLimit:(unsigned long)exeptionMessageLimit
  byLimitingStringBytes:(unsigned long)stringBytesLimit {
     
     if (![RollbarPayloadTruncator isTruncationNeeded:payload forLimit:payloadLimit]) {
+        
         return FALSE;  //payload is small enough, no need to truncate further...
     }
     
@@ -160,18 +185,23 @@ withExceptionMessageLimit:(unsigned long)exeptionMessageLimit
 +(void)itereateObjectStructure:(id)obj whileTuncatingStrings:(unsigned long)stringBytesLimit {
     
     if ([obj isKindOfClass:[NSMutableString class]] && [RollbarPayloadTruncator isMutable:obj]) {
+        
         //truncate the string obj:
         [obj setString:[RollbarPayloadTruncator truncateString:obj
                                                   toTotalBytes:stringBytesLimit]
          ];
-    } else if ([obj isKindOfClass:[NSArray class]]) {
+    }
+    else if ([obj isKindOfClass:[NSArray class]]) {
+        
         //recurse the collection obj's items:
         [obj enumerateObjectsUsingBlock: ^(id item, NSUInteger idx, BOOL *stop) {
             [RollbarPayloadTruncator itereateObjectStructure:item
                                        whileTuncatingStrings:stringBytesLimit
              ];
         }];
-    } else if ([obj isKindOfClass:[NSDictionary class]]) {
+    }
+    else if ([obj isKindOfClass:[NSDictionary class]]) {
+        
         //recurse the collection obj's items:
         [obj enumerateKeysAndObjectsUsingBlock: ^(id key, id item, BOOL *stop) {
             if (![key isEqualToString:@"raw"]) {
@@ -186,19 +216,23 @@ withExceptionMessageLimit:(unsigned long)exeptionMessageLimit
                 }
             }
         }];
-    } else if ([obj isKindOfClass:[NSSet class]]) {
+    }
+    else if ([obj isKindOfClass:[NSSet class]]) {
+        
         //recurse the collection obj's items:
         [obj enumerateObjectsUsingBlock: ^(id item, BOOL *stop) {
             [RollbarPayloadTruncator itereateObjectStructure:item
                                        whileTuncatingStrings:stringBytesLimit
              ];
         }];
-    } else {
+    }
+    else {
         //nothing really...
     }
 }
 
 +(BOOL)isMutable:(id)str {
+    
     NSString *copy = [str copy];
     return copy != str;
 }
@@ -210,6 +244,7 @@ withExceptionMessageLimit:(unsigned long)exeptionMessageLimit
      keepingTailsCount:(unsigned long)tailsCount {
     
     if (![RollbarPayloadTruncator isTruncationNeeded:payload forLimit:payloadLimit]) {
+        
         return FALSE;  //payload is small enough, no need to truncate further...
     }
     
@@ -225,10 +260,12 @@ withExceptionMessageLimit:(unsigned long)exeptionMessageLimit
 
     id value = [payload valueForKeyPath:pathToItems];
     if (value == [NSNull null] || [value isKindOfClass:[NSNull class]]) {
+        
         return TRUE;
     }
     
     if ([value isKindOfClass:[NSArray class]]) {
+        
         NSMutableArray *items = ((NSArray *)value).mutableCopy;
         if (items.count <= (headsCount + tailsCount)) {
             return TRUE;
@@ -276,6 +313,7 @@ withExceptionMessageLimit:(unsigned long)exeptionMessageLimit
     // let's take care if the trivial cases first:
     
     if (currentStringEncoodingBytes <= totalBytesLimit) {
+        
         // no need to truncate:
         return inputString;
     }
@@ -284,6 +322,7 @@ withExceptionMessageLimit:(unsigned long)exeptionMessageLimit
     const unsigned long totalEllipsisEncodingBytes =
         [RollbarPayloadTruncator measureTotalEncodingBytes:ellipsis];
     if (totalEllipsisEncodingBytes >= totalBytesLimit) {
+        
         // we have to have at least the ellipsis as a reasult of a string truncation:
         return ellipsis;
     }
@@ -292,6 +331,7 @@ withExceptionMessageLimit:(unsigned long)exeptionMessageLimit
 
     NSUInteger cutOffCodeUnitIndex = (totalBytesLimit - totalEllipsisEncodingBytes);
     if (cutOffCodeUnitIndex >= inputString.length) {
+        
         cutOffCodeUnitIndex = inputString.length - 1; // valid index == no trouble down the road...
     }
     NSRange cutOffCharRange = [inputString rangeOfComposedCharacterSequenceAtIndex:cutOffCodeUnitIndex];
@@ -303,6 +343,7 @@ withExceptionMessageLimit:(unsigned long)exeptionMessageLimit
 
     currentStringEncoodingBytes = [RollbarPayloadTruncator measureTotalEncodingBytes:result];
     while (currentStringEncoodingBytes > (totalBytesLimit - totalEllipsisEncodingBytes)) {
+        
         cutOffCharRange = [result rangeOfComposedCharacterSequenceAtIndex:(result.length - 1)];
         [result deleteCharactersInRange:cutOffCharRange];
         currentStringEncoodingBytes = [RollbarPayloadTruncator measureTotalEncodingBytes:result];
