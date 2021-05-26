@@ -27,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Convert RollbarSource value from a string
 /// @param value string representation of a RollbarSource value
-+ (RollbarSource) RollbarSourceFromString:(NSString *)value;
++ (RollbarSource) RollbarSourceFromString:(nullable NSString *)value;
 
 @end
 

@@ -1,6 +1,6 @@
 # RollbarAUL
 
-This is an SDK module implements RollbarNotifier integration with Apple Unified Logging (AUL).
+This is an SDK module implements RollbarNotifier integration with Apple Unified Logging (AUL) and allows capture of the AUL entries as corresponding Rollbar Telemetry log events.
 
 
 Main abstractions:

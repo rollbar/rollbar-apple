@@ -19,7 +19,9 @@ All the active development will be done within this SDK repository.
 
 ![CI Build with Unit Tests](https://github.com/rollbar/rollbar-apple/workflows/CI%20Build%20with%20Unit%20Tests/badge.svg)
 
+<!--
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=rollbar-apple&metric=alert_status)](https://sonarcloud.io/dashboard?id=rollbar-apple)
+-->
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-apple&metric=security_rating)](https://sonarcloud.io/dashboard?id=rollbar-apple)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-apple&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=rollbar-apple)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-apple&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=rollbar-apple)
@@ -44,14 +46,19 @@ All the active development will be done within this SDK repository.
 [![Platform](https://img.shields.io/cocoapods/p/RollbarNotifier.svg?label=RollbarNotifier)](https://docs.rollbar.com/docs/apple)
 [![Platform](https://img.shields.io/cocoapods/p/RollbarDeploys.svg?label=RollbarDeploys)](https://docs.rollbar.com/docs/apple)
 [![Platform](https://img.shields.io/cocoapods/p/RollbarCommon.svg?label=RollbarCommon)](https://docs.rollbar.com/docs/apple)
-[![Platform](https://img.shields.io/cocoapods/p/RollbarKSCrash.svg?label=RollbarKSCrash)](https://docs.rollbar.com/docs/apple)
+[![Platform](https://img.shields.io/cocoapods/p/RollbarAUL.svg?label=RollbarAUL)](https://docs.rollbar.com/docs/apple)
+[![Platform](https://img.shields.io/cocoapods/p/RollbarSwift.svg?label=RollbarSwift)](https://docs.rollbar.com/docs/apple)
 [![Platform](https://img.shields.io/cocoapods/p/RollbarPLCrashReporter.svg?label=RollbarPLCrashReporter)](https://docs.rollbar.com/docs/apple)
+[![Platform](https://img.shields.io/cocoapods/p/RollbarKSCrash.svg?label=RollbarKSCrash)](https://docs.rollbar.com/docs/apple)
 
 [![CocoaPods](https://img.shields.io/cocoapods/v/RollbarNotifier?label=RollbarNotifier)](https://cocoapods.org/pods/RollbarNotifier)
 [![CocoaPods](https://img.shields.io/cocoapods/v/RollbarDeploys?label=RollbarDeploys)](https://cocoapods.org/pods/RollbarDeploys)
 [![CocoaPods](https://img.shields.io/cocoapods/v/RollbarCommon?label=RollbarCommon)](https://cocoapods.org/pods/RollbarCommon)
-[![CocoaPods](https://img.shields.io/cocoapods/v/RollbarKSCrash?label=RollbarKSCrash)](https://cocoapods.org/pods/RollbarKSCrash)
+[![CocoaPods](https://img.shields.io/cocoapods/v/RollbarAUL?label=RollbarAUL)](https://cocoapods.org/pods/RollbarAUL)
+[![CocoaPods](https://img.shields.io/cocoapods/v/RollbarSwift?label=RollbarSwift)](https://cocoapods.org/pods/RollbarSwift)
 [![CocoaPods](https://img.shields.io/cocoapods/v/RollbarPLCrashReporter?label=RollbarPLCrashReporter)](https://cocoapods.org/pods/RollbarPLCrashReporter)
+[![CocoaPods](https://img.shields.io/cocoapods/v/RollbarKSCrash?label=RollbarKSCrash)](https://cocoapods.org/pods/RollbarKSCrash)
+
 
 ## Setup Instructions
 

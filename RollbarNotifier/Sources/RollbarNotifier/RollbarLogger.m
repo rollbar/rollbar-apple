@@ -708,6 +708,7 @@ static RollbarLogger *sharedSingleton = nil;
 #pragma mark - LEGACY payload data builders
 
 - (void)queuePayload:(NSDictionary *)payload {
+    
     [self performSelector:@selector(queuePayload_OnlyCallOnThread:)
                  onThread:rollbarThread
                withObject:payload
@@ -716,17 +717,24 @@ static RollbarLogger *sharedSingleton = nil;
 }
 
 - (void)queuePayload_OnlyCallOnThread:(NSDictionary *)payload {
-    NSFileHandle *fileHandle =
-    [NSFileHandle fileHandleForWritingAtPath:queuedItemsFilePath];
-    [fileHandle seekToEndOfFile];
+    
     NSError *error = nil;
-    [fileHandle writeData:[NSJSONSerialization rollbar_dataWithJSONObject:payload
-                                                          options:0
-                                                            error:&error
-                                                             safe:true]];
-    if (error) {
-        RollbarSdkLog(@"Error: %@", [error localizedDescription]);
+    NSData *data = [NSJSONSerialization rollbar_dataWithJSONObject:payload
+                                                           options:0
+                                                             error:&error
+                                                              safe:true];
+    if (nil == data) {
+        
+        RollbarSdkLog(@"Couldn't generate and save JSON data from: %@", payload);
+        if (error) {
+            RollbarSdkLog(@"    Error: %@", [error localizedDescription]);
+        }
+        return;
     }
+    
+    NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:queuedItemsFilePath];
+    [fileHandle seekToEndOfFile];
+    [fileHandle writeData:data];
     [fileHandle writeData:[@"\n" dataUsingEncoding:NSUTF8StringEncoding]];
     [fileHandle closeFile];
     [[RollbarTelemetry sharedInstance] clearAllData];
@@ -737,15 +745,54 @@ static RollbarLogger *sharedSingleton = nil;
     
     RollbarPayload *rollbarPayload =
     [[RollbarPayload alloc] initWithDictionary:[payload copy]];
+    if (nil == rollbarPayload) {
+        
+        RollbarSdkLog(
+            @"Couldn't init and send RollbarPayload with data: %@",
+            payload
+        );
+//        queueState[@"offset"] = [NSNumber numberWithUnsignedInteger:nextOffset];
+//        queueState[@"retry_count"] = [NSNumber numberWithUnsignedInteger:0];
+//        [RollbarLogger saveQueueState];
+        return YES; // no retry needed
+    }
     
     NSMutableDictionary *newPayload =
     [NSMutableDictionary dictionaryWithDictionary:payload];
     [RollbarPayloadTruncator truncatePayload:newPayload];
+    if (nil == newPayload) {
+        
+        RollbarSdkLog(
+            @"Couldn't send truncated payload that is nil"
+        );
+//        queueState[@"offset"] = [NSNumber numberWithUnsignedInteger:nextOffset];
+//        queueState[@"retry_count"] = [NSNumber numberWithUnsignedInteger:0];
+//        [RollbarLogger saveQueueState];
+        return YES; // no retry needed
+    }
 
+    NSError *error;
     NSData *jsonPayload = [NSJSONSerialization rollbar_dataWithJSONObject:newPayload
                                                           options:0
-                                                            error:nil
+                                                            error:&error
                                                              safe:true];
+    if (nil == jsonPayload) {
+        
+        RollbarSdkLog(
+            @"Couldn't send jsonPayload that is nil"
+        );
+        if (nil != error) {
+            
+            RollbarSdkLog(
+                @"   DETAILS: an error while generating JSON data: %@",
+                error
+            );
+        }
+//        queueState[@"offset"] = [NSNumber numberWithUnsignedInteger:nextOffset];
+//        queueState[@"retry_count"] = [NSNumber numberWithUnsignedInteger:0];
+//        [RollbarLogger saveQueueState];
+        return YES; // no retry needed
+    }
     
     if (NSOrderedDescending != [nextSendTime compare: [[NSDate alloc] init] ]) {
         
@@ -790,6 +837,7 @@ static RollbarLogger *sharedSingleton = nil;
         }
     }
     else {
+        
         RollbarSdkLog(
             @"Omitting payload until nextSendTime is reached: %@",
             [[NSString alloc] initWithData:jsonPayload encoding:NSUTF8StringEncoding]
@@ -805,6 +853,18 @@ static RollbarLogger *sharedSingleton = nil;
 
 - (BOOL)sendPayload:(nonnull NSData *)payload
         usingConfig:(nonnull RollbarConfig  *)config {
+    
+    if ((nil == payload)
+        || (nil == self.configuration)
+        || (nil == self.configuration.destination)
+        || (nil == self.configuration.destination.endpoint)
+        || (nil == self.configuration.destination.accessToken)
+        || (0 == self.configuration.destination.endpoint.length)
+        || (0 == self.configuration.destination.accessToken.length)
+        ) {
+        
+        return NO;
+    }
     
     NSURL *url = [NSURL URLWithString:config.destination.endpoint];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -874,6 +934,18 @@ static RollbarLogger *sharedSingleton = nil;
 /// Use/maintain sendPayload:usingConfig: instead!
 - (BOOL)sendPayload:(NSData *)payload {
 
+    if ((nil == payload)
+        || (nil == self.configuration)
+        || (nil == self.configuration.destination)
+        || (nil == self.configuration.destination.endpoint)
+        || (nil == self.configuration.destination.accessToken)
+        || (0 == self.configuration.destination.endpoint.length)
+        || (0 == self.configuration.destination.accessToken.length)
+        ) {
+        
+        return NO;
+    }
+    
     NSURL *url = [NSURL URLWithString:self.configuration.destination.endpoint];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
 

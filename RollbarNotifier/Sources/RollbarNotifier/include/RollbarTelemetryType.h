@@ -28,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Converts string value into its  RollbarTelemetryType enum value equivalent or default enum value.
 /// @param value input string
-+ (RollbarTelemetryType) RollbarTelemetryTypeFromString:(NSString *)value;
++ (RollbarTelemetryType) RollbarTelemetryTypeFromString:(nullable NSString *)value;
 
 @end
 

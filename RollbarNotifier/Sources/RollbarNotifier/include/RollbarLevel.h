@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Converts string value into its  RollbarLevel enum value equivalent or default enum value.
 /// @param value input string
-+ (RollbarLevel) RollbarLevelFromString:(NSString *)value;
++ (RollbarLevel) RollbarLevelFromString:(nullable NSString *)value;
 
 @end
 
