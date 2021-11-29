@@ -41,11 +41,11 @@ let package = Package(
         // .package(url: /* package url */, from: "1.0.0"),
         .package(name:"KSCrash",
                  url: "https://github.com/kstenerud/KSCrash.git",
-                 from: "1.15.24" //Package.Dependency.Requirement.branch("master")
+                 from: "1.15.25" //Package.Dependency.Requirement.branch("master")
         ),
         .package(name:"PLCrashReporter",
                  url: "https://github.com/microsoft/plcrashreporter.git",
-                 from: "1.8.1" //Package.Dependency.Requirement.branch("master")
+                 from: "1.10.0" //Package.Dependency.Requirement.branch("master")
         ),
     ],
     targets: [

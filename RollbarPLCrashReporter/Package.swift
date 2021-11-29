@@ -26,7 +26,7 @@ let package = Package(
         ),
         .package(name:"PLCrashReporter",
                  url: "https://github.com/microsoft/plcrashreporter.git",
-                 from: "1.8.1" //Package.Dependency.Requirement.branch("master")
+                 from: "1.10.0" //Package.Dependency.Requirement.branch("master")
         ),
     ],
     targets: [

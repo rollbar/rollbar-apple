@@ -26,7 +26,7 @@ let package = Package(
         ),
         .package(name:"KSCrash",
                  url: "https://github.com/kstenerud/KSCrash.git",
-                 from: "1.15.24" //Package.Dependency.Requirement.branch("master")
+                 from: "1.15.25" //Package.Dependency.Requirement.branch("master")
         ),
     ],
     targets: [
