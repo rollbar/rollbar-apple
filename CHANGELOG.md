@@ -29,6 +29,8 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 - refactor: upgraded KSCRash to v1.15.25
 - refactor: upgraded PLCrashReporter to v1.10.0
 - chore: updated macosAppObjC Xcode scheme
+- chore: update SonarCloud build wrapper
+- chore: update SonarCloud scanner
 
 **2.0.0-beta.22**
 **2.0.0-beta.21**
