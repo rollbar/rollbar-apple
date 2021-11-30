@@ -337,7 +337,7 @@
     return self;
 }
 
-- (instancetype)initWithDictionary:(NSDictionary<NSString *, id> *)data;  {
+- (instancetype)initWithDictionary:(nullable NSDictionary<NSString *, id> *)data;  {
     
     self = [super init];
     if (!self) {
