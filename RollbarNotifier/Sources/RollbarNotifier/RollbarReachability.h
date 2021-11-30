@@ -57,15 +57,15 @@ extern NSString *const kReachabilityChangedNotification;
 
 typedef NS_ENUM(NSInteger, NetworkStatus) {
     // Apple NetworkStatus Compatible Names.
-    NotReachable = 0,
+    NotReachable     = 0,
     ReachableViaWiFi = 2,
     ReachableViaWWAN = 1
 };
 
 @class RollbarReachability;
 
-typedef void (^NetworkReachable)(RollbarReachability * reachability);
-typedef void (^NetworkUnreachable)(RollbarReachability * reachability);
+typedef void (^NetworkReachable)(RollbarReachability *reachability);
+typedef void (^NetworkUnreachable)(RollbarReachability *reachability);
 
 @interface RollbarReachability : NSObject
 
@@ -75,13 +75,13 @@ typedef void (^NetworkUnreachable)(RollbarReachability * reachability);
 
 @property (nonatomic, assign) BOOL reachableOnWWAN;
 
-+(RollbarReachability*)reachabilityWithHostname:(NSString*)hostname;
++(RollbarReachability *)reachabilityWithHostname:(NSString *)hostname;
 // This is identical to the function above, but is here to maintain
 //compatibility with Apples original code. (see .m)
-+(RollbarReachability*)reachabilityWithHostName:(NSString*)hostname;
-+(RollbarReachability*)reachabilityForInternetConnection;
-+(RollbarReachability*)reachabilityWithAddress:(const struct sockaddr_in*)hostAddress;
-+(RollbarReachability*)reachabilityForLocalWiFi;
++(RollbarReachability *)reachabilityWithHostName:(NSString *)hostname;
++(RollbarReachability *)reachabilityForInternetConnection;
++(RollbarReachability *)reachabilityWithAddress:(const struct sockaddr_in *)hostAddress;
++(RollbarReachability *)reachabilityForLocalWiFi;
 
 -(RollbarReachability *)initWithReachabilityRef:(SCNetworkReachabilityRef)ref;
 
@@ -103,8 +103,8 @@ typedef void (^NetworkUnreachable)(RollbarReachability * reachability);
 
 -(NetworkStatus)currentReachabilityStatus;
 -(SCNetworkReachabilityFlags)reachabilityFlags;
--(NSString*)currentReachabilityString;
--(NSString*)currentReachabilityFlags;
+-(NSString *)currentReachabilityString;
+-(NSString *)currentReachabilityFlags;
 
 @end
 

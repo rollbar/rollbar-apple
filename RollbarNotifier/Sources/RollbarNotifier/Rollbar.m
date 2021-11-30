@@ -121,9 +121,9 @@ static RollbarCrashProcessor *crashProcessor = nil;
 
 + (void)reapplyConfiguration {
     
-    if (nil != Rollbar.currentConfiguration) {
-        
-        [Rollbar updateConfiguration:Rollbar.currentConfiguration];
+    RollbarConfig *config = Rollbar.currentConfiguration;
+    if (nil != config) {
+        [Rollbar updateConfiguration:config];
     }
 }
 
