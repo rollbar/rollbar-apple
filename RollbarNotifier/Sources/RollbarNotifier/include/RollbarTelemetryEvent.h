@@ -62,7 +62,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithArray:(NSArray *)data
 NS_UNAVAILABLE;
 
-- (instancetype)initWithDictionary:(NSDictionary<NSString *, id> *)data
+- (instancetype)initWithDictionary:(nullable NSDictionary<NSString *, id> *)data
 NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)init

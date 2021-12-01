@@ -867,6 +867,9 @@ static RollbarLogger *sharedSingleton = nil;
     }
     
     NSURL *url = [NSURL URLWithString:config.destination.endpoint];
+    if (nil == url) {
+        return NO;
+    }
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
 
     [request setHTTPMethod:@"POST"];
@@ -947,6 +950,9 @@ static RollbarLogger *sharedSingleton = nil;
     }
     
     NSURL *url = [NSURL URLWithString:self.configuration.destination.endpoint];
+    if (nil == url) {
+        return NO;
+    }
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
 
     [request setHTTPMethod:@"POST"];

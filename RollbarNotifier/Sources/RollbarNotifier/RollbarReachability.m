@@ -76,7 +76,7 @@ static NSString *reachabilityFlags(SCNetworkReachabilityFlags flags)
 }
 
 // Start listening for reachability notifications on the current run loop
-static void TMReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReachabilityFlags flags, void* info)
+static void TMReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReachabilityFlags flags, void *info)
 {
 #pragma unused (target)
 #if __has_feature(objc_arc)
@@ -108,15 +108,20 @@ static void TMReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkRea
 
 #pragma mark - Class Constructor Methods
 
-+(RollbarReachability*)reachabilityWithHostName:(NSString*)hostname
++(RollbarReachability *)reachabilityWithHostName:(NSString *)hostname
 {
     return [RollbarReachability reachabilityWithHostname:hostname];
 }
 
-+(RollbarReachability*)reachabilityWithHostname:(NSString*)hostname
++(RollbarReachability *)reachabilityWithHostname:(NSString *)hostname
 {
-    if ((nil == hostname) || (nil == [hostname UTF8String])) {
+    if (nil == hostname) {
         
+        return nil;
+    }
+    
+    const char *utf8Hostname = [hostname UTF8String];
+    if (nil == [hostname UTF8String]) {
         return nil;
     }
     
@@ -163,7 +168,7 @@ static void TMReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkRea
     return [self reachabilityWithAddress:&zeroAddress];
 }
 
-+(RollbarReachability*)reachabilityForLocalWiFi
++(RollbarReachability *)reachabilityForLocalWiFi
 {
     struct sockaddr_in localWifiAddress;
     bzero(&localWifiAddress, sizeof(localWifiAddress));
@@ -480,7 +485,7 @@ static void TMReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkRea
     return 0;
 }
 
--(NSString*)currentReachabilityString
+-(NSString *)currentReachabilityString
 {
 	NetworkStatus temp = [self currentReachabilityStatus];
     
@@ -497,7 +502,7 @@ static void TMReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkRea
 	return NSLocalizedString(@"No Connection", @"");
 }
 
--(NSString*)currentReachabilityFlags
+-(NSString *)currentReachabilityFlags
 {
     return reachabilityFlags([self reachabilityFlags]);
 }
@@ -530,7 +535,7 @@ static void TMReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkRea
 
 #pragma mark - Debug Description
 
-- (NSString *) description
+- (NSString *)description
 {
     NSString *description = [NSString stringWithFormat:@"<%@: %#lx>",
                              NSStringFromClass([self class]), (unsigned long) self];

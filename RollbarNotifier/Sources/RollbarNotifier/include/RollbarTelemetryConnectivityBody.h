@@ -27,7 +27,7 @@ NS_DESIGNATED_INITIALIZER;
 - (instancetype)initWithArray:(NSArray *)data
 NS_DESIGNATED_INITIALIZER;
 
-- (instancetype)initWithDictionary:(NSDictionary<NSString *, id> *)data
+- (instancetype)initWithDictionary:(nullable NSDictionary<NSString *, id> *)data
 NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)init
