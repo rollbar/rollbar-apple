@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Initialize this DTO instance with valid JSON NSDictionary seed
 /// @param data valid JSON NSDictionary seed
-- (instancetype)initWithDictionary:(nullable NSDictionary<nullable NSString *, id> *)data
+- (instancetype)initWithDictionary:(nullable NSDictionary<NSString *, id> *)data
 NS_UNAVAILABLE;
 
 /// Initialize this DTO instance with valid JSON NSArray seed
