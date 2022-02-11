@@ -91,8 +91,8 @@ func handleSwiftError() {
     func createGuard() -> RollbarExceptionGuard {
         
         let config = RollbarConfig();
-        config.destination.accessToken = "2ffc7997ed864dda94f63e7b7daae0f3";
-        config.destination.environment = "samples";
+        config.destination.accessToken = "09da180aba21479e9ed3d91e0b8d58d6";
+        config.destination.environment = "Rollbar-Apple-Samples";
         
         // AUL capture setup:
 //        config.developerOptions.transmit = true;

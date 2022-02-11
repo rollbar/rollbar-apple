@@ -25,6 +25,9 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 
 ## Release Notes
 
+**2.0.1
+- moving from Beta to GA
+
 **2.0.0-beta.23**
 - refactor: upgraded KSCRash to v1.15.25
 - refactor: upgraded PLCrashReporter to v1.10.0

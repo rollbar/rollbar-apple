@@ -62,8 +62,8 @@
 //- (void)testRollbarAulStoreMonitor {
 //    
 //    RollbarConfig *rollbarConfig = [[RollbarConfig alloc] init];
-//    rollbarConfig.destination.accessToken = @"2ffc7997ed864dda94f63e7b7daae0f3";
-//    rollbarConfig.destination.environment = @"unit-tests";
+//    rollbarConfig.destination.accessToken = @"efdc4b85d66045f293a7f9e99c732f61";
+//    rollbarConfig.destination.environment = @"Rollbar-Apple-UnitTests";
 //    rollbarConfig.telemetry.enabled = YES;
 //    rollbarConfig.telemetry.captureLog = YES;
 //    rollbarConfig.telemetry.maximumTelemetryData = 100;

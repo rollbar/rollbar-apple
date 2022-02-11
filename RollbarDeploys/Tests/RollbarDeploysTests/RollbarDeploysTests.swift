@@ -6,7 +6,7 @@ final class RollbarDeploysTests: XCTestCase {
     
     func testDeploymentDto() {
         
-        let environment = "unit-tests"
+        let environment = "Rollbar-Apple-UnitTests"
         let comment = "a new deploy"
         let revision = "a_revision"
         let localUsername = "UnitTestRunner"
@@ -40,7 +40,7 @@ final class RollbarDeploysTests: XCTestCase {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         
-        let environment = "unit-tests123"
+        let environment = "Rollbar-Apple-UnitTests"
         let comment = "a new deploy at \(dateFormatter.string(from:Date.init()))"
         let revision = "a_revision"
         let localUsername = "UnitTestRunner"
@@ -57,8 +57,8 @@ final class RollbarDeploysTests: XCTestCase {
             )
         
         let deploysManager = RollbarDeploysManager(
-            writeAccessToken:"2d6e0add5d9b403d9126b4bcea7e0199",
-            readAccessToken:"d1fd12f1bd7e4340a0a55378d41061f0",
+            writeAccessToken:"efdc4b85d66045f293a7f9e99c732f61",
+            readAccessToken:"595cbf76b05b45f2b3ef661a2e0078d4",
             deploymentRegistrationObserver:observer,
             deploymentDetailsObserver:observer,
             deploymentDetailsPageObserver:observer
@@ -70,13 +70,13 @@ final class RollbarDeploysTests: XCTestCase {
 
     func testGetDeploymentDetailsById() {
 
-        let testDeploymentId = "9961771";
+        let testDeploymentId = "23922850";
 
         let observer = RollbarDeploysObserver()
 
         let deploysManager = RollbarDeploysManager(
-            writeAccessToken:"2d6e0add5d9b403d9126b4bcea7e0199",
-            readAccessToken:"d1fd12f1bd7e4340a0a55378d41061f0",
+            writeAccessToken:"efdc4b85d66045f293a7f9e99c732f61",
+            readAccessToken:"595cbf76b05b45f2b3ef661a2e0078d4",
             deploymentRegistrationObserver:observer,
             deploymentDetailsObserver:observer,
             deploymentDetailsPageObserver:observer
@@ -90,8 +90,8 @@ final class RollbarDeploysTests: XCTestCase {
         let observer = RollbarDeploysObserver()
 
         let deploysManager = RollbarDeploysManager(
-            writeAccessToken:"2d6e0add5d9b403d9126b4bcea7e0199",
-            readAccessToken:"d1fd12f1bd7e4340a0a55378d41061f0",
+            writeAccessToken:"efdc4b85d66045f293a7f9e99c732f61",
+            readAccessToken:"595cbf76b05b45f2b3ef661a2e0078d4",
             deploymentRegistrationObserver:observer,
             deploymentDetailsObserver:observer,
             deploymentDetailsPageObserver:observer

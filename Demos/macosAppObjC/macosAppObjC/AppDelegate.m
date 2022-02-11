@@ -57,7 +57,7 @@ __attribute__((noinline)) static void crashIt (void) {
     
     [self callTroublemaker];
     @throw NSInternalInconsistencyException;
-    [self performSelector:@selector(die_die)];
+    //[self performSelector:@selector(die_die)];
     [self performSelector:NSSelectorFromString(@"crashme:") withObject:nil afterDelay:10];
     assert(NO);
     exit(0);
@@ -77,8 +77,8 @@ __attribute__((noinline)) static void crashIt (void) {
 
     // configure Rollbar:
     RollbarConfig *config = [RollbarConfig new];
-    config.destination.accessToken = @"2ffc7997ed864dda94f63e7b7daae0f3";
-    config.destination.environment = @"samples";
+    config.destination.accessToken = @"09da180aba21479e9ed3d91e0b8d58d6";
+    config.destination.environment = @"Rollbar-Apple-Samples";
     //config.developerOptions.suppressSdkInfoLogging = YES;
     config.customData = @{ @"someKey": @"someValue", };
     

@@ -14,8 +14,8 @@ final class RollbarNotifierTruncationTests: XCTestCase {
         RollbarTestUtil.clearTelemetryFile();
         
         //if Rollbar.currentConfiguration() != nil {
-            Rollbar.initWithAccessToken("2ffc7997ed864dda94f63e7b7daae0f3");
-        Rollbar.currentConfiguration()?.destination.environment = "unit-tests";
+        Rollbar.initWithAccessToken("09da180aba21479e9ed3d91e0b8d58d6");
+        Rollbar.currentConfiguration()?.destination.environment = "Rollbar-Apple-UnitTests";
         //}
     }
     
