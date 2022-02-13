@@ -327,7 +327,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
 //
 //        let logMsg = "log-message-testing";
 //        RollbarTelemetry.sharedInstance().clearAllData();
-//        //Rollbar.currentConfiguration.accessToken = @"2ffc7997ed864dda94f63e7b7daae0f3";
+//        //Rollbar.currentConfiguration.accessToken = @"efdc4b85d66045f293a7f9e99c732f61";
 //        Rollbar.currentConfiguration().telemetryEnabled = true;
 //        Rollbar.currentConfiguration().captureLogAsTelemetryEvents = true;
 //        // The following line ensures the captureLogAsTelemetryData setting is flushed through the internal queue

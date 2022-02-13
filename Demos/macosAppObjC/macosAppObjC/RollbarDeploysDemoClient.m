@@ -57,7 +57,7 @@
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     
-    NSString * const environment = @"unit-tests123";
+    NSString * const environment = @"Rollbar-Apple-UnitTests";
     NSString * const comment =
         [NSString stringWithFormat:@"a new deploy at %@", [dateFormatter stringFromDate:[NSDate date]]];
     NSString * const revision = @"a_revision";
@@ -71,8 +71,8 @@
                                                                      localUserName:localUsername
                                                                    rollbarUserName:rollbarUsername];
     RollbarDeploysManager *deploysManager =
-        [[RollbarDeploysManager alloc] initWithWriteAccessToken:@"2d6e0add5d9b403d9126b4bcea7e0199"
-                                                readAccessToken:@"d1fd12f1bd7e4340a0a55378d41061f0"
+        [[RollbarDeploysManager alloc] initWithWriteAccessToken:@"efdc4b85d66045f293a7f9e99c732f61"
+                                                readAccessToken:@"595cbf76b05b45f2b3ef661a2e0078d4"
                                  deploymentRegistrationObserver:observer
                                       deploymentDetailsObserver:observer
                                   deploymentDetailsPageObserver:observer
@@ -82,11 +82,11 @@
 
 - (void)demoGetDeploymentDetailsById {
     
-    NSString * const testDeploymentId = @"9961771";
+    NSString * const testDeploymentId = @"23922850";
     RollbarDeploysObserver *observer = [[RollbarDeploysObserver alloc] init];
     RollbarDeploysManager *deploysManager =
-    [[RollbarDeploysManager alloc] initWithWriteAccessToken:@"0d7ef175a2e14bc9b48732af2b2652f9"
-                                            readAccessToken:@"d1fd12f1bd7e4340a0a55378d41061f0"
+    [[RollbarDeploysManager alloc] initWithWriteAccessToken:@"efdc4b85d66045f293a7f9e99c732f61"
+                                            readAccessToken:@"595cbf76b05b45f2b3ef661a2e0078d4"
                              deploymentRegistrationObserver:observer
                                   deploymentDetailsObserver:observer
                               deploymentDetailsPageObserver:observer
@@ -98,8 +98,8 @@
     
     RollbarDeploysObserver *observer = [[RollbarDeploysObserver alloc] init];
     RollbarDeploysManager *deploysManager =
-    [[RollbarDeploysManager alloc] initWithWriteAccessToken:@"0d7ef175a2e14bc9b48732af2b2652f9"
-                                            readAccessToken:@"d1fd12f1bd7e4340a0a55378d41061f0"
+    [[RollbarDeploysManager alloc] initWithWriteAccessToken:@"efdc4b85d66045f293a7f9e99c732f61"
+                                            readAccessToken:@"595cbf76b05b45f2b3ef661a2e0078d4"
                              deploymentRegistrationObserver:observer
                                   deploymentDetailsObserver:observer
                               deploymentDetailsPageObserver:observer

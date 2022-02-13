@@ -16,9 +16,9 @@ final class RollbarNotifierLoggerTests: XCTestCase {
         
         
         //if Rollbar.currentConfiguration() != nil {
-        Rollbar.initWithAccessToken("2ffc7997ed864dda94f63e7b7daae0f3");
-        Rollbar.currentConfiguration()?.destination.accessToken = "2ffc7997ed864dda94f63e7b7daae0f3";
-        Rollbar.currentConfiguration()?.destination.environment = "unit-tests";
+        Rollbar.initWithAccessToken("09da180aba21479e9ed3d91e0b8d58d6");
+        Rollbar.currentConfiguration()?.destination.accessToken = "09da180aba21479e9ed3d91e0b8d58d6";
+        Rollbar.currentConfiguration()?.destination.environment = "Rollbar-Apple-UnitTests";
         Rollbar.currentConfiguration()?.developerOptions.transmit = true;
         Rollbar.currentConfiguration()?.developerOptions.logPayload = true;
         Rollbar.currentConfiguration()?.loggingOptions.maximumReportsPerMinute = 5000;
@@ -86,8 +86,8 @@ final class RollbarNotifierLoggerTests: XCTestCase {
         //RollbarTestUtil.clearLogFile();
         //RollbarTestUtil.clearTelemetryFile();
 
-        Rollbar.currentConfiguration()?.destination.accessToken = "2ffc7997ed864dda94f63e7b7daae0f3";
-        Rollbar.currentConfiguration()?.destination.environment = "unit-tests";
+        Rollbar.currentConfiguration()?.destination.accessToken = "efdc4b85d66045f293a7f9e99c732f61";
+        Rollbar.currentConfiguration()?.destination.environment = "Rollbar-Apple-UnitTests";
         Rollbar.currentConfiguration()?.developerOptions.transmit = true;
 
         Rollbar.currentConfiguration()?.developerOptions.transmit = true;

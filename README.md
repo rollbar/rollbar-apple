@@ -11,7 +11,7 @@ This SDK is essentially a reincarnation of our [Rollbar-iOS SDK](https://github.
 and will only maintained with fixes to bug or security issues if any.
 All the active development will be done within this SDK repository.
 
-# The SDK is officially in Beta version. We are looking for beta-testers and feedback!!! 
+# The Apple SDK is GA. Learn more: https://docs.rollbar.com/docs/apple
 
 ## Codebase status (code quality and CI build)
 

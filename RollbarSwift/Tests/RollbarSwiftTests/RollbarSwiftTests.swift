@@ -17,8 +17,8 @@ final class RollbarSwiftTests: XCTestCase {
     func createGuard() -> RollbarExceptionGuard {
         
         let config = RollbarConfig();
-        config.destination.accessToken = "2ffc7997ed864dda94f63e7b7daae0f3";
-        config.destination.environment = "unit-tests";
+        config.destination.accessToken = "09da180aba21479e9ed3d91e0b8d58d6";
+        config.destination.environment = "Rollbar-Apple-UnitTests";
         config.developerOptions.transmit = true;
         
         let logger = RollbarLogger(configuration: config);
