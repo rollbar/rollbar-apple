@@ -76,6 +76,35 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         RollbarTelemetry.sharedInstance().clearAllData();
     }
 
+    func testMaximumTelemetryEvents() {
+        
+        RollbarTestUtil.clearLogFile();
+        
+        Rollbar.currentConfiguration()?.telemetry.enabled = true;
+        Rollbar.updateConfiguration(Rollbar.currentConfiguration()!);
+        
+        let testCount = 10;
+        let max:UInt = 5;
+        for _ in 0..<testCount {
+            Rollbar.recordErrorEvent(for: .debug, message: "test");
+        }
+        Rollbar.currentConfiguration()?.telemetry.maximumTelemetryData = max;
+        Rollbar.updateConfiguration(Rollbar.currentConfiguration()!);
+        
+        Rollbar.debugMessage("Test");
+        
+        var logItem:String?;
+        while (nil == logItem) {
+            logItem = RollbarTestUtil.readFirstItemStringsFromLogFile();
+            RollbarTestUtil.waitForPesistenceToComplete();
+        }
+        let payload = RollbarPayload(jsonString: logItem!);
+        let telemetry = payload.data.body.telemetry!;
+        XCTAssertTrue(telemetry.count == max,
+                      "Telemetry item count is \(telemetry.count), should be \(max)"
+        );
+    }
+    
     func testScrubViewInputsTelemetryConfig() {
 
         var expectedFlag = false;
@@ -167,34 +196,6 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         RollbarTestUtil.clearLogFile();
     }
 
-    func testMaximumTelemetryEvents() {
-        
-        RollbarTestUtil.clearLogFile();
-
-        Rollbar.currentConfiguration()?.telemetry.enabled = true;
-        Rollbar.updateConfiguration(Rollbar.currentConfiguration()!);
-
-        let testCount = 10;
-        let max:UInt = 5;
-        for _ in 0..<testCount {
-            Rollbar.recordErrorEvent(for: .debug, message: "test");
-        }
-        Rollbar.currentConfiguration()?.telemetry.maximumTelemetryData = max;
-        Rollbar.updateConfiguration(Rollbar.currentConfiguration()!);
-
-        Rollbar.debugMessage("Test");
-        RollbarTestUtil.waitForPesistenceToComplete();
-        RollbarTestUtil.waitForPesistenceToComplete();
-        RollbarTestUtil.waitForPesistenceToComplete();
-        RollbarTestUtil.waitForPesistenceToComplete();
-        let logItem = RollbarTestUtil.readFirstItemStringsFromLogFile()!;
-        let payload = RollbarPayload(jsonString: logItem);
-        let telemetry = payload.data.body.telemetry!;
-        XCTAssertTrue(telemetry.count == max,
-                      "Telemetry item count is \(telemetry.count), should be \(max)"
-                      );
-    }
-    
     func testCheckIgnore() {
 
         RollbarTestUtil.clearLogFile();
