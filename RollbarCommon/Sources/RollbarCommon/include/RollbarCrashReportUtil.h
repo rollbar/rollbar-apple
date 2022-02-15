@@ -1,10 +1,3 @@
-//
-//  RollbarCrashReportUtil.h
-//  
-//
-//  Created by Andrey Kornich on 2021-01-04.
-//
-
 #ifndef RollbarCrashReportUtil_h
 #define RollbarCrashReportUtil_h
 

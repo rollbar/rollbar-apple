@@ -1,10 +1,3 @@
-//
-//  RollbarCrashReportData.m
-//  
-//
-//  Created by Andrey Kornich on 2020-10-27.
-//
-
 #import "RollbarCrashReportData.h"
 
 @implementation RollbarCrashReportData

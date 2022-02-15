@@ -1,10 +1,3 @@
-//
-//  RollbarCrashCollectorProtocol.h
-//  
-//
-//  Created by Andrey Kornich on 2020-10-27.
-//
-
 #ifndef RollbarCrashCollectorProtocol_h
 #define RollbarCrashCollectorProtocol_h
 

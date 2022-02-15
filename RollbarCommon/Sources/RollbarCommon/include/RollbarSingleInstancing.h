@@ -1,10 +1,3 @@
-//
-//  RollbarSingleInstancing.h
-//  
-//
-//  Created by Andrey Kornich on 2021-04-23.
-//
-
 #ifndef RollbarSingleInstancing_h
 #define RollbarSingleInstancing_h
 

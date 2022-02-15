@@ -1,10 +1,3 @@
-//
-//  RollbarReceptionist.h
-//  
-//
-//  Created by Andrey Kornich on 2020-10-08.
-//
-
 #ifndef RollbarReceptionist_h
 #define RollbarReceptionist_h
 

@@ -1,10 +1,3 @@
-//
-//  RollbarPredicateBuilder.h
-//  
-//
-//  Created by Andrey Kornich on 2021-04-29.
-//
-
 #ifndef RollbarPredicateBuilder_h
 #define RollbarPredicateBuilder_h
 

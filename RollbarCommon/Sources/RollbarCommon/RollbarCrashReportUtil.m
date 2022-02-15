@@ -1,10 +1,3 @@
-//
-//  RollbarCrashReportUtil.m
-//  
-//
-//  Created by Andrey Kornich on 2021-01-04.
-//
-
 #import "RollbarCrashReportUtil.h"
 
 typedef NS_ENUM(NSUInteger, CrashReportBlock) {

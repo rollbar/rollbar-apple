@@ -1,5 +1,3 @@
-//  Copyright (c) 2018 Rollbar Inc. All rights reserved.
-
 #ifndef RollbarSdkLog_h
 #define RollbarSdkLog_h
 

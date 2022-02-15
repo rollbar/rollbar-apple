@@ -1,11 +1,3 @@
-//
-//  RollbarDTO+CustomData.h
-//  Rollbar
-//
-//  Created by Andrey Kornich on 2019-10-09.
-//  Copyright © 2019 Rollbar. All rights reserved.
-//
-
 #ifndef RollbarDTO_CustomData_h
 #define RollbarDTO_CustomData_h
 

@@ -1,10 +1,3 @@
-//
-//  RollbarBuilder.m
-//  
-//
-//  Created by Andrey Kornich on 2020-10-01.
-//
-
 #import "RollbarBuilder.h"
 
 @implementation RollbarEntity

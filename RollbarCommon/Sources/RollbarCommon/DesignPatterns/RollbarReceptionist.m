@@ -1,10 +1,3 @@
-//
-//  RollbarReceptionist.m
-//  
-//
-//  Created by Andrey Kornich on 2020-10-08.
-//
-
 #import "RollbarReceptionist.h"
 
 @implementation RollbarReceptionist
