@@ -1,10 +1,3 @@
-//
-//  MyClass.h
-//  
-//
-//  Created by Andrey Kornich on 2020-09-30.
-//
-
 #ifndef NSDictionary_Rollbar_h
 #define NSDictionary_Rollbar_h
 

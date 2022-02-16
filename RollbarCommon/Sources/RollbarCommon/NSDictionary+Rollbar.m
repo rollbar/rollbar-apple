@@ -1,10 +1,3 @@
-//
-//  MyClass.m
-//  
-//
-//  Created by Andrey Kornich on 2020-09-30.
-//
-
 #import "NSDictionary+Rollbar.h"
 #import "RollbarSdkLog.h"
 

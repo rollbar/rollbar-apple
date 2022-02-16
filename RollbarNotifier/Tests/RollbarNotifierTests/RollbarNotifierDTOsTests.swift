@@ -186,6 +186,21 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         XCTAssertNil(dto.email,
                      "Proper default email"
                      );
+        
+        dto = RollbarPerson(id: "nil", username: "USERNAME", email: "EMAIL");
+        XCTAssertTrue(.orderedSame == dto.id.compare("nil"),
+                      "Proper initial ID"
+                      );
+        dto.id = "ID";
+        XCTAssertTrue(.orderedSame == dto.id.compare("ID"),
+                      "Proper reassigned ID"
+                      );
+        
+        let personJson = dto.serializeToJSONString();
+        XCTAssertNotNil(personJson, "Json serialization works.");
+        XCTAssertTrue(.orderedSame == personJson!.compare("{\n  \"email\" : \"EMAIL\",\n  \"id\" : \"ID\",\n  \"username\" : \"USERNAME\"\n}"),
+                      "Properly serialized person attributes."
+                      );
     }
 
     func testRollbarModuleDTO() {

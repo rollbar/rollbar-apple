@@ -1,11 +1,3 @@
-//
-//  RollbarCachesDirectory.m
-//  Rollbar
-//
-//  Created by Danny Nguyen on 3/12/19.
-//  Copyright © 2019 Rollbar. All rights reserved.
-//
-
 #import "RollbarCachesDirectory.h"
 
 @implementation RollbarCachesDirectory

@@ -1,11 +1,3 @@
-//
-//  RollbarDTO+Protected.h
-//  Rollbar
-//
-//  Created by Andrey Kornich on 2019-10-10.
-//  Copyright © 2019 Rollbar. All rights reserved.
-//
-
 #ifndef RollbarDTO_Protected_h
 #define RollbarDTO_Protected_h
 

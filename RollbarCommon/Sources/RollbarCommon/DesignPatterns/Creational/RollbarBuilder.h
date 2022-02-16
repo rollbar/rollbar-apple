@@ -1,10 +1,3 @@
-//
-//  RollbarBuilder.h
-//  
-//
-//  Created by Andrey Kornich on 2020-10-01.
-//
-
 @import Foundation;
 
 NS_ASSUME_NONNULL_BEGIN

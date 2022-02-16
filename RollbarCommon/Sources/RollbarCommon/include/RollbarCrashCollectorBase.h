@@ -1,21 +1,15 @@
-//
-//  RollbarCrashCollectorBase.h
-//  
-//
-//  Created by Andrey Kornich on 2020-11-02.
-//
-
 #ifndef RollbarCrashCollectorBase_h
 #define RollbarCrashCollectorBase_h
 
+#import "RollbarCrashCollectorProtocol.h"
+
 @import Foundation;
 
-#import "RollbarCrashCollectorProtocol.h"
 @protocol RollbarCrashCollectorObserver;
 
 NS_ASSUME_NONNULL_BEGIN
 
-    /// Abstract implementation of the RollbarCrashCollector protocol
+/// Abstract implementation of the RollbarCrashCollector protocol
 @interface RollbarCrashCollectorBase : NSObject<RollbarCrashCollector> {
     @private
     id<RollbarCrashCollectorObserver> _observer;

@@ -1,10 +1,3 @@
-//
-//  RollbarPredicateBuilder.m
-//  
-//
-//  Created by Andrey Kornich on 2021-04-29.
-//
-
 #import "RollbarPredicateBuilder.h"
 
 @implementation RollbarPredicateBuilder

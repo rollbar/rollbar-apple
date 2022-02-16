@@ -1,10 +1,3 @@
-//
-//  RollbarCrashCollectorBase.m
-//  
-//
-//  Created by Andrey Kornich on 2020-11-02.
-//
-
 #import "RollbarCrashCollectorBase.h"
 #import "RollbarSdkLog.h"
 

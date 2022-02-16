@@ -1,6 +1,6 @@
 //
 //  RollbarConfig.m
-//  Rollbar
+//  RollbarNotifier
 //
 //  Created by Andrey Kornich on 2019-10-11.
 //  Copyright © 2019 Rollbar. All rights reserved.
@@ -22,7 +22,7 @@
 
 #pragma mark - constants
 
-static NSString * const NOTIFIER_VERSION = @"2.0.1";
+static NSString * const NOTIFIER_VERSION = @"2.0.2";
 
 static NSString * const NOTIFIER_NAME = @"rollbar-apple";
 
@@ -86,8 +86,8 @@ static NSString * const DFK_CUSTOM = @"custom";
         DFK_TELEMETRY:[RollbarTelemetryOptions new].jsonFriendlyData,
         DFK_NOTIFIER:[[RollbarModule alloc] initWithName:NOTIFIER_NAME version:NOTIFIER_VERSION].jsonFriendlyData,
         DFK_SERVER:[RollbarServerConfig new].jsonFriendlyData,
-        DFK_PERSON: [NSDictionary<NSString *, id> new],
-        DFK_CUSTOM: [NSDictionary<NSString *, id> new]
+        DFK_PERSON: [NSMutableDictionary<NSString *, id> new],
+        DFK_CUSTOM: [NSMutableDictionary<NSString *, id> new]
     }];
     //[self save];
     return self;
@@ -207,26 +207,26 @@ static NSString * const DFK_CUSTOM = @"custom";
 
 #pragma mark - Convenience Methods
 
-- (void)setPersonId:(NSString*)personId
-           username:(NSString*)username
-              email:(NSString*)email {
+- (void)setPersonId:(nonnull NSString*)personId
+           username:(nullable NSString*)username
+              email:(nullable NSString*)email {
     self.person.ID = personId;
     self.person.username = username;
     self.person.email = email;
 }
 
-- (void)setServerHost:(NSString *)host
-                 root:(NSString*)root
-               branch:(NSString*)branch
-          codeVersion:(NSString*)codeVersion {
+- (void)setServerHost:(nullable NSString *)host
+                 root:(nullable NSString*)root
+               branch:(nullable NSString*)branch
+          codeVersion:(nullable NSString*)codeVersion {
     self.server.host = host;
     self.server.root = root;
     self.server.branch = branch;
     self.server.codeVersion = codeVersion;
 }
 
-- (void)setNotifierName:(NSString *)name
-                version:(NSString *)version {
+- (void)setNotifierName:(nullable NSString *)name
+                version:(nullable NSString *)version {
     self.notifier.name = name;
     self.notifier.version = version;
 }

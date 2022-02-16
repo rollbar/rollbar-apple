@@ -1,5 +1,3 @@
-//  Copyright © 2018 Rollbar. All rights reserved.
-
 #import "NSJSONSerialization+Rollbar.h"
 #import "RollbarSdkLog.h"
 

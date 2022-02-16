@@ -1,10 +1,3 @@
-//
-//  RollbarTaskDispatcher.m
-//  
-//
-//  Created by Andrey Kornich on 2020-10-09.
-//
-
 #import "RollbarTaskDispatcher.h"
 
 @implementation RollbarTaskDispatcher

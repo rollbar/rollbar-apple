@@ -1,6 +1,6 @@
 //
 //  RollbarConfig.h
-//  Rollbar
+//  RollbarNotifier
 //
 //  Created by Andrey Kornich on 2019-10-11.
 //  Copyright © 2019 Rollbar. All rights reserved.
@@ -52,15 +52,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 #pragma mark - Convenience Methods
-- (void)setPersonId:(NSString *)personId
-           username:(NSString *)username
-              email:(NSString *)email;
-- (void)setServerHost:(NSString *)host
-                 root:(NSString *)root
-               branch:(NSString *)branch
-          codeVersion:(NSString *)codeVersion;
-- (void)setNotifierName:(NSString *)name
-                version:(NSString *)version;
+- (void)setPersonId:(nonnull NSString *)personId
+           username:(nullable NSString *)username
+              email:(nullable NSString *)email;
+- (void)setServerHost:(nullable NSString *)host
+                 root:(nullable NSString *)root
+               branch:(nullable NSString *)branch
+          codeVersion:(nullable NSString *)codeVersion;
+- (void)setNotifierName:(nullable NSString *)name
+                version:(nullable NSString *)version;
 
 
 @end

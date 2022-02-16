@@ -1,10 +1,3 @@
-//
-//  RollbarTaskDispatcher.h
-//  
-//
-//  Created by Andrey Kornich on 2020-10-09.
-//
-
 #ifndef RollbarTaskDispatcher_h
 #define RollbarTaskDispatcher_h
 

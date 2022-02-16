@@ -1,11 +1,3 @@
-//
-//  RollbarPrototype.h
-//  Rollbar
-//
-//  Created by Andrey Kornich on 2019-10-09.
-//  Copyright © 2020 Rollbar. All rights reserved.
-//
-
 #ifndef RollbarPrototype_h
 #define RollbarPrototype_h
 

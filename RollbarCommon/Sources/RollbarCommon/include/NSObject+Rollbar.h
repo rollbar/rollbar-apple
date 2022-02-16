@@ -1,10 +1,3 @@
-//
-//  NSObject+Rollbar.h
-//  
-//
-//  Created by Andrey Kornich on 2021-04-23.
-//
-
 #ifndef NSObject_Rollbar_h
 #define NSObject_Rollbar_h
 

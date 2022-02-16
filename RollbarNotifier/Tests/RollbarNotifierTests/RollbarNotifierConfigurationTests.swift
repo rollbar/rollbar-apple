@@ -76,6 +76,35 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         RollbarTelemetry.sharedInstance().clearAllData();
     }
 
+    func testMaximumTelemetryEvents() {
+        
+        RollbarTestUtil.clearLogFile();
+        
+        Rollbar.currentConfiguration()?.telemetry.enabled = true;
+        Rollbar.updateConfiguration(Rollbar.currentConfiguration()!);
+        
+        let testCount = 10;
+        let max:UInt = 5;
+        for _ in 0..<testCount {
+            Rollbar.recordErrorEvent(for: .debug, message: "test");
+        }
+        Rollbar.currentConfiguration()?.telemetry.maximumTelemetryData = max;
+        Rollbar.updateConfiguration(Rollbar.currentConfiguration()!);
+        
+        Rollbar.debugMessage("Test");
+        
+        var logItem:String?;
+        while (nil == logItem) {
+            logItem = RollbarTestUtil.readFirstItemStringsFromLogFile();
+            RollbarTestUtil.waitForPesistenceToComplete();
+        }
+        let payload = RollbarPayload(jsonString: logItem!);
+        let telemetry = payload.data.body.telemetry!;
+        XCTAssertTrue(telemetry.count == max,
+                      "Telemetry item count is \(telemetry.count), should be \(max)"
+        );
+    }
+    
     func testScrubViewInputsTelemetryConfig() {
 
         var expectedFlag = false;
@@ -167,34 +196,6 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         RollbarTestUtil.clearLogFile();
     }
 
-    func testMaximumTelemetryEvents() {
-        
-        RollbarTestUtil.clearLogFile();
-
-        Rollbar.currentConfiguration()?.telemetry.enabled = true;
-        Rollbar.updateConfiguration(Rollbar.currentConfiguration()!);
-
-        let testCount = 10;
-        let max:UInt = 5;
-        for _ in 0..<testCount {
-            Rollbar.recordErrorEvent(for: .debug, message: "test");
-        }
-        Rollbar.currentConfiguration()?.telemetry.maximumTelemetryData = max;
-        Rollbar.updateConfiguration(Rollbar.currentConfiguration()!);
-
-        Rollbar.debugMessage("Test");
-        RollbarTestUtil.waitForPesistenceToComplete();
-        RollbarTestUtil.waitForPesistenceToComplete();
-        RollbarTestUtil.waitForPesistenceToComplete();
-        RollbarTestUtil.waitForPesistenceToComplete();
-        let logItem = RollbarTestUtil.readFirstItemStringsFromLogFile()!;
-        let payload = RollbarPayload(jsonString: logItem);
-        let telemetry = payload.data.body.telemetry!;
-        XCTAssertTrue(telemetry.count == max,
-                      "Telemetry item count is \(telemetry.count), should be \(max)"
-                      );
-    }
-    
     func testCheckIgnore() {
 
         RollbarTestUtil.clearLogFile();
@@ -317,7 +318,85 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         RollbarTestUtil.clearLogFile();
     }
 
-    
+    func testPersonDataAttachment() {
+        
+        RollbarTestUtil.clearLogFile();
+        
+        XCTAssertNotNil(Rollbar.currentConfiguration());
+        let config = Rollbar.currentConfiguration()!;
+        let person = config.person;
+        XCTAssertNotNil(person);
+        
+        person.id = "ID";
+        person.username = "USERNAME";
+        person.email = "EMAIL";
+        
+        let personJson =
+        Rollbar.currentConfiguration()?.person.serializeToJSONString();
+        XCTAssertNotNil(personJson, "Json serialization works.");
+        let expectedPersonJson =
+        "{\n  \"email\" : \"EMAIL\",\n  \"id\" : \"ID\",\n  \"username\" : \"USERNAME\"\n}";
+        XCTAssertTrue(
+            .orderedSame == personJson!.compare(expectedPersonJson),
+            "Properly serialized person attributes."
+        );
+
+        Rollbar.debugMessage("test");
+        RollbarTestUtil.waitForPesistenceToComplete();
+        // verify the fields were scrubbed:
+        let logItem = RollbarTestUtil.readFirstItemStringsFromLogFile();
+        let payload = RollbarPayload(jsonString: logItem!);
+        XCTAssertTrue(
+            .orderedSame == payload.data.person!.serializeToJSONString()!.compare(expectedPersonJson),
+            "Properly serialized person in payload."
+        );
+        let payloadJson = payload.serializeToJSONString();
+        XCTAssertTrue(
+            ((payloadJson?.contains(expectedPersonJson)) != nil),
+            "Properly serialized person in payload."
+        );
+    }
+
+    func testRollbarSetPersonDataAttachment() {
+        
+        RollbarTestUtil.clearLogFile();
+        
+        XCTAssertNotNil(Rollbar.currentConfiguration());
+        let config = Rollbar.currentConfiguration()!;
+        let person = config.person;
+        XCTAssertNotNil(person);
+        
+        Rollbar.currentConfiguration()!.setPersonId("ID",
+                                                    username: "USERNAME",
+                                                    email: "EMAIL"
+        );
+        
+        let personJson =
+        Rollbar.currentConfiguration()?.person.serializeToJSONString();
+        XCTAssertNotNil(personJson, "Json serialization works.");
+        let expectedPersonJson =
+        "{\n  \"email\" : \"EMAIL\",\n  \"id\" : \"ID\",\n  \"username\" : \"USERNAME\"\n}";
+        XCTAssertTrue(
+            .orderedSame == personJson!.compare(expectedPersonJson),
+            "Properly serialized person attributes."
+        );
+        
+        Rollbar.debugMessage("test");
+        RollbarTestUtil.waitForPesistenceToComplete();
+        // verify the fields were scrubbed:
+        let logItem = RollbarTestUtil.readFirstItemStringsFromLogFile();
+        let payload = RollbarPayload(jsonString: logItem!);
+        XCTAssertTrue(
+            .orderedSame == payload.data.person!.serializeToJSONString()!.compare(expectedPersonJson),
+            "Properly serialized person in payload."
+        );
+        let payloadJson = payload.serializeToJSONString();
+        XCTAssertTrue(
+            ((payloadJson?.contains(expectedPersonJson)) != nil),
+            "Properly serialized person in payload."
+        );
+    }
+
     //NOTE: enable the test below after telemetry of os_log is added!!!
 //    func testLogTelemetryAutoCapture() {
 //
@@ -358,6 +437,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         ("testServerData", testServerData),
         ("testPayloadModification", testPayloadModification),
         ("testScrublistFields", testScrublistFields),
+        ("testPersonDataAttachment", testPersonDataAttachment),
 //        ("testLogTelemetryAutoCapture", testLogTelemetryAutoCapture),
     ]
 }

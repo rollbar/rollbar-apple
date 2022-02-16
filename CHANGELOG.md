@@ -25,6 +25,10 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 
 ## Release Notes
 
+**2.0.2
+- fix: resolve #110 - Xcode autocomplete for Swift expects person.id, but codebase expects person.ID
+- chore: resolve #118 - Remove source file header comments from RollbarCommon
+
 **2.0.1
 - moving from Beta to GA
 
