@@ -1,5 +1,3 @@
-//  Copyright © 2018 Rollbar. All rights reserved.
-
 #ifndef NSJSONSerialization_Rollbar_h
 #define NSJSONSerialization_Rollbar_h
 

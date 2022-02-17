@@ -9,16 +9,20 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// Abstract implementation of the RollbarCrashCollector protocol
+/// Abstract implementation of the RollbarCrashCollector protocol.
 @interface RollbarCrashCollectorBase : NSObject<RollbarCrashCollector> {
     @private
     id<RollbarCrashCollectorObserver> _observer;
 }
 
+/// Designated initializer.
+/// @param observer a crash collector observer.
 - (instancetype)initWithObserver:(nullable id<RollbarCrashCollectorObserver>)observer
 NS_DESIGNATED_INITIALIZER;
 
-- (instancetype)init;
+/// Hides parametrless initializer.
+- (instancetype)init
+NS_UNAVAILABLE;
 
 @end
 

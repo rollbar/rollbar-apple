@@ -7,6 +7,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// File reader
 @interface RollbarFileReader : NSObject {
     
     NSString *filePath;
@@ -20,8 +21,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Properties
 
+/// Line delimiter.
 @property (nonatomic, copy) NSString *lineDelimiter;
 
+/// Chunk size.
 @property (nonatomic) NSUInteger chunkSize;
 
 #pragma mark - Methods
@@ -34,9 +37,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Initializers
 
+/// Hides parameterless initializer.
 - (instancetype)init
 NS_UNAVAILABLE;
 
+/// Designated initializer.
+/// @param path a path to a file to read.
+/// @param offset an offset to read from.
 - (instancetype)initWithFilePath:(NSString *)path andOffset:(NSUInteger)offset
 NS_DESIGNATED_INITIALIZER;
 

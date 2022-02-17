@@ -9,10 +9,10 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /// Checks if a value of the specified class type peresent for the specified key
-/// @param key <#key description#>
-/// @param className <#className description#>
+/// @param key key of interest
+/// @param context additional context for descriptive logging
 - (BOOL)rollbar_valuePresentForKey:(nonnull NSString *)key
-                         className:(nullable NSString *)className;
+                       withContext:(nullable NSString *)context;
 
 NS_ASSUME_NONNULL_END
 

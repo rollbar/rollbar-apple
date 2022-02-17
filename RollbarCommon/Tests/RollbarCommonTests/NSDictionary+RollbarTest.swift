@@ -20,10 +20,22 @@ final class NSDictionaryRollbarTests: XCTestCase {
             "key3": NSNull(),
         ];
         
-        XCTAssertTrue(data.rollbar_valuePresent(forKey: "key1", className: self.rollbar_objectClassName()));
-        XCTAssertTrue(data.rollbar_valuePresent(forKey: "key2", className: self.rollbar_objectClassName()));
-        XCTAssertFalse(data.rollbar_valuePresent(forKey: "key3", className: self.rollbar_objectClassName()));
-        XCTAssertFalse(data.rollbar_valuePresent(forKey: "non-existent-key", className: self.rollbar_objectClassName()));
+        XCTAssertTrue(data.rollbar_valuePresent(
+            forKey: "key1",
+            withContext: self.rollbar_objectClassName()
+        ));
+        XCTAssertTrue(data.rollbar_valuePresent(
+            forKey: "key2",
+            withContext: self.rollbar_objectClassName()
+        ));
+        XCTAssertFalse(data.rollbar_valuePresent(
+            forKey: "key3",
+            withContext: self.rollbar_objectClassName()
+        ));
+        XCTAssertFalse(data.rollbar_valuePresent(
+            forKey: "non-existent-key",
+            withContext: self.rollbar_objectClassName()
+        ));
     }
     
     static var allTests = [
