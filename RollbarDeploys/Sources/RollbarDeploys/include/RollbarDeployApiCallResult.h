@@ -23,17 +23,17 @@ NS_ASSUME_NONNULL_BEGIN
 /// API call's result description
 @property (readonly, copy, nullable) NSString *description;
 
-/// Initialize this DTO instance with valid JSON NSDictionary seed
+/// Hides this initializer.
 /// @param data valid JSON NSDictionary seed
 - (instancetype)initWithDictionary:(nullable NSDictionary<NSString *, id> *)data
 NS_UNAVAILABLE;
 
-/// Initialize this DTO instance with valid JSON NSArray seed
+/// Hides this initializer.
 /// @param data valid JSON NSArray seed
 - (instancetype)initWithArray:(NSArray *)data
 NS_UNAVAILABLE;
 
-/// Initialize empty DTO
+/// Hides this initializer.
 - (instancetype)init
 NS_UNAVAILABLE;
 
