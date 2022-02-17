@@ -6,19 +6,19 @@
 NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)rollbar_valuePresentForKey:(nonnull NSString *)key
-                         className:(nullable NSString *)className {
-    
+                       withContext:(nullable NSString *)context {
+
     id value = self[key];
     if (nil != value) {
         if ((id)[NSNull null] != value) {
             return YES;
         }
         else {
-            RollbarSdkLog(@"[%@] - key %@ has no value", className, key);
+            RollbarSdkLog(@"[%@] - key %@ has no value", context, key);
         }
     }
     else {
-        RollbarSdkLog(@"[%@] - key %@ not found", className, key);
+        RollbarSdkLog(@"[%@] - key %@ not found", context, key);
     }
     
     return NO;

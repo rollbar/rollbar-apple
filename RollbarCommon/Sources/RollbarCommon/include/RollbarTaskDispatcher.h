@@ -32,6 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// Defines a generic task block type
 typedef void (^RollbarTaskBlock)(id taskInput);
 
+/// Models a task dispatcher.
 @interface RollbarTaskDispatcher : NSObject {
     @private
         RollbarTaskBlock _task;
@@ -39,12 +40,25 @@ typedef void (^RollbarTaskBlock)(id taskInput);
         id _taskInput;
 }
 
+/// Creates a dispatcher with specific attributes.
+/// @param queue a queue to dispatch to.
+/// @param task a task
+/// @param taskInput task input data
 + (instancetype)dispatcherForQueue:(NSOperationQueue *)queue
                               task:(RollbarTaskBlock)task
                          taskInput:(id)taskInput;
 
-- (void)dispatchTask:(RollbarTaskBlock)task input:(id)taskInput;
+/// Dispatches the specified task with the specified input.
+/// @param task a task
+/// @param taskInput an input
+- (void)dispatchTask:(RollbarTaskBlock)task
+               input:(id)taskInput;
+
+/// Dispatches preconfigured task with the provided input
+/// @param taskInput a task input
 - (void)dispatchInput:(id)taskInput;
+
+/// Dispatches based on preconfigured queue, task, and input.
 - (void)dispatch;
 
 @end

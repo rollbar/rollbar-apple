@@ -5,8 +5,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// Prototype pattern protocol.
 @protocol RollbarPrototype <__covariant Type>
 
+/// Protoype cloning method.
 - (__kindof Type)clone;
 
 @end

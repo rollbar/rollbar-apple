@@ -7,11 +7,14 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /// Dfines the protected DTO interface
+/// intended for use internally by any DTO derivative/implementation.
 @interface RollbarDTO (Protected)
 
 #pragma mark - Properties
 
+/// The encapsulated data as a dictionary
 @property (nonatomic, readonly, nullable) NSMutableDictionary *dataDictionary;
+/// The encapsulated adta as an array
 @property (nonatomic, readonly, nullable) NSMutableArray *dataArray;
 
 #pragma mark - Core API: transferable data getter/setter by key
@@ -19,10 +22,13 @@ NS_ASSUME_NONNULL_BEGIN
 /// Gets a transferrable data object (or nil) by its key.
 /// @param key the data key
 - (nullable id)getDataByKey:(nonnull NSString *)key;
+
 /// Sets transferrable data by its key
 /// @param data the transferable data (or nil)
 /// @param key the data key
 - (void)setData:(nullable id)data byKey:(nonnull NSString *)key;
+
+#pragma mark - Core API: DTO data merging
 
 /// Merges given data dictionary into the underlaying data dictionary
 /// @param data data dictionary to append
@@ -30,9 +36,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Core API: safe data getters by key
 
-- (NSMutableDictionary *)safelyGetDictionaryByKey:(NSString *)key;
-- (NSMutableArray *)safelyGetArrayByKey:(NSString *)key;
-- (NSMutableString *)safelyGetStringByKey:(NSString *)key;
+- (nonnull NSMutableDictionary *)safelyGetDictionaryByKey:(NSString *)key;
+- (nonnull NSMutableArray *)safelyGetArrayByKey:(NSString *)key;
+- (nonnull NSMutableString *)safelyGetStringByKey:(NSString *)key;
 - (nullable NSNumber *)safelyGetNumberByKey:(NSString *)key;
 
 #pragma mark - Core API: data setters by key
