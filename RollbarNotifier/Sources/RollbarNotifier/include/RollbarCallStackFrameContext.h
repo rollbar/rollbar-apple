@@ -1,11 +1,3 @@
-//
-//  RollbarCallStackFrameContext.h
-//  Rollbar
-//
-//  Created by Andrey Kornich on 2019-12-10.
-//  Copyright © 2019 Rollbar. All rights reserved.
-//
-
 @import RollbarCommon;
 
 NS_ASSUME_NONNULL_BEGIN

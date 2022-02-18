@@ -1,13 +1,4 @@
-//
-//  RollbarCallStackFrameContext.m
-//  Rollbar
-//
-//  Created by Andrey Kornich on 2019-12-10.
-//  Copyright © 2019 Rollbar. All rights reserved.
-//
-
 #import "RollbarCallStackFrameContext.h"
-//@import RollbarCommon;
 
 static NSString * const DFK_PRE_CODE_LINES = @"pre";
 static NSString * const DFK_POST_CODE_LINES = @"post";

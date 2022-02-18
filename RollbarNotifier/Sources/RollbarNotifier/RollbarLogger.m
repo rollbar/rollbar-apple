@@ -1,5 +1,3 @@
-//  Copyright (c) 2018 Rollbar, Inc. All rights reserved.
-
 @import Foundation;
 
 #if TARGET_OS_IOS | TARGET_OS_TV | TARGET_OS_MACCATALYST

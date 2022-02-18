@@ -1,21 +1,10 @@
-//
-//  RollbarData.m
-//  Rollbar
-//
-//  Created by Andrey Kornich on 2019-10-10.
-//  Copyright © 2019 Rollbar. All rights reserved.
-//
-
 #import "RollbarData.h"
-//#import "DataTransferObject.h"
-//#import "DataTransferObject+Protected.h"
 #import "RollbarBody.h"
 #import "RollbarRequest.h"
 #import "RollbarPerson.h"
 #import "RollbarServer.h"
 #import "RollbarClient.h"
 #import "RollbarModule.h"
-//#import "JSONSupport.h"
 
 #pragma mark - data field keys
 

@@ -1,14 +1,4 @@
-//
-//  RollbarMessage.m
-//  Rollbar
-//
-//  Created by Andrey Kornich on 2019-11-27.
-//  Copyright © 2019 Rollbar. All rights reserved.
-//
-
 #import "RollbarMessage.h"
-//#import "DataTransferObject.h"
-//#import "DataTransferObject+Protected.h"
 #import <Foundation/Foundation.h>
 
 static NSString * const DFK_BODY = @"body";
