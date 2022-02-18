@@ -26,10 +26,18 @@ API_UNAVAILABLE(ios, tvos, watchos)
 
 @required
 
+/// Configures AUL stor monitoring with specified options
+/// @param options monitoring options
 - (id<RollbarAulStoreMonitoring>)configureWithOptions:(nullable RollbarAulStoreMonitorOptions *)options;
+
+/// Configures store monitoring with specific Rollbar logger to use
+/// @param logger a Rollbar logger
 - (id<RollbarAulStoreMonitoring>)configureRollbarLogger:(nullable RollbarLogger *)logger;
 
+/// Starts the monitoring
 - (void)start;
+
+/// Stops the monitoring
 - (void)cancel;
 
 @optional
@@ -42,7 +50,8 @@ API_UNAVAILABLE(ios, tvos, watchos)
 API_AVAILABLE(macos(10.15))
 API_UNAVAILABLE(ios, tvos, watchos)
 /// Defines Rollbar AUL store monitor
-@interface RollbarAulStoreMonitor : NSThread<RollbarAulStoreMonitoring, RollbarSingleInstancing>
+@interface RollbarAulStoreMonitor
+: NSThread<RollbarAulStoreMonitoring, RollbarSingleInstancing>
 
 @end
 
