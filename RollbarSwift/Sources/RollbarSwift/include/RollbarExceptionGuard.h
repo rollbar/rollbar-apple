@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 -(instancetype)initWithLogger:(nonnull RollbarLogger *)logger
 NS_DESIGNATED_INITIALIZER;
 
-/// Unavailable initializer
+/// Hides initializer
 -(instancetype)init
 NS_UNAVAILABLE;
 
