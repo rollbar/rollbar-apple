@@ -1,9 +1,3 @@
-//
-//  RollbarPLCrashCollector.m
-//  
-//
-//  Created by Andrey Kornich on 2020-12-21.
-//
 @import CrashReporter;
 @import RollbarCommon;
 

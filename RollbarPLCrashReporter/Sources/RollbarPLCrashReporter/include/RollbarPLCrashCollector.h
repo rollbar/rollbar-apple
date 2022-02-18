@@ -1,10 +1,3 @@
-//
-//  RollbarPLCrashCollector.h
-//  
-//
-//  Created by Andrey Kornich on 2020-12-21.
-//
-
 #ifndef RollbarPLCrashCollector_h
 #define RollbarPLCrashCollector_h
 
@@ -13,6 +6,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// Rollbar PLCrashReporter adapter
 @interface RollbarPLCrashCollector : RollbarCrashCollectorBase
 
 @end
