@@ -1,10 +1,3 @@
-//
-//  RollbarKSCrashCollector.h
-//  
-//
-//  Created by Andrey Kornich on 2020-10-28.
-//
-
 #ifndef RollbarKSCrashCollector_h
 #define RollbarKSCrashCollector_h
 
@@ -13,6 +6,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// Rollbar KSCrash reports collector
 @interface RollbarKSCrashCollector : RollbarCrashCollectorBase
 
 @end

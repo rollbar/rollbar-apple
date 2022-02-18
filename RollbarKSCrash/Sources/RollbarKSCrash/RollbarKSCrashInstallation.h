@@ -12,9 +12,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// Rollbar KSCrash installation helper
 @interface RollbarKSCrashInstallation : KSCrashInstallation
 
+/// The shared instance of this helper.
 + (instancetype)sharedInstance;
+
+/// Sends all the discovered KSCrash reports.
 - (void)sendAllReports;
 
 @end

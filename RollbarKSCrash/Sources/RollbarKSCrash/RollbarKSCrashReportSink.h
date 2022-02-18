@@ -1,10 +1,3 @@
-//
-//  RollbarKSCrashReportSink.h
-//  
-//
-//  Created by Andrey Kornich on 2020-10-28.
-//
-
 #ifndef RollbarKSCrashReportSink_h
 #define RollbarKSCrashReportSink_h
 
@@ -13,8 +6,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// Rollbar KSCrashReport sink
 @interface RollbarKSCrashReportSink : NSObject<KSCrashReportFilter>
 
+/// Gets the default filter set
 - (id<KSCrashReportFilter>)defaultFilterSet;
 
 @end
