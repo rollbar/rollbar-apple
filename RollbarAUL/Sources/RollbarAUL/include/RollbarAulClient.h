@@ -1,10 +1,3 @@
-//
-//  RollbarAulClient.h
-//  
-//
-//  Created by Andrey Kornich on 2021-04-29.
-//
-
 #ifndef RollbarAulClient_h
 #define RollbarAulClient_h
 

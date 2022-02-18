@@ -1,10 +1,3 @@
-//
-//  RollbarAulEntrySnapper.m
-//  
-//
-//  Created by Andrey Kornich on 2021-05-03.
-//
-
 #import "RollbarAulEntrySnapper.h"
 
 #if TARGET_OS_OSX

@@ -1,10 +1,3 @@
-//
-//  RollbarAulStoreMonitor.m
-//  
-//
-//  Created by Andrey Kornich on 2021-04-23.
-//
-
 #import "RollbarAulStoreMonitor.h"
 
 #if TARGET_OS_OSX

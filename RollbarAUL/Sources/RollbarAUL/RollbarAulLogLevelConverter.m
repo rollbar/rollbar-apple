@@ -1,10 +1,3 @@
-//
-//  RollbarAulLogLevelConverter.m
-//  
-//
-//  Created by Andrey Kornich on 2021-03-24.
-//
-
 #import "RollbarAulLogLevelConverter.h"
 
 #if TARGET_OS_OSX

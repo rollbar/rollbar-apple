@@ -1,10 +1,3 @@
-//
-//  RollbarAulPredicateBuilder.h
-//  
-//
-//  Created by Andrey Kornich on 2021-04-29.
-//
-
 #ifndef RollbarAulPredicateBuilder_h
 #define RollbarAulPredicateBuilder_h
 

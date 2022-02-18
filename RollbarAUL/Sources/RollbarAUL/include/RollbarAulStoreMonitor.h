@@ -1,10 +1,3 @@
-//
-//  RollbarAulStoreMonitor.h
-//  
-//
-//  Created by Andrey Kornich on 2021-04-23.
-//
-
 #ifndef RollbarAulStoreMonitor_h
 #define RollbarAulStoreMonitor_h
 

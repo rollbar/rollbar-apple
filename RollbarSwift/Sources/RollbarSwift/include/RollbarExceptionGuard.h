@@ -1,10 +1,3 @@
-//
-//  RollbarExceptionGuard.h
-//  
-//
-//  Created by Andrey Kornich on 2021-03-04.
-//
-
 #ifndef RollbarExceptionGuard_h
 #define RollbarExceptionGuard_h
 

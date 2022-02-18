@@ -1,10 +1,3 @@
-//
-//  RollbarAulOSLogEntryLogLevelConverter.h
-//  
-//
-//  Created by Andrey Kornich on 2021-03-24.
-//
-
 #ifndef RollbarAulOSLogEntryLogLevelConverter_h
 #define RollbarAulOSLogEntryLogLevelConverter_h
 

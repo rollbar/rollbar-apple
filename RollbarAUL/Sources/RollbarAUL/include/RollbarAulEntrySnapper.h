@@ -1,10 +1,3 @@
-//
-//  RollbarAulEntrySnapper.h
-//  
-//
-//  Created by Andrey Kornich on 2021-05-03.
-//
-
 #ifndef RollbarAulEntrySnapper_h
 #define RollbarAulEntrySnapper_h
 

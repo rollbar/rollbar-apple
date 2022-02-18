@@ -1,10 +1,3 @@
-//
-//  RollbarAulLogLevelConverter.h
-//  
-//
-//  Created by Andrey Kornich on 2021-03-24.
-//
-
 #ifndef RollbarAulLogLevelConverter_h
 #define RollbarAulLogLevelConverter_h
 
