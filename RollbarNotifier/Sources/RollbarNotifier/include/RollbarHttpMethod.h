@@ -18,6 +18,7 @@ typedef NS_ENUM(NSUInteger, RollbarHttpMethod) {
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// HTTP method enum converter unitilty
 @interface RollbarHttpMethodUtil : NSObject
 
 /// Convert RollbarHttpMethod to a string

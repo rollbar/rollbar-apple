@@ -28,11 +28,6 @@ static NSString * const DFK_ELEMENT = @"element";
     return [self initWithElement:element extraData:nil];
 }
 
-- (instancetype)initWithArray:(NSArray *)data {
-
-    return [super initWithArray:data];
-}
-
 - (instancetype)initWithDictionary:(NSDictionary<NSString *, id> *)data {
 
     return [super initWithDictionary:data];

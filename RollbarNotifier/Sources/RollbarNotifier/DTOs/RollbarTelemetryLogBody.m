@@ -28,11 +28,6 @@ static NSString * const DFK_MESSAGE = @"message";
     return [self initWithMessage:message extraData:nil];
 }
 
-- (instancetype)initWithArray:(NSArray *)data {
-
-    return [super initWithArray:data];
-}
-
 - (instancetype)initWithDictionary:(NSDictionary<NSString *, id> *)data {
 
     return [super initWithDictionary:data];

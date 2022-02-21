@@ -11,6 +11,7 @@ typedef NS_ENUM(NSUInteger, RollbarSource) {
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// RollbarSource conversion utility
 @interface RollbarSourceUtil : NSObject
 
 /// Convert RollbarSource to a string

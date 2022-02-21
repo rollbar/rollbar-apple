@@ -28,11 +28,6 @@ static NSString * const DFK_STATUS = @"change";
     return [self initWithStatus:status extraData:nil];
 }
 
-- (instancetype)initWithArray:(NSArray *)data {
-
-    return [super initWithArray:data];
-}
-
 - (instancetype)initWithDictionary:(NSDictionary<NSString *, id> *)data {
 
     return [super initWithDictionary:data];

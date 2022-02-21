@@ -34,11 +34,6 @@ static NSString * const DFK_TO = @"to";
                             extraData:nil];
 }
 
-- (instancetype)initWithArray:(NSArray *)data {
-
-    return [super initWithArray:data];
-}
-
 - (instancetype)initWithDictionary:(NSDictionary<NSString *, id> *)data {
 
     return [super initWithDictionary:data];
