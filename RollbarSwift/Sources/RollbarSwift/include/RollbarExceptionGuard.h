@@ -1,10 +1,3 @@
-//
-//  RollbarExceptionGuard.h
-//  
-//
-//  Created by Andrey Kornich on 2021-03-04.
-//
-
 #ifndef RollbarExceptionGuard_h
 #define RollbarExceptionGuard_h
 
@@ -32,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 -(instancetype)initWithLogger:(nonnull RollbarLogger *)logger
 NS_DESIGNATED_INITIALIZER;
 
-/// Unavailable initializer
+/// Hides initializer
 -(instancetype)init
 NS_UNAVAILABLE;
 

@@ -1,10 +1,3 @@
-//
-//  RollbarAulEntrySnapper.h
-//  
-//
-//  Created by Andrey Kornich on 2021-05-03.
-//
-
 #ifndef RollbarAulEntrySnapper_h
 #define RollbarAulEntrySnapper_h
 
@@ -24,6 +17,9 @@ API_UNAVAILABLE(ios, tvos, watchos)
 /// Rollbar class for capturing AUL entries as NSDictionaries
 @interface RollbarAulEntrySnapper : NSObject
 
+/// Captures an OSLogEntry
+/// @param entry an OSLogEntry
+/// @param snapshot a disctionary for capturing the snapshots
 - (void)captureOSLogEntry:(nullable OSLogEntry *)entry
              intoSnapshot:(nonnull NSMutableDictionary<NSString *, id> *)snapshot
 API_AVAILABLE(macos(10.15))

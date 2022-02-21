@@ -1,10 +1,3 @@
-//
-//  RollbarAulStoreMonitorOptions.h
-//  
-//
-//  Created by Andrey Kornich on 2021-04-23.
-//
-
 #ifndef RollbarAulStoreMonitorOptions_h
 #define RollbarAulStoreMonitorOptions_h
 
@@ -31,21 +24,36 @@ API_UNAVAILABLE(ios, tvos, watchos)
 
 #pragma mark - options updaters
 
+/// Adds an AUL subsystem of interest
+/// @param subsystem subsystem of interest
 - (void)addAulSubsystem:(NSString *)subsystem;
 
+/// Removes an AUL subsystem of interest
+/// @param subsystem subsystem of interest
 - (void)removeAulSubsystem:(NSString *)subsystem;
 
+/// Adds an AUL category of interest
+/// @param category category of interest
 - (void)addAulCategory:(NSString *)category;
 
+/// Removes an AUL category of interest
+/// @param category category of interest
 - (void)removeAulCategory:(NSString *)category;
 
 #pragma mark - initializers
 
+/// Initializer with AUL subsystems of interest.
+/// @param aulSubsystems AUL subsystems of interest
 - (instancetype)initWithAulSubsystems:(nullable NSArray<NSString *> *)aulSubsystems;
 
+/// Initializer
+/// @param aulSubsystems AUL subsystems of interest
+/// @param aulCategories AUL categories of interest
 - (instancetype)initWithAulSubsystems:(nullable NSArray<NSString *> *)aulSubsystems
                         aulCategories:(nullable NSArray<NSString *> *)aulCategories;
 
+/// Hides the initializer.
+/// @param data data array
 - (instancetype)initWithArray:(NSArray *)data
 NS_UNAVAILABLE;
 
