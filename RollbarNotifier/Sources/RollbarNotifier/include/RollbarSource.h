@@ -1,11 +1,3 @@
-//
-//  RollbarSource.h
-//  Rollbar
-//
-//  Created by Andrey Kornich on 2020-02-28.
-//  Copyright © 2020 Rollbar. All rights reserved.
-//
-
 @import Foundation;
 
 #pragma mark - RollbarSource enum
@@ -19,6 +11,7 @@ typedef NS_ENUM(NSUInteger, RollbarSource) {
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// RollbarSource conversion utility
 @interface RollbarSourceUtil : NSObject
 
 /// Convert RollbarSource to a string

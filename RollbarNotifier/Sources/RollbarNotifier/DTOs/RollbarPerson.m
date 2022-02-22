@@ -1,13 +1,4 @@
-//
-//  RollbarPerson.m
-//  Rollbar
-//
-//  Created by Andrey Kornich on 2019-10-25.
-//  Copyright © 2019 Rollbar. All rights reserved.
-//
-
 #import "RollbarPerson.h"
-//#import "DataTransferObject+Protected.h"
 
 #pragma mark - constants
 

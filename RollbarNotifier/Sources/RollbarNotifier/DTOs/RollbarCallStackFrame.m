@@ -1,13 +1,4 @@
-//
-//  RollbarCallStackFrame.m
-//  Rollbar
-//
-//  Created by Andrey Kornich on 2019-11-27.
-//  Copyright © 2019 Rollbar. All rights reserved.
-//
-
 #import "RollbarCallStackFrame.h"
-//@import RollbarCommon;
 #import "RollbarCallStackFrameContext.h"
 
 static NSString * const DFK_FILENAME = @"filename";

@@ -1,30 +1,29 @@
-//
-//  RollbarClient.h
-//  Rollbar
-//
-//  Created by Andrey Kornich on 2019-12-02.
-//  Copyright © 2019 Rollbar. All rights reserved.
-//
-
 @import RollbarCommon;
 
 @class RollbarJavascript;
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// RollbarClient payload element
+///
+/// @note:
+/// Can contain any arbitrary keys. Rollbar understands the following:
 @interface RollbarClient : RollbarDTO
 
 #pragma mark - Properties
-// Can contain any arbitrary keys. Rollbar understands the following:
 
-// Optional: cpu
-// A string up to 255 characters
+/// Optional: cpu
+/// A string up to 255 characters
 @property (nonatomic, copy, nullable) NSString *cpu;
 
+/// javaScript
 @property (nonatomic, strong, nullable) RollbarJavascript *javaScript;
 
 #pragma mark - Initializers
 
+/// Initializer
+/// @param cpu CPU
+/// @param javaScript javaScript
 -(instancetype)initWithCpu:(nullable NSString *)cpu
                 javaScript:(nullable RollbarJavascript *)javaScript;
 

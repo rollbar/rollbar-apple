@@ -1,13 +1,4 @@
-//
-//  RollbarDestination.m
-//  Rollbar
-//
-//  Created by Andrey Kornich on 2019-10-23.
-//  Copyright © 2019 Rollbar. All rights reserved.
-//
-
 #import "RollbarDestination.h"
-//#import "DataTransferObject+Protected.h"
 
 #pragma mark - constants
 

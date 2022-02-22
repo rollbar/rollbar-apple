@@ -1,11 +1,3 @@
-//
-//  RollbarHttpMethod.h
-//  Rollbar
-//
-//  Created by Andrey Kornich on 2019-12-02.
-//  Copyright © 2019 Rollbar. All rights reserved.
-//
-
 @import Foundation;
 
 #pragma mark - RollbarHttpMethod enum
@@ -26,6 +18,7 @@ typedef NS_ENUM(NSUInteger, RollbarHttpMethod) {
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// HTTP method enum converter unitilty
 @interface RollbarHttpMethodUtil : NSObject
 
 /// Convert RollbarHttpMethod to a string

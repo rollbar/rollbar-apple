@@ -1,13 +1,5 @@
-//
-//  RollbarTelemetryOptions.m
-//  Rollbar
-//
-//  Created by Andrey Kornich on 2019-10-25.
-//  Copyright © 2019 Rollbar. All rights reserved.
-//
 #import "RollbarTelemetryOptions.h"
 #import "RollbarScrubbingOptions.h"
-//@import RollbarCommon;
 
 #pragma mark - constants
 
@@ -67,22 +59,11 @@ static NSString *const DFK_VIEW_INPUTS_SCRUBBER = @"vewInputsScrubber";
     return [self initWithEnabled:DEFAULT_ENABLED_FLAG
                       captureLog:DEFAULT_CAPTURE_LOG_FLAG
              captureConnectivity:DEFAULT_CAPTURE_CONNECTIVITY_FLAG
-              viewInputsScrubber:[RollbarScrubbingOptions new]];
+              viewInputsScrubber:[RollbarScrubbingOptions new]
+    ];
 }
 
 #pragma mark - property accessors
-
-//- (void)setNilValueForKey:(NSString *)key
-//{
-//    if ([key isEqualToString:@"enabled"]) {
-//        [self setValue:@(NO) forKey:@"enabled"];
-//    } else if ([key isEqualToString:@"captureLog"]) {
-//        [self setValue:@(NO) forKey:@"captureLog"];
-//    }
-//    else {
-//        [super setNilValueForKey:key];
-//    }
-//}
 
 - (BOOL)enabled {
     NSNumber *result = [self safelyGetNumberByKey:DFK_ENABLED_FLAG];
@@ -93,16 +74,7 @@ static NSString *const DFK_VIEW_INPUTS_SCRUBBER = @"vewInputsScrubber";
     
     [self setNumber:[NSNumber numberWithBool:value]
              forKey:DFK_ENABLED_FLAG
-     ];
-    
-//    if (value != self.enabled) {
-//        NSString *propertyName = NSStringFromSelector(@selector(enabled));
-//        [self willChangeValueForKey:propertyName];
-//        [self setNumber:[NSNumber numberWithBool:value]
-//                 forKey:DFK_ENABLED_FLAG
-//         ];
-//        [self didChangeValueForKey:propertyName];
-//    }
+    ];
 }
 
 - (BOOL)captureLog {
@@ -113,7 +85,7 @@ static NSString *const DFK_VIEW_INPUTS_SCRUBBER = @"vewInputsScrubber";
 - (void)setCaptureLog:(BOOL)value {
     [self setNumber:[NSNumber numberWithBool:value]
              forKey:DFK_CAPTURE_LOG_FLAG
-     ];
+    ];
 }
 
 - (BOOL)captureConnectivity {
@@ -124,7 +96,7 @@ static NSString *const DFK_VIEW_INPUTS_SCRUBBER = @"vewInputsScrubber";
 - (void)setCaptureConnectivity:(BOOL)value {
     [self setNumber:[NSNumber numberWithBool:value]
              forKey:DFK_CAPTURE_CONNECTIVITY_FLAG
-     ];
+    ];
 }
 
 - (NSUInteger)maximumTelemetryData {

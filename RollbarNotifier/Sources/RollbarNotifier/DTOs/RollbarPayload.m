@@ -1,13 +1,4 @@
-//
-//  RollbarPayload.m
-//  Rollbar
-//
-//  Created by Andrey Kornich on 2019-10-08.
-//  Copyright © 2019 Rollbar. All rights reserved.
-//
-
 #import "RollbarPayload.h"
-//#import "DataTransferObject+Protected.h"
 #import "RollbarData.h"
 
 #pragma mark - data field keys

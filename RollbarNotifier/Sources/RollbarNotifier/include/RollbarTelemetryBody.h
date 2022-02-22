@@ -1,15 +1,8 @@
-//
-//  RollbarTelemetryBody.h
-//  Rollbar
-//
-//  Created by Andrey Kornich on 2020-02-28.
-//  Copyright © 2020 Rollbar. All rights reserved.
-//
-
 @import RollbarCommon;
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// Telemetry body DTO
 @interface RollbarTelemetryBody : RollbarDTO
 
 @end

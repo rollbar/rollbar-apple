@@ -1,15 +1,9 @@
-//
-//  MyClass.h
-//  
-//
-//  Created by Andrey Kornich on 2020-11-04.
-//
-
 @import Foundation;
 @import RollbarCommon;
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// A crash report processor
 @interface RollbarCrashProcessor : NSObject <RollbarCrashCollectorObserver>
 
 @end

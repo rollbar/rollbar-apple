@@ -1,5 +1,3 @@
-//  Copyright (c) 2018 Rollbar, Inc. All rights reserved.
-
 #import "RollbarPayloadTruncator.h"
 
 @import RollbarCommon;
