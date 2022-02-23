@@ -1,16 +1,17 @@
 import XCTest
 import Foundation
+import UnitTesting
 @testable import RollbarDeploys
 
 final class RollbarDeploysTests: XCTestCase {
     
     func testDeploymentDto() {
         
-        let environment = "Rollbar-Apple-UnitTests"
-        let comment = "a new deploy"
-        let revision = "a_revision"
-        let localUsername = "UnitTestRunner"
-        let rollbarUsername = "rollbar"
+        let environment = RollbarUnitTestSettings.environment;
+        let comment = "a new deploy";
+        let revision = "a_revision";
+        let localUsername = "UnitTestRunner";
+        let rollbarUsername = "rollbar";
         
         let deployment = RollbarDeployment(
             environment:environment,
@@ -18,7 +19,7 @@ final class RollbarDeploysTests: XCTestCase {
             revision:revision,
             localUserName:localUsername,
             rollbarUserName:rollbarUsername
-        )
+        );
 
         XCTAssertTrue(nil != deployment)
 
@@ -40,13 +41,13 @@ final class RollbarDeploysTests: XCTestCase {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         
-        let environment = "Rollbar-Apple-UnitTests"
-        let comment = "a new deploy at \(dateFormatter.string(from:Date.init()))"
-        let revision = "a_revision"
-        let localUsername = "UnitTestRunner"
-        let rollbarUsername = "rollbar"
+        let environment = RollbarUnitTestSettings.environment;
+        let comment = "a new deploy at \(dateFormatter.string(from:Date.init()))";
+        let revision = "a_revision";
+        let localUsername = "UnitTestRunner";
+        let rollbarUsername = "rollbar";
         
-        let observer = RollbarDeploysObserver()
+        let observer = RollbarDeploysObserver();
         
         let deployment = RollbarDeployment(
             environment:environment,
@@ -54,17 +55,17 @@ final class RollbarDeploysTests: XCTestCase {
             revision:revision,
             localUserName:localUsername,
             rollbarUserName:rollbarUsername
-            )
+        );
         
         let deploysManager = RollbarDeploysManager(
-            writeAccessToken:"efdc4b85d66045f293a7f9e99c732f61",
-            readAccessToken:"595cbf76b05b45f2b3ef661a2e0078d4",
+            writeAccessToken:RollbarUnitTestSettings.deploysWriteAccessToken,
+            readAccessToken:RollbarUnitTestSettings.deploysReadAccessToken,
             deploymentRegistrationObserver:observer,
             deploymentDetailsObserver:observer,
             deploymentDetailsPageObserver:observer
-        )
+        );
         
-        deploysManager.register(deployment!)
+        deploysManager.register(deployment!);
 
     }
 
@@ -72,32 +73,32 @@ final class RollbarDeploysTests: XCTestCase {
 
         let testDeploymentId = "23922850";
 
-        let observer = RollbarDeploysObserver()
+        let observer = RollbarDeploysObserver();
 
         let deploysManager = RollbarDeploysManager(
-            writeAccessToken:"efdc4b85d66045f293a7f9e99c732f61",
-            readAccessToken:"595cbf76b05b45f2b3ef661a2e0078d4",
+            writeAccessToken:RollbarUnitTestSettings.deploysWriteAccessToken,
+            readAccessToken:RollbarUnitTestSettings.deploysReadAccessToken,
             deploymentRegistrationObserver:observer,
             deploymentDetailsObserver:observer,
             deploymentDetailsPageObserver:observer
-        )
+        );
 
-        deploysManager.getDeploymentWithDeployId(testDeploymentId)
+        deploysManager.getDeploymentWithDeployId(testDeploymentId);
     }
 
     func testGetDeploymentsPage() {
         
-        let observer = RollbarDeploysObserver()
+        let observer = RollbarDeploysObserver();
 
         let deploysManager = RollbarDeploysManager(
-            writeAccessToken:"efdc4b85d66045f293a7f9e99c732f61",
-            readAccessToken:"595cbf76b05b45f2b3ef661a2e0078d4",
+            writeAccessToken:RollbarUnitTestSettings.deploysWriteAccessToken,
+            readAccessToken:RollbarUnitTestSettings.deploysReadAccessToken,
             deploymentRegistrationObserver:observer,
             deploymentDetailsObserver:observer,
             deploymentDetailsPageObserver:observer
-        )
+        );
 
-        deploysManager.getDeploymentsPageNumber(1)
+        deploysManager.getDeploymentsPageNumber(1);
     }
 
     func testExample() {

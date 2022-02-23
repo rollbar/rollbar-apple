@@ -15,6 +15,7 @@
 
 #if !TARGET_OS_WATCH
 #import <XCTest/XCTest.h>
+#import "../../../UnitTests/RollbarUnitTestSettings.h"
 
 @import RollbarNotifier;
 @import RollbarAUL;
@@ -62,8 +63,8 @@
 //- (void)testRollbarAulStoreMonitor {
 //    
 //    RollbarConfig *rollbarConfig = [[RollbarConfig alloc] init];
-//    rollbarConfig.destination.accessToken = @"efdc4b85d66045f293a7f9e99c732f61";
-//    rollbarConfig.destination.environment = @"Rollbar-Apple-UnitTests";
+//    rollbarConfig.destination.accessToken = ROLLBAR_UNIT_TEST_DEPLOYS_WRITE_ACCESS_TOKEN;
+//    rollbarConfig.destination.environment = ROLLBAR_UNIT_TEST_ENVIRONMENT;
 //    rollbarConfig.telemetry.enabled = YES;
 //    rollbarConfig.telemetry.captureLog = YES;
 //    rollbarConfig.telemetry.maximumTelemetryData = 100;
