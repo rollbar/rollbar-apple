@@ -36,6 +36,7 @@
 		55684F802553B4C700F82F34 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		55684F9B2553BD1B00F82F34 /* iosAppObjC.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iosAppObjC.entitlements; sourceTree = "<group>"; };
 		55684F9C2553BD1C00F82F34 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
+		55C1B42127C5C95000017B22 /* RollbarDemoSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RollbarDemoSettings.h; path = ../../RollbarDemoSettings.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +75,7 @@
 		55684F6D2553B4C400F82F34 /* iosAppObjC */ = {
 			isa = PBXGroup;
 			children = (
+				55C1B42127C5C95000017B22 /* RollbarDemoSettings.h */,
 				55684F9B2553BD1B00F82F34 /* iosAppObjC.entitlements */,
 				55684F6E2553B4C400F82F34 /* AppDelegate.h */,
 				55684F6F2553B4C400F82F34 /* AppDelegate.m */,

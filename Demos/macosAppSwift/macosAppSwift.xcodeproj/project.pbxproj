@@ -16,6 +16,7 @@
 		5544A01F25FB074300C710A1 /* RollbarCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 5544A01E25FB074300C710A1 /* RollbarCommon */; };
 		5544A02125FB074300C710A1 /* RollbarNotifier in Frameworks */ = {isa = PBXBuildFile; productRef = 5544A02025FB074300C710A1 /* RollbarNotifier */; };
 		5544A02325FB074300C710A1 /* RollbarSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 5544A02225FB074300C710A1 /* RollbarSwift */; };
+		55C1B41F27C5BDF000017B22 /* RollbarDemoSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C1B41E27C5BDF000017B22 /* RollbarDemoSettings.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		55098C6B25FA93110045C180 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		55098C6D25FA93110045C180 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		55098C6E25FA93110045C180 /* macosAppSwift.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macosAppSwift.entitlements; sourceTree = "<group>"; };
+		55C1B41E27C5BDF000017B22 /* RollbarDemoSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RollbarDemoSettings.swift; path = ../../RollbarDemoSettings.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +66,7 @@
 		55098C6325FA930D0045C180 /* macosAppSwift */ = {
 			isa = PBXGroup;
 			children = (
+				55C1B41E27C5BDF000017B22 /* RollbarDemoSettings.swift */,
 				55098C6425FA930D0045C180 /* macosAppSwiftApp.swift */,
 				55098C6625FA930D0045C180 /* ContentView.swift */,
 				55098C6825FA93110045C180 /* Assets.xcassets */,
@@ -166,6 +169,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				55098C6725FA930D0045C180 /* ContentView.swift in Sources */,
+				55C1B41F27C5BDF000017B22 /* RollbarDemoSettings.swift in Sources */,
 				55098C6525FA930D0045C180 /* macosAppSwiftApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -31,6 +31,7 @@
 		55759A772477561100ED3F04 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		55759A782477561100ED3F04 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		55759A7A2477561100ED3F04 /* macosAppObjC.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macosAppObjC.entitlements; sourceTree = "<group>"; };
+		55C1B42027C5C4E800017B22 /* RollbarDemoSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RollbarDemoSettings.h; path = ../../RollbarDemoSettings.h; sourceTree = "<group>"; };
 		55FD07122478614B000BBC22 /* RollbarDeploysDemoClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RollbarDeploysDemoClient.h; sourceTree = "<group>"; };
 		55FD07132478614B000BBC22 /* RollbarDeploysDemoClient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RollbarDeploysDemoClient.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -71,6 +72,7 @@
 		55759A6B2477560D00ED3F04 /* macosAppObjC */ = {
 			isa = PBXGroup;
 			children = (
+				55C1B42027C5C4E800017B22 /* RollbarDemoSettings.h */,
 				55759A6C2477560D00ED3F04 /* AppDelegate.h */,
 				55759A6D2477560D00ED3F04 /* AppDelegate.m */,
 				55759A6F2477560D00ED3F04 /* ViewController.h */,
