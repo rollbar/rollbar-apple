@@ -57,6 +57,7 @@ let package = Package(
         .testTarget(
             name: "RollbarCommonTests-ObjC",
             dependencies: ["RollbarCommon"],
+            exclude: ["TestData/rollbar-crash-report-147120812218-raw.txt"],
             cSettings: [
                 .headerSearchPath("Tests/RollbarCommonTests-ObjC/**"),
                 //                .headerSearchPath("Sources/RollbarCommon"),
