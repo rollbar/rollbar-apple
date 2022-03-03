@@ -44,10 +44,7 @@ let package = Package(
             publicHeadersPath: "include",
             cSettings: [
                 .headerSearchPath("Sources/RollbarCocoaLumberjack/**"),
-                //                .headerSearchPath("Sources/RollbarSwift"),
-                //                .headerSearchPath("Sources/RollbarSwift/include"),
-                //                .headerSearchPath("Sources/RollbarSwift/DTOs"),
-                
+                //                .headerSearchPath("Sources/RollbarCocoaLumberjack/DTOs"),
                 //                .define("DEFINES_MODULE"),
             ]
         ),
