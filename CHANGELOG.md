@@ -25,6 +25,14 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 
 ## Release Notes
 
+**2.0.3
+- docs: resolve #122 - Update RollbarCommon public API doc comments so they are properly rendered by Xcode Quick Help
+- docs: resolve #124 - Update RollbarDeploys public API doc comments so they are properly rendered by Xcode Quick Help
+- docs: resolve #126 - Update RollbarSwift, RollbarAUL, RollbarPLCrashReporter, and RollbarKSCrash public API doc comments so they are properly rendered by Xcode Quick Help
+- docs: resolve #127 - Update RollbarNotifier public API doc comments so they are properly rendered by Xcode Quick Help
+- chore: resolve #114 - Consolidate destination parameters for samples
+- chore: resolve #113 - Consolidate destination parameters for unit tests
+
 **2.0.2
 - fix: resolve #110 - Xcode autocomplete for Swift expects person.id, but codebase expects person.ID
 - chore: resolve #118 - Remove source file header comments from RollbarCommon

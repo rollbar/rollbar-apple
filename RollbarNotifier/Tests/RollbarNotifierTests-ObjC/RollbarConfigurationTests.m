@@ -4,6 +4,7 @@
 
 #if !TARGET_OS_WATCH
 #import <XCTest/XCTest.h>
+#import "../../../UnitTests/RollbarUnitTestSettings.h"
 #import "RollbarTestUtil.h"
 
 @import RollbarNotifier;
@@ -351,7 +352,7 @@
 - (void)testLogTelemetryAutoCapture {
     NSString *logMsg = @"log-message-testing";
     [[RollbarTelemetry sharedInstance] clearAllData];
-    //Rollbar.currentConfiguration.accessToken = @"efdc4b85d66045f293a7f9e99c732f61";
+    //Rollbar.currentConfiguration.accessToken = ROLLBAR_UNIT_TEST_DEPLOYS_WRITE_ACCESS_TOKEN;
     Rollbar.currentConfiguration.telemetry.enabled = YES;
     Rollbar.currentConfiguration.telemetry.captureLog = YES;
     [Rollbar reapplyConfiguration];

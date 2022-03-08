@@ -14,33 +14,25 @@
 
 #pragma mark - constants
 
-static NSString * const NOTIFIER_VERSION = @"2.0.2";
+static NSString * const NOTIFIER_VERSION = @"2.0.3";
 
 static NSString * const NOTIFIER_NAME = @"rollbar-apple";
 
 #define NOTIFIER_NAME_PREFIX = @"rollbar-";
+
 #if TARGET_OS_IPHONE | TARGET_OS_IOS
 static NSString * const OPERATING_SYSTEM = @"ios";
-//static NSString * const NOTIFIER_NAME = @"rollbar-ios";
 #elif TARGET_OS_OSX
 static NSString * const OPERATING_SYSTEM = @"macos";
-//static NSString * const NOTIFIER_NAME = @"rollbar-macos";
 #elif TARGET_OS_TV
 static NSString * const OPERATING_SYSTEM = @"tvos";
-//static NSString * const NOTIFIER_NAME = @"rollbar-tvos";
 #elif TARGET_OS_WATCH
 static NSString * const OPERATING_SYSTEM = @"watchos";
-//static NSString * const NOTIFIER_NAME = @"rollbar-watchos";
 #else
 static NSString * const OPERATING_SYSTEM = @"*os";
-//static NSString * const NOTIFIER_NAME = @"rollbar-*os";
 #endif
 
-//static NSString * const CONFIGURATION_FILENAME = @"rollbar.config";
-
 #pragma mark - static data
-
-//static NSString *configurationFilePath = nil;
 
 #pragma mark - data fields
 
@@ -63,10 +55,6 @@ static NSString * const DFK_CUSTOM = @"custom";
 #pragma mark - initializers
 
 - (instancetype)init {
-//    if (!configurationFilePath) {
-//        NSString *cachesDirectory = [RollbarCachesDirectory directory];
-//        configurationFilePath = [cachesDirectory stringByAppendingPathComponent:CONFIGURATION_FILENAME];
-//    }
 
     self = [super initWithDictionary:@{
         DFK_DESTINATION:[RollbarDestination new].jsonFriendlyData,
@@ -81,7 +69,6 @@ static NSString * const DFK_CUSTOM = @"custom";
         DFK_PERSON: [NSMutableDictionary<NSString *, id> new],
         DFK_CUSTOM: [NSMutableDictionary<NSString *, id> new]
     }];
-    //[self save];
     return self;
 }
 

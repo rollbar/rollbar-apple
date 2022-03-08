@@ -4,6 +4,7 @@
 
 #if !TARGET_OS_WATCH
 #import <XCTest/XCTest.h>
+#import "../../../UnitTests/RollbarUnitTestSettings.h"
 #import "RollbarTestUtil.h"
 //#import "../Rollbar/Notifier/RollbarPayloadTruncator.h"
 
@@ -19,8 +20,8 @@
     [super setUp];
     RollbarClearLogFile();
     if (!Rollbar.currentConfiguration) {
-        [Rollbar initWithAccessToken:@"09da180aba21479e9ed3d91e0b8d58d6"];
-        Rollbar.currentConfiguration.destination.environment = @"Rollbar-Apple-UnitTests";
+        [Rollbar initWithAccessToken:ROLLBAR_UNIT_TEST_PAYLOADS_ACCESS_TOKEN];
+        Rollbar.currentConfiguration.destination.environment = ROLLBAR_UNIT_TEST_ENVIRONMENT;
     }
 }
 

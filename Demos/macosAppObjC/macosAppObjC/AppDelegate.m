@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 
 #import "RollbarDeploysDemoClient.h"
+#import "RollbarDemoSettings.h"
 
 @import RollbarNotifier;
 @import RollbarAUL;
@@ -77,8 +78,8 @@ __attribute__((noinline)) static void crashIt (void) {
 
     // configure Rollbar:
     RollbarConfig *config = [RollbarConfig new];
-    config.destination.accessToken = @"09da180aba21479e9ed3d91e0b8d58d6";
-    config.destination.environment = @"Rollbar-Apple-Samples";
+    config.destination.accessToken = ROLLBAR_DEMO_PAYLOADS_ACCESS_TOKEN;
+    config.destination.environment = ROLLBAR_DEMO_ENVIRONMENT;
     //config.developerOptions.suppressSdkInfoLogging = YES;
     config.customData = @{ @"someKey": @"someValue", };
     

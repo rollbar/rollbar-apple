@@ -1,4 +1,4 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.5
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -24,6 +24,9 @@ let package = Package(
         .package(name:"RollbarCommon",
                  path: "../RollbarCommon"
         ),
+        .package(name: "UnitTesting",
+                 path: "../UnitTesting"
+                ),
         .package(name:"PLCrashReporter",
                  url: "https://github.com/microsoft/plcrashreporter.git",
                  from: "1.10.0" //Package.Dependency.Requirement.branch("master")
@@ -47,14 +50,9 @@ let package = Package(
         ),
         .testTarget(
             name: "RollbarPLCrashReporterTests",
-            dependencies: ["RollbarPLCrashReporter"],
-            cSettings: [
-                .headerSearchPath("Tests/RollbarKSCrashTests/**"),
-                //                .headerSearchPath("Sources/RollbarKSCrash"),
-                //                .headerSearchPath("Sources/RollbarKSCrash/include"),
-                //                .headerSearchPath("Sources/RollbarKSCrash/DTOs"),
-                
-                //                .define("DEFINES_MODULE"),
+            dependencies: [
+                "UnitTesting",
+                "RollbarPLCrashReporter",
             ]
         ),
         .testTarget(
