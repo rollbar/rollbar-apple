@@ -5,6 +5,13 @@ import PackageDescription
 
 let package = Package(
     name: "UnitTesting",
+    platforms: [
+        // Oldest targeted platform versions that are supported by this product.
+        .macOS(.v10_10),
+        .iOS(.v9),
+        .tvOS(.v11),
+        .watchOS(.v4),
+    ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
@@ -20,7 +27,17 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "UnitTesting",
-            dependencies: []),
+            dependencies: [],
+            publicHeadersPath: "include",
+            cSettings: [
+                .headerSearchPath("Sources/UnitTesting/**"),
+                //                .headerSearchPath("Sources/RollbarNotifier"),
+                //                .headerSearchPath("Sources/RollbarNotifier/include"),
+                //                .headerSearchPath("Sources/RollbarNotifier/DTOs"),
+                
+                //                .define("DEFINES_MODULE"),
+            ]
+        ),
         .testTarget(
             name: "UnitTestingTests",
             dependencies: ["UnitTesting"]),

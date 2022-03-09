@@ -23,9 +23,7 @@ let package = Package(
         // .package(url: /* package url */, from: "1.0.0"),
         .package(path: "../RollbarCommon"),
         .package(path: "../RollbarNotifier"),
-        .package(name: "UnitTesting",
-                 path: "../UnitTesting"
-                ),
+        .package(path: "../UnitTesting"),
         .package(name:"CocoaLumberjack",
                  url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git",
                  from: "3.7.4" //Package.Dependency.Requirement.branch("master")
@@ -57,7 +55,10 @@ let package = Package(
         ),
         .testTarget(
             name: "RollbarCocoaLumberjackTests-ObjC",
-            dependencies: ["RollbarCocoaLumberjack"],
+            dependencies: [
+                "UnitTesting",
+                "RollbarCocoaLumberjack",
+            ],
             cSettings: [
                 .headerSearchPath("Tests/RollbarCocoaLumberjackTests-ObjC/**"),
             ]
