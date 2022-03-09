@@ -50,7 +50,7 @@ Pod::Spec.new do |s|
     s.static_framework = true
     s.framework = "Foundation"
     s.dependency "RollbarCommon", "~> #{s.version}"
-    s.dependency "PLCrashReporter", "~> 1.10.0"
+    s.dependency "PLCrashReporter", "~> 1.10.1"
     # s.frameworks = "SomeFramework", "AnotherFramework"
     # s.library   = "iconv"
     # s.libraries = "iconv", "xml2"
