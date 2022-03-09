@@ -20,6 +20,20 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "RollbarCocoaLumberjackTests-ObjC"
+               BuildableName = "RollbarCocoaLumberjackTests-ObjC"
+               BlueprintName = "RollbarCocoaLumberjackTests-ObjC"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -35,6 +49,16 @@
                BlueprintIdentifier = "RollbarCocoaLumberjackTests"
                BuildableName = "RollbarCocoaLumberjackTests"
                BlueprintName = "RollbarCocoaLumberjackTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "RollbarCocoaLumberjackTests-ObjC"
+               BuildableName = "RollbarCocoaLumberjackTests-ObjC"
+               BlueprintName = "RollbarCocoaLumberjackTests-ObjC"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
