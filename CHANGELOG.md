@@ -25,6 +25,11 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 
 ## Release Notes
 
+**2.1.0
+- feat: resolve #133 - Implement RollbarCocoaLumberjack module
+- test: resolve #134 - Implement unit tests for RollbarCocoaLumberjack
+- core: resolve #112 - Upgrade to the latest PLCrashReporter 1.0.1
+
 **2.0.3
 - docs: resolve #122 - Update RollbarCommon public API doc comments so they are properly rendered by Xcode Quick Help
 - docs: resolve #124 - Update RollbarDeploys public API doc comments so they are properly rendered by Xcode Quick Help
