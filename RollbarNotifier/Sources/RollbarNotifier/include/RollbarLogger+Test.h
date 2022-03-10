@@ -1,10 +1,3 @@
-//
-//  RollbarLogger+Test.h
-//  
-//
-//  Created by Andrey Kornich on 2022-03-09.
-//
-
 #import <Foundation/Foundation.h>
 #import "RollbarLogger.h"
 
@@ -14,13 +7,21 @@ NS_ASSUME_NONNULL_BEGIN
 ///@note THIS CATEGORY IS TO BE USED FOR TESTING PURPOSES ONLY.
 @interface RollbarLogger (Test)
 
+/// Returns after all the queued up payloads are processed by the RollbarThread
+///@note THIS METHOD IS TO BE USED FOR TESTING PURPOSES ONLY.
 + (void)flushRollbarThread;
-+ (NSArray *)readLogItemsFromStore;
-+ (void)clearLogItemsStore;
-+ (void)clearSdkDataStore;
 
-//- (NSThread *)_test_rollbarThread;
-//- (void)_test_doNothing;
+/// Reads all the payloads queued up in the persistent store
+///@note THIS METHOD IS TO BE USED FOR TESTING PURPOSES ONLY.
++ (NSArray *)readLogItemsFromStore;
+
+/// Clears all the payloads queued up in the persistent store
+///@note THIS METHOD IS TO BE USED FOR TESTING PURPOSES ONLY.
++ (void)clearLogItemsStore;
+
+/// Clears all the SDK persisted data
+///@note THIS METHOD IS TO BE USED FOR TESTING PURPOSES ONLY.
++ (void)clearSdkDataStore;
 
 @end
 

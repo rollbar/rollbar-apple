@@ -23,13 +23,13 @@ static NSString * const QUEUED_ITEMS_FILE_NAME = @"rollbar.items";
 static NSString * const QUEUED_ITEMS_STATE_FILE_NAME = @"rollbar.state";
 static NSString * const PAYLOADS_FILE_NAME = @"rollbar.payloads";
 
-// Rollbar API Service enforced payload rate limit:
+/// Rollbar API Service enforced payload rate limit:
 static NSString * const RESPONSE_HEADER_RATE_LIMIT = @"x-rate-limit-limit";
-// Rollbar API Service enforced remaining payload count until the limit is reached:
+/// Rollbar API Service enforced remaining payload count until the limit is reached:
 static NSString * const RESPONSE_HEADER_REMAINING_COUNT = @"x-rate-limit-remaining";
-// Rollbar API Service enforced rate limit reset time for the current limit window:
+/// Rollbar API Service enforced rate limit reset time for the current limit window:
 static NSString * const RESPONSE_HEADER_RESET_TIME = @"x-rate-limit-reset";
-// Rollbar API Service enforced rate limit remaining seconds of the current limit window:
+/// Rollbar API Service enforced rate limit remaining seconds of the current limit window:
 static NSString * const RESPONSE_HEADER_REMAINING_SECONDS = @"x-rate-limit-remaining-seconds";
 
 static NSUInteger MAX_RETRY_COUNT = 5;

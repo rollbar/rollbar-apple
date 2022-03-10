@@ -49,7 +49,10 @@ let package = Package(
         ),
         .testTarget(
             name: "RollbarDeploysTests-ObjC",
-            dependencies: ["RollbarDeploys"],
+            dependencies: [
+                "UnitTesting",
+                "RollbarDeploys",
+            ],
             cSettings: [
                 .headerSearchPath("Tests/RollbarDeploysTests-ObjC/**"),
 //                .headerSearchPath("Sources/RollbarDeploys"),

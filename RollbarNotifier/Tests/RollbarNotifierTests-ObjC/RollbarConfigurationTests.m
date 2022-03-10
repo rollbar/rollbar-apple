@@ -1,12 +1,8 @@
-//  Copyright (c) 2018 Rollbar, Inc. All rights reserved.
-
 @import Foundation;
 @import UnitTesting;
 
 #if !TARGET_OS_WATCH
 #import <XCTest/XCTest.h>
-//#import "../../../UnitTests/RollbarUnitTestSettings.h"
-//#import "RollbarTestUtil.h"
 
 @import RollbarNotifier;
 
@@ -17,10 +13,10 @@
 @implementation RollbarConfigurationTests
 
 - (void)setUp {
+
     [super setUp];
     
     [RollbarLogger clearSdkDataStore];
-    //RollbarClearLogFile();
     
     if (!Rollbar.currentConfiguration) {
         [Rollbar initWithAccessToken:@""];
@@ -28,16 +24,19 @@
 }
 
 - (void)tearDown {
+    
     [Rollbar updateConfiguration:[RollbarConfig new]];
     [super tearDown];
 }
 
 - (void)testDefaultRollbarConfiguration {
+    
     RollbarConfig *rc = [RollbarConfig new];
     NSLog(@"%@", rc);
 }
 
 - (void)testScrubSafeListFields {
+    
     NSString *scrubedContent = @"*****";
     NSArray *keys = @[@"client.ios.app_name", @"client.ios.os_version", @"body.message.body"];
     
@@ -48,11 +47,9 @@
     [Rollbar debugMessage:@"test"];
     
     [RollbarLogger flushRollbarThread];
-    //RollbarFlushFileThread(Rollbar.currentLogger);
     
     // verify the fields were scrubbed:
     NSArray *logItems = [RollbarLogger readLogItemsFromStore];
-    //RollbarReadLogItemFromFile();
     for (NSString *key in keys) {
         NSString *content = [logItems[0] valueForKeyPath:key];
         XCTAssertTrue([content isEqualToString:scrubedContent],
@@ -64,7 +61,6 @@
     }
     
     [RollbarLogger clearSdkDataStore];
-    //RollbarClearLogFile();
     
     // define scrub whitelist fields (the same as the scrub fields - to counterbalance them):
     for (NSString *key in keys) {
@@ -73,11 +69,9 @@
     [Rollbar debugMessage:@"test"];
     
     [RollbarLogger flushRollbarThread];
-    //RollbarFlushFileThread(Rollbar.currentLogger);
     
     // verify the fields were not scrubbed:
     logItems = [RollbarLogger readLogItemsFromStore];
-    //RollbarReadLogItemFromFile();
     for (NSString *key in keys) {
         NSString *content = [logItems[0] valueForKeyPath:key];
         XCTAssertTrue(![content isEqualToString:scrubedContent],
@@ -92,7 +86,6 @@
 - (void)testTelemetryEnabled {
     
     [RollbarLogger clearSdkDataStore];
-    //RollbarClearLogFile();
     
     BOOL expectedFlag = NO;
     Rollbar.currentConfiguration.telemetry.enabled = expectedFlag;
@@ -192,9 +185,8 @@
 - (void)testEnabled {
     
     [RollbarLogger clearSdkDataStore];
-    //RollbarClearLogFile();
+
     NSArray *logItems = [RollbarLogger readLogItemsFromStore];
-    //RollbarReadLogItemFromFile();
     XCTAssertTrue(logItems.count == 0,
                   @"logItems count is expected to be 0. Actual value is %lu",
                   (unsigned long) logItems.count
@@ -205,9 +197,8 @@
     Rollbar.currentLogger.configuration.developerOptions.enabled = NO;
     [Rollbar debugMessage:@"Test1"];
     [RollbarLogger flushRollbarThread];
-    //RollbarFlushFileThread(Rollbar.currentLogger);
+
     logItems = [RollbarLogger readLogItemsFromStore];
-    //RollbarReadLogItemFromFile();
     XCTAssertTrue(logItems.count == 0,
                   @"logItems count is expected to be 0. Actual value is %lu",
                   (unsigned long) logItems.count
@@ -216,9 +207,8 @@
     Rollbar.currentConfiguration.developerOptions.enabled = YES;
     [Rollbar debugMessage:@"Test2"];
     [RollbarLogger flushRollbarThread];
-    //RollbarFlushFileThread(Rollbar.currentLogger);
+
     logItems = [RollbarLogger readLogItemsFromStore];
-    //RollbarReadLogItemFromFile();
     XCTAssertTrue(logItems.count == 1,
                   @"logItems count is expected to be 1. Actual value is %lu",
                   (unsigned long) logItems.count
@@ -227,16 +217,14 @@
     Rollbar.currentConfiguration.developerOptions.enabled = NO;
     [Rollbar debugMessage:@"Test3"];
     [RollbarLogger flushRollbarThread];
-    //RollbarFlushFileThread(Rollbar.currentLogger);
+
     logItems = [RollbarLogger readLogItemsFromStore];
-    //RollbarReadLogItemFromFile();
     XCTAssertTrue(logItems.count == 1,
                   @"logItems count is expected to be 1. Actual value is %lu",
                   (unsigned long) logItems.count
                   );
     
     [RollbarLogger clearSdkDataStore];
-    //RollbarClearLogFile();
 }
 
 - (void)testMaximumTelemetryEvents {
@@ -255,9 +243,8 @@
     
     [Rollbar debugMessage:@"Test"];
     [RollbarLogger flushRollbarThread];
-    //RollbarFlushFileThread(Rollbar.currentLogger);
+
     NSArray *logItems = [RollbarLogger readLogItemsFromStore];
-    //RollbarReadLogItemFromFile();
     NSDictionary *item = logItems[0];
     NSArray *telemetryData = [item valueForKeyPath:@"body.telemetry"];
     XCTAssertTrue(telemetryData.count == max,
@@ -268,11 +255,11 @@
 }
 
 - (void)testCheckIgnore {
+    
     [Rollbar debugMessage:@"Don't ignore this"];
     [RollbarLogger flushRollbarThread];
-    //RollbarFlushFileThread(Rollbar.currentLogger);
+
     NSArray *logItems = [RollbarLogger readLogItemsFromStore];
-    //RollbarReadLogItemFromFile();
     XCTAssertTrue(logItems.count == 1, @"Log item count should be 1");
 
     Rollbar.currentConfiguration.checkIgnoreRollbarData = ^BOOL(RollbarData *payloadData) {
@@ -280,11 +267,11 @@
     };
     [Rollbar debugMessage:@"Ignore this"];
     logItems = [RollbarLogger readLogItemsFromStore];
-    //RollbarReadLogItemFromFile();
     XCTAssertTrue(logItems.count == 1, @"Log item count should be 1");
 }
 
 - (void)testServerData {
+    
     NSString *host = @"testHost";
     NSString *root = @"testRoot";
     NSString *branch = @"testBranch";
@@ -297,10 +284,8 @@
     [Rollbar debugMessage:@"test"];
 
     [RollbarLogger flushRollbarThread];
-    //RollbarFlushFileThread(Rollbar.currentLogger);
 
     NSArray *logItems = [RollbarLogger readLogItemsFromStore];
-    //RollbarReadLogItemFromFile();
     NSDictionary *item = logItems[0];
     NSDictionary *server = item[@"server"];
 
@@ -327,6 +312,7 @@
 }
 
 - (void)testPayloadModification {
+    
     NSString *newMsg = @"Modified message";
     Rollbar.currentConfiguration.modifyRollbarData = ^RollbarData *(RollbarData *payloadData) {
 //        [payloadData setValue:newMsg forKeyPath:@"body.message.body"];
@@ -338,10 +324,8 @@
     [Rollbar debugMessage:@"test"];
 
     [RollbarLogger flushRollbarThread];
-    //RollbarFlushFileThread(Rollbar.currentLogger);
 
     NSArray *logItems = [RollbarLogger readLogItemsFromStore];
-    //RollbarReadLogItemFromFile();
     NSString *msg1 = [logItems[0] valueForKeyPath:@"body.message.body"];
     NSString *msg2 = [logItems[0] valueForKeyPath:@"body.message.body2"];
 
@@ -358,6 +342,7 @@
 }
 
 - (void)testScrubField {
+    
     NSString *scrubedContent = @"*****";
     NSArray *keys = @[@"client.ios.app_name", @"client.ios.os_version", @"body.message.body"];
 
@@ -367,10 +352,8 @@
     [Rollbar debugMessage:@"test"];
 
     [RollbarLogger flushRollbarThread];
-    //RollbarFlushFileThread(Rollbar.currentLogger);
 
     NSArray *logItems = [RollbarLogger readLogItemsFromStore];
-    //RollbarReadLogItemFromFile();
     for (NSString *key in keys) {
         NSString *content = [logItems[0] valueForKeyPath:key];
         XCTAssertTrue([content isEqualToString:scrubedContent],
@@ -383,9 +366,10 @@
 }
 
 - (void)testLogTelemetryAutoCapture {
+    
     NSString *logMsg = @"log-message-testing";
     [[RollbarTelemetry sharedInstance] clearAllData];
-    //Rollbar.currentConfiguration.accessToken = ROLLBAR_UNIT_TEST_DEPLOYS_WRITE_ACCESS_TOKEN;
+
     Rollbar.currentConfiguration.telemetry.enabled = YES;
     Rollbar.currentConfiguration.telemetry.captureLog = YES;
     [Rollbar reapplyConfiguration];
@@ -395,10 +379,8 @@
     [Rollbar debugMessage:@"test"];
     
     [RollbarLogger flushRollbarThread];
-    //RollbarFlushFileThread(Rollbar.currentLogger);
 
     NSArray *logItems = [RollbarLogger readLogItemsFromStore];
-    //RollbarReadLogItemFromFile();
     NSArray *telemetryData = [logItems[0] valueForKeyPath:@"body.telemetry"];
     NSString *telemetryMsg = [telemetryData[0] valueForKeyPath:@"body.message"];
     XCTAssertTrue([logMsg isEqualToString:telemetryMsg],

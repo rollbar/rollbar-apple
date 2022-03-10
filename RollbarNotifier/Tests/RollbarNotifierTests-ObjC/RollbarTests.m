@@ -1,12 +1,8 @@
-//  Copyright (c) 2018 Rollbar, Inc. All rights reserved.
-
 @import Foundation;
 @import UnitTesting;
 
 #if !TARGET_OS_WATCH
 #import <XCTest/XCTest.h>
-//#import "../../../UnitTests/RollbarUnitTestSettings.h"
-//#import "RollbarTestUtil.h"
 
 @import RollbarNotifier;
 
@@ -21,7 +17,6 @@
     [super setUp];
 
     [RollbarLogger clearSdkDataStore];
-    //RollbarClearLogFile();
 
     if (!Rollbar.currentConfiguration) {
 
@@ -41,11 +36,13 @@
 }
 
 - (void)tearDown {
+    
     [Rollbar updateConfiguration:[RollbarConfig new]];
     [super tearDown];
 }
 
 - (void)testMultithreadedStressCase {
+    
     for( int i = 0; i < 20; i++) {
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY,0), ^(){
             RollbarLogger *logger = [[RollbarLogger alloc] initWithAccessToken:Rollbar.currentConfiguration.destination.accessToken];
@@ -136,6 +133,7 @@
 }
 
 - (void)testNotification {
+    
     NSDictionary *notificationText = @{
                                        @"error": @[@"testing-error-with-message"],
                                        @"debug": @[@"testing-debug"],
@@ -159,7 +157,6 @@
     [NSThread sleepForTimeInterval:3.0f];
 
     NSArray *items = [RollbarLogger readLogItemsFromStore];
-    //RollbarReadLogItemFromFile();
     for (id item in items) {
         NSString *level = [item valueForKeyPath:@"level"];
         NSString *message = [item valueForKeyPath:@"body.message.body"];

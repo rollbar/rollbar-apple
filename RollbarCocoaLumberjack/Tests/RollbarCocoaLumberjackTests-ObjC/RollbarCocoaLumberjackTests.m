@@ -1,10 +1,7 @@
-//  Copyright (c) 2018 Rollbar, Inc. All rights reserved.
-
 #import <XCTest/XCTest.h>
-//#import "RollbarTestUtil.h"
 
 #define LOG_LEVEL_DEF ddLogLevel
-//#import <CocoaLumberjack/CocoaLumberjack.h>
+
 @import CocoaLumberjack;
 @import RollbarNotifier;
 @import UnitTesting;
@@ -26,7 +23,6 @@ static const DDLogLevel ddLogLevel = DDLogLevelDebug;
     NSLog(@"Set to go...");
     
     [RollbarLogger clearSdkDataStore];
-    //RollbarClearLogFile();
     
     [DDLog addLogger:[DDOSLogger sharedInstance]];
     

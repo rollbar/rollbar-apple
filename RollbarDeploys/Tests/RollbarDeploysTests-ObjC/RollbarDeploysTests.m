@@ -1,8 +1,6 @@
-//  Copyright (c) 2018 Rollbar, Inc. All rights reserved.
-
 #import <XCTest/XCTest.h>
-#import "../../../UnitTests/RollbarUnitTestSettings.h"
 
+@import UnitTesting;
 @import RollbarDeploys;
 
 @interface RollbarDeploysObserver : NSObject

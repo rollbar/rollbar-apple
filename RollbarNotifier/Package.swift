@@ -33,10 +33,8 @@ let package = Package(
             publicHeadersPath: "include",
             cSettings: [
                 .headerSearchPath("Sources/RollbarNotifier/**"),
-//                .headerSearchPath("Sources/RollbarNotifier"),
-//                .headerSearchPath("Sources/RollbarNotifier/include"),
-//                .headerSearchPath("Sources/RollbarNotifier/DTOs"),
-                
+                //                .headerSearchPath("Sources/RollbarNotifier/DTOs"),
+
 //                .define("DEFINES_MODULE"),
             ]
         ),
@@ -55,8 +53,6 @@ let package = Package(
             ],
             cSettings: [
                 .headerSearchPath("Tests/RollbarNotifierTests-ObjC/**"),
-//                .headerSearchPath("Sources/RollbarNotifier"),
-//                .headerSearchPath("Sources/RollbarNotifier/include"),
 //                .headerSearchPath("Sources/RollbarNotifier/DTOs"),
                 
 //                .define("DEFINES_MODULE"),
