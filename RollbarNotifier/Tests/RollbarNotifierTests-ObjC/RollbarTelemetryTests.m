@@ -1,11 +1,12 @@
 //  Copyright (c) 2018 Rollbar, Inc. All rights reserved.
 
 @import Foundation;
+@import UnitTesting;
 
 #if !TARGET_OS_WATCH
 #import <XCTest/XCTest.h>
-#import "../../../UnitTests/RollbarUnitTestSettings.h"
-#import "RollbarTestUtil.h"
+//#import "../../../UnitTests/RollbarUnitTestSettings.h"
+//#import "RollbarTestUtil.h"
 
 @import RollbarNotifier;
 
@@ -17,7 +18,8 @@
 
 - (void)setUp {
     [super setUp];
-    RollbarClearLogFile();
+    [RollbarLogger clearSdkDataStore];
+    //RollbarClearLogFile();
     if (!Rollbar.currentConfiguration) {
         [Rollbar initWithAccessToken:ROLLBAR_UNIT_TEST_PAYLOADS_ACCESS_TOKEN];
         Rollbar.currentConfiguration.destination.environment = ROLLBAR_UNIT_TEST_ENVIRONMENT;
@@ -44,9 +46,11 @@
     [Rollbar recordManualEventForLevel:RollbarLevel_Debug withData:@{@"data": @"content"}];
     [Rollbar debugMessage:@"Test"];
 
-    RollbarFlushFileThread(Rollbar.currentLogger);
+    [RollbarLogger flushRollbarThread];
+    //RollbarFlushFileThread(Rollbar.currentLogger);
 
-    NSArray *logItems = RollbarReadLogItemFromFile();
+    NSArray *logItems = [RollbarLogger readLogItemsFromStore];
+    //RollbarReadLogItemFromFile();
     NSDictionary *item = logItems[0];
     NSArray *telemetryData = [item valueForKeyPath:@"body.telemetry"];
     XCTAssertTrue(telemetryData.count > 0);
@@ -95,7 +99,8 @@
 
     //[NSThread sleepForTimeInterval:8.0f];
     
-    NSArray *logItems = RollbarReadLogItemFromFile();
+    NSArray *logItems = [RollbarLogger readLogItemsFromStore];
+    //RollbarReadLogItemFromFile();
     for (NSDictionary *item in logItems) {
         NSArray *telemetryData = [item valueForKeyPath:@"body.telemetry"];
 

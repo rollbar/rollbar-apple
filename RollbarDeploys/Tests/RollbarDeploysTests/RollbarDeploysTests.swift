@@ -7,7 +7,7 @@ final class RollbarDeploysTests: XCTestCase {
     
     func testDeploymentDto() {
         
-        let environment = RollbarUnitTestSettings.environment;
+        let environment = RollbarTestHelper.getRollbarEnvironment();
         let comment = "a new deploy";
         let revision = "a_revision";
         let localUsername = "UnitTestRunner";
@@ -41,7 +41,7 @@ final class RollbarDeploysTests: XCTestCase {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         
-        let environment = RollbarUnitTestSettings.environment;
+        let environment = RollbarTestHelper.getRollbarEnvironment();
         let comment = "a new deploy at \(dateFormatter.string(from:Date.init()))";
         let revision = "a_revision";
         let localUsername = "UnitTestRunner";
@@ -58,8 +58,8 @@ final class RollbarDeploysTests: XCTestCase {
         );
         
         let deploysManager = RollbarDeploysManager(
-            writeAccessToken:RollbarUnitTestSettings.deploysWriteAccessToken,
-            readAccessToken:RollbarUnitTestSettings.deploysReadAccessToken,
+            writeAccessToken:RollbarTestHelper.getRollbarDeploysWriteAccessToken(),
+            readAccessToken:RollbarTestHelper.getRollbarDeploysReadAccessToken(),
             deploymentRegistrationObserver:observer,
             deploymentDetailsObserver:observer,
             deploymentDetailsPageObserver:observer
@@ -76,8 +76,8 @@ final class RollbarDeploysTests: XCTestCase {
         let observer = RollbarDeploysObserver();
 
         let deploysManager = RollbarDeploysManager(
-            writeAccessToken:RollbarUnitTestSettings.deploysWriteAccessToken,
-            readAccessToken:RollbarUnitTestSettings.deploysReadAccessToken,
+            writeAccessToken:RollbarTestHelper.getRollbarDeploysWriteAccessToken(),
+            readAccessToken:RollbarTestHelper.getRollbarDeploysReadAccessToken(),
             deploymentRegistrationObserver:observer,
             deploymentDetailsObserver:observer,
             deploymentDetailsPageObserver:observer
@@ -91,8 +91,8 @@ final class RollbarDeploysTests: XCTestCase {
         let observer = RollbarDeploysObserver();
 
         let deploysManager = RollbarDeploysManager(
-            writeAccessToken:RollbarUnitTestSettings.deploysWriteAccessToken,
-            readAccessToken:RollbarUnitTestSettings.deploysReadAccessToken,
+            writeAccessToken:RollbarTestHelper.getRollbarDeploysWriteAccessToken(),
+            readAccessToken:RollbarTestHelper.getRollbarDeploysReadAccessToken(),
             deploymentRegistrationObserver:observer,
             deploymentDetailsObserver:observer,
             deploymentDetailsPageObserver:observer

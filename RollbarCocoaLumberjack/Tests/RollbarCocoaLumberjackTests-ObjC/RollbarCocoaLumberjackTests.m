@@ -1,11 +1,12 @@
 //  Copyright (c) 2018 Rollbar, Inc. All rights reserved.
 
 #import <XCTest/XCTest.h>
-#import "RollbarTestUtil.h"
+//#import "RollbarTestUtil.h"
 
 #define LOG_LEVEL_DEF ddLogLevel
 //#import <CocoaLumberjack/CocoaLumberjack.h>
 @import CocoaLumberjack;
+@import RollbarNotifier;
 @import UnitTesting;
 
 @import RollbarCocoaLumberjack;
@@ -24,7 +25,8 @@ static const DDLogLevel ddLogLevel = DDLogLevelDebug;
     // Put setup code here. This method is called before the invocation of each test method in the class.
     NSLog(@"Set to go...");
     
-    RollbarClearLogFile();
+    [RollbarLogger clearSdkDataStore];
+    //RollbarClearLogFile();
     
     [DDLog addLogger:[DDOSLogger sharedInstance]];
     

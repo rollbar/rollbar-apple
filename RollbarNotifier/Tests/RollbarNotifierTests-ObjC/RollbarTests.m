@@ -1,11 +1,12 @@
 //  Copyright (c) 2018 Rollbar, Inc. All rights reserved.
 
 @import Foundation;
+@import UnitTesting;
 
 #if !TARGET_OS_WATCH
 #import <XCTest/XCTest.h>
-#import "../../../UnitTests/RollbarUnitTestSettings.h"
-#import "RollbarTestUtil.h"
+//#import "../../../UnitTests/RollbarUnitTestSettings.h"
+//#import "RollbarTestUtil.h"
 
 @import RollbarNotifier;
 
@@ -19,7 +20,8 @@
     
     [super setUp];
 
-    RollbarClearLogFile();
+    [RollbarLogger clearSdkDataStore];
+    //RollbarClearLogFile();
 
     if (!Rollbar.currentConfiguration) {
 
@@ -156,7 +158,8 @@
 
     [NSThread sleepForTimeInterval:3.0f];
 
-    NSArray *items = RollbarReadLogItemFromFile();
+    NSArray *items = [RollbarLogger readLogItemsFromStore];
+    //RollbarReadLogItemFromFile();
     for (id item in items) {
         NSString *level = [item valueForKeyPath:@"level"];
         NSString *message = [item valueForKeyPath:@"body.message.body"];

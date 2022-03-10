@@ -15,8 +15,8 @@ final class RollbarNotifierTruncationTests: XCTestCase {
         RollbarTestUtil.clearTelemetryFile();
         
         //if Rollbar.currentConfiguration() != nil {
-        Rollbar.initWithAccessToken(RollbarUnitTestSettings.payloadsPostAccessToken);
-        Rollbar.currentConfiguration()?.destination.environment = RollbarUnitTestSettings.environment;
+        Rollbar.initWithAccessToken(RollbarTestHelper.getRollbarPayloadsAccessToken());
+        Rollbar.currentConfiguration()?.destination.environment = RollbarTestHelper.getRollbarEnvironment();
         //}
     }
     

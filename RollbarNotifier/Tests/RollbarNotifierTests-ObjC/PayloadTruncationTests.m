@@ -1,11 +1,12 @@
 //  Copyright (c) 2018 Rollbar, Inc. All rights reserved.
 
 @import Foundation;
+//@import UnitTesting;
 
 #if !TARGET_OS_WATCH
 #import <XCTest/XCTest.h>
 #import "../../../UnitTests/RollbarUnitTestSettings.h"
-#import "RollbarTestUtil.h"
+//#import "RollbarTestUtil.h"
 //#import "../Rollbar/Notifier/RollbarPayloadTruncator.h"
 
 @import RollbarNotifier;
@@ -18,7 +19,7 @@
 
 - (void)setUp {
     [super setUp];
-    RollbarClearLogFile();
+    [RollbarLogger clearSdkDataStore];
     if (!Rollbar.currentConfiguration) {
         [Rollbar initWithAccessToken:ROLLBAR_UNIT_TEST_PAYLOADS_ACCESS_TOKEN];
         Rollbar.currentConfiguration.destination.environment = ROLLBAR_UNIT_TEST_ENVIRONMENT;
@@ -193,8 +194,9 @@
         [Rollbar errorException:exception];
     }
     
-    RollbarFlushFileThread(Rollbar.currentLogger);
-    NSArray *items = RollbarReadLogItemFromFile();
+    [RollbarLogger flushRollbarThread];
+    //RollbarFlushFileThread(Rollbar.currentLogger);
+    NSArray *items = [RollbarLogger readLogItemsFromStore]; //RollbarReadLogItemFromFile();
     
     for (id payload in items) {
         NSMutableArray *frames = [payload mutableArrayValueForKeyPath:@"body.trace.frames"];

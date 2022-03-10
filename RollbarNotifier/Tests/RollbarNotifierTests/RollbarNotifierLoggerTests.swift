@@ -17,9 +17,9 @@ final class RollbarNotifierLoggerTests: XCTestCase {
         
         
         //if Rollbar.currentConfiguration() != nil {
-        Rollbar.initWithAccessToken(RollbarUnitTestSettings.payloadsPostAccessToken);
-        Rollbar.currentConfiguration()?.destination.accessToken = RollbarUnitTestSettings.payloadsPostAccessToken;
-        Rollbar.currentConfiguration()?.destination.environment = RollbarUnitTestSettings.environment;
+        Rollbar.initWithAccessToken(RollbarTestHelper.getRollbarPayloadsAccessToken());
+        Rollbar.currentConfiguration()?.destination.accessToken = RollbarTestHelper.getRollbarPayloadsAccessToken();
+        Rollbar.currentConfiguration()?.destination.environment = RollbarTestHelper.getRollbarEnvironment();
         Rollbar.currentConfiguration()?.developerOptions.transmit = true;
         Rollbar.currentConfiguration()?.developerOptions.logPayload = true;
         Rollbar.currentConfiguration()?.loggingOptions.maximumReportsPerMinute = 5000;
@@ -87,8 +87,8 @@ final class RollbarNotifierLoggerTests: XCTestCase {
         //RollbarTestUtil.clearLogFile();
         //RollbarTestUtil.clearTelemetryFile();
 
-        Rollbar.currentConfiguration()?.destination.accessToken = RollbarUnitTestSettings.deploysWriteAccessToken;
-        Rollbar.currentConfiguration()?.destination.environment = RollbarUnitTestSettings.environment;
+        Rollbar.currentConfiguration()?.destination.accessToken = RollbarTestHelper.getRollbarPayloadsAccessToken();
+        Rollbar.currentConfiguration()?.destination.environment = RollbarTestHelper.getRollbarEnvironment();
         Rollbar.currentConfiguration()?.developerOptions.transmit = true;
 
         Rollbar.currentConfiguration()?.developerOptions.transmit = true;

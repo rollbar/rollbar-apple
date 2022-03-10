@@ -7,6 +7,7 @@
 @import RollbarCommon;
 
 #import "RollbarLogger.h"
+#import "RollbarLogger+Test.h"
 #import "RollbarThread.h"
 #import "RollbarReachability.h"
 #import <sys/utsname.h>
@@ -18,18 +19,18 @@
 
 #define MAX_PAYLOAD_SIZE 128 // The maximum payload size in kb
 
-static NSString *QUEUED_ITEMS_FILE_NAME = @"rollbar.items";
-static NSString *STATE_FILE_NAME = @"rollbar.state";
-static NSString *PAYLOADS_FILE_NAME = @"rollbar.payloads";
+static NSString * const QUEUED_ITEMS_FILE_NAME = @"rollbar.items";
+static NSString * const QUEUED_ITEMS_STATE_FILE_NAME = @"rollbar.state";
+static NSString * const PAYLOADS_FILE_NAME = @"rollbar.payloads";
 
 // Rollbar API Service enforced payload rate limit:
-static NSString *RESPONSE_HEADER_RATE_LIMIT = @"x-rate-limit-limit";
+static NSString * const RESPONSE_HEADER_RATE_LIMIT = @"x-rate-limit-limit";
 // Rollbar API Service enforced remaining payload count until the limit is reached:
-static NSString *RESPONSE_HEADER_REMAINING_COUNT = @"x-rate-limit-remaining";
+static NSString * const RESPONSE_HEADER_REMAINING_COUNT = @"x-rate-limit-remaining";
 // Rollbar API Service enforced rate limit reset time for the current limit window:
-static NSString *RESPONSE_HEADER_RESET_TIME = @"x-rate-limit-reset";
+static NSString * const RESPONSE_HEADER_RESET_TIME = @"x-rate-limit-reset";
 // Rollbar API Service enforced rate limit remaining seconds of the current limit window:
-static NSString *RESPONSE_HEADER_REMAINING_SECONDS = @"x-rate-limit-remaining-seconds";
+static NSString * const RESPONSE_HEADER_REMAINING_SECONDS = @"x-rate-limit-remaining-seconds";
 
 static NSUInteger MAX_RETRY_COUNT = 5;
 
@@ -44,14 +45,6 @@ static RollbarThread *rollbarThread = nil;
 static RollbarReachability *reachability = nil;
 static BOOL isNetworkReachable = YES;
 #endif
-
-@interface RollbarLogger ()
-
-- (NSThread *)_rollbarThread;
-
-- (void)_test_doNothing;
-
-@end
 
 @implementation RollbarLogger {
     NSDate *nextSendTime;
@@ -84,7 +77,7 @@ static RollbarLogger *sharedSingleton = nil;
         queuedItemsFilePath =
         [cachesDirectory stringByAppendingPathComponent:QUEUED_ITEMS_FILE_NAME];
         stateFilePath =
-        [cachesDirectory stringByAppendingPathComponent:STATE_FILE_NAME];
+        [cachesDirectory stringByAppendingPathComponent:QUEUED_ITEMS_STATE_FILE_NAME];
         
         // either create or overwrite the payloads log file:
         [[NSFileManager defaultManager] createFileAtPath:payloadsFilePath
@@ -1136,12 +1129,107 @@ static RollbarLogger *sharedSingleton = nil;
 #endif
 }
 
-// THIS IS ONLY FOR TESTS, DO NOT ACTUALLY USE THIS METHOD, HENCE BEING "PRIVATE"
-- (NSThread *)_rollbarThread {
+@end
+
+static NSString * const QUEUED_TELEMETRY_ITEMS_FILE_NAME = @"rollbar.telemetry";
+
+@implementation RollbarLogger (Test)
+
++ (void)clearSdkDataStore {
+    
+    [RollbarLogger clearLogItemsStore];
+    [RollbarLogger _clearFile:[RollbarLogger _telemetryItemsStorePath]];
+}
+
++ (void)clearLogItemsStore {
+
+    [RollbarLogger _clearFile:[RollbarLogger _logItemsStoreStatePath]];
+    [RollbarLogger _clearFile:[RollbarLogger _logItemsStorePath]];
+}
+
++ (NSArray *)readLogItemsFromStore {
+    
+    NSString *filePath = [RollbarLogger _logItemsStorePath];
+    RollbarFileReader *reader = [[RollbarFileReader alloc] initWithFilePath:filePath
+                                                                  andOffset:0];
+    
+    NSMutableArray *items = [NSMutableArray array];
+    [reader enumerateLinesUsingBlock:^(NSString *line, NSUInteger nextOffset, BOOL *stop) {
+        NSError *error = nil;
+        NSMutableDictionary *payload =
+        [NSJSONSerialization JSONObjectWithData:[line dataUsingEncoding:NSUTF8StringEncoding]
+                                        options:(NSJSONReadingMutableContainers | NSJSONReadingMutableLeaves)
+                                          error:&error
+        ];
+        if ((nil == payload) && (nil != error)) {
+            RollbarSdkLog(@"Error serializing log item from the store: %@", [error localizedDescription]);
+            return;
+        }
+        else if (nil == payload) {
+            RollbarSdkLog(@"Error serializing log item from the store!");
+            return;
+        }
+        
+        NSMutableDictionary *data = payload[@"data"];
+        [items addObject:data];
+    }];
+    
+    return items;
+}
+
++ (void)flushRollbarThread {
+    
+    [RollbarLogger performSelector:@selector(_test_doNothing)
+                          onThread:[RollbarLogger _test_rollbarThread]
+                        withObject:nil
+                     waitUntilDone:YES
+    ];
+}
+
++ (void)_clearFile:(nonnull NSString *)filePath {
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSError *error;
+    BOOL fileExists = [fileManager fileExistsAtPath:filePath];
+    
+    if (fileExists) {
+        BOOL success = [fileManager removeItemAtPath:filePath
+                                               error:&error];
+        if (!success) {
+            NSLog(@"Error: %@", [error localizedDescription]);
+        }
+        [[NSFileManager defaultManager] createFileAtPath:filePath
+                                                contents:nil
+                                              attributes:nil];
+    }
+}
+
++ (nonnull NSString *)_logItemsStorePath {
+    
+    NSString *cachesDirectory = [RollbarCachesDirectory directory];
+    return [cachesDirectory stringByAppendingPathComponent:QUEUED_ITEMS_FILE_NAME];
+}
+
++ (nonnull NSString *)_logItemsStoreStatePath {
+    
+    NSString *cachesDirectory = [RollbarCachesDirectory directory];
+    return [cachesDirectory stringByAppendingPathComponent:QUEUED_ITEMS_STATE_FILE_NAME];
+}
+
++ (nonnull NSString *)_telemetryItemsStorePath {
+    
+    NSString *cachesDirectory = [RollbarCachesDirectory directory];
+    return [cachesDirectory stringByAppendingPathComponent:QUEUED_TELEMETRY_ITEMS_FILE_NAME];
+}
+
++ (NSThread *)_test_rollbarThread {
+    
     return rollbarThread;
 }
 
-- (void)_test_doNothing {
++ (void)_test_doNothing {
+    
+    // no-Op simulation...
 }
 
 @end
