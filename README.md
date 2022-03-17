@@ -83,4 +83,9 @@ See our [Releases](https://github.com/rollbar/rollbar-apple/releases) page for a
 
 ## Help / Support
 
-If you run into any problems, please email us at `support@rollbar.com` or [file a bug report](https://github.com/rollbar/rollbar-apple/issues/new).
+- [Gitter Community](https://gitter.im/rollbar/SDK-Apple)
+- [Stack Overflow](https://stackoverflow.com/questions/tagged/rollbar)
+- [GitHub Issues](https://github.com/rollbar/rollbar-apple/issues)
+- [GitHub Discussions](https://github.com/rollbar/rollbar-apple/discussions)
+- [File a bug report](https://github.com/rollbar/rollbar-apple/issues/new)
+- Rollbar Support: `support@rollbar.com`
