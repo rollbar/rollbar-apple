@@ -1,6 +1,6 @@
 # Rollbar-Apple SDK
 
-**Rollbar SDK for any Apple *OS (macOS, ipadOS, iOS, tvOS, watchOS, ...)**
+**Rollbar SDK for any Apple \*OS (macOS, ipadOS, iOS, tvOS, watchOS, ...)**
 
 **Written in Objective-C. Works with Swift**
 
@@ -106,3 +106,77 @@ pod "RollbarDeploys", "~> n.n.n"
 where `n.n.n` is the desired pod version of the SDK to use. As the general rule, for multiple modules try using the same version.
 
 You do not have to worry about explicitly including other internal dependencies of the modules, like *RollbarCommon* module pod. The SDK modules' *podspec*s already specify these as needed.
+
+## Using SDK in Your Code
+
+### Import Necessary SDK Modules
+
+Before using any of the types provided by the SDK modules, you need to make sure you import the modules you need. For example:
+
+```Obj-C
+@import RollbarNotifier;
+@import RollbarKSCrash;          // optional
+@import RollbarPLCrashReporter;  // optional alternative to RollbarKSCrash
+```
+
+```Swift
+import RollbarNotifier
+import RollbarKSCrash          // optional
+import RollbarPLCrashReporter  // optional alternative to RollbarKSCrash
+```
+
+### Define the Shared Notifier's Configuration Instance
+
+When setting up a notifier configuration you must at least specify your Rollbar Project's access token:
+
+```Obj-C
+RollbarConfig *config = [RollbarConfig new];
+config.destination.accessToken = @"YOUR_PROJECT_ACCESS_TOKEN";
+config.destination.environment = @"YOUR_ENVIRONMENT";
+```
+
+```Swift
+let config = RollbarConfig()
+config.destination.accessToken = "YOUR_PROJECT_ACCESS_TOKEN"
+config.destination.environment = "ENVIRONMENT"
+```
+
+### Optionally, Define A Crash Report Collector Instance
+
+```Obj-C
+
+id<RollbarCrashCollector> crashCollector =
+  [[RollbarPLCrashCollector alloc] init];
+  //OR [[RollbarKSCrashCollector alloc] init];
+  //OR nil;
+```
+
+```Swift
+
+let crashCollector = RollbarPLCrashCollector()
+//OR let crashCollector = RollbarKSCrashCollector()
+```
+
+### Initialize the Shared Notifier
+
+```Obj-C
+[Rollbar initWithConfiguration:config];
+//OR [Rollbar initWithConfiguration:config crashCollector:crashCollector];
+```
+
+```Swift
+Rollbar.initWithConfiguration(config)
+//OR Rollbar.initWithConfiguration(config, crashCollector: crashCollector)
+```
+
+### Start Logging using the Shared Notifier
+
+```Obj-C
+[Rollbar infoMessage:@"See this message on your Rollbar Project Dashboard..."];
+```
+
+```Swift
+Rollbar.infoMessage("See this message on your Rollbar Project Dashboard...")
+```
+
+There are other dedicated method overloads for logging `NSException`s, `NSError`s with different levels of log severity.
