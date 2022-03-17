@@ -18,6 +18,8 @@ This component is meant to be initialized with a preconfigured instance of `Roll
 
 ### Guarding Swift code that could potentially throw a NSException and reporting the exception (if any) to Rollbar
 
+#### Swift
+
 ```Swift
 func generateObjCException() {
   

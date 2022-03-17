@@ -18,9 +18,13 @@ This component is meant to be initialized with ...
 
 ### Example title
 
+#### Objective-C
+
 ```Obj-C
 
 ```
+
+#### Swift
 
 ```Swift
 
