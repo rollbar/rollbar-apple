@@ -113,11 +113,15 @@ You do not have to worry about explicitly including other internal dependencies 
 
 Before using any of the types provided by the SDK modules, you need to make sure you import the modules you need. For example:
 
+#### Objective-C
+
 ```Obj-C
 @import RollbarNotifier;
 @import RollbarKSCrash;          // optional
 @import RollbarPLCrashReporter;  // optional alternative to RollbarKSCrash
 ```
+
+#### Swift
 
 ```Swift
 import RollbarNotifier
@@ -129,11 +133,15 @@ import RollbarPLCrashReporter  // optional alternative to RollbarKSCrash
 
 When setting up a notifier configuration you must at least specify your Rollbar Project's access token:
 
+#### Objective-C
+
 ```Obj-C
 RollbarConfig *config = [RollbarConfig new];
 config.destination.accessToken = @"YOUR_PROJECT_ACCESS_TOKEN";
 config.destination.environment = @"YOUR_ENVIRONMENT";
 ```
+
+#### Swift
 
 ```Swift
 let config = RollbarConfig()
@@ -143,6 +151,8 @@ config.destination.environment = "ENVIRONMENT"
 
 ### Optionally, Define A Crash Report Collector Instance
 
+#### Objective-C
+
 ```Obj-C
 
 id<RollbarCrashCollector> crashCollector =
@@ -150,6 +160,8 @@ id<RollbarCrashCollector> crashCollector =
   //OR [[RollbarKSCrashCollector alloc] init];
   //OR nil;
 ```
+
+#### Swift
 
 ```Swift
 
@@ -159,10 +171,14 @@ let crashCollector = RollbarPLCrashCollector()
 
 ### Initialize the Shared Notifier
 
+#### Objective-C
+
 ```Obj-C
 [Rollbar initWithConfiguration:config];
 //OR [Rollbar initWithConfiguration:config crashCollector:crashCollector];
 ```
+
+#### Swift
 
 ```Swift
 Rollbar.initWithConfiguration(config)
@@ -171,9 +187,13 @@ Rollbar.initWithConfiguration(config)
 
 ### Start Logging using the Shared Notifier
 
+#### Objective-C
+
 ```Obj-C
 [Rollbar infoMessage:@"See this message on your Rollbar Project Dashboard..."];
 ```
+
+#### Swift
 
 ```Swift
 Rollbar.infoMessage("See this message on your Rollbar Project Dashboard...")
