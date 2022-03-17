@@ -14,7 +14,7 @@ This utility class provides an API to try Swift code blocks and to catch and to 
 
 This component is meant to be initialized with a preconfigured instance of `RollbarLogger` so it can be used to try/guard a block of Swift code in cases when it might cause throwing of an `NSException` and to automatically report such `NSException` (if any) to a Rollbar.com Project. It also provides an alternative method that in addition converts the intercepted `NSException` into a matching `NSError` that could be natively tied and handled from within the Swift code.
 
-## Examples 
+## Examples
 
 ### Guarding Swift code that could potentially throw a NSException and reporting the exception (if any) to Rollbar
 
