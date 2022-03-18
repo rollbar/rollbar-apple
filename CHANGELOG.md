@@ -27,11 +27,12 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 
 ### 2.1.0
 
-- feat: resolve #133 - Implement RollbarCocoaLumberjack module
-- test: resolve #134 - Implement unit tests for RollbarCocoaLumberjack
-- core: resolve #112 - Upgrade to the latest PLCrashReporter 1.0.1
-- docs: resolve #138 - Move current SDK documentation from readme.io to the repo
-- docs: resolve #139 - Document new RollbarCocoaLumberjack module
+- feat: resolve #133  - Implement RollbarCocoaLumberjack module
+- test: resolve #134  - Implement unit tests for RollbarCocoaLumberjack
+- fix:  resolve #136  - RollbarPLCrashReporter.init() no longer available
+- chore: resolve #112 - Upgrade to the latest PLCrashReporter 1.0.1
+- docs: resolve #138  - Move current SDK documentation from readme.io to the repo
+- docs: resolve #139  - Document new RollbarCocoaLumberjack module
 
 ### 2.0.3
 
