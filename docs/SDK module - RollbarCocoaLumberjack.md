@@ -25,6 +25,7 @@ Implements CocoaLumberjack compatible logger (`DDLogger`) capable of "intercepti
 #### Objective-C
 
 ```Obj-C
+//...
 @import RollbarCocoaLumberjack;
 //...
 
