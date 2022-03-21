@@ -46,8 +46,8 @@ static const DDLogLevel ddLogLevel = DDLogLevelDebug;
     DDLogVerbose(@"User selected file:%@ withSize:%u", @"somewhere/file.ext", 100);
     
     RollbarConfig *config = [[RollbarConfig alloc] init];
-    config.destination.accessToken = ROLLBAR_UNIT_TEST_PAYLOADS_ACCESS_TOKEN;
-    config.destination.environment = ROLLBAR_UNIT_TEST_ENVIRONMENT;
+    config.destination.accessToken = [RollbarTestHelper getRollbarPayloadsAccessToken];
+    config.destination.environment = [RollbarTestHelper getRollbarEnvironment];
     config.developerOptions.transmit = YES;
     config.developerOptions.logPayload = YES;
     config.loggingOptions.maximumReportsPerMinute = 5000;

@@ -5,7 +5,7 @@ import Foundation
 
 final class RollbarNotifierDTOsTests: XCTestCase {
     
-    override class func setUp() {
+    override func setUp() {
     }
     
     override func tearDown() {

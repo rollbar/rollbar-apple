@@ -7,7 +7,7 @@ import os.log
 
 final class RollbarNotifierTruncationTests: XCTestCase {
     
-    override class func setUp() {
+    override func setUp() {
         
         super.setUp();
         

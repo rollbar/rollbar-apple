@@ -2,11 +2,12 @@
 import XCTest
 import Foundation
 import os.log
+import UnitTesting
 @testable import RollbarNotifier
 
 final class RollbarNotifierConfigurationTests: XCTestCase {
     
-    override class func setUp() {
+    override func setUp() {
         
         super.setUp();
         

@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by Andrey Kornich on 2020-09-30.
-//
-
 import XCTest
 import Foundation
 import RollbarCommon
@@ -40,6 +33,5 @@ final class NSDictionaryRollbarTests: XCTestCase {
     
     static var allTests = [
         ("testNSDictionaryRollbar_keyPresent", testNSDictionaryRollbar_keyPresent),
-        //("testExample", testExample),
     ]
 }

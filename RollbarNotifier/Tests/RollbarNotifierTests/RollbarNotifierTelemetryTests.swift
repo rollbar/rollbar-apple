@@ -7,7 +7,7 @@ import UnitTesting
 
 final class RollbarNotifierTelemetryTests: XCTestCase {
     
-    override class func setUp() {
+    override func setUp() {
         super.setUp();
         RollbarTestUtil.clearLogFile();
         RollbarTestUtil.clearTelemetryFile();

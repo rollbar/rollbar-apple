@@ -1,10 +1,3 @@
-//
-//  NSJSONSerialization+RollbarTests.swift
-//  
-//
-//  Created by Andrey Kornich on 2020-05-26.
-//
-
 import XCTest
 import Foundation
 @testable import RollbarCommon
@@ -89,17 +82,9 @@ final class NSJSONSerializationRollbarTests: XCTestCase {
         }
     }
     
-//    func testExample() {
-//        // This is an example of a functional test case.
-//        // Use XCTAssert and related functions to verify your tests produce the correct
-//        // results.
-//        XCTAssertEqual(RollbarDeploys().text, "Hello, World!")
-//    }
-
     static var allTests = [
         ("testNSJSONSerializationRollbar_measureJSONDataByteSize", testNSJSONSerializationRollbar_measureJSONDataByteSize),
         ("testNSJSONSerializationRollbar_dataWithJSONObject", testNSJSONSerializationRollbar_dataWithJSONObject),
         ("testNSJSONSerializationRollbar_safeDataFromJSONObject", testNSJSONSerializationRollbar_safeDataFromJSONObject),
-        //("testExample", testExample),
     ]
 }
