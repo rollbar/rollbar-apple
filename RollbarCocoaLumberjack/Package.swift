@@ -50,7 +50,9 @@ let package = Package(
             name: "RollbarCocoaLumberjackTests",
             dependencies: [
                 "UnitTesting",
+                "CocoaLumberjack",
                 "RollbarCocoaLumberjack",
+                .productItem(name: "CocoaLumberjackSwift", package: "CocoaLumberjack", condition: nil),
             ]
         ),
         .testTarget(
