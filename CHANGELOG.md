@@ -27,19 +27,21 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 
 ### 2.1.0
 
-- feat: resolve #133  - Implement RollbarCocoaLumberjack module
-- test: resolve #134  - Implement unit tests for RollbarCocoaLumberjack
-- fix:  resolve #136  - RollbarPLCrashReporter.init() no longer available
+- feat:  resolve #141 - Apply developer options of the persisted payload when sending the payload 
+- feat:  resolve #133 - Implement RollbarCocoaLumberjack module
+- test:  resolve #134 - Implement unit tests for RollbarCocoaLumberjack
+- fix:   resolve #136 - RollbarPLCrashReporter.init() no longer available
+- test:  resolve #140 - Factor out common SDK unit testing API
 - chore: resolve #112 - Upgrade to the latest PLCrashReporter 1.0.1
-- docs: resolve #138  - Move current SDK documentation from readme.io to the repo
-- docs: resolve #139  - Document new RollbarCocoaLumberjack module
+- docs:  resolve #138 - Move current SDK documentation from readme.io to the repo
+- docs:  resolve #139 - Document new RollbarCocoaLumberjack module
 
 ### 2.0.3
 
-- docs: resolve #122 - Update RollbarCommon public API doc comments so they are properly rendered by Xcode Quick Help
-- docs: resolve #124 - Update RollbarDeploys public API doc comments so they are properly rendered by Xcode Quick Help
-- docs: resolve #126 - Update RollbarSwift, RollbarAUL, RollbarPLCrashReporter, and RollbarKSCrash public API doc comments so they are properly rendered by Xcode Quick Help
-- docs: resolve #127 - Update RollbarNotifier public API doc comments so they are properly rendered by Xcode Quick Help
+- docs:  resolve #122 - Update RollbarCommon public API doc comments so they are properly rendered by Xcode Quick Help
+- docs:  resolve #124 - Update RollbarDeploys public API doc comments so they are properly rendered by Xcode Quick Help
+- docs:  resolve #126 - Update RollbarSwift, RollbarAUL, RollbarPLCrashReporter, and RollbarKSCrash public API doc comments so they are properly rendered by Xcode Quick Help
+- docs:  resolve #127 - Update RollbarNotifier public API doc comments so they are properly rendered by Xcode Quick Help
 - chore: resolve #114 - Consolidate destination parameters for samples
 - chore: resolve #113 - Consolidate destination parameters for unit tests
 
@@ -73,7 +75,7 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 ### 2.0.0-beta.14
 
 - feat: allocated new RollbarAUL module project
-- fix: resolve #72 - Rollbar* pods 2.0.0-beta.10 not all published
+- fix: resolve #72 - Rollbar pods 2.0.0-beta.10 not all published
 
 ### 2.0.0-beta.13
 
@@ -81,7 +83,7 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 
 ### 2.0.0-beta.11
 
-- fix: resolve #72 - Rollbar* pods 2.0.0-beta.10 not all published
+- fix: resolve #72 - Rollbar pods 2.0.0-beta.10 not all published
 
 ### 2.0.0-beta.10
 
