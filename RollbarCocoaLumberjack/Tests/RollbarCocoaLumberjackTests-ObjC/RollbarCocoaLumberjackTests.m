@@ -29,7 +29,7 @@ static const DDLogLevel ddLogLevel = DDLogLevelDebug;
     DDFileLogger *fileLogger = [[DDFileLogger alloc] init];
     fileLogger.rollingFrequency = 60 * 60 * 24; // 24 hour rolling
     fileLogger.logFileManager.maximumNumberOfLogFiles = 1;
-    // he above code tells the application to keep a day worth of log files on the system.
+    // the above code tells the application to keep a day worth of log files on the system.
     
     [DDLog addLogger:fileLogger];
 }

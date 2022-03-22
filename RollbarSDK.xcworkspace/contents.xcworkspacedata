@@ -5,6 +5,9 @@
       location = "container:"
       name = "RollbarSDK">
       <FileRef
+         location = "group:docs">
+      </FileRef>
+      <FileRef
          location = "group:sonar-project.properties">
       </FileRef>
       <FileRef

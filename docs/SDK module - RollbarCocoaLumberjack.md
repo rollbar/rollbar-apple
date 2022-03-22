@@ -20,23 +20,34 @@ Implements CocoaLumberjack compatible logger (`DDLogger`) capable of "intercepti
 2. Accordingly, import our *RollbarCocoaLumberjack* module.
 3. Setup properly configured `RollbarConfig` object.
 4. Create a `RollbarCocoaLumberjackLogger` instance using the preconfigured `RollbarConfig` instance and add it to the `DDLog`
-5. Fro this point on, all relevant log entries made anywhere via the *CocoaLumberjack* logging methods will be "forked" to Rollbar based on filtering conditions specified on both levels: *CocoaLumberjackLogger* configuration and in `RollbarConfig` instances defined above.
+5. From this point on, all relevant log entries made anywhere via the *CocoaLumberjack* logging methods will be "forked" to Rollbar based on filtering conditions specified on both levels: *CocoaLumberjackLogger* configuration and in `RollbarConfig` instances defined above.
 
 #### Objective-C
 
 ```Obj-C
 //...
+#define LOG_LEVEL_DEF ddLogLevel
+//...
+@import CocoaLumberjack;
 @import RollbarCocoaLumberjack;
 //...
 
 //...
+    // setting up CocoaLumberjack usage:
+    [DDLog addLogger:[DDOSLogger sharedInstance]];
+    
+    DDFileLogger *fileLogger = [[DDFileLogger alloc] init];
+    fileLogger.rollingFrequency = 60 * 60 * 24; // 24 hour rolling
+    fileLogger.logFileManager.maximumNumberOfLogFiles = 1;
+    // the above code tells the application to keep a day worth of log files on the system.
+    [DDLog addLogger:fileLogger];
+
+    // create a valid RTollbar config:
     RollbarConfig *config = [[RollbarConfig alloc] init];
     config.destination.accessToken = @"ROLLBAR_ACCESS_TOKEN";
     config.destination.environment = @"ROLLBAR_ENVIRONMENT";
-    config.developerOptions.transmit = YES;
-    config.developerOptions.logPayload = YES;
-    config.loggingOptions.maximumReportsPerMinute = 5000;
 
+    // add Rollbar logger plug-in for CocoaLumberjack:
     [DDLog addLogger:[RollbarCocoaLumberjackLogger createWithRollbarConfig:config]];
 //...
 ```
@@ -44,5 +55,27 @@ Implements CocoaLumberjack compatible logger (`DDLogger`) capable of "intercepti
 #### Swift
 
 ```Swift
+//...
+import CocoaLumberjackSwift
+import RollbarCocoaLumberjack
+//...
 
+//...
+        // setting up CocoaLumberjack usage:
+        dynamicLogLevel = DDLogLevel.debug;
+        DDLog.add(DDOSLogger.sharedInstance);
+        
+        let ddFileLogger = DDFileLogger();
+        ddFileLogger.rollingFrequency = 60 * 60 * 24; // 24-hours rolling
+        ddFileLogger.logFileManager.maximumNumberOfLogFiles = 1;
+        // the above code tells the application to keep a day worth of log files on the system.
+        DDLog.add(ddFileLogger);
+
+        // create a valid RTollbar config:
+        let rollbarConfig = RollbarConfig();
+        rollbarConfig.destination.accessToken = RollbarTestHelper.getRollbarPayloadsAccessToken();
+        rollbarConfig.destination.environment = RollbarTestHelper.getRollbarEnvironment();
+
+        // add Rollbar logger plug-in for CocoaLumberjack:
+        DDLog.add(RollbarCocoaLumberjackLogger.create(with: rollbarConfig));
 ```

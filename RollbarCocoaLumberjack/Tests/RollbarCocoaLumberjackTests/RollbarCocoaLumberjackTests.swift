@@ -22,11 +22,11 @@ final class RollbarCocoaLumberjackTests: XCTestCase {
         XCTAssertEqual(RollbarLogger.readPayloadsFromSdkLog().count, 0);
 
         dynamicLogLevel = DDLogLevel.debug;
-        DDLog.add(DDOSLogger .sharedInstance);
+        DDLog.add(DDOSLogger.sharedInstance);
         let ddFileLogger = DDFileLogger();
         ddFileLogger.rollingFrequency = 60 * 60 * 24; // 24-hours rolling
         ddFileLogger.logFileManager.maximumNumberOfLogFiles = 1;
-        // he above code tells the application to keep a day worth of log files on the system.
+        // the above code tells the application to keep a day worth of log files on the system.
         DDLog.add(ddFileLogger);
         
         DDLog.add(RollbarCocoaLumberjackLogger.create(with: rollbarConfig));
