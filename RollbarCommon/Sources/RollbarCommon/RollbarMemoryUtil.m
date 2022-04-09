@@ -1,12 +1,7 @@
-//
-//  RollbarMemoryUtil.m
-//  
-//
-//  Created by Andrey Kornich on 2022-04-07.
-//
-
 #import "RollbarMemoryUtil.h"
 #import "RollbarMemoryStatsDescriptors.h"
+#import <mach/mach.h>
+//#import <mach/mach_host.h>
 
 static NSByteCountFormatter *formatter = nil;
 static const NSInteger bytesInMB = 1024 * 1024;
