@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - memory stats getters
 
++ (nonnull NSDictionary<NSString *, NSObject *> *)getMemoryStats;
 + (nullable NSDictionary<NSString *, NSObject *> *)getPhysicalMemoryStats;
 + (nullable NSDictionary<NSString *, NSObject *> *)getVirtualMemoryStats;
 + (NSUInteger)getPhysicalMemoryInBytes;
@@ -31,6 +32,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSString *)getPhysicalMemorySizeWithUnits;
 
+#pragma mark - static utility nature
+
++ (instancetype)new NS_UNAVAILABLE;
++ (instancetype)allocWithZone:(struct _NSZone *)zone NS_UNAVAILABLE;
++ (instancetype)alloc NS_UNAVAILABLE;
++ (id)copyWithZone:(struct _NSZone *)zone NS_UNAVAILABLE;
++ (id)mutableCopyWithZone:(struct _NSZone *)zone NS_UNAVAILABLE;
 
 @end
 

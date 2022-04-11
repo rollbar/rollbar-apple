@@ -19,6 +19,20 @@ static const NSInteger bytesInMB = 1024 * 1024;
 
 #pragma mark - memory stats getters
 
++ (nonnull NSDictionary<NSString *, NSObject *> *)getMemoryStats {
+    
+    NSObject *physicalMemoryStats = [RollbarMemoryUtil getPhysicalMemoryStats];
+    NSObject *virtualMemoryStats = [RollbarMemoryUtil getVirtualMemoryStats];
+    
+    return @{
+        
+        [[RollbarMemoryStatsDescriptors sharedInstance] getMemoryStatsTypeDescriptor:RollbarMemoryStatsType_Physical] :
+            physicalMemoryStats ? physicalMemoryStats : [NSNull null],
+        [[RollbarMemoryStatsDescriptors sharedInstance] getMemoryStatsTypeDescriptor:RollbarMemoryStatsType_VM] :
+            virtualMemoryStats ? virtualMemoryStats : [NSNull null],
+    };
+}
+
 + (nullable NSDictionary<NSString *, NSObject *> *)getPhysicalMemoryStats {
     
     return @{
