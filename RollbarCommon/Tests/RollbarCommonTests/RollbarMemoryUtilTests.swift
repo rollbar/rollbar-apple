@@ -4,7 +4,7 @@ import Foundation
 
 final class RollbarMemoryUtilTests: XCTestCase {
     
-    func testRollbarMemoryUtil_basics() {
+    func testRollbarMemoryUtil_Basics() throws {
         
         let memoryStats = RollbarMemoryUtil.getMemoryStats();
         
@@ -23,7 +23,14 @@ final class RollbarMemoryUtilTests: XCTestCase {
         XCTAssertTrue((virtualMemoryStats["wired_MB"] as! NSNumber).uintValue > 0);
     }
     
+    func testRollbarMemoryUtil_Performance() throws {
+        
+        measure {
+            _ = RollbarMemoryUtil.getMemoryStats();
+        }
+    }
     static var allTests = [
-        ("testRollbarMemoryUtil_basics", testRollbarMemoryUtil_basics),
+        ("testRollbarMemoryUtil_basics", testRollbarMemoryUtil_Basics),
+        ("testPerformance", testRollbarMemoryUtil_Performance)
     ]
 }
