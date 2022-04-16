@@ -23,6 +23,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// Telemetry scrubbing options
 @property (nonatomic, strong) RollbarScrubbingOptions *viewInputsScrubber;
 
+/// Time interval for auto-collecting memtory stats
+/// @note 0.0 means no collection!
+@property (atomic) NSTimeInterval memoryStatsAutocollectionInterval; //[sec]
+
 #pragma mark - initializers
 
 /// Initializer

@@ -8,9 +8,11 @@ import UnitTesting
 final class RollbarNotifierTelemetryTests: XCTestCase {
     
     override func setUp() {
+        
         super.setUp();
         RollbarTestUtil.clearLogFile();
         RollbarTestUtil.clearTelemetryFile();
+        
         if Rollbar.currentConfiguration() != nil {
             print("Info: Rollbar already pre-configured!");
         }
@@ -23,6 +25,28 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
     override func tearDown() {
         Rollbar.updateConfiguration(RollbarConfig());
         super.tearDown();
+    }
+    
+    func testMemoryTelemetryAutocapture() {
+        
+        RollbarTestUtil.clearLogFile();
+        RollbarTestUtil.clearTelemetryFile();
+        
+        let config = RollbarConfig();
+        config.destination.accessToken = RollbarTestHelper.getRollbarPayloadsAccessToken();
+        config.destination.environment = RollbarTestHelper.getRollbarEnvironment();
+        config.telemetry.enabled = true;
+        config.telemetry.memoryStatsAutocollectionInterval = 0.5;
+
+        Rollbar.updateConfiguration(config);
+        
+        //let resultingConfig = Rollbar.currentConfiguration();
+        Rollbar.criticalMessage("Rollbar will be testing memory telemetry!");
+        RollbarTestUtil.waitForPesistenceToComplete();
+        Thread.sleep(forTimeInterval: 2.0);
+        Rollbar.criticalMessage("Must contain memory telemetry!");
+        RollbarTestUtil.waitForPesistenceToComplete();
+        Thread.sleep(forTimeInterval: 3.0);
     }
     
     func testTelemetryCapture() {
@@ -237,6 +261,7 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
     }
     
     static var allTests = [
+        ("testMemoryTelemetryAutocapture", testMemoryTelemetryAutocapture),
         ("testTelemetryCapture", testTelemetryCapture),
         ("testErrorReportingWithTelemetry", testErrorReportingWithTelemetry),
         ("testTelemetryViewEventScrubbing", testTelemetryViewEventScrubbing),
