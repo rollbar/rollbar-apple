@@ -28,17 +28,17 @@
 + (nonnull instancetype)sharedInstance;
 + (BOOL)sharedInstanceExists;
 
-+ (instancetype)new NS_UNAVAILABLE;
-+ (instancetype)allocWithZone:(struct _NSZone *)zone NS_UNAVAILABLE;
-+ (instancetype)alloc NS_UNAVAILABLE;
-+ (id)copyWithZone:(struct _NSZone *)zone NS_UNAVAILABLE;
-+ (id)mutableCopyWithZone:(struct _NSZone *)zone NS_UNAVAILABLE;
++ (nonnull instancetype)new NS_UNAVAILABLE;
++ (nonnull instancetype)allocWithZone:(nonnull struct _NSZone *)zone NS_UNAVAILABLE;
++ (nonnull instancetype)alloc NS_UNAVAILABLE;
++ (nullable id)copyWithZone:(nonnull struct _NSZone *)zone NS_UNAVAILABLE;
++ (nullable id)mutableCopyWithZone:(nonnull struct _NSZone *)zone NS_UNAVAILABLE;
 
-- (instancetype)init NS_UNAVAILABLE;
+- (nonnull instancetype)init NS_UNAVAILABLE;
 
 - (void)dealloc NS_UNAVAILABLE;
-- (id)copy NS_UNAVAILABLE;
-- (id)mutableCopy NS_UNAVAILABLE;
+- (nonnull id)copy NS_UNAVAILABLE;
+- (nonnull id)mutableCopy NS_UNAVAILABLE;
 
 #pragma mark - NSLog redirection
 
@@ -50,7 +50,7 @@
 
 /// Configures this instance with provided options
 /// @param telemetryOptions desired Telemetry options
-- (instancetype)configureWithOptions:(nonnull RollbarTelemetryOptions *)telemetryOptions;
+- (nonnull instancetype)configureWithOptions:(nonnull RollbarTelemetryOptions *)telemetryOptions;
 
 /// Telemetry collection enable/disable switch
 @property (readwrite, atomic) BOOL enabled;

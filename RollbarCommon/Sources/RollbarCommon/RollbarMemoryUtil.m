@@ -89,7 +89,12 @@ static const NSInteger bytesInMB = 1024 * 1024;
 
 + (NSUInteger)getPhysicalMemoryInBytes {
     
-    unsigned long long bytesTotal = [[NSProcessInfo processInfo] physicalMemory];
+    static unsigned long long bytesTotal = 0;
+    
+    if (0 == bytesTotal) {
+
+        bytesTotal = [[NSProcessInfo processInfo] physicalMemory];
+    }
     return (NSUInteger)bytesTotal;
 }
 
@@ -112,7 +117,11 @@ static const NSInteger bytesInMB = 1024 * 1024;
 
 + (NSUInteger)getPhysicalMemoryInMBs {
     
-    NSInteger result = [RollbarMemoryUtil convertToMBs:[RollbarMemoryUtil getPhysicalMemoryInBytes]];
+    static NSInteger result = 0;
+    if (0 == result) {
+        
+        result = [RollbarMemoryUtil convertToMBs:[RollbarMemoryUtil getPhysicalMemoryInBytes]];
+    }
     return result;
 }
 

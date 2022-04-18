@@ -21,7 +21,6 @@ static  RollbarTelemetryThread * _Nullable singleton = nil;
 
 + (nonnull instancetype)sharedInstance {
     
-    //static RollbarMemoryStatsDescriptors *singleton = nil;
     static dispatch_once_t onceToken;
     
     dispatch_once(&onceToken, ^{
@@ -33,7 +32,7 @@ static  RollbarTelemetryThread * _Nullable singleton = nil;
                                    object:nil
                     ])) {
             
-            singleton.name = [RollbarTelemetryThread className]; //@"RollbarTelemetryThread";
+            singleton.name = [RollbarTelemetryThread rollbar_objectClassName]; //@"RollbarTelemetryThread";
             
             singleton->_telemetryOptions = nil;
             
@@ -54,9 +53,9 @@ static  RollbarTelemetryThread * _Nullable singleton = nil;
 
 - (instancetype)initWithTarget:(id)target selector:(SEL)selector object:(nullable id)argument {
     
-    if ((self = [super initWithTarget:target //self
-                             selector:selector //@selector(run)
-                               object:argument//nil
+    if ((self = [super initWithTarget:target
+                             selector:selector
+                               object:argument
                 ])) {
         
         self.name = [RollbarTelemetryThread className]; //@"RollbarTelemetryThread";
@@ -71,28 +70,8 @@ static  RollbarTelemetryThread * _Nullable singleton = nil;
     return self;
 }
 
-
-
-//// Reset the worker thread that atomatically collects pre-configured telemetry events (if any):
-//if (!rollbarTelemetryThread) {
-//
-//    if (!rollbarTelemetryThread.isCancelled) {
-//
-//        [rollbarTelemetryThread cancel];
-//    }
-//    while (!rollbarTelemetryThread.isFinished) {
-//
-//        [NSThread sleepForTimeInterval:0.1]; // [sec]
-//    }
-//    rollbarTelemetryThread = nil;
-//}
-//rollbarTelemetryThread = [[RollbarTelemetryThread alloc] initWithOptions: configuration.telemetry];
-
-
 - (instancetype)configureWithOptions:(nonnull RollbarTelemetryOptions *)telemetryOptions {
     
-//    self->_active = YES;
-
     self->_telemetryOptions = telemetryOptions;
     
     if (![self setupTimer]) {
@@ -142,8 +121,6 @@ static  RollbarTelemetryThread * _Nullable singleton = nil;
                                          userInfo:nil
                                           repeats:YES
     ];
-//    NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-//    [runLoop addTimer:self->_timer forMode:NSDefaultRunLoopMode];
     
     return YES;
 }
@@ -201,28 +178,6 @@ static  RollbarTelemetryThread * _Nullable singleton = nil;
     
     @autoreleasepool {
         
-//        NSTimeInterval timeIntervalInSeconds = self->_collectionTimeInterval;
-//        if (0.0 == timeIntervalInSeconds) {
-//
-//            return;
-//        }
-//
-//        _timer = [NSTimer timerWithTimeInterval:timeIntervalInSeconds
-//                                         target:self
-//                                       selector:@selector(attemptCollection)
-//                                       userInfo:nil
-//                                        repeats:YES
-//        ];
-//
-//        NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-//        [runLoop addTimer:_timer forMode:NSDefaultRunLoopMode];
-
-//        if (![self setupTimer]) {
-//
-//            // nothing really to do...
-//            return;
-//        }
-        
         self.active = YES;
         NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
         [runLoop addTimer:self->_timer forMode:NSDefaultRunLoopMode];
@@ -256,9 +211,6 @@ static  RollbarTelemetryThread * _Nullable singleton = nil;
 }
 
 - (void)attemptMemoryStatsCollection {
-    
-//    [self collectMemoryStats];
-//    return;
     
     static NSDate *nextCollection = nil;
     if (!nextCollection) {

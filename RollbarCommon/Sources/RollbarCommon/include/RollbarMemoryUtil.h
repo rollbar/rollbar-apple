@@ -11,7 +11,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface RollbarMemoryUtil : NSObject
 
-
 #pragma mark - memory stats getters
 
 + (nonnull NSDictionary<NSString *, NSObject *> *)getMemoryStats;
