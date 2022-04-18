@@ -35,6 +35,40 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
         let config = RollbarConfig();
         config.destination.accessToken = RollbarTestHelper.getRollbarPayloadsAccessToken();
         config.destination.environment = RollbarTestHelper.getRollbarEnvironment();
+        config.developerOptions.transmit = false;
+        config.telemetry.enabled = true;
+        config.telemetry.memoryStatsAutocollectionInterval = 0.5;
+        Rollbar.updateConfiguration(config);
+        
+        Thread.sleep(forTimeInterval: 5.0);
+        Rollbar.criticalMessage("Must contain memory telemetry!");
+        RollbarTestUtil.waitForPesistenceToComplete();
+
+        let logItem = RollbarTestUtil.readFirstItemStringsFromLogFile()!;
+        let payload = RollbarPayload(jsonString: logItem);
+        let telemetryEvents = payload.data.body.telemetry!;
+        XCTAssertTrue(telemetryEvents.count > 0);
+        var totalMemoryStatsEvents = 0;
+        for event in telemetryEvents {
+            if (event.type == RollbarTelemetryType.manual) {
+                if let content = event.body as? RollbarTelemetryManualBody {
+                    if !content.isEmpty && content.description.contains("memory_stats") {
+                        totalMemoryStatsEvents += 1;
+                    }
+                }
+            }
+        }
+        XCTAssertTrue(totalMemoryStatsEvents > 0);
+    }
+
+    func testMemoryTelemetryAutocapture_Live() {
+        
+        RollbarTestUtil.clearLogFile();
+        RollbarTestUtil.clearTelemetryFile();
+        
+        let config = RollbarConfig();
+        config.destination.accessToken = RollbarTestHelper.getRollbarPayloadsAccessToken();
+        config.destination.environment = RollbarTestHelper.getRollbarEnvironment();
         config.telemetry.enabled = true;
         config.telemetry.memoryStatsAutocollectionInterval = 0.5;
 
@@ -262,6 +296,7 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
     
     static var allTests = [
         ("testMemoryTelemetryAutocapture", testMemoryTelemetryAutocapture),
+        ("testMemoryTelemetryAutocapture_Live", testMemoryTelemetryAutocapture_Live),
         ("testTelemetryCapture", testTelemetryCapture),
         ("testErrorReportingWithTelemetry", testErrorReportingWithTelemetry),
         ("testTelemetryViewEventScrubbing", testTelemetryViewEventScrubbing),

@@ -58,7 +58,7 @@ static  RollbarTelemetryThread * _Nullable singleton = nil;
                                object:argument
                 ])) {
         
-        self.name = [RollbarTelemetryThread className]; //@"RollbarTelemetryThread";
+        self.name = [RollbarTelemetryThread rollbar_objectClassName]; //@"RollbarTelemetryThread";
         
         self->_telemetryOptions = nil;
         
