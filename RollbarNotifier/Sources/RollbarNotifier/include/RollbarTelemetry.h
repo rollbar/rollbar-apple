@@ -4,6 +4,7 @@
 #import "RollbarSource.h"
 #import "RollbarTelemetryType.h"
 
+@class RollbarTelemetryOptions;
 @class RollbarTelemetryEvent;
 @class RollbarTelemetryBody;
 @class RollbarTelemetryLogBody;
@@ -22,11 +23,34 @@
 /// Shared service instance/singleton
 + (nonnull instancetype)sharedInstance;
 
+#pragma mark - Sigleton pattern
+
++ (nonnull instancetype)sharedInstance;
++ (BOOL)sharedInstanceExists;
+
++ (nonnull instancetype)new NS_UNAVAILABLE;
++ (nonnull instancetype)allocWithZone:(nonnull struct _NSZone *)zone NS_UNAVAILABLE;
++ (nonnull instancetype)alloc NS_UNAVAILABLE;
++ (nullable id)copyWithZone:(nonnull struct _NSZone *)zone NS_UNAVAILABLE;
++ (nullable id)mutableCopyWithZone:(nonnull struct _NSZone *)zone NS_UNAVAILABLE;
+
+- (nonnull instancetype)init NS_UNAVAILABLE;
+
+- (void)dealloc NS_UNAVAILABLE;
+- (nonnull id)copy NS_UNAVAILABLE;
+- (nonnull id)mutableCopy NS_UNAVAILABLE;
+
+#pragma mark - NSLog redirection
+
 /// NSLog replacement
 /// @param format NSLog entry format
 + (void)NSLogReplacement:(nonnull NSString *)format, ...;
 
 #pragma mark - Config options
+
+/// Configures this instance with provided options
+/// @param telemetryOptions desired Telemetry options
+- (nonnull instancetype)configureWithOptions:(nonnull RollbarTelemetryOptions *)telemetryOptions;
 
 /// Telemetry collection enable/disable switch
 @property (readwrite, atomic) BOOL enabled;

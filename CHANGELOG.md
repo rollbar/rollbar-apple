@@ -25,6 +25,13 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 
 ## Release Notes
 
+### 2.2.0
+
+- feat: resolve #148 - MemTel: Implement the memory usage Telemetry auto-collection based on the config options.
+- feat: resolve #147 - MemTel: Implement necessary Telemetry auto-collection options config settings with the first available option being the memory usage collection.
+- feat: resolve #146 - MemTel: Define custom data fields for a Manual Telemetry event to keep the collected data. Implement helpers to manage that data.
+- test: resolve #148 - MemTel: Add unit tests.
+
 ### 2.1.0
 
 - feat:  resolve #141 - Apply developer options of the persisted payload when sending the payload 

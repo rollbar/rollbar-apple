@@ -9,6 +9,7 @@
 #import "RollbarLogger.h"
 #import "RollbarLogger+Test.h"
 #import "RollbarThread.h"
+#import "RollbarTelemetryThread.h"
 #import "RollbarReachability.h"
 #import <sys/utsname.h>
 #import "RollbarTelemetry.h"
@@ -111,9 +112,10 @@ static RollbarLogger *sharedSingleton = nil;
             [self saveQueueState];
         }
 
+        RollbarConfig *config = [RollbarConfig new];
+
         // Setup the worker thread that sends the items that have been queued up in the item file set above:
         // TODO: !!! this needs to be redesigned taking in account multiple access tokens and endpoints !!!
-        RollbarConfig *config = [RollbarConfig new];
         RollbarLogger *logger = [[RollbarLogger alloc] initWithConfiguration:config];
         rollbarThread =
         [[RollbarThread alloc] initWithNotifier:logger
@@ -164,6 +166,7 @@ static RollbarLogger *sharedSingleton = nil;
 - (instancetype)initWithConfiguration:(RollbarConfig *)configuration {
 
     if ((self = [super init])) {
+        
         [self updateConfiguration:configuration];
 
         NSString *cachesDirectory = [RollbarCachesDirectory directory];

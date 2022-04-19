@@ -7,6 +7,7 @@ static BOOL const DEFAULT_ENABLED_FLAG = NO;
 static BOOL const DEFAULT_CAPTURE_LOG_FLAG = NO;
 static BOOL const DEFAULT_CAPTURE_CONNECTIVITY_FLAG = NO;
 static NSUInteger const DEFAULT_MAX_TELEMETRY_DATA = 10;
+static NSTimeInterval const DEFAULT_AUTOCOLLECTION_INTERVAL_MEM_STATS = 0;
 
 #pragma mark - data field keys
 
@@ -15,6 +16,7 @@ static NSString *const DFK_CAPTURE_LOG_FLAG = @"captureLog";
 static NSString *const DFK_CAPTURE_CONNECTIVITY_FLAG = @"captureConnectivity";
 static NSString *const DFK_MAX_TELEMETRY_DATA = @"maximumTelemetryData";
 static NSString *const DFK_VIEW_INPUTS_SCRUBBER = @"vewInputsScrubber";
+static NSString *const DFK_AUTOCOLLECTION_INTERVAL_MEM_STATS = @"memoryStatsAutocollectionInterval";
 
 #pragma mark - class implementation
 
@@ -29,11 +31,12 @@ static NSString *const DFK_VIEW_INPUTS_SCRUBBER = @"vewInputsScrubber";
              viewInputsScrubber:(RollbarScrubbingOptions *)viewInputsScrubber {
     
     self = [super initWithDictionary:@{
-        DFK_ENABLED_FLAG:[NSNumber numberWithBool:enabled],
-        DFK_CAPTURE_LOG_FLAG:[NSNumber numberWithBool:captureLog],
-        DFK_CAPTURE_CONNECTIVITY_FLAG:[NSNumber numberWithBool:captureConnectivity],
-        DFK_VIEW_INPUTS_SCRUBBER:viewInputsScrubber.jsonFriendlyData,
-        DFK_MAX_TELEMETRY_DATA:[NSNumber numberWithUnsignedInt:DEFAULT_MAX_TELEMETRY_DATA]
+        DFK_ENABLED_FLAG : [NSNumber numberWithBool:enabled],
+        DFK_CAPTURE_LOG_FLAG : [NSNumber numberWithBool:captureLog],
+        DFK_CAPTURE_CONNECTIVITY_FLAG : [NSNumber numberWithBool:captureConnectivity],
+        DFK_VIEW_INPUTS_SCRUBBER : viewInputsScrubber.jsonFriendlyData,
+        DFK_MAX_TELEMETRY_DATA : [NSNumber numberWithUnsignedInt:DEFAULT_MAX_TELEMETRY_DATA],
+        DFK_AUTOCOLLECTION_INTERVAL_MEM_STATS : [NSNumber numberWithDouble:DEFAULT_AUTOCOLLECTION_INTERVAL_MEM_STATS],
     }];
     return self;
 }
@@ -117,6 +120,16 @@ static NSString *const DFK_VIEW_INPUTS_SCRUBBER = @"vewInputsScrubber";
 
 - (void)setViewInputsScrubber:(RollbarScrubbingOptions *)scrubber {
     [self setDataTransferObject:scrubber forKey:DFK_VIEW_INPUTS_SCRUBBER];
+}
+
+- (NSTimeInterval)memoryStatsAutocollectionInterval {
+    NSTimeInterval result = [self safelyGetTimeIntervalByKey:DFK_AUTOCOLLECTION_INTERVAL_MEM_STATS
+                                         withDefault:DEFAULT_AUTOCOLLECTION_INTERVAL_MEM_STATS];
+    return result;
+}
+
+- (void)setMemoryStatsAutocollectionInterval:(NSTimeInterval)value {
+    [self setTimeInterval:value forKey:DFK_AUTOCOLLECTION_INTERVAL_MEM_STATS];
 }
 
 @end

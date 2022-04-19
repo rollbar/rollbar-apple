@@ -51,19 +51,33 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Convenience API
 
 - (RollbarDTO *)safelyGetDataTransferObjectByKey:(NSString *)key;
-- (void)setDataTransferObject:(RollbarDTO *)data forKey:(NSString *)key;
+- (void)setDataTransferObject:(RollbarDTO *)data
+                       forKey:(NSString *)key;
 
 - (RollbarTriStateFlag)safelyGetTriStateFlagByKey:(NSString *)key;
-- (void)setTriStateFlag:(RollbarTriStateFlag)data forKey:(NSString *)key;
+- (void)setTriStateFlag:(RollbarTriStateFlag)data
+                 forKey:(NSString *)key;
 
-- (BOOL)safelyGetBoolByKey:(NSString *)key withDefault:(BOOL)defaultValue;
-- (void)setBool:(BOOL)data forKey:(NSString *)key;
+- (BOOL)safelyGetBoolByKey:(NSString *)key
+               withDefault:(BOOL)defaultValue;
+- (void)setBool:(BOOL)data
+         forKey:(NSString *)key;
 
-- (NSUInteger)safelyGetUIntegerByKey:(NSString *)key withDefault:(NSUInteger)defaultValue;
-- (void)setUInteger:(NSUInteger)data forKey:(NSString *)key;
+- (NSUInteger)safelyGetUIntegerByKey:(NSString *)key
+                         withDefault:(NSUInteger)defaultValue;
+- (void)setUInteger:(NSUInteger)data
+             forKey:(NSString *)key;
 
-- (NSInteger)safelyGetIntegerByKey:(NSString *)key withDefault:(NSInteger)defaultValue;
-- (void)setInteger:(NSInteger)data forKey:(NSString *)key;
+- (NSInteger)safelyGetIntegerByKey:(NSString *)key
+                       withDefault:(NSInteger)defaultValue;
+- (void)setInteger:(NSInteger)data
+            forKey:(NSString *)key;
+
+- (NSTimeInterval)safelyGetTimeIntervalByKey:(NSString *)key
+                                 withDefault:(NSTimeInterval)defaultValue;
+- (void)setTimeInterval:(NSTimeInterval)data
+                 forKey:(NSString *)key;
+
 
 @end
 
