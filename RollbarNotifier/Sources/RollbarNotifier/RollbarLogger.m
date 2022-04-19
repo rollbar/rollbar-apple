@@ -114,10 +114,6 @@ static RollbarLogger *sharedSingleton = nil;
 
         RollbarConfig *config = [RollbarConfig new];
 
-        // Setup the worker thread that atomatically collects pre-configured telemetry events (if any):
-        //[[RollbarTelemetryThread sharedInstance] configureWithOptions:config.telemetry];
-        //[[RollbarTelemetryThread sharedInstance] start];
-
         // Setup the worker thread that sends the items that have been queued up in the item file set above:
         // TODO: !!! this needs to be redesigned taking in account multiple access tokens and endpoints !!!
         RollbarLogger *logger = [[RollbarLogger alloc] initWithConfiguration:config];

@@ -25,7 +25,6 @@ static  RollbarTelemetryThread * _Nullable singleton = nil;
     
     dispatch_once(&onceToken, ^{
         
-        //singleton = [[[self class] alloc] initWithTarget:singleton selector:@selector(run) object:nil];
         singleton = [[self class] alloc];
         if ((singleton = [singleton initWithTarget:singleton //self
                                  selector:@selector(run)
@@ -94,7 +93,6 @@ static  RollbarTelemetryThread * _Nullable singleton = nil;
     if (self->_timer && self->_timer.timeInterval == self->_collectionTimeInterval) {
         
         // nothing fundamental needs reconfiguration...
-        //return (nil != self->_timer);
         return !(0.0 == self->_timer.timeInterval);
     }
     
