@@ -53,6 +53,9 @@
          location = "group:RollbarSwift.podspec">
       </FileRef>
       <FileRef
+         location = "group:RollbarCocoaLumberjack.podspec">
+      </FileRef>
+      <FileRef
          location = "group:upload_dsym.py">
       </FileRef>
    </Group>

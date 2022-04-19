@@ -5,6 +5,9 @@
 //  Created by Andrey Kornich on 2022-04-07.
 //
 
+#ifndef RollbarMemoryUtil_h
+#define RollbarMemoryUtil_h
+
 @import Foundation;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -42,3 +45,5 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarMemoryUtil_h

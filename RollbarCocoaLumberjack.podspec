@@ -8,7 +8,7 @@
 Pod::Spec.new do |s|
 
     s.version      = "2.2.1"
-    s.name         = "RollbarPLCrashReporter"
+    s.name         = "RollbarCocoaLumberjack"
     s.summary      = "Application or client side SDK for interacting with the Rollbar API Server."
     s.description  = <<-DESC
                       Find, fix, and resolve errors with Rollbar.
@@ -36,7 +36,7 @@ Pod::Spec.new do |s|
     s.ios.deployment_target = "9.0"
     s.osx.deployment_target = "10.10"
     s.tvos.deployment_target = "11.0"
-    # s.watchos.deployment_target = "4.0"
+    s.watchos.deployment_target = "4.0"
     # Any platform, if omitted:
     # s.platform     = :ios
     # s.platform     = :ios, "5.0"
@@ -50,7 +50,8 @@ Pod::Spec.new do |s|
     s.static_framework = true
     s.framework = "Foundation"
     s.dependency "RollbarCommon", "~> #{s.version}"
-    s.dependency "PLCrashReporter", "~> 1.10.1"
+    s.dependency "RollbarNotifier", "~> #{s.version}"
+    s.dependency "CocoaLumberjack", "~> 3.7.4"
     # s.frameworks = "SomeFramework", "AnotherFramework"
     # s.library   = "iconv"
     # s.libraries = "iconv", "xml2"
@@ -62,10 +63,10 @@ Pod::Spec.new do |s|
     #   "HEADER_SEARCH_PATHS" => "$(PODS_ROOT)/Sources/#{s.name}/**"
     # }
 
-    s.pod_target_xcconfig  = { "ONLY_ACTIVE_ARCH" => "YES", "EXCLUDED_ARCHS[sdk=iphonesimulator*]" => "arm64" }
-    s.user_target_xcconfig = { "ONLY_ACTIVE_ARCH" => "YES", "EXCLUDED_ARCHS[sdk=iphonesimulator*]" => "arm64" }
+    # s.pod_target_xcconfig  = { "ONLY_ACTIVE_ARCH" => "YES", "EXCLUDED_ARCHS[sdk=iphonesimulator*]" => "arm64" }
+    # s.user_target_xcconfig = { "ONLY_ACTIVE_ARCH" => "YES", "EXCLUDED_ARCHS[sdk=iphonesimulator*]" => "arm64" }
 
-    s.tvos.pod_target_xcconfig  = { "ONLY_ACTIVE_ARCH" => "YES", "EXCLUDED_ARCHS[sdk=appletvsimulator*]" => "arm64" }
-    s.tvos.user_target_xcconfig = { "ONLY_ACTIVE_ARCH" => "YES", "EXCLUDED_ARCHS[sdk=appletvsimulator*]" => "arm64" }
+    # s.tvos.pod_target_xcconfig  = { "ONLY_ACTIVE_ARCH" => "YES", "EXCLUDED_ARCHS[sdk=appletvsimulator*]" => "arm64" }
+    # s.tvos.user_target_xcconfig = { "ONLY_ACTIVE_ARCH" => "YES", "EXCLUDED_ARCHS[sdk=appletvsimulator*]" => "arm64" }
 
 end

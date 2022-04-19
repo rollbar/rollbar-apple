@@ -25,6 +25,10 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 
 ## Release Notes
 
+### 2.2.1
+
+- fix: resolve #154 - Fix Cocoapods builds.
+
 ### 2.2.0
 
 - feat: resolve #148 - MemTel: Implement the memory usage Telemetry auto-collection based on the config options.
