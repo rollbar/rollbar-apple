@@ -1,0 +1,8 @@
+module RollbarCocoaLumberjack {
+	umbrella "."
+	
+	export *
+	module * { export * }
+
+    requires objc
+}

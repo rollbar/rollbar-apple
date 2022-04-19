@@ -15,8 +15,8 @@
 
 #if !TARGET_OS_WATCH
 #import <XCTest/XCTest.h>
-#import "../../../UnitTests/RollbarUnitTestSettings.h"
 
+@import UnitTesting;
 @import RollbarNotifier;
 @import RollbarAUL;
 

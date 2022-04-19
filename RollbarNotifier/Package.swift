@@ -29,14 +29,14 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
             name: "RollbarNotifier",
-            dependencies: ["RollbarCommon",],
+            dependencies: [
+                "RollbarCommon",
+            ],
             publicHeadersPath: "include",
             cSettings: [
                 .headerSearchPath("Sources/RollbarNotifier/**"),
-//                .headerSearchPath("Sources/RollbarNotifier"),
-//                .headerSearchPath("Sources/RollbarNotifier/include"),
-//                .headerSearchPath("Sources/RollbarNotifier/DTOs"),
-                
+                //                .headerSearchPath("Sources/RollbarNotifier/DTOs"),
+
 //                .define("DEFINES_MODULE"),
             ]
         ),
@@ -49,11 +49,12 @@ let package = Package(
         ),
         .testTarget(
             name: "RollbarNotifierTests-ObjC",
-            dependencies: ["RollbarNotifier"],
+            dependencies: [
+                "UnitTesting",
+                "RollbarNotifier",
+            ],
             cSettings: [
                 .headerSearchPath("Tests/RollbarNotifierTests-ObjC/**"),
-//                .headerSearchPath("Sources/RollbarNotifier"),
-//                .headerSearchPath("Sources/RollbarNotifier/include"),
 //                .headerSearchPath("Sources/RollbarNotifier/DTOs"),
                 
 //                .define("DEFINES_MODULE"),

@@ -29,7 +29,7 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
-        .package(path: "../UnitTesting"),
+        //.package(path: "../UnitTesting"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -50,13 +50,14 @@ let package = Package(
         .testTarget(
             name: "RollbarCommonTests",
             dependencies: [
-                "UnitTesting",
+                //"UnitTesting",
                 "RollbarCommon",
             ]
         ),
         .testTarget(
             name: "RollbarCommonTests-ObjC",
             dependencies: ["RollbarCommon"],
+            exclude: ["TestData/rollbar-crash-report-147120812218-raw.txt"],
             cSettings: [
                 .headerSearchPath("Tests/RollbarCommonTests-ObjC/**"),
                 //                .headerSearchPath("Sources/RollbarCommon"),

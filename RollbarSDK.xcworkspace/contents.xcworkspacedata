@@ -4,13 +4,9 @@
    <Group
       location = "container:"
       name = "RollbarSDK">
-      <Group
-         location = "container:"
-         name = "UnitTests">
-         <FileRef
-            location = "group:UnitTests/RollbarUnitTestSettings.h">
-         </FileRef>
-      </Group>
+      <FileRef
+         location = "group:docs">
+      </FileRef>
       <FileRef
          location = "group:sonar-project.properties">
       </FileRef>
@@ -80,6 +76,9 @@
    </FileRef>
    <FileRef
       location = "group:RollbarSwift">
+   </FileRef>
+   <FileRef
+      location = "group:RollbarCocoaLumberjack">
    </FileRef>
    <FileRef
       location = "group:UnitTesting">

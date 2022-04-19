@@ -7,7 +7,7 @@ import os.log
 
 final class RollbarNotifierTruncationTests: XCTestCase {
     
-    override class func setUp() {
+    override func setUp() {
         
         super.setUp();
         
@@ -15,8 +15,8 @@ final class RollbarNotifierTruncationTests: XCTestCase {
         RollbarTestUtil.clearTelemetryFile();
         
         //if Rollbar.currentConfiguration() != nil {
-        Rollbar.initWithAccessToken(RollbarUnitTestSettings.payloadsPostAccessToken);
-        Rollbar.currentConfiguration()?.destination.environment = RollbarUnitTestSettings.environment;
+        Rollbar.initWithAccessToken(RollbarTestHelper.getRollbarPayloadsAccessToken());
+        Rollbar.currentConfiguration()?.destination.environment = RollbarTestHelper.getRollbarEnvironment();
         //}
     }
     

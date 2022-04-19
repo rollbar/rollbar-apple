@@ -1,10 +1,3 @@
-//
-//  RollbarTriStateFlagTests.swift
-//  
-//
-//  Created by Andrey Kornich on 2020-05-26.
-//
-
 import XCTest
 import Foundation
 @testable import RollbarCommon
@@ -12,8 +5,6 @@ import Foundation
 final class RollbarTriStateFlagTests: XCTestCase {
     
     func testRollbarTriStateFlagUtil_FromStringConversion() {
-        
-        //XCTAssertTrue();
         
         XCTAssertEqual(RollbarTriStateFlag.none, RollbarTriStateFlagUtil.triStateFlag(from: "None"));
         XCTAssertEqual(RollbarTriStateFlag.none, RollbarTriStateFlagUtil.triStateFlag(from: "none"));
@@ -47,16 +38,8 @@ final class RollbarTriStateFlagTests: XCTestCase {
         XCTAssertEqual("ON", RollbarTriStateFlagUtil.triStateFlag(toString: RollbarTriStateFlag.on));
     }
     
-//    func testExample() {
-//        // This is an example of a functional test case.
-//        // Use XCTAssert and related functions to verify your tests produce the correct
-//        // results.
-//        XCTAssertEqual(RollbarDeploys().text, "Hello, World!")
-//    }
-
     static var allTests = [
         ("testRollbarTriStateFlagUtil_FromStringConversion", testRollbarTriStateFlagUtil_FromStringConversion),
         ("testRollbarTriStateFlagUtil_ToStringConversion", testRollbarTriStateFlagUtil_ToStringConversion),
-        //("testExample", testExample),
     ]
 }

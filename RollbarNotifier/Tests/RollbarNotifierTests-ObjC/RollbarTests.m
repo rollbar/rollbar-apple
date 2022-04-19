@@ -1,11 +1,8 @@
-//  Copyright (c) 2018 Rollbar, Inc. All rights reserved.
-
 @import Foundation;
+@import UnitTesting;
 
 #if !TARGET_OS_WATCH
 #import <XCTest/XCTest.h>
-#import "../../../UnitTests/RollbarUnitTestSettings.h"
-#import "RollbarTestUtil.h"
 
 @import RollbarNotifier;
 
@@ -19,13 +16,13 @@
     
     [super setUp];
 
-    RollbarClearLogFile();
+    [RollbarLogger clearSdkDataStore];
 
     if (!Rollbar.currentConfiguration) {
 
         RollbarConfig *config = [[RollbarConfig alloc] init];
-        config.destination.accessToken = ROLLBAR_UNIT_TEST_PAYLOADS_ACCESS_TOKEN;
-        config.destination.environment = ROLLBAR_UNIT_TEST_ENVIRONMENT;
+        config.destination.accessToken = [RollbarTestHelper getRollbarPayloadsAccessToken];
+        config.destination.environment = [RollbarTestHelper getRollbarEnvironment];
         config.developerOptions.transmit = YES;
         config.developerOptions.logPayload = YES;
         config.loggingOptions.maximumReportsPerMinute = 5000;
@@ -39,15 +36,17 @@
 }
 
 - (void)tearDown {
+    
     [Rollbar updateConfiguration:[RollbarConfig new]];
     [super tearDown];
 }
 
 - (void)testMultithreadedStressCase {
+    
     for( int i = 0; i < 20; i++) {
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY,0), ^(){
             RollbarLogger *logger = [[RollbarLogger alloc] initWithAccessToken:Rollbar.currentConfiguration.destination.accessToken];
-            logger.configuration.destination.environment = ROLLBAR_UNIT_TEST_ENVIRONMENT;
+            logger.configuration.destination.environment = [RollbarTestHelper getRollbarEnvironment];
             for (int j = 0; j < 20; j++) {
                 [logger log:RollbarLevel_Error
                     message:@"error"
@@ -107,7 +106,7 @@
 - (void)testRollbarTransmit {
 
     Rollbar.currentConfiguration.destination.accessToken = @"09da180aba21479e9ed3d91e0b8d58d6";
-    Rollbar.currentConfiguration.destination.environment = ROLLBAR_UNIT_TEST_ENVIRONMENT;
+    Rollbar.currentConfiguration.destination.environment = [RollbarTestHelper getRollbarEnvironment];
     Rollbar.currentConfiguration.developerOptions.transmit = YES;
 
     Rollbar.currentConfiguration.developerOptions.transmit = YES;
@@ -134,6 +133,7 @@
 }
 
 - (void)testNotification {
+    
     NSDictionary *notificationText = @{
                                        @"error": @[@"testing-error-with-message"],
                                        @"debug": @[@"testing-debug"],
@@ -156,7 +156,7 @@
 
     [NSThread sleepForTimeInterval:3.0f];
 
-    NSArray *items = RollbarReadLogItemFromFile();
+    NSArray *items = [RollbarLogger readLogItemsFromStore];
     for (id item in items) {
         NSString *level = [item valueForKeyPath:@"level"];
         NSString *message = [item valueForKeyPath:@"body.message.body"];

@@ -7,6 +7,7 @@
 @import RollbarCommon;
 
 #import "RollbarLogger.h"
+#import "RollbarLogger+Test.h"
 #import "RollbarThread.h"
 #import "RollbarReachability.h"
 #import <sys/utsname.h>
@@ -18,18 +19,18 @@
 
 #define MAX_PAYLOAD_SIZE 128 // The maximum payload size in kb
 
-static NSString *QUEUED_ITEMS_FILE_NAME = @"rollbar.items";
-static NSString *STATE_FILE_NAME = @"rollbar.state";
-static NSString *PAYLOADS_FILE_NAME = @"rollbar.payloads";
+static NSString * const QUEUED_ITEMS_FILE_NAME = @"rollbar.items";
+static NSString * const QUEUED_ITEMS_STATE_FILE_NAME = @"rollbar.state";
+static NSString * const PAYLOADS_FILE_NAME = @"rollbar.payloads";
 
-// Rollbar API Service enforced payload rate limit:
-static NSString *RESPONSE_HEADER_RATE_LIMIT = @"x-rate-limit-limit";
-// Rollbar API Service enforced remaining payload count until the limit is reached:
-static NSString *RESPONSE_HEADER_REMAINING_COUNT = @"x-rate-limit-remaining";
-// Rollbar API Service enforced rate limit reset time for the current limit window:
-static NSString *RESPONSE_HEADER_RESET_TIME = @"x-rate-limit-reset";
-// Rollbar API Service enforced rate limit remaining seconds of the current limit window:
-static NSString *RESPONSE_HEADER_REMAINING_SECONDS = @"x-rate-limit-remaining-seconds";
+/// Rollbar API Service enforced payload rate limit:
+static NSString * const RESPONSE_HEADER_RATE_LIMIT = @"x-rate-limit-limit";
+/// Rollbar API Service enforced remaining payload count until the limit is reached:
+static NSString * const RESPONSE_HEADER_REMAINING_COUNT = @"x-rate-limit-remaining";
+/// Rollbar API Service enforced rate limit reset time for the current limit window:
+static NSString * const RESPONSE_HEADER_RESET_TIME = @"x-rate-limit-reset";
+/// Rollbar API Service enforced rate limit remaining seconds of the current limit window:
+static NSString * const RESPONSE_HEADER_REMAINING_SECONDS = @"x-rate-limit-remaining-seconds";
 
 static NSUInteger MAX_RETRY_COUNT = 5;
 
@@ -44,14 +45,6 @@ static RollbarThread *rollbarThread = nil;
 static RollbarReachability *reachability = nil;
 static BOOL isNetworkReachable = YES;
 #endif
-
-@interface RollbarLogger ()
-
-- (NSThread *)_rollbarThread;
-
-- (void)_test_doNothing;
-
-@end
 
 @implementation RollbarLogger {
     NSDate *nextSendTime;
@@ -84,8 +77,10 @@ static RollbarLogger *sharedSingleton = nil;
         queuedItemsFilePath =
         [cachesDirectory stringByAppendingPathComponent:QUEUED_ITEMS_FILE_NAME];
         stateFilePath =
-        [cachesDirectory stringByAppendingPathComponent:STATE_FILE_NAME];
-        
+        [cachesDirectory stringByAppendingPathComponent:QUEUED_ITEMS_STATE_FILE_NAME];
+        payloadsFilePath =
+        [cachesDirectory stringByAppendingPathComponent:PAYLOADS_FILE_NAME];
+
         // either create or overwrite the payloads log file:
         [[NSFileManager defaultManager] createFileAtPath:payloadsFilePath
                                                 contents:nil
@@ -797,33 +792,48 @@ static RollbarLogger *sharedSingleton = nil;
         NSUInteger retryCount =
         [queueState[@"retry_count"] unsignedIntegerValue];
 
-        if (0 == retryCount && YES == self.configuration.developerOptions.logPayload) {
-            if (NO == self.configuration.developerOptions.suppressSdkInfoLogging) {
+        RollbarConfig *rollbarConfig =
+        [[RollbarConfig alloc] initWithDictionary:rollbarPayload.data.notifier.jsonFriendlyData[@"configured_options"]];
+        
+        if (0 == retryCount && YES == rollbarConfig.developerOptions.logPayload) {
+            if (NO == rollbarConfig.developerOptions.suppressSdkInfoLogging) {
                 RollbarSdkLog(@"About to send payload: %@",
                            [[NSString alloc] initWithData:jsonPayload
                                                  encoding:NSUTF8StringEncoding]
                            );
             }
 
+            // - save this payload into a proper payloads log file:
+            //*****************************************************
+            
+            // compose the payloads log file path:
+            NSString *cachesDirectory = [RollbarCachesDirectory directory];
+            NSString *payloadsLogFilePath =
+            [cachesDirectory stringByAppendingPathComponent:rollbarConfig.developerOptions.payloadLogFile];
+            // create the payloads log file if it does not exist already:
+            if (![[NSFileManager defaultManager] fileExistsAtPath:payloadsLogFilePath]) {
+                
+                [[NSFileManager defaultManager] createFileAtPath:payloadsLogFilePath
+                                                        contents:nil
+                                                      attributes:nil];
+            }
             // append-save this jsonPayload into the payloads log file:
             NSFileHandle *fileHandle =
-            [NSFileHandle fileHandleForWritingAtPath:payloadsFilePath];
-            
+            [NSFileHandle fileHandleForWritingAtPath:payloadsLogFilePath];
             [fileHandle seekToEndOfFile];
             [fileHandle writeData:jsonPayload];
             [fileHandle writeData:[@"\n" dataUsingEncoding:NSUTF8StringEncoding]];
             [fileHandle closeFile];
         }
         
-        RollbarConfig *rollbarConfig =
-        [[RollbarConfig alloc] initWithDictionary:rollbarPayload.data.notifier.jsonFriendlyData[@"configured_options"]];
-        
         BOOL success =
         rollbarConfig ? [self sendPayload:jsonPayload usingConfig:rollbarConfig]
         : [self sendPayload:jsonPayload]; // backward compatibility with just upgraded very old SDKs...
         
         if (!success) {
+            
             if (retryCount < MAX_RETRY_COUNT) {
+                
                 queueState[@"retry_count"] =
                 [NSNumber numberWithUnsignedInteger:retryCount + 1];
                 
@@ -1018,6 +1028,8 @@ static RollbarLogger *sharedSingleton = nil;
                        error:(NSError *)error
                         data:(NSData *)data {
 
+    NSLog(@"HTTP response from Rollbar: %@", response);
+
     // Lookup rate limiting headers and adjust reporting rate accordingly:
     NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
     NSDictionary *httpHeaders = [httpResponse allHeaderFields];
@@ -1134,12 +1146,134 @@ static RollbarLogger *sharedSingleton = nil;
 #endif
 }
 
-// THIS IS ONLY FOR TESTS, DO NOT ACTUALLY USE THIS METHOD, HENCE BEING "PRIVATE"
-- (NSThread *)_rollbarThread {
+@end
+
+#pragma mark - RollbarLogger (Test)
+
+static NSString * const QUEUED_TELEMETRY_ITEMS_FILE_NAME = @"rollbar.telemetry";
+
+@implementation RollbarLogger (Test)
+
++ (void)clearSdkDataStore {
+    
+    [RollbarLogger clearLogItemsStore];
+    [RollbarLogger _clearFile:[RollbarLogger _telemetryItemsStorePath]];
+    [RollbarLogger _clearFile:[RollbarLogger _payloadsLogStorePath]];
+}
+
++ (void)clearLogItemsStore {
+
+    [RollbarLogger _clearFile:[RollbarLogger _logItemsStoreStatePath]];
+    [RollbarLogger _clearFile:[RollbarLogger _logItemsStorePath]];
+}
+
++ (void)clearSdkFile:(nonnull NSString *)sdkFileName {
+    
+    [RollbarLogger _clearFile:[RollbarLogger _getSDKDataFilePath:sdkFileName]];
+}
+
++ (nonnull NSArray<NSMutableDictionary *> *)readLogItemsFromStore {
+    
+    NSString *filePath = [RollbarLogger _logItemsStorePath];
+    return [RollbarLogger readPayloadsDataFromFile:filePath];
+}
+
++ (nonnull NSArray<NSMutableDictionary *> *)readPayloadsFromSdkLog {
+    
+    NSString *filePath = [RollbarLogger _payloadsLogStorePath];
+    return [RollbarLogger readPayloadsDataFromFile:filePath];
+}
+
++ (nonnull NSArray<NSMutableDictionary *> *)readPayloadsDataFromFile:(nonnull NSString *)filePath {
+    
+    RollbarFileReader *reader = [[RollbarFileReader alloc] initWithFilePath:filePath
+                                                                  andOffset:0];
+    
+    NSMutableArray<NSMutableDictionary *> *items = [NSMutableArray array];
+    [reader enumerateLinesUsingBlock:^(NSString *line, NSUInteger nextOffset, BOOL *stop) {
+        NSError *error = nil;
+        NSMutableDictionary *payload =
+        [NSJSONSerialization JSONObjectWithData:[line dataUsingEncoding:NSUTF8StringEncoding]
+                                        options:(NSJSONReadingMutableContainers | NSJSONReadingMutableLeaves)
+                                          error:&error
+        ];
+        if ((nil == payload) && (nil != error)) {
+            RollbarSdkLog(@"Error serializing log item from the store: %@", [error localizedDescription]);
+            return;
+        }
+        else if (nil == payload) {
+            RollbarSdkLog(@"Error serializing log item from the store!");
+            return;
+        }
+        
+        NSMutableDictionary *data = payload[@"data"];
+        [items addObject:data];
+    }];
+    
+    return items;
+}
+
++ (void)flushRollbarThread {
+    
+    [RollbarLogger performSelector:@selector(_test_doNothing)
+                          onThread:[RollbarLogger _test_rollbarThread]
+                        withObject:nil
+                     waitUntilDone:YES
+    ];
+}
+
++ (void)_clearFile:(nonnull NSString *)filePath {
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSError *error;
+    BOOL fileExists = [fileManager fileExistsAtPath:filePath];
+    
+    if (fileExists) {
+        BOOL success = [fileManager removeItemAtPath:filePath
+                                               error:&error];
+        if (!success) {
+            NSLog(@"Error: %@", [error localizedDescription]);
+        }
+        [[NSFileManager defaultManager] createFileAtPath:filePath
+                                                contents:nil
+                                              attributes:nil];
+    }
+}
+
++ (nonnull NSString *)_logItemsStorePath {
+    
+    return [RollbarLogger _getSDKDataFilePath:QUEUED_ITEMS_FILE_NAME];
+}
+
++ (nonnull NSString *)_logItemsStoreStatePath {
+    
+    return [RollbarLogger _getSDKDataFilePath:QUEUED_ITEMS_STATE_FILE_NAME];
+}
+
++ (nonnull NSString *)_telemetryItemsStorePath {
+    
+    return [RollbarLogger _getSDKDataFilePath:QUEUED_TELEMETRY_ITEMS_FILE_NAME];
+}
+
++ (nonnull NSString *)_payloadsLogStorePath {
+    
+    return [RollbarLogger _getSDKDataFilePath:PAYLOADS_FILE_NAME];
+}
+
++ (nonnull NSString *)_getSDKDataFilePath:(nonnull NSString *)sdkFileName {
+    
+    NSString *cachesDirectory = [RollbarCachesDirectory directory];
+    return [cachesDirectory stringByAppendingPathComponent:sdkFileName];
+}
+
++ (NSThread *)_test_rollbarThread {
+    
     return rollbarThread;
 }
 
-- (void)_test_doNothing {
++ (void)_test_doNothing {
+    
+    // no-Op simulation...
 }
 
 @end

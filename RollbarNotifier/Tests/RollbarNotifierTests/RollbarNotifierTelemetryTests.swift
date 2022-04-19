@@ -7,7 +7,7 @@ import UnitTesting
 
 final class RollbarNotifierTelemetryTests: XCTestCase {
     
-    override class func setUp() {
+    override func setUp() {
         super.setUp();
         RollbarTestUtil.clearLogFile();
         RollbarTestUtil.clearTelemetryFile();
@@ -15,8 +15,8 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
             print("Info: Rollbar already pre-configured!");
         }
         else {
-            Rollbar.initWithAccessToken(RollbarUnitTestSettings.payloadsPostAccessToken);
-            Rollbar.currentConfiguration()?.destination.environment = RollbarUnitTestSettings.environment;
+            Rollbar.initWithAccessToken(RollbarTestHelper.getRollbarPayloadsAccessToken());
+            Rollbar.currentConfiguration()?.destination.environment = RollbarTestHelper.getRollbarEnvironment();
         }
     }
     
