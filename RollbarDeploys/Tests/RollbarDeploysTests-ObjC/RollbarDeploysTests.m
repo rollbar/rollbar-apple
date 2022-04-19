@@ -1,7 +1,6 @@
-//  Copyright (c) 2018 Rollbar, Inc. All rights reserved.
-
 #import <XCTest/XCTest.h>
 
+@import UnitTesting;
 @import RollbarDeploys;
 
 @interface RollbarDeploysObserver : NSObject
@@ -48,7 +47,7 @@
 @implementation RollbarDeploysTests
 
 - (void)testDeploymentDto {
-    NSString * const environment = @"Rollbar-Apple-UnitTests";
+    NSString * const environment = [RollbarTestHelper getRollbarEnvironment];
     NSString * const comment = @"a new deploy";
     NSString * const revision = @"a_revision";
     NSString * const localUsername = @"UnitTestRunner";
@@ -77,7 +76,7 @@
     NSDateFormatter *dateFormatter=[[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     
-    NSString * const environment = @"Rollbar-Apple-UnitTests";
+    NSString * const environment = [RollbarTestHelper getRollbarEnvironment];
     NSString * const comment =
         [NSString stringWithFormat:@"a new deploy at %@", [dateFormatter stringFromDate:[NSDate date]]];
     NSString * const revision = @"a_revision";
@@ -91,8 +90,8 @@
                                                                      localUserName:localUsername
                                                                    rollbarUserName:rollbarUsername];
     RollbarDeploysManager *deploysManager =
-        [[RollbarDeploysManager alloc] initWithWriteAccessToken:@"efdc4b85d66045f293a7f9e99c732f61"
-                                                readAccessToken:@"595cbf76b05b45f2b3ef661a2e0078d4"
+        [[RollbarDeploysManager alloc] initWithWriteAccessToken:[RollbarTestHelper getRollbarDeploysWriteAccessToken]
+                                                readAccessToken:[RollbarTestHelper getRollbarDeploysReadAccessToken]
                                  deploymentRegistrationObserver:observer
                                       deploymentDetailsObserver:observer
                                   deploymentDetailsPageObserver:observer
@@ -104,8 +103,8 @@
     NSString * const testDeploymentId = @"23922850";
     RollbarDeploysObserver *observer = [[RollbarDeploysObserver alloc] init];
     RollbarDeploysManager *deploysManager =
-    [[RollbarDeploysManager alloc] initWithWriteAccessToken:@"efdc4b85d66045f293a7f9e99c732f61"
-                                            readAccessToken:@"595cbf76b05b45f2b3ef661a2e0078d4"
+    [[RollbarDeploysManager alloc] initWithWriteAccessToken:[RollbarTestHelper getRollbarDeploysWriteAccessToken]
+                                            readAccessToken:[RollbarTestHelper getRollbarDeploysReadAccessToken]
                              deploymentRegistrationObserver:observer
                                   deploymentDetailsObserver:observer
                               deploymentDetailsPageObserver:observer
@@ -116,8 +115,8 @@
 - (void)testGetDeploymentsPage {
     RollbarDeploysObserver *observer = [[RollbarDeploysObserver alloc] init];
     RollbarDeploysManager *deploysManager =
-    [[RollbarDeploysManager alloc] initWithWriteAccessToken:@"efdc4b85d66045f293a7f9e99c732f61"
-                                            readAccessToken:@"595cbf76b05b45f2b3ef661a2e0078d4"
+    [[RollbarDeploysManager alloc] initWithWriteAccessToken:[RollbarTestHelper getRollbarDeploysWriteAccessToken]
+                                            readAccessToken:[RollbarTestHelper getRollbarDeploysReadAccessToken]
                              deploymentRegistrationObserver:observer
                                   deploymentDetailsObserver:observer
                               deploymentDetailsPageObserver:observer

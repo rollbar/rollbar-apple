@@ -1,12 +1,13 @@
 #if !os(watchOS)
 import XCTest
 import Foundation
+import UnitTesting
 import os.log
 @testable import RollbarNotifier
 
 final class RollbarNotifierTruncationTests: XCTestCase {
     
-    override class func setUp() {
+    override func setUp() {
         
         super.setUp();
         
@@ -14,8 +15,8 @@ final class RollbarNotifierTruncationTests: XCTestCase {
         RollbarTestUtil.clearTelemetryFile();
         
         //if Rollbar.currentConfiguration() != nil {
-        Rollbar.initWithAccessToken("09da180aba21479e9ed3d91e0b8d58d6");
-        Rollbar.currentConfiguration()?.destination.environment = "Rollbar-Apple-UnitTests";
+        Rollbar.initWithAccessToken(RollbarTestHelper.getRollbarPayloadsAccessToken());
+        Rollbar.currentConfiguration()?.destination.environment = RollbarTestHelper.getRollbarEnvironment();
         //}
     }
     

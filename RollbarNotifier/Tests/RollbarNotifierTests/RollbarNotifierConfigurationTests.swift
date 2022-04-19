@@ -2,11 +2,12 @@
 import XCTest
 import Foundation
 import os.log
+import UnitTesting
 @testable import RollbarNotifier
 
 final class RollbarNotifierConfigurationTests: XCTestCase {
     
-    override class func setUp() {
+    override func setUp() {
         
         super.setUp();
         
@@ -406,7 +407,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
 //
 //        let logMsg = "log-message-testing";
 //        RollbarTelemetry.sharedInstance().clearAllData();
-//        //Rollbar.currentConfiguration.accessToken = @"efdc4b85d66045f293a7f9e99c732f61";
+//        //Rollbar.currentConfiguration.accessToken = RollbarUnitTestSettings.deploysWriteAccessToken;
 //        Rollbar.currentConfiguration().telemetryEnabled = true;
 //        Rollbar.currentConfiguration().captureLogAsTelemetryEvents = true;
 //        // The following line ensures the captureLogAsTelemetryData setting is flushed through the internal queue

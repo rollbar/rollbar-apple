@@ -27,7 +27,7 @@ final class RolllbarNotifierConfigUtilTests: XCTestCase {
          print("Error: \(error) \n Stack Symbols: \(stackSymbols)")
      }
     
-    override class func setUp() {
+    override func setUp() {
         do {
             _ = try RollbarConfigUtil.deleteDefaultRollbarConfigFile();
         }

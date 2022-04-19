@@ -1,4 +1,4 @@
-// swift-tools-version:5.2
+// swift-tools-version:5.5
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -35,6 +35,9 @@ let package = Package(
         .library(
             name: "RollbarSwift",
             targets: ["RollbarSwift"]),
+        .library(
+            name: "RollbarCocoaLumberjack",
+            targets: ["RollbarCocoaLumberjack"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -45,15 +48,20 @@ let package = Package(
         ),
         .package(name:"PLCrashReporter",
                  url: "https://github.com/microsoft/plcrashreporter.git",
-                 from: "1.10.0" //Package.Dependency.Requirement.branch("master")
+                 from: "1.10.1" //Package.Dependency.Requirement.branch("master")
         ),
+        .package(name:"CocoaLumberjack",
+                 url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git",
+                 from: "3.7.4" //Package.Dependency.Requirement.branch("master")
+                ),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
             name: "RollbarCommon",
-            dependencies: [],
+            dependencies: [
+            ],
             path: "RollbarCommon/Sources/RollbarCommon",
             publicHeadersPath: "include",
             cSettings: [
@@ -63,7 +71,9 @@ let package = Package(
 
         .target(
             name: "RollbarDeploys",
-            dependencies: ["RollbarCommon",],
+            dependencies: [
+                "RollbarCommon",
+            ],
             path: "RollbarDeploys/Sources/RollbarDeploys",
             publicHeadersPath: "include",
             cSettings: [
@@ -73,7 +83,9 @@ let package = Package(
 
          .target(
              name: "RollbarNotifier",
-             dependencies: ["RollbarCommon",],
+             dependencies: [
+                "RollbarCommon",
+             ],
              path: "RollbarNotifier/Sources/RollbarNotifier",
              publicHeadersPath: "include",
              cSettings: [
@@ -83,7 +95,10 @@ let package = Package(
 
         .target(
             name: "RollbarKSCrash",
-            dependencies: ["RollbarCommon", "KSCrash"],
+            dependencies: [
+                "RollbarCommon",
+                "KSCrash",
+            ],
             path: "RollbarKSCrash/Sources/RollbarKSCrash",
             publicHeadersPath: "include",
             cSettings: [
@@ -93,7 +108,10 @@ let package = Package(
 
         .target(
             name: "RollbarPLCrashReporter",
-            dependencies: ["RollbarCommon", .product(name: "CrashReporter", package: "PLCrashReporter")],
+            dependencies: [
+                "RollbarCommon",
+                .product(name: "CrashReporter", package: "PLCrashReporter"),
+            ],
             path: "RollbarPLCrashReporter/Sources/RollbarPLCrashReporter",
             publicHeadersPath: "include",
             cSettings: [
@@ -103,7 +121,10 @@ let package = Package(
 
         .target(
             name: "RollbarAUL",
-            dependencies: ["RollbarCommon", "RollbarNotifier"],
+            dependencies: [
+                "RollbarCommon",
+                "RollbarNotifier",
+            ],
             path: "RollbarAUL/Sources/RollbarAUL",
             publicHeadersPath: "include",
             cSettings: [
@@ -113,7 +134,10 @@ let package = Package(
 
         .target(
             name: "RollbarSwift",
-            dependencies: ["RollbarCommon", "RollbarNotifier"],
+            dependencies: [
+                "RollbarCommon",
+                "RollbarNotifier",
+            ],
             path: "RollbarSwift/Sources/RollbarSwift",
             publicHeadersPath: "include",
             cSettings: [
@@ -121,6 +145,20 @@ let package = Package(
             ]
         ),
 
+        .target(
+            name: "RollbarCocoaLumberjack",
+            dependencies: [
+                "RollbarCommon",
+                "RollbarNotifier",
+                "CocoaLumberjack",
+            ],
+            path: "RollbarCocoaLumberjack/Sources/RollbarCocoaLumberjack",
+            publicHeadersPath: "include",
+            cSettings: [
+                .headerSearchPath("RollbarCocoaLumberjack/Sources/RollbarCocoaLumberjack/**"),
+            ]
+        ),
+        
     ],
     swiftLanguageVersions: [
         SwiftVersion.v4,

@@ -7,9 +7,8 @@
 
 import Foundation
 import RollbarCommon
-import RollbarNotifier
 
-class RollbarTestUtil {
+@objc public class RollbarTestUtil: NSObject {
     
     private static let queuedItemsFileName = "rollbar.items";
     private static let queuedItemsStateFileName = "rollbar.state";
@@ -32,7 +31,7 @@ class RollbarTestUtil {
         return filePath.path;
     }
 
-    public static func clearTelemetryFile() {
+    @objc public static func clearTelemetryFile() {
         let filePath = RollbarTestUtil.getTelemetryFilePath();
         let fileManager = FileManager.default;
         let fileExists = fileManager.fileExists(atPath: filePath);
@@ -46,7 +45,7 @@ class RollbarTestUtil {
         }
     }
 
-    public static func clearLogFile() {
+    @objc public static func clearLogFile() {
         let itemsStateFilePath = RollbarTestUtil.getQueuedItemsStateFilePath();
         let itemsFilePath = RollbarTestUtil.getQueuedItemsFilePath();
         let fileManager = FileManager.default;
@@ -67,7 +66,7 @@ class RollbarTestUtil {
         }
     }
 
-    public static func readFirstItemStringsFromLogFile() -> String? {
+    @objc public static func readFirstItemStringsFromLogFile() -> String? {
         
         let filePath = RollbarTestUtil.getQueuedItemsFilePath();
         let fileReader = RollbarFileReader(filePath: filePath, andOffset: 0);
@@ -75,7 +74,7 @@ class RollbarTestUtil {
         return item;
     }
 
-    public static func readItemStringsFromLogFile() -> [String] {
+    @objc public static func readItemStringsFromLogFile() -> [String] {
         
         let filePath = RollbarTestUtil.getQueuedItemsFilePath();
         let fileReader = RollbarFileReader(filePath: filePath, andOffset: 0);
@@ -89,7 +88,7 @@ class RollbarTestUtil {
         return items;
     }
 
-    public static func readItemsFromLogFile() -> [NSMutableDictionary] {
+    @objc public static func readItemsFromLogFile() -> [NSMutableDictionary] {
         let filePath = RollbarTestUtil.getQueuedItemsFilePath();
         let fileReader = RollbarFileReader(filePath: filePath, andOffset: 0);
         var items = [NSMutableDictionary] ();
@@ -115,7 +114,7 @@ class RollbarTestUtil {
         return items;
     }
     
-    public static func waitForPesistenceToComplete(waitTimeInSeconds: TimeInterval = 0.5) {
+    @objc public static func waitForPesistenceToComplete(waitTimeInSeconds: TimeInterval = 0.5) {
         Thread.sleep(forTimeInterval: waitTimeInSeconds);
     }
 
@@ -129,7 +128,7 @@ class RollbarTestUtil {
         }
     }
     
-    public static func makeTroubledCall() throws {
+    @objc public static func makeTroubledCall() throws {
         try makeInnerTroubledCall();
     }
 
@@ -159,7 +158,7 @@ class RollbarTestUtil {
     
 }
 
-enum RollbarTestUtilError: Error {
+public enum RollbarTestUtilError: Error {
     case basicError
     case simulatedError(errorDescription: String)
     case simulatedException(errorDescription: String, errorCallStack: [String] = Thread.callStackSymbols)
@@ -167,7 +166,7 @@ enum RollbarTestUtilError: Error {
     
 }
 
-protocol BackTracedErrorProtocol : Error /*OR LocalizedError OR CustomNSError*/ {
+public protocol BackTracedErrorProtocol : Error /*OR LocalizedError OR CustomNSError*/ {
     var errorDescription: String { get }
     var errorCallStack: [String] { get }
 }

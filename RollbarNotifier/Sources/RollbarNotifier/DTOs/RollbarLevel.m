@@ -1,5 +1,3 @@
-//  Copyright © 2018 Rollbar. All rights reserved.
-
 #import "RollbarLevel.h"
 
 @implementation RollbarLevelUtil

@@ -1,19 +1,20 @@
-//  Copyright (c) 2018 Rollbar, Inc. All rights reserved.
-
 @import Foundation;
 
 @class RollbarLogger;
 
 @interface RollbarThread : NSThread
 
-/// Disallowed initializer
+/// Hides the initializer.
 - (instancetype)init
 NS_UNAVAILABLE;
 
+/// Initializer
+/// @param logger a Rollbar logger to use.
+/// @param reportsPerMinute maximum allowed reporting rate.
 - (instancetype)initWithNotifier:(RollbarLogger*)logger
                    reportingRate:(NSUInteger)reportsPerMinute;
-//NS_DESIGNATED_INITIALIZER;
 
+/// Signifies that the thread is active or not.
 @property(atomic) BOOL active;
 
 @end

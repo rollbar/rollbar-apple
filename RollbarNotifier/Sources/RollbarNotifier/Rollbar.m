@@ -1,5 +1,3 @@
-//  Copyright (c) 2018 Rollbar, Inc. All rights reserved.
-
 @import RollbarCommon;
 
 #import "Rollbar.h"
@@ -7,6 +5,7 @@
 #import "RollbarConfig.h"
 #import "RollbarDestination.h"
 #import "RollbarLoggingOptions.h"
+#import "RollbarTelemetryThread.h"
 #import "RollbarTelemetryOptions.h"
 #import "RollbarTelemetryOptionsObserver.h"
 #import "RollbarScrubbingOptions.h"
@@ -62,7 +61,6 @@ static RollbarCrashProcessor *crashProcessor = nil;
               configuration:(nullable RollbarConfig *)configuration
              crashCollector:(nullable id<RollbarCrashCollector>)crashCollector {
 
-    [RollbarTelemetry sharedInstance]; // Load saved data, if any
     if (logger) {
         
         RollbarSdkLog(@"Rollbar has already been initialized.");
@@ -110,12 +108,8 @@ static RollbarCrashProcessor *crashProcessor = nil;
     }
     
     if (configuration && configuration.telemetry) {
-        [RollbarTelemetry sharedInstance].enabled = configuration.telemetry.enabled;
-        [RollbarTelemetry sharedInstance].scrubViewInputs = configuration.telemetry.viewInputsScrubber.enabled;
-        [RollbarTelemetry sharedInstance].viewInputsToScrub =
-            [NSSet setWithArray:configuration.telemetry.viewInputsScrubber.scrubFields].mutableCopy;
-        [[RollbarTelemetry sharedInstance] setCaptureLog:configuration.telemetry.captureLog];
-        [[RollbarTelemetry sharedInstance] setDataLimit:configuration.telemetry.maximumTelemetryData];
+        
+        [[RollbarTelemetry sharedInstance] configureWithOptions:configuration.telemetry];
     }
 }
 

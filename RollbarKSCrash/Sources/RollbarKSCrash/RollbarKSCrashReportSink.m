@@ -1,10 +1,3 @@
-//
-//  RollbarKSCrashReportSink.m
-//  
-//
-//  Created by Andrey Kornich on 2020-10-28.
-//
-
 #import "RollbarKSCrashReportSink.h"
 
 @implementation RollbarKSCrashReportSink

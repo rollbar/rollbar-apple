@@ -1,13 +1,4 @@
-//
-//  RollbarTelemetryNavigationBody.m
-//  Rollbar
-//
-//  Created by Andrey Kornich on 2020-02-28.
-//  Copyright © 2020 Rollbar. All rights reserved.
-//
-
 #import "RollbarTelemetryNavigationBody.h"
-//@import RollbarCommon;
 
 #pragma mark - constants
 
@@ -41,11 +32,6 @@ static NSString * const DFK_TO = @"to";
     return [self initWithFromLocation:from
                            toLocation:to
                             extraData:nil];
-}
-
-- (instancetype)initWithArray:(NSArray *)data {
-
-    return [super initWithArray:data];
 }
 
 - (instancetype)initWithDictionary:(NSDictionary<NSString *, id> *)data {

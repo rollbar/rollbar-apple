@@ -1,4 +1,4 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.5
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -23,6 +23,7 @@ let package = Package(
         // .package(url: /* package url */, from: "1.0.0"),
         .package(path: "../RollbarCommon"),
         .package(path: "../RollbarNotifier"),
+        .package(path: "../UnitTesting"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -33,8 +34,6 @@ let package = Package(
             publicHeadersPath: "include",
             cSettings: [
                 .headerSearchPath("Sources/RollbarAUL/**"),
-//                .headerSearchPath("Sources/RollbarAUL"),
-//                .headerSearchPath("Sources/RollbarAUL/include"),
 //                .headerSearchPath("Sources/RollbarAUL/DTOs"),
                 
 //                .define("DEFINES_MODULE"),
@@ -42,23 +41,19 @@ let package = Package(
         ),
         .testTarget(
             name: "RollbarAULTests",
-            dependencies: ["RollbarAUL"],
-            cSettings: [
-                .headerSearchPath("Tests/RollbarAULTests/**"),
-//                .headerSearchPath("Sources/RollbarNotifier"),
-//                .headerSearchPath("Sources/RollbarNotifier/include"),
-//                .headerSearchPath("Sources/RollbarNotifier/DTOs"),
-                
-//                .define("DEFINES_MODULE"),
+            dependencies: [
+                "UnitTesting",
+                "RollbarAUL",
             ]
         ),
         .testTarget(
             name: "RollbarAULTests-ObjC",
-            dependencies: ["RollbarAUL"],
+            dependencies: [
+                "UnitTesting",
+                "RollbarAUL"
+            ],
             cSettings: [
                 .headerSearchPath("Tests/RollbarAULTests-ObjC/**"),
-//                .headerSearchPath("Sources/RollbarNotifier"),
-//                .headerSearchPath("Sources/RollbarNotifier/include"),
 //                .headerSearchPath("Sources/RollbarNotifier/DTOs"),
                 
 //                .define("DEFINES_MODULE"),

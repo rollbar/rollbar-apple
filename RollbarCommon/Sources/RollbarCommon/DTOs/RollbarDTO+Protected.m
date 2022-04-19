@@ -220,4 +220,22 @@
     [self setNumber:number forKey:key];
 }
 
+- (NSTimeInterval)safelyGetTimeIntervalByKey:(NSString *)key
+                                 withDefault:(NSTimeInterval)defaultValue {
+    
+    NSNumber *value = [self safelyGetNumberByKey:key];
+    if (value) {
+        return value.doubleValue;
+    }
+    else {
+        return defaultValue;
+    }
+}
+
+- (void)setTimeInterval:(NSTimeInterval)data forKey:(NSString *)key {
+    
+    NSNumber *number = @(data);
+    [self setNumber:number forKey:key];
+}
+
 @end

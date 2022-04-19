@@ -55,6 +55,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param exception specified NSException instance
 + (void)throwException:(NSException*)exception;
 
+/// Hides initializer
+-(instancetype)init
+NS_UNAVAILABLE;
+
 @end
 
 NS_ASSUME_NONNULL_END

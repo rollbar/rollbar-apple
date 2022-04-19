@@ -1,14 +1,4 @@
-//
-//  RollbarTrace.m
-//  Rollbar
-//
-//  Created by Andrey Kornich on 2019-11-27.
-//  Copyright © 2019 Rollbar. All rights reserved.
-//
-
 #import "RollbarTrace.h"
-//#import "DataTransferObject+Protected.h"
-//#import "DataTransferObject+CustomData.h"
 #import "RollbarCallStackFrame.h"
 #import "RollbarException.h"
 

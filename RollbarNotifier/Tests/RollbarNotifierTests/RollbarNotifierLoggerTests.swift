@@ -1,12 +1,13 @@
 #if !os(watchOS)
 import XCTest
 import Foundation
+import UnitTesting
 import os.log
 @testable import RollbarNotifier
 
 final class RollbarNotifierLoggerTests: XCTestCase {
     
-    override class func setUp() {
+    override func setUp() {
         
         super.setUp();
         
@@ -16,9 +17,9 @@ final class RollbarNotifierLoggerTests: XCTestCase {
         
         
         //if Rollbar.currentConfiguration() != nil {
-        Rollbar.initWithAccessToken("09da180aba21479e9ed3d91e0b8d58d6");
-        Rollbar.currentConfiguration()?.destination.accessToken = "09da180aba21479e9ed3d91e0b8d58d6";
-        Rollbar.currentConfiguration()?.destination.environment = "Rollbar-Apple-UnitTests";
+        Rollbar.initWithAccessToken(RollbarTestHelper.getRollbarPayloadsAccessToken());
+        Rollbar.currentConfiguration()?.destination.accessToken = RollbarTestHelper.getRollbarPayloadsAccessToken();
+        Rollbar.currentConfiguration()?.destination.environment = RollbarTestHelper.getRollbarEnvironment();
         Rollbar.currentConfiguration()?.developerOptions.transmit = true;
         Rollbar.currentConfiguration()?.developerOptions.logPayload = true;
         Rollbar.currentConfiguration()?.loggingOptions.maximumReportsPerMinute = 5000;
@@ -86,8 +87,8 @@ final class RollbarNotifierLoggerTests: XCTestCase {
         //RollbarTestUtil.clearLogFile();
         //RollbarTestUtil.clearTelemetryFile();
 
-        Rollbar.currentConfiguration()?.destination.accessToken = "efdc4b85d66045f293a7f9e99c732f61";
-        Rollbar.currentConfiguration()?.destination.environment = "Rollbar-Apple-UnitTests";
+        Rollbar.currentConfiguration()?.destination.accessToken = RollbarTestHelper.getRollbarPayloadsAccessToken();
+        Rollbar.currentConfiguration()?.destination.environment = RollbarTestHelper.getRollbarEnvironment();
         Rollbar.currentConfiguration()?.developerOptions.transmit = true;
 
         Rollbar.currentConfiguration()?.developerOptions.transmit = true;

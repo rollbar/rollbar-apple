@@ -20,9 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithObserver:(nullable id<RollbarCrashCollectorObserver>)observer
 NS_DESIGNATED_INITIALIZER;
 
-/// Hides parametrless initializer.
-- (instancetype)init
-NS_UNAVAILABLE;
+/// Initializer.
+- (instancetype)init;
 
 @end
 

@@ -1,10 +1,3 @@
-//
-//  MyClass.m
-//  
-//
-//  Created by Andrey Kornich on 2020-11-04.
-//
-
 #import "RollbarCrashProcessor.h"
 #import "Rollbar.h"
 

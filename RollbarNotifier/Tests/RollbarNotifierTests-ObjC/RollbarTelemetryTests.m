@@ -1,10 +1,8 @@
-//  Copyright (c) 2018 Rollbar, Inc. All rights reserved.
-
 @import Foundation;
+@import UnitTesting;
 
 #if !TARGET_OS_WATCH
 #import <XCTest/XCTest.h>
-#import "RollbarTestUtil.h"
 
 @import RollbarNotifier;
 
@@ -15,11 +13,14 @@
 @implementation RollbarTelemetryTests
 
 - (void)setUp {
+
     [super setUp];
-    RollbarClearLogFile();
+
+    [RollbarLogger clearSdkDataStore];
+
     if (!Rollbar.currentConfiguration) {
-        [Rollbar initWithAccessToken:@"09da180aba21479e9ed3d91e0b8d58d6"];
-        Rollbar.currentConfiguration.destination.environment = @"Rollbar-Apple-UnitTests";
+        [Rollbar initWithAccessToken: [RollbarTestHelper getRollbarPayloadsAccessToken]];
+        Rollbar.currentConfiguration.destination.environment = [RollbarTestHelper getRollbarEnvironment];
     }
 
 }
@@ -29,9 +30,8 @@
     [super tearDown];
 }
 
-- (void)doNothing {}
-
 - (void)testTelemetryCapture {
+    
     Rollbar.currentConfiguration.telemetry.enabled = YES;
     [Rollbar reapplyConfiguration];
     
@@ -43,9 +43,9 @@
     [Rollbar recordManualEventForLevel:RollbarLevel_Debug withData:@{@"data": @"content"}];
     [Rollbar debugMessage:@"Test"];
 
-    RollbarFlushFileThread(Rollbar.currentLogger);
+    [RollbarLogger flushRollbarThread];
 
-    NSArray *logItems = RollbarReadLogItemFromFile();
+    NSArray *logItems = [RollbarLogger readLogItemsFromStore];
     NSDictionary *item = logItems[0];
     NSArray *telemetryData = [item valueForKeyPath:@"body.telemetry"];
     XCTAssertTrue(telemetryData.count > 0);
@@ -77,15 +77,17 @@
 }
 
 - (void)testErrorReportingWithTelemetry {
+    
     Rollbar.currentConfiguration.telemetry.enabled = YES;
 
     [Rollbar recordNavigationEventForLevel:RollbarLevel_Info from:@"SomeNavigationSource" to:@"SomeNavigationDestination"];
     [Rollbar recordConnectivityEventForLevel:RollbarLevel_Info status:@"SomeConnectivityStatus"];
     [Rollbar recordNetworkEventForLevel:RollbarLevel_Info method:@"POST" url:@"www.myservice.com" statusCode:@"200" extraData:nil];
     [Rollbar recordErrorEventForLevel:RollbarLevel_Debug message:@"Some telemetry message..."];
-    [Rollbar recordErrorEventForLevel:RollbarLevel_Error exception:[NSException exceptionWithName:@"someExceptionName"
-                                                                                     reason:@"someExceptionReason"
-                                                                                   userInfo:nil]];
+    [Rollbar recordErrorEventForLevel:RollbarLevel_Error exception:
+     [NSException exceptionWithName:@"someExceptionName"
+                             reason:@"someExceptionReason"
+                           userInfo:nil]];
     [Rollbar recordManualEventForLevel:RollbarLevel_Debug withData:@{@"myTelemetryParameter": @"itsValue"}];
     
     [Rollbar debugMessage:@"Demonstrate Telemetry capture"];
@@ -94,7 +96,7 @@
 
     //[NSThread sleepForTimeInterval:8.0f];
     
-    NSArray *logItems = RollbarReadLogItemFromFile();
+    NSArray *logItems = [RollbarLogger readLogItemsFromStore];
     for (NSDictionary *item in logItems) {
         NSArray *telemetryData = [item valueForKeyPath:@"body.telemetry"];
 
@@ -127,6 +129,7 @@
 }
 
 - (void)testTelemetryViewEventScrubbing {
+    
     Rollbar.currentConfiguration.telemetry.enabled = YES;
     Rollbar.currentConfiguration.telemetry.viewInputsScrubber.enabled = YES;
     [Rollbar.currentConfiguration.telemetry.viewInputsScrubber addScrubField:@"password"];
@@ -150,6 +153,7 @@
 }
 
 - (void)testRollbarLog {
+    
     Rollbar.currentConfiguration.telemetry.enabled = YES;
     Rollbar.currentConfiguration.telemetry.captureLog = YES;
     [Rollbar reapplyConfiguration];

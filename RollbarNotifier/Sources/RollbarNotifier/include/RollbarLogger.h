@@ -1,5 +1,3 @@
-//  Copyright (c) 2018 Rollbar, Inc. All rights reserved.
-
 @import Foundation;
 
 @class RollbarConfig;
@@ -8,6 +6,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// Models interface of a Rollbar logger
 @interface RollbarLogger : NSObject
 
 /// The shared instance of the logger
@@ -60,11 +59,11 @@ NS_DESIGNATED_INITIALIZER;
        data:(nullable NSDictionary<NSString *, id> *)data
     context:(nullable NSString *)context;
 
-    /// Capture a log entry based on an NSError
-    /// @param level Rollbar error/log level
-    /// @param error an NSError
-    /// @param data extra data
-    /// @param context extra context
+/// Capture a log entry based on an NSError
+/// @param level Rollbar error/log level
+/// @param error an NSError
+/// @param data extra data
+/// @param context extra context
 - (void)log:(RollbarLevel)level
       error:(nonnull NSError *)error
        data:(nullable NSDictionary<NSString *, id> *)data
@@ -83,13 +82,6 @@ NS_DESIGNATED_INITIALIZER;
 /// @param payload complete Rollbar payload as JSON string
 /// @return YES if successful. NO if not.
 - (BOOL)sendPayload:(nonnull NSData *)payload;
-
-/// Updates key configuration elements
-/// @param accessToken the Rollbar project access token
-/// @param configuration the Rollbar configuration object
-//- (void)updateAccessToken:(NSString *)accessToken
-//            configuration:(RollbarConfig *)configuration
-//                   isRoot:(BOOL)isRoot;
 
 /// Updates key configuration elements
 /// @param configuration the Rollbar configuration object

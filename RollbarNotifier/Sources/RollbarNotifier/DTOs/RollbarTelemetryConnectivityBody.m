@@ -1,13 +1,4 @@
-//
-//  RollbarTelemetryConnectivityBody.m
-//  Rollbar
-//
-//  Created by Andrey Kornich on 2020-02-28.
-//  Copyright © 2020 Rollbar. All rights reserved.
-//
-
 #import "RollbarTelemetryConnectivityBody.h"
-//#import "DataTransferObject+Protected.h"
 
 #pragma mark - constants
 
@@ -35,11 +26,6 @@ static NSString * const DFK_STATUS = @"change";
 
 -(instancetype)initWithStatus:(nonnull NSString *)status {
     return [self initWithStatus:status extraData:nil];
-}
-
-- (instancetype)initWithArray:(NSArray *)data {
-
-    return [super initWithArray:data];
 }
 
 - (instancetype)initWithDictionary:(NSDictionary<NSString *, id> *)data {

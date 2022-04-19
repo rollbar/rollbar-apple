@@ -6,6 +6,7 @@
 //
 
 #import "AppDelegate.h"
+#import "RollbarDemoSettings.h"
 
 @import RollbarNotifier;
 @import RollbarKSCrash;
@@ -55,14 +56,17 @@
 #pragma mark - UISceneSession lifecycle
 
 
-- (UISceneConfiguration *)application:(UIApplication *)application configurationForConnectingSceneSession:(UISceneSession *)connectingSceneSession options:(UISceneConnectionOptions *)options {
+- (UISceneConfiguration *) application:(UIApplication *)application
+configurationForConnectingSceneSession:(UISceneSession *)connectingSceneSession
+                               options:(UISceneConnectionOptions *)options {
     // Called when a new scene session is being created.
     // Use this method to select a configuration to create the new scene with.
     return [[UISceneConfiguration alloc] initWithName:@"Default Configuration" sessionRole:connectingSceneSession.role];
 }
 
 
-- (void)application:(UIApplication *)application didDiscardSceneSessions:(NSSet<UISceneSession *> *)sceneSessions {
+- (void)    application:(UIApplication *)application
+didDiscardSceneSessions:(NSSet<UISceneSession *> *)sceneSessions {
     // Called when the user discards a scene session.
     // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
     // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
@@ -73,8 +77,8 @@
     // configure Rollbar:
     RollbarConfig *config = [RollbarConfig new];
     
-    config.destination.accessToken = @"09da180aba21479e9ed3d91e0b8d58d6";
-    config.destination.environment = @"Rollbar-Apple-Samples";
+    config.destination.accessToken = ROLLBAR_DEMO_PAYLOADS_ACCESS_TOKEN;
+    config.destination.environment = ROLLBAR_DEMO_ENVIRONMENT;
     config.customData = @{ @"someKey": @"someValue", };
 
     // init Rollbar shared instance:

@@ -1,10 +1,3 @@
-//
-//  Test.m
-//  
-//
-//  Created by Andrey Kornich on 2021-05-06.
-//
-
 #import <XCTest/XCTest.h>
 @import RollbarCommon;
 

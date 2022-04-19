@@ -41,15 +41,17 @@
                     rollbarUserName:(NSString *)rollbarUserName
 NS_DESIGNATED_INITIALIZER;
 
+/// Designated initializer
+/// @param data data dictionary with initial property values
 - (instancetype)initWithDictionary:(NSDictionary<NSString *, id> *)data
 NS_DESIGNATED_INITIALIZER;
 
-/// Initialize this DTO instance with valid JSON NSArray seed
+/// Hides this initializer.
 /// @param data valid JSON NSArray seed
 - (instancetype)initWithArray:(NSArray *)data
 NS_UNAVAILABLE;
 
-/// Initialize empty DTO
+/// Hides this initializer.
 - (instancetype)init
 NS_UNAVAILABLE;
 

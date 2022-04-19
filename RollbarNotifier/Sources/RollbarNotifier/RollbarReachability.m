@@ -36,7 +36,8 @@
 #import <ifaddrs.h>
 #import <netdb.h>
 
-NSString *const kRollbarReachabilityChangedNotification = @"kRollbarReachabilityChangedNotification";
+NSString *const kRollbarReachabilityChangedNotification =
+@"kRollbarReachabilityChangedNotification";
 
 @interface RollbarReachability ()
 

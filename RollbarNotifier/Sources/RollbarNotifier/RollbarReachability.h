@@ -25,7 +25,6 @@
  POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 @import Foundation;
 
 #if !TARGET_OS_WATCH
@@ -67,43 +66,83 @@ typedef NS_ENUM(NSInteger, NetworkStatus) {
 typedef void (^NetworkReachable)(RollbarReachability *reachability);
 typedef void (^NetworkUnreachable)(RollbarReachability *reachability);
 
+/// Network reachability helper
 @interface RollbarReachability : NSObject
 
+/// Block to invoke when becomes reachable.
 @property (nonatomic, copy) NetworkReachable    reachableBlock;
+
+/// Block to invoke when becomes unreachable.
 @property (nonatomic, copy) NetworkUnreachable  unreachableBlock;
 
 
+/// Flags reachability via wireless/cellular connection.
 @property (nonatomic, assign) BOOL reachableOnWWAN;
 
+/// Detects reachability
+/// @param hostname host name to reach
 +(RollbarReachability *)reachabilityWithHostname:(NSString *)hostname;
+
 // This is identical to the function above, but is here to maintain
 //compatibility with Apples original code. (see .m)
+
+/// Detects reachability
+/// @param hostname host name to reach
 +(RollbarReachability *)reachabilityWithHostName:(NSString *)hostname;
+
+/// Detects Internet reachability
 +(RollbarReachability *)reachabilityForInternetConnection;
+
+/// Detects reachability
+/// @param hostAddress host's address
 +(RollbarReachability *)reachabilityWithAddress:(const struct sockaddr_in *)hostAddress;
+
+/// Detects reachability of local WiFi
 +(RollbarReachability *)reachabilityForLocalWiFi;
 
+/// Initializer
+/// @param ref reference to a SCNetworkReachability
 -(RollbarReachability *)initWithReachabilityRef:(SCNetworkReachabilityRef)ref;
 
+/// Starts the notifier
 -(BOOL)startNotifier;
+
+/// Stops the notifier
 -(void)stopNotifier;
 
+/// Flags reachability any status
 -(BOOL)isReachable;
+
+/// Flags reachability via cellular status
 -(BOOL)isReachableViaWWAN;
+
+/// Flags reachability via WiFi status
 -(BOOL)isReachableViaWiFi;
 
-// WWAN may be available, but not active until a connection has been established.
-// WiFi may require a connection for VPN on Demand.
--(BOOL)isConnectionRequired; // Identical DDG variant.
--(BOOL)connectionRequired; // Apple's routine.
-// Dynamic, on demand connection?
+/// WWAN may be available, but not active until a connection has been established.
+/// WiFi may require a connection for VPN on Demand.
+/// Identical DDG variant.
+-(BOOL)isConnectionRequired;
+
+/// Apple's routine.
+-(BOOL)connectionRequired;
+
+/// Dynamic, on demand connection?
 -(BOOL)isConnectionOnDemand;
-// Is user intervention required?
+
+/// Is user intervention required?
 -(BOOL)isInterventionRequired;
 
+/// Returns current reachability status
 -(NetworkStatus)currentReachabilityStatus;
+
+/// Returns current reachability flags
 -(SCNetworkReachabilityFlags)reachabilityFlags;
+
+/// Returns current reachability status as a String
 -(NSString *)currentReachabilityString;
+
+/// Returns current reachability flags as a String
 -(NSString *)currentReachabilityFlags;
 
 @end
