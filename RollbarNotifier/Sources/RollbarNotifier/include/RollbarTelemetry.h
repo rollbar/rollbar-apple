@@ -20,9 +20,6 @@
 /// RollbarTelemetry application wide "service" component
 @interface RollbarTelemetry : NSObject
 
-/// Shared service instance/singleton
-+ (nonnull instancetype)sharedInstance;
-
 #pragma mark - Sigleton pattern
 
 + (nonnull instancetype)sharedInstance;
