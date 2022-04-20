@@ -1,3 +1,6 @@
+#ifndef RollbarPerson_h
+#define RollbarPerson_h
+
 @import RollbarCommon;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -59,3 +62,5 @@ NS_UNAVAILABLE;
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarPerson_h

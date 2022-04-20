@@ -1,3 +1,6 @@
+#ifndef RollbarConfigUtil_h
+#define RollbarConfigUtil_h
+
 @import Foundation;
 
 @class RollbarConfig;
@@ -53,3 +56,5 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarConfigUtil_h

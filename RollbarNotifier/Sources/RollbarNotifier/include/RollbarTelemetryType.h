@@ -1,3 +1,6 @@
+#ifndef RollbarTelemetryType_h
+#define RollbarTelemetryType_h
+
 @import Foundation;
 
 #pragma mark - RollbarTelemetryType
@@ -31,4 +34,6 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarTelemetryType_h
 

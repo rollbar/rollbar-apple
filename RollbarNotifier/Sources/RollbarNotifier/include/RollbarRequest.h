@@ -1,3 +1,6 @@
+#ifndef RollbarRequest_h
+#define RollbarRequest_h
+
 #import "RollbarHttpMethod.h"
 
 @import RollbarCommon;
@@ -58,3 +61,5 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarRequest_h

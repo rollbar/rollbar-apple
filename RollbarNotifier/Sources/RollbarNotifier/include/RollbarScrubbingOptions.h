@@ -1,3 +1,6 @@
+#ifndef RollbarScrubbingOptions_h
+#define RollbarScrubbingOptions_h
+
 @import RollbarCommon;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -55,3 +58,5 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarScrubbingOptions_h

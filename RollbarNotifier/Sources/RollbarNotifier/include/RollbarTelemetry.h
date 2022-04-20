@@ -1,3 +1,6 @@
+#ifndef RollbarTelemetry_h
+#define RollbarTelemetry_h
+
 @import Foundation;
 
 #import "RollbarLevel.h"
@@ -166,3 +169,5 @@
 
 
 @end
+
+#endif //RollbarTelemetry_h

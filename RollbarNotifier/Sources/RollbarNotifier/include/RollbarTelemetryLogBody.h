@@ -1,3 +1,6 @@
+#ifndef RollbarTelemetryLogBody_h
+#define RollbarTelemetryLogBody_h
+
 #import "RollbarTelemetryBody.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -40,3 +43,5 @@ NS_UNAVAILABLE;
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarTelemetryLogBody_h

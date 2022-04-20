@@ -48,6 +48,7 @@ All the active development will be done within this SDK repository.
 [![Platform](https://img.shields.io/cocoapods/p/RollbarCommon.svg?label=RollbarCommon)](https://docs.rollbar.com/docs/apple)
 [![Platform](https://img.shields.io/cocoapods/p/RollbarAUL.svg?label=RollbarAUL)](https://docs.rollbar.com/docs/apple)
 [![Platform](https://img.shields.io/cocoapods/p/RollbarSwift.svg?label=RollbarSwift)](https://docs.rollbar.com/docs/apple)
+[![Platform](https://img.shields.io/cocoapods/p/RollbarCocoaLumberjack.svg?label=RollbarCocoaLumberjack)](https://docs.rollbar.com/docs/apple)
 [![Platform](https://img.shields.io/cocoapods/p/RollbarPLCrashReporter.svg?label=RollbarPLCrashReporter)](https://docs.rollbar.com/docs/apple)
 [![Platform](https://img.shields.io/cocoapods/p/RollbarKSCrash.svg?label=RollbarKSCrash)](https://docs.rollbar.com/docs/apple)
 
@@ -56,6 +57,7 @@ All the active development will be done within this SDK repository.
 [![CocoaPods](https://img.shields.io/cocoapods/v/RollbarCommon?label=RollbarCommon)](https://cocoapods.org/pods/RollbarCommon)
 [![CocoaPods](https://img.shields.io/cocoapods/v/RollbarAUL?label=RollbarAUL)](https://cocoapods.org/pods/RollbarAUL)
 [![CocoaPods](https://img.shields.io/cocoapods/v/RollbarSwift?label=RollbarSwift)](https://cocoapods.org/pods/RollbarSwift)
+[![CocoaPods](https://img.shields.io/cocoapods/v/RollbarCocoaLumberjack?label=RollbarCocoaLumberjack)](https://cocoapods.org/pods/RollbarCocoaLumberjack)
 [![CocoaPods](https://img.shields.io/cocoapods/v/RollbarPLCrashReporter?label=RollbarPLCrashReporter)](https://cocoapods.org/pods/RollbarPLCrashReporter)
 [![CocoaPods](https://img.shields.io/cocoapods/v/RollbarKSCrash?label=RollbarKSCrash)](https://cocoapods.org/pods/RollbarKSCrash)
 

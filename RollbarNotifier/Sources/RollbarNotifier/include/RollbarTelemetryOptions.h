@@ -1,3 +1,6 @@
+#ifndef RollbarTelemetryOptions_h
+#define RollbarTelemetryOptions_h
+
 @import RollbarCommon;
 
 @class RollbarScrubbingOptions;
@@ -54,3 +57,5 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarTelemetryOptions_h

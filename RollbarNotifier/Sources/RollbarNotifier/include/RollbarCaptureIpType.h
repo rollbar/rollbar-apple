@@ -1,3 +1,6 @@
+#ifndef RollbarCaptureIpType_h
+#define RollbarCaptureIpType_h
+
 @import Foundation;
 
 #pragma mark - RollbarCaptureIpType enum
@@ -26,3 +29,5 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarCaptureIpType_h

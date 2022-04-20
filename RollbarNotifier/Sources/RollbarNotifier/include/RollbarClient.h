@@ -1,3 +1,6 @@
+#ifndef RollbarClient_h
+#define RollbarClient_h
+
 @import RollbarCommon;
 
 @class RollbarJavascript;
@@ -30,3 +33,5 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarClient_h

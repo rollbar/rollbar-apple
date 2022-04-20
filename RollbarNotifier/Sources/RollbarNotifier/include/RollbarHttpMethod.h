@@ -1,3 +1,6 @@
+#ifndef RollbarHttpMethod_h
+#define RollbarHttpMethod_h
+
 @import Foundation;
 
 #pragma mark - RollbarHttpMethod enum
@@ -32,3 +35,5 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarHttpMethod_h

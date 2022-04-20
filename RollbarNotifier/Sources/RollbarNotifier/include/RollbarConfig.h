@@ -1,3 +1,6 @@
+#ifndef RollbarConfig_h
+#define RollbarConfig_h
+
 #import "RollbarCaptureIpType.h"
 #import "RollbarLevel.h"
 
@@ -95,3 +98,5 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif // RollbarConfig_h

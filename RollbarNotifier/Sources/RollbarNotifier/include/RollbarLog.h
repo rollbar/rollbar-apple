@@ -1,3 +1,6 @@
+#ifndef RollbarLog_h
+#define RollbarLog_h
+
 @import Foundation;
 
 /// Rollbar equivalent of NSLog(...) that also allows capture of the log messages as part of RollbarTelemetry data.
@@ -6,3 +9,5 @@
 ///        with similar RollbarLog(...) calls to be captured as extra telemetry data.
 /// @param format format of the logged message
 void RollbarLog(NSString *format, ...);
+
+#endif //RollbarLog_h

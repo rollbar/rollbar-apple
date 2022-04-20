@@ -1,3 +1,6 @@
+#ifndef RollbarTelemetryNetworkBody_h
+#define RollbarTelemetryNetworkBody_h
+
 #import "RollbarTelemetryBody.h"
 #import "RollbarHttpMethod.h"
 
@@ -55,3 +58,5 @@ NS_UNAVAILABLE;
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarTelemetryNetworkBody_h

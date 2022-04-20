@@ -1,3 +1,6 @@
+#ifndef RollbarPayloadTruncator_h
+#define RollbarPayloadTruncator_h
+
 @import Foundation;
 
 /// Payload truncation utility
@@ -36,3 +39,5 @@
               toTotalBytes:(unsigned long)totalBytesLimit;
 
 @end
+
+#endif //RollbarPayloadTruncator_h
