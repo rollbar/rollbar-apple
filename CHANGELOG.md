@@ -27,6 +27,7 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 
 ### 2.2.4
 
+- fix:   resolve #161 - Fix type conversion within RollbarAulEntitySnapper.m
 - chore: resolve #109 - ARM64 slice excluded from cocoapods spec?
 
 ### 2.2.3

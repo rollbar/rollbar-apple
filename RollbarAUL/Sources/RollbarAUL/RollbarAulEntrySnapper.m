@@ -74,7 +74,7 @@ API_UNAVAILABLE(ios, tvos, watchos)
         return;
     }
     
-    snapshot[@"aul_parentActivityIdentifier"] = [NSNumber numberWithUnsignedInt:entry.parentActivityIdentifier];
+    snapshot[@"aul_parentActivityIdentifier"] = [NSNumber numberWithUnsignedLongLong:entry.parentActivityIdentifier];
 }
 
 - (void)captureOSLogEntrySignpost:(nullable OSLogEntrySignpost *)entry
@@ -84,7 +84,7 @@ API_UNAVAILABLE(ios, tvos, watchos)
         return;
     }
     
-    snapshot[@"aul_signpostIdentifier"] = [NSNumber numberWithUnsignedInt:entry.signpostIdentifier];
+    snapshot[@"aul_signpostIdentifier"] = [NSNumber numberWithUnsignedLongLong:entry.signpostIdentifier];
     snapshot[@"aul_signpostName"] = entry.signpostName;
     snapshot[@"aul_signpostType"] = [NSNumber numberWithInteger:entry.signpostType];
 }
@@ -96,11 +96,11 @@ API_UNAVAILABLE(ios, tvos, watchos)
         return;
     }
     
-    snapshot[@"aul_activityIdentifier"] = [NSNumber numberWithUnsignedInt:entry.activityIdentifier]; //uint64
+    snapshot[@"aul_activityIdentifier"] = [NSNumber numberWithUnsignedLongLong:entry.activityIdentifier];
     snapshot[@"aul_process"] = entry.process;
     snapshot[@"aul_processIdentifier"] = [NSNumber numberWithInt:entry.processIdentifier];
     snapshot[@"aul_sender"] = entry.sender;
-    snapshot[@"aul_threadIdentifier"] = [NSNumber numberWithUnsignedInt:entry.threadIdentifier];
+    snapshot[@"aul_threadIdentifier"] = [NSNumber numberWithUnsignedLongLong:entry.threadIdentifier];
 }
 
 - (void)captureOSLogEntryWithPayload:(nullable OSLogEntry<OSLogEntryWithPayload> *)entry
