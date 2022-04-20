@@ -1,3 +1,6 @@
+#ifndef RollbarTrace_h
+#define RollbarTrace_h
+
 @import RollbarCommon;
 
 @class RollbarCallStackFrame;
@@ -37,3 +40,5 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarTrace_h

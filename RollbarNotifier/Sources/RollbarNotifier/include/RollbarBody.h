@@ -1,3 +1,6 @@
+#ifndef RollbarBody_h
+#define RollbarBody_h
+
 @import RollbarCommon;
 
 @class RollbarTelemetry;
@@ -65,3 +68,5 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarBody_h

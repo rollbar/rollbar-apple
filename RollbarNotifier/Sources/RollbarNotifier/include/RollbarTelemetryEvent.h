@@ -1,3 +1,6 @@
+#ifndef RollbarTelemetryEvent_h
+#define RollbarTelemetryEvent_h
+
 @import RollbarCommon;
 
 #import "RollbarLevel.h"
@@ -84,3 +87,5 @@ NS_UNAVAILABLE;
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarTelemetryEvent_h

@@ -1,3 +1,6 @@
+#ifndef RollbarLoggingOptions_h
+#define RollbarLoggingOptions_h
+
 #import "RollbarLevel.h"
 #import "RollbarCaptureIpType.h"
 @import RollbarCommon;
@@ -105,3 +108,5 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarLoggingOptions_h

@@ -1,3 +1,6 @@
+#ifndef RollbarLogger_Test_h
+#define RollbarLogger_Test_h
+
 #import <Foundation/Foundation.h>
 #import "RollbarLogger.h"
 
@@ -39,3 +42,5 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarLogger_Test_h

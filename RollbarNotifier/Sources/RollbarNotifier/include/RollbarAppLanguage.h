@@ -1,3 +1,6 @@
+#ifndef RollbarAppLanguage_h
+#define RollbarAppLanguage_h
+
 @import Foundation;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -24,3 +27,5 @@ typedef NS_ENUM(NSUInteger, RollbarAppLanguage) {
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarAppLanguage_h

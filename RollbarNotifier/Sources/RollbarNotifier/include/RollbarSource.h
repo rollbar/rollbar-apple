@@ -1,3 +1,6 @@
+#ifndef RollbarSource_h
+#define RollbarSource_h
+
 @import Foundation;
 
 #pragma mark - RollbarSource enum
@@ -25,3 +28,5 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarSource_h

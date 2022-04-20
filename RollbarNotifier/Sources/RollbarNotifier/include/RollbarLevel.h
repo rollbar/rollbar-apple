@@ -1,3 +1,6 @@
+#ifndef RollbarLevel_h
+#define RollbarLevel_h
+
 @import Foundation;
 
 #pragma mark - RollbarLevel
@@ -28,3 +31,5 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarLevel_h

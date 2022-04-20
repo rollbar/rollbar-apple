@@ -1,3 +1,6 @@
+#ifndef RollbarTelemetryManualBody_h
+#define RollbarTelemetryManualBody_h
+
 #import "RollbarTelemetryBody.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -8,3 +11,5 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarTelemetryManualBody_h

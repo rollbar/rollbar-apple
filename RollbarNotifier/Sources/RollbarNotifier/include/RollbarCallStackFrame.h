@@ -1,3 +1,6 @@
+#ifndef RollbarCallStackFrame_h
+#define RollbarCallStackFrame_h
+
 @import RollbarCommon;
 
 @class RollbarCallStackFrameContext;
@@ -73,3 +76,5 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarCallStackFrame_h

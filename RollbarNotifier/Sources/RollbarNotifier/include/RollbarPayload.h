@@ -1,3 +1,6 @@
+#ifndef RollbarPayload_h
+#define RollbarPayload_h
+
 @import RollbarCommon;
 
 @class RollbarData;
@@ -29,3 +32,5 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarPayload_h

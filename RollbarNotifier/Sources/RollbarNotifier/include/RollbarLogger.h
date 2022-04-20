@@ -1,3 +1,6 @@
+#ifndef RollbarLogger_h
+#define RollbarLogger_h
+
 @import Foundation;
 
 @class RollbarConfig;
@@ -99,3 +102,5 @@ NS_DESIGNATED_INITIALIZER;
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarLogger_h
