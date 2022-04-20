@@ -25,6 +25,10 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 
 ## Release Notes
 
+### 2.2.4
+
+- chore: resolve #109 - ARM64 slice excluded from cocoapods spec?
+
 ### 2.2.3
 
 - fix: resolve #154 - Fix Cocoapods builds.
