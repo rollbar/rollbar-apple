@@ -99,7 +99,7 @@ static dispatch_queue_t fileQueue = nil;
 
 #pragma mark - Config options
 
-- (instancetype)configureWithOptions:(nonnull RollbarTelemetryOptions *)telemetryOptions {
+- (nonnull instancetype)configureWithOptions:(nonnull RollbarTelemetryOptions *)telemetryOptions {
     
     self.enabled = telemetryOptions.enabled;
     self.scrubViewInputs = telemetryOptions.viewInputsScrubber.enabled;
@@ -113,6 +113,8 @@ static dispatch_queue_t fileQueue = nil;
         
         [[RollbarTelemetryThread sharedInstance] start];
     }
+    
+    return self;
 }
 
 - (void)setCaptureLog:(BOOL)shouldCapture {
