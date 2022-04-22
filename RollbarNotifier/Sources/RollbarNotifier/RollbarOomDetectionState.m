@@ -7,8 +7,13 @@
 
 #import "RollbarOomDetectionState.h"
 
-@import AppKit; //macOS
+//#if TARGET_OS_IPHONE
 //@import UIKit; //iOS
+//#else
+//@import AppKit; //macOS
+//#endif
+
+@import SwiftUI;
 
 @implementation RollbarOomDetectionState
 
@@ -22,6 +27,44 @@
 
 - (void)registerApplicationHooks {
 
+#if TARGET_OS_IPHONE //&& !TARGET_OS_WATCH
+
+#if TARGET_OS_WATCH
+    
+    // when with WatchKit:
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationInForeground)
+                                                 name:WKApplicationDidBecomeActiveNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationInBackground)
+                                                 name:WKApplicationDidFinishLaunchingNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationTerminated)
+                                                 name:WKApplicationWillResignActiveNotification
+                                               object:nil];
+
+#else
+
+    // when with UIKit:
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationInForeground)
+                                                 name:UIApplicationDidEnterBackgroundNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationInBackground)
+                                                 name:UIApplicationDidEnterBackgroundNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationTerminated)
+                                                 name:UIApplicationWillTerminateNotification
+                                               object:nil];
+
+#endif
+    
+#else
+    
     // when with AppKit:
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationInForeground)
@@ -35,20 +78,8 @@
                                              selector:@selector(applicationTerminated)
                                                  name:NSApplicationWillTerminateNotification
                                                object:nil];
-
-    // when with UIKit:
-//    [[NSNotificationCenter defaultCenter] addObserver:self
-//                                             selector:@selector(applicationInForeground)
-//                                                 name:UIApplicationWillEnterForegroundNotification
-//                                               object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self
-//                                             selector:@selector(applicationInBackground)
-//                                                 name:UIApplicationDidEnterBackgroundNotification
-//                                               object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self
-//                                             selector:@selector(applicationTerminated)
-//                                                 name:UIApplicationWillTerminateNotification
-//                                               object:nil];
+    
+#endif
 }
 
 - (void)applicationInForeground:(NSNotification *)notification {
