@@ -7,7 +7,66 @@
 
 #import "RollbarOomDetectionState.h"
 
+@import AppKit; //macOS
+//@import UIKit; //iOS
+
 @implementation RollbarOomDetectionState
+
+#pragma mark - OS attributes detection
+
+
+#pragma mark - Application attributes detection
+
+
+#pragma mark - Application notification hooks
+
+- (void)registerApplicationHooks {
+
+    // when with AppKit:
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationInForeground)
+                                                 name:NSApplicationWillBecomeActiveNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationInBackground)
+                                                 name:NSApplicationDidFinishLaunchingNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationTerminated)
+                                                 name:NSApplicationWillTerminateNotification
+                                               object:nil];
+
+    // when with UIKit:
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(applicationInForeground)
+//                                                 name:UIApplicationWillEnterForegroundNotification
+//                                               object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(applicationInBackground)
+//                                                 name:UIApplicationDidEnterBackgroundNotification
+//                                               object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(applicationTerminated)
+//                                                 name:UIApplicationWillTerminateNotification
+//                                               object:nil];
+}
+
+- (void)applicationInForeground:(NSNotification *)notification {
+    //TODO: implement...
+}
+
+- (void)applicationInBackground:(NSNotification *)notification {
+    //TODO: implement...
+}
+
+- (void)applicationTerminated:(NSNotification *)notification {
+    //TODO: implement...
+}
+
+- (void)dealloc {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 #pragma mark - Sigleton pattern
 
