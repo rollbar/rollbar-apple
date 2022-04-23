@@ -7,12 +7,6 @@
 
 #import "RollbarOomDetectionState.h"
 
-//#if TARGET_OS_IPHONE
-//@import UIKit; //iOS
-//#else
-//@import AppKit; //macOS
-//#endif
-
 @import SwiftUI;
 
 @implementation RollbarOomDetectionState
@@ -27,9 +21,9 @@
 
 - (void)registerApplicationHooks {
 
-#if TARGET_OS_IPHONE //&& !TARGET_OS_WATCH
+#if TARGET_OS_WATCH //TARGET_OS_IPHONE
 
-#if TARGET_OS_WATCH
+//#if TARGET_OS_WATCH
     
     // when with WatchKit:
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -45,7 +39,7 @@
                                                  name:WKApplicationWillResignActiveNotification
                                                object:nil];
 
-#else
+#ifelse TARGET_OS_IPHONE //TARGET_OS_WATCH
 
     // when with UIKit:
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -61,7 +55,7 @@
                                                  name:UIApplicationWillTerminateNotification
                                                object:nil];
 
-#endif
+//#endif
     
 #else
     
