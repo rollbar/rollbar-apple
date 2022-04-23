@@ -21,9 +21,9 @@
 
 - (void)registerApplicationHooks {
 
-#if TARGET_OS_WATCH //TARGET_OS_IPHONE
+#if TARGET_OS_IPHONE
 
-//#if TARGET_OS_WATCH
+#if TARGET_OS_WATCH
     
     // when with WatchKit:
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -39,7 +39,7 @@
                                                  name:WKApplicationWillResignActiveNotification
                                                object:nil];
 
-#ifelse TARGET_OS_IPHONE //TARGET_OS_WATCH
+#else // !TARGET_OS_WATCH
 
     // when with UIKit:
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -55,9 +55,9 @@
                                                  name:UIApplicationWillTerminateNotification
                                                object:nil];
 
-//#endif
+#endif // TARGET_OS_WATCH
     
-#else
+#else // !TARGET_OS_IPHONE
     
     // when with AppKit:
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -73,7 +73,7 @@
                                                  name:NSApplicationWillTerminateNotification
                                                object:nil];
     
-#endif
+#endif // TARGET_OS_IPHONE
 }
 
 - (void)applicationInForeground:(NSNotification *)notification {
