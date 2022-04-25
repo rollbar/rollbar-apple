@@ -6,8 +6,34 @@
 //
 
 #import "RollbarOomDetectionState.h"
+#import <TargetConditionals.h>
 
-@import SwiftUI;
+//#if TARGET_OS_IPHONE
+//#if TARGET_OS_WATCH
+//@import SwiftUI;
+//#else
+//@import UIKit;
+//#endif
+//#else
+//@import AppKit;
+//#endif
+
+//@import SwiftUI;
+//#if !TARGET_OS_IPHONE && !TARGET_OS_WATCH
+//@import AppKit;
+//#endif
+
+//@import SwiftUI;
+
+#if TARGET_OS_WATCH
+@import WatchKit;
+#elif TARGET_OS_TV
+@import TVUIKit;
+#elif TARGET_OS_IOS
+@import UIKit;
+#else
+@import AppKit;
+#endif
 
 @implementation RollbarOomDetectionState
 
@@ -21,30 +47,36 @@
 
 - (void)registerApplicationHooks {
 
-#if TARGET_OS_IPHONE
-
 #if TARGET_OS_WATCH
-    
+
     // when with WatchKit:
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationInForeground)
-                                                 name:WKApplicationDidBecomeActiveNotification
+                                                 name:WKApplicationWillEnterForegroundNotification
                                                object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationInBackground)
-                                                 name:WKApplicationDidFinishLaunchingNotification
+                                                 name:WKApplicationDidEnterBackgroundNotification
                                                object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationTerminated)
                                                  name:WKApplicationWillResignActiveNotification
                                                object:nil];
 
-#else // !TARGET_OS_WATCH
+    //WKExtension.applicationWillEnterForegroundNotification
+    //WKApplicationDidBecomeActiveNotification
+    //WKApplicationDidFinishLaunchingNotification
+    //WKApplicationWillResignActiveNotification
+
+    //NSExtensionHostDidBecomeActiveNotification
+    //NSExtensionHostDidEnterBackgroundNotification
+    //WKApplicationWillResignActiveNotification
+#elif TARGET_OS_IOS || TARGET_OS_TV
 
     // when with UIKit:
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationInForeground)
-                                                 name:UIApplicationDidEnterBackgroundNotification
+                                                 name:UIApplicationWillEnterForegroundNotification
                                                object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationInBackground)
@@ -55,25 +87,22 @@
                                                  name:UIApplicationWillTerminateNotification
                                                object:nil];
 
-#endif // TARGET_OS_WATCH
-    
-#else // !TARGET_OS_IPHONE
-    
+//#elif TARGET_OS_MAC && !TARGET_OS_IPHONE
+#else
     // when with AppKit:
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationInForeground)
-                                                 name:NSApplicationWillBecomeActiveNotification
+                                                 name:NSApplicationDidBecomeActiveNotification
                                                object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationInBackground)
-                                                 name:NSApplicationDidFinishLaunchingNotification
+                                                 name:NSApplicationDidResignActiveNotification
                                                object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationTerminated)
                                                  name:NSApplicationWillTerminateNotification
                                                object:nil];
-    
-#endif // TARGET_OS_IPHONE
+#endif
 }
 
 - (void)applicationInForeground:(NSNotification *)notification {
