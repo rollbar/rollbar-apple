@@ -20,6 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(atomic, readonly) BOOL anyLastKnownAppTermination;
 @property(atomic, readonly) BOOL anyLastKnownAppGracefulQuit;
 
+- (void)registerApplicationHooks;
+
 #pragma mark - Sigleton pattern
 
 + (nonnull instancetype)sharedInstance;
