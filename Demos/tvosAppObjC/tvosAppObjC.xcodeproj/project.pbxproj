@@ -13,6 +13,7 @@
 		55889E312818B83D002E0228 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55889E302818B83D002E0228 /* Assets.xcassets */; };
 		55889E342818B83D002E0228 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 55889E322818B83D002E0228 /* LaunchScreen.storyboard */; };
 		55889E362818B83D002E0228 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 55889E352818B83D002E0228 /* main.m */; };
+		55DD35832818C3150061AC50 /* RollbarNotifier in Frameworks */ = {isa = PBXBuildFile; productRef = 55DD35822818C3150061AC50 /* RollbarNotifier */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55DD35832818C3150061AC50 /* RollbarNotifier in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -43,6 +45,7 @@
 			children = (
 				55889E262818B83B002E0228 /* tvosAppObjC */,
 				55889E252818B83B002E0228 /* Products */,
+				55DD35812818C3150061AC50 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -69,6 +72,13 @@
 			path = tvosAppObjC;
 			sourceTree = "<group>";
 		};
+		55DD35812818C3150061AC50 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -85,6 +95,9 @@
 			dependencies = (
 			);
 			name = tvosAppObjC;
+			packageProductDependencies = (
+				55DD35822818C3150061AC50 /* RollbarNotifier */,
+			);
 			productName = tvosAppObjC;
 			productReference = 55889E242818B83B002E0228 /* tvosAppObjC.app */;
 			productType = "com.apple.product-type.application";
@@ -347,6 +360,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		55DD35822818C3150061AC50 /* RollbarNotifier */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RollbarNotifier;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 55889E1C2818B83B002E0228 /* Project object */;
 }
