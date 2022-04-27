@@ -16,6 +16,7 @@
 		55889E622818B939002E0228 /* NotificationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55889E612818B939002E0228 /* NotificationController.m */; };
 		55889E652818B939002E0228 /* ComplicationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55889E642818B939002E0228 /* ComplicationController.m */; };
 		55889E672818B93A002E0228 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55889E662818B93A002E0228 /* Assets.xcassets */; };
+		55DD35862818C3770061AC50 /* RollbarNotifier in Frameworks */ = {isa = PBXBuildFile; productRef = 55DD35852818C3770061AC50 /* RollbarNotifier */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -84,6 +85,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55DD35862818C3770061AC50 /* RollbarNotifier in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,6 +98,7 @@
 				55889E4B2818B937002E0228 /* watchosAppObjC WatchKit App */,
 				55889E592818B939002E0228 /* watchosAppObjC WatchKit Extension */,
 				55889E442818B937002E0228 /* Products */,
+				55DD35842818C3770061AC50 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -134,6 +137,13 @@
 				55889E692818B93A002E0228 /* PushNotificationPayload.apns */,
 			);
 			path = "watchosAppObjC WatchKit Extension";
+			sourceTree = "<group>";
+		};
+		55DD35842818C3770061AC50 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -186,6 +196,9 @@
 			dependencies = (
 			);
 			name = "watchosAppObjC WatchKit Extension";
+			packageProductDependencies = (
+				55DD35852818C3770061AC50 /* RollbarNotifier */,
+			);
 			productName = "watchosAppObjC WatchKit Extension";
 			productReference = 55889E552818B939002E0228 /* watchosAppObjC WatchKit Extension.appex */;
 			productType = "com.apple.product-type.watchkit2-extension";
@@ -574,6 +587,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		55DD35852818C3770061AC50 /* RollbarNotifier */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RollbarNotifier;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 55889E3D2818B937002E0228 /* Project object */;
 }
