@@ -1,6 +1,5 @@
 @import Foundation;
 
-#if !TARGET_OS_WATCH
 #import <XCTest/XCTest.h>
 
 @import RollbarCommon;
@@ -120,4 +119,3 @@
 }
 
 @end
-#endif
