@@ -10,6 +10,7 @@
 #import "RollbarTelemetryOptionsObserver.h"
 #import "RollbarScrubbingOptions.h"
 #import "RollbarCrashProcessor.h"
+#import "RollbarSession.h"
 
 @implementation Rollbar
 
@@ -24,6 +25,9 @@ static RollbarCrashProcessor *crashProcessor = nil;
         
         telemetryOptionsObserver = [RollbarTelemetryOptionsObserver new];
     }
+    
+    [[RollbarSession sharedInstance] registerApplicationHooks];
+    
 }
 
 + (void)initWithAccessToken:(NSString *)accessToken {

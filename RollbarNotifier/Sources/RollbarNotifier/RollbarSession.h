@@ -1,5 +1,5 @@
 //
-//  RollbarOomDetectionState.h
+//  RollbarSession.h
 //  
 //
 //  Created by Andrey Kornich on 2022-04-21.
@@ -9,7 +9,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface RollbarOomDetectionState : NSObject
+@interface RollbarSession : NSObject {
+    @private
+    NSMutableDictionary<NSString *, id> *_state;
+}
 
 @property(atomic, readonly) NSDate *lastKnownAppStartupTimestamp;
 @property(atomic, readonly) NSString *lastKnownAppVersion;

@@ -1,11 +1,11 @@
 //
-//  RollbarOomDetectionState.m
+//  RollbarSession.m
 //  
 //
 //  Created by Andrey Kornich on 2022-04-21.
 //
 
-#import "RollbarOomDetectionState.h"
+#import "RollbarSession.h"
 
 #if __has_include(<WatchKit/WatchKit.h>)
 #import <WatchKit/WatchKit.h>
@@ -36,7 +36,10 @@
 //@import AppKit;
 //#endif
 
-@implementation RollbarOomDetectionState
+
+static NSString * const SESSION_FILE_NAME = @"rollbar.session";
+
+@implementation RollbarSession
 
 #pragma mark - OS attributes detection
 
@@ -133,6 +136,15 @@
     });
     
     return singleton;
+}
+
+- (instancetype)init {
+    
+    self = [super init];
+    if (self) {
+        
+        self->_state = [NSMutableDictionary dictionary];
+    }
 }
 
 @end
