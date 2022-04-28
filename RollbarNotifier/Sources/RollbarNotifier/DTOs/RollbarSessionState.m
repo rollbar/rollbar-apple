@@ -9,10 +9,7 @@
 
 #pragma mark - constants
 
-static NSString *const DEFAULT_USERNAME = nil;
-static NSString *const DEFAULT_EMAIL = nil;
-
-
+// add...
 
 #pragma mark - data field keys
 
@@ -22,7 +19,6 @@ static NSString * const DFK_SESSION_TIMESTAMP = @"session_timestamp";
 static NSString * const DFK_APP_MEMORY_WARNING_TIMESTAMP = @"app_memory_warning_timestamp";
 static NSString * const DFK_APP_TERMINATION_TIMESTAMP = @"app_termination_timestamp";
 static NSString * const DFK_APP_IN_BACKGROUND_FLAG = @"app_in_background";
-
 
 @implementation RollbarSessionState
 
