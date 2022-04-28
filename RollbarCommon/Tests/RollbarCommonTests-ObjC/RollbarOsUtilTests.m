@@ -1,11 +1,6 @@
-//
-//  RollbarOsUtilTests.m
-//  
-//
-//  Created by Andrey Kornich on 2022-04-28.
-//
-
 #import <XCTest/XCTest.h>
+
+@import RollbarCommon;
 
 @interface RollbarOsUtilTests : XCTestCase
 
@@ -21,15 +16,54 @@
     // Put teardown code here. This method is called after the invocation of each test method in the class.
 }
 
-- (void)testExample {
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
+- (void)testOsVersionDetection {
+
+    NSOperatingSystemVersion version = [RollbarOsUtil detectOsVersion];
+    NSString *versionString = [RollbarOsUtil stringFromOsVersion:version];
+    NSString *detectedVersionString = [RollbarOsUtil detectOsVersionString];
+    XCTAssertTrue([detectedVersionString containsString:versionString]);
 }
 
-- (void)testPerformanceExample {
-    // This is an example of a performance test case.
+- (void)testDetectOsUptimeInterval {
+    
+    NSTimeInterval interval = [RollbarOsUtil detectOsUptimeInterval];
+    XCTAssertGreaterThan(interval, 0);
+}
+
+- (void)testPerformance_stringFromOsVersion {
+    
     [self measureBlock:^{
-        // Put the code you want to measure the time of here.
+        
+        NSOperatingSystemVersion version = {
+            .majorVersion = 1,
+            .minorVersion = 2,
+            .patchVersion = 3
+        };
+        NSString *versionString = [RollbarOsUtil stringFromOsVersion:version];
+    }];
+}
+
+- (void)testPerformance_detectOsVersion {
+    
+    [self measureBlock:^{
+        
+        NSOperatingSystemVersion version = [RollbarOsUtil detectOsVersion];
+    }];
+}
+
+- (void)testPerformance_detectOsVersionString {
+    
+    [self measureBlock:^{
+        
+        NSString *detectedVersionString = [RollbarOsUtil detectOsVersionString];
+    }];
+}
+
+- (void)testPerformance_detectOsUptimeInterval {
+
+    [self measureBlock:^{
+        
+        NSTimeInterval interval = [RollbarOsUtil detectOsUptimeInterval];
     }];
 }
 
