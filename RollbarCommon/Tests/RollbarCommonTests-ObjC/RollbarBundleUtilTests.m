@@ -1,11 +1,6 @@
-//
-//  RollbarBundleUtilTests.m
-//  
-//
-//  Created by Andrey Kornich on 2022-04-28.
-//
-
 #import <XCTest/XCTest.h>
+
+@import RollbarCommon;
 
 @interface RollbarBundleUtilTests : XCTestCase
 
@@ -21,15 +16,19 @@
     // Put teardown code here. This method is called after the invocation of each test method in the class.
 }
 
-- (void)testExample {
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
+- (void)testDetectAppBundleVersion {
+
+    NSString *version  = [RollbarBundleUtil detectAppBundleVersion];
+    XCTAssertNotNil(version);
+    XCTAssertGreaterThan(version.length, 0);
+    XCTAssertEqual([version componentsSeparatedByString:@"."].count, 4);
 }
 
-- (void)testPerformanceExample {
+- (void)testPerformanceDetectAppBundleVersion {
     // This is an example of a performance test case.
     [self measureBlock:^{
-        // Put the code you want to measure the time of here.
+
+        NSString *version  = [RollbarBundleUtil detectAppBundleVersion];
     }];
 }
 

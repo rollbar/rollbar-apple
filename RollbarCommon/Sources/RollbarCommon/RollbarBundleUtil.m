@@ -1,12 +1,14 @@
-//
-//  RollbarBundleUtil.m
-//  
-//
-//  Created by Andrey Kornich on 2022-04-28.
-//
-
 #import "RollbarBundleUtil.h"
 
 @implementation RollbarBundleUtil
+
++ (nonnull NSString *)detectAppBundleVersion {
+    
+    NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+    NSString *major = infoDictionary[@"CFBundleShortVersionString"];
+    NSString *minor = infoDictionary[@"CFBundleVersion"];
+    NSString *version = [NSString stringWithFormat:@"%@.%@", major, minor];
+    return version;
+}
 
 @end
