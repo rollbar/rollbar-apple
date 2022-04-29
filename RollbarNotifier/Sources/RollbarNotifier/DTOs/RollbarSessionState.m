@@ -1,11 +1,6 @@
-//
-//  RollbarSessionState.m
-//  
-//
-//  Created by Andrey Kornich on 2022-04-27.
-//
-
 #import "RollbarSessionState.h"
+
+@import RollbarCommon;
 
 #pragma mark - constants
 
@@ -13,7 +8,7 @@
 
 #pragma mark - data field keys
 
-
+static NSString * const DFK_OS_UPTIME = @"os_uptime_seconds";
 static NSString * const DFK_OS_VERSION = @"os_version";
 static NSString * const DFK_APP_VERSION = @"app_version";
 
@@ -27,7 +22,38 @@ static NSString * const DFK_APP_IN_BACKGROUND_FLAG = @"app_in_background";
 
 @implementation RollbarSessionState
 
+#pragma mark - initializers
+
+- (instancetype)init {
+    
+    self = [super initWithDictionary:@{
+        
+        DFK_SESSION_TIMESTAMP: [[NSDate date] rollbar_toString],
+        DFK_OS_UPTIME: [NSNumber numberWithDouble: [RollbarOsUtil detectOsUptimeInterval]],
+        DFK_OS_VERSION: [RollbarOsUtil detectOsVersionString],
+        DFK_APP_VERSION: [RollbarBundleUtil detectAppBundleVersion],
+        DFK_APP_ID: [NSUUID new].UUIDString,
+        DFK_SESSION_ID: [NSUUID new].UUIDString,
+    }];
+
+    return self;
+}
+
 #pragma mark - property accessors
+
+- (NSTimeInterval)osUptimeInterval {
+    
+    NSTimeInterval interval = [self safelyGetTimeIntervalByKey:DFK_OS_UPTIME
+                                                   withDefault:0.0
+    ];
+    return interval;
+}
+
+- (void)setOsUptimeInterval:(NSTimeInterval)value {
+    
+    [self setTimeInterval:value forKey:DFK_OS_UPTIME];
+}
+
 
 - (NSString *)osVersion {
     
@@ -119,15 +145,15 @@ static NSString * const DFK_APP_IN_BACKGROUND_FLAG = @"app_in_background";
 }
 
 
-- (BOOL)appInBackgroundFlag {
+- (RollbarTriStateFlag)appInBackgroundFlag {
     
-    BOOL result = [self safelyGetBoolByKey:DFK_APP_IN_BACKGROUND_FLAG withDefault:NO];
+    BOOL result = [self safelyGetTriStateFlagByKey:DFK_APP_IN_BACKGROUND_FLAG];
     return result;
 }
 
-- (void)setAppInBackgroundFlag:(BOOL)value {
+- (void)setAppInBackgroundFlag:(RollbarTriStateFlag)value {
     
-    [self setBool:value forKey:DFK_APP_IN_BACKGROUND_FLAG];
+    [self setTriStateFlag:value forKey:DFK_APP_IN_BACKGROUND_FLAG];
 }
 
 @end
