@@ -258,13 +258,16 @@
 - (void)setDate:(nullable NSDate *)data
          forKey:(nonnull NSString *)key {
     
-    if (!data) {
+    if (data) {
         
-        [self setData:data byKey:key];
+        NSString *dateString = [data rollbar_toString];
+        [self setString:dateString forKey:key];
+    }
+    else {
+        
+        [self setData:nil byKey:key];
     }
     
-    NSString *dateString = [data rollbar_toString];
-    [self setString:dateString forKey:key];
 }
 
 @end

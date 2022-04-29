@@ -50,6 +50,39 @@
     
     NSString *expectedVersion = [RollbarBundleUtil detectAppBundleVersion];
     XCTAssertEqualObjects(state.appVersion, expectedVersion);
+    
+    NSString *json = [state serializeToJSONString];
+    RollbarSessionState *stateClone = [[RollbarSessionState alloc] initWithJSONString:json];
+
+    XCTAssertEqualObjects(stateClone.appID, state.appID);
+    XCTAssertEqualObjects(stateClone.sessionID, state.sessionID);
+    XCTAssertEqual(stateClone.sessionStartTimestamp, state.sessionStartTimestamp);
+    XCTAssertTrue([stateClone.appVersion compare:state.appVersion] ==  NSOrderedSame);
+    XCTAssertTrue([stateClone.osVersion compare:state.osVersion] == NSOrderedSame);
+    XCTAssertEqual(stateClone.osUptimeInterval, state.osUptimeInterval,);
+    XCTAssertEqual(stateClone.appMemoryWarningTimestamp, state.appMemoryWarningTimestamp);
+    XCTAssertEqual(stateClone.appTerminationTimestamp, state.appTerminationTimestamp);
+    XCTAssertEqual(stateClone.appInBackgroundFlag, state.appInBackgroundFlag);
+
+    stateClone.appID = [NSUUID new];
+    XCTAssertNotEqual(stateClone.appID, state.appID);
+    stateClone.sessionID = [NSUUID new];
+    XCTAssertNotEqual(stateClone.sessionID, state.sessionID);
+    stateClone.sessionStartTimestamp = [[NSDate date] dateByAddingTimeInterval:10.0];
+    XCTAssertNotEqual(stateClone.sessionStartTimestamp, state.sessionStartTimestamp);
+    stateClone.appVersion = @"new app version";
+    XCTAssertFalse([stateClone.appVersion compare:state.appVersion] ==  NSOrderedSame);
+    stateClone.osVersion = @"ne os version";
+    XCTAssertFalse([stateClone.osVersion compare:state.osVersion] == NSOrderedSame);
+    stateClone.osUptimeInterval = state.osUptimeInterval + 3.0;
+    XCTAssertNotEqual(stateClone.osUptimeInterval, state.osUptimeInterval);
+    stateClone.appMemoryWarningTimestamp = [[NSDate date] dateByAddingTimeInterval:20.0];
+    XCTAssertNotEqual(stateClone.appMemoryWarningTimestamp, state.appMemoryWarningTimestamp);
+    stateClone.appTerminationTimestamp = [[NSDate date] dateByAddingTimeInterval:30.0];
+    XCTAssertNotEqual(stateClone.appTerminationTimestamp, state.appTerminationTimestamp);
+    stateClone.appInBackgroundFlag = RollbarTriStateFlag_On;
+    XCTAssertNotEqual(stateClone.appInBackgroundFlag, state.appInBackgroundFlag);
+    XCTAssertEqual(stateClone.appInBackgroundFlag, RollbarTriStateFlag_On);
 }
 
 - (void)testBasicDTOInitializationWithJSONString {
