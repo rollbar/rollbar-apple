@@ -7,6 +7,8 @@
 
 #import <Foundation/Foundation.h>
 
+@class RollbarSessionState;
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface RollbarSession : NSObject {
@@ -20,6 +22,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(atomic, readonly) BOOL anyLastKnownAppCrash;
 @property(atomic, readonly) BOOL anyLastKnownAppTermination;
 @property(atomic, readonly) BOOL anyLastKnownAppGracefulQuit;
+
+- (RollbarSessionState *)getCurrentState;
 
 - (void)registerApplicationHooks;
 

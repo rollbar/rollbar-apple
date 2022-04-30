@@ -42,6 +42,7 @@
 static NSString * const SESSION_FILE_NAME = @"rollbar.session";
 
 @implementation RollbarSession {
+    
 @private
     RollbarSessionState *_state;
     NSString *_stateFilePath;
@@ -129,6 +130,15 @@ static NSString * const SESSION_FILE_NAME = @"rollbar.session";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+#pragma mark - state access
+
+- (RollbarSessionState *)getCurrentState {
+  
+    NSString *json = [self->_state serializeToJSONString];
+    RollbarSessionState *stateClone = [[RollbarSessionState alloc] initWithJSONString:json];
+    return stateClone;
+}
+
 #pragma mark - Sigleton pattern
 
 + (nonnull instancetype)sharedInstance {
@@ -167,6 +177,7 @@ static NSString * const SESSION_FILE_NAME = @"rollbar.session";
             [self saveSessionState];
         }
     }
+    return self;
 }
 
 #pragma mark - session state persistence
