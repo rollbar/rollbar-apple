@@ -21,7 +21,6 @@
 #define MAX_PAYLOAD_SIZE 128 // The maximum payload size in kb
 
 static NSString * const PAYLOADS_FILE_NAME = @"rollbar.payloads";
-static NSString * const OOM_DETECTION_FILE_NAME = @"rollbar.oom";
 static NSString * const QUEUED_ITEMS_FILE_NAME = @"rollbar.items";
 static NSString * const QUEUED_ITEMS_STATE_FILE_NAME = @"rollbar.state";
 
@@ -64,17 +63,8 @@ static RollbarLogger *sharedSingleton = nil;
     if (self == [RollbarLogger class]) {
         
         // create working cache directory:
+        [RollbarCachesDirectory ensureCachesDirectoryExists];
         NSString *cachesDirectory = [RollbarCachesDirectory directory];
-        if (![[NSFileManager defaultManager] fileExistsAtPath:cachesDirectory]) {
-            NSError *error;
-            BOOL result =
-            [[NSFileManager defaultManager] createDirectoryAtPath:cachesDirectory
-                                      withIntermediateDirectories:YES
-                                                       attributes:nil
-                                                            error:&error
-             ];
-            NSLog(@"result %@", result);
-        }
         
         // make sure we have all the data files set:
         queuedItemsFilePath =

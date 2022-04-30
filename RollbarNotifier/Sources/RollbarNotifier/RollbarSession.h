@@ -10,8 +10,6 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface RollbarSession : NSObject {
-    @private
-    NSMutableDictionary<NSString *, id> *_state;
 }
 
 @property(atomic, readonly) NSDate *lastKnownAppStartupTimestamp;

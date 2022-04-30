@@ -6,6 +6,9 @@
 //
 
 #import "RollbarSession.h"
+#import "RollbarSessionState.h"
+
+@import RollbarCommon;
 
 #if __has_include(<WatchKit/WatchKit.h>)
 #import <WatchKit/WatchKit.h>
@@ -36,10 +39,13 @@
 //@import AppKit;
 //#endif
 
-
 static NSString * const SESSION_FILE_NAME = @"rollbar.session";
 
-@implementation RollbarSession
+@implementation RollbarSession {
+@private
+    RollbarSessionState *_state;
+    NSString *_stateFilePath;
+}
 
 #pragma mark - OS attributes detection
 
@@ -143,8 +149,46 @@ static NSString * const SESSION_FILE_NAME = @"rollbar.session";
     self = [super init];
     if (self) {
         
-        self->_state = [NSMutableDictionary dictionary];
+        self->_stateFilePath = [RollbarCachesDirectory getCacheFilePath:SESSION_FILE_NAME];
+        
+        if (NO == [RollbarCachesDirectory ensureCachesDirectoryExists]) {
+            
+            RollbarSdkLog(@"Failed to create the Rollbar Caches Directory!");
+            return self;
+        }
+        
+        if (YES == [RollbarCachesDirectory checkCacheFileExists:SESSION_FILE_NAME]) {
+            
+            self->_state = [self loadSessionState];
+        }
+        else {
+
+            self->_state = [RollbarSessionState new];
+            [self saveSessionState];
+        }
     }
+}
+
+#pragma mark - session state persistence
+
+- (RollbarSessionState *)loadSessionState {
+   
+    NSData *data = [[NSData alloc] initWithContentsOfFile:self->_stateFilePath];
+    RollbarSessionState *state = [[RollbarSessionState alloc] initWithJSONData:data];
+    return state;
+}
+
+- (BOOL)saveSessionState {
+    
+    NSError *error;
+    NSData *data = [NSJSONSerialization rollbar_dataWithJSONObject:self->_state.jsonFriendlyData
+                                                           options:NSJSONWritingPrettyPrinted
+                                                             error:&error
+                                                              safe:true];
+    if (!data && error) {
+        RollbarSdkLog(@"Error saving Rollbar Session State: %@ !!!", [error localizedDescription]);
+    }
+    [data writeToFile:self->_stateFilePath atomically:YES];
 }
 
 @end
