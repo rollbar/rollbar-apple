@@ -27,7 +27,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nonnull) NSDate *appMemoryWarningTimestamp;
 @property (nonatomic, copy, nonnull) NSDate *appTerminationTimestamp;
 
+@property (atomic, copy, nullable) NSString *sysSignal;
+
 @property (atomic) RollbarTriStateFlag appInBackgroundFlag;
+
 
 #pragma mark - initializers
 

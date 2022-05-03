@@ -7,6 +7,7 @@
 
 #import "RollbarSession.h"
 #import "RollbarSessionState.h"
+#import <sys/stat.h>
 
 @import RollbarCommon;
 
@@ -48,13 +49,45 @@ static NSString * const SESSION_FILE_NAME = @"rollbar.session";
     NSString *_stateFilePath;
 }
 
-#pragma mark - OS attributes detection
+- (void)enableOomMonitoringWithCrashCheck:(RollbarCrashReportCheck)crashCheck {
+    
+    //TODO: implement...
+}
 
+#pragma mark - System and Application notification hooks
 
-#pragma mark - Application attributes detection
+- (void)registerForSystemSignals {
+    
+    signal(SIGABRT, onSysSignal);
+    signal(SIGQUIT, onSysSignal);
+    signal(SIGTERM, onSysSignal);
+}
 
+static void onSysSignal(int signalID) {
+    
+    NSString *signalDescriptor = nil;
+    switch(signalID) {
+        case SIGABRT:
+            signalDescriptor = @"SIGABRT";
+            break;
+        case SIGQUIT:
+            signalDescriptor = @"SIGQUIT";
+            break;
+        case SIGTERM:
+            signalDescriptor = @"SIGTERM";
+            break;
+        default:
+            return;
+    }
+    
+    [[RollbarSession sharedInstance] captureSystemSignal:signalDescriptor];
+}
 
-#pragma mark - Application notification hooks
+- (void)captureSystemSignal:(nonnull NSString *)signal {
+    
+    self->_state.sysSignal = signal;
+    [self saveCurrentSessionState];
+}
 
 - (void)registerApplicationHooks {
     
@@ -110,24 +143,51 @@ static NSString * const SESSION_FILE_NAME = @"rollbar.session";
 }
 
 - (void)applicationInForeground:(NSNotification *)notification {
-    //TODO: implement...
+    
+    self->_state.appInBackgroundFlag = RollbarTriStateFlag_Off;
+    [self saveCurrentSessionState];
 }
 
 - (void)applicationInBackground:(NSNotification *)notification {
-    //TODO: implement...
+
+    self->_state.appInBackgroundFlag = RollbarTriStateFlag_On;
+    [self saveCurrentSessionState];
 }
 
 - (void)applicationTerminated:(NSNotification *)notification {
-    //TODO: implement...
+
+    self->_state.appTerminationTimestamp = [NSDate date];
+    [self saveCurrentSessionState];
 }
 
 - (void)applicationReceivedMemoryWarning:(NSNotification *)notification {
-    //TODO: implement...
+
+    self->_state.appMemoryWarningTimestamp = [NSDate date];
+    [self saveCurrentSessionState];
 }
 
 - (void)dealloc {
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+#pragma mark - app termination checks
+
+
+#pragma mark - app/OS version change checks
+
+- (BOOL)didAppVersionChange:(nonnull NSString *)oldVersion {
+    
+    BOOL result =
+    (NSOrderedSame != [[RollbarBundleUtil detectAppBundleVersion] compare:oldVersion]);
+    return result;
+}
+
+- (BOOL)didOsVersionChange:(nonnull NSString *)oldVersion {
+    
+    BOOL result =
+    (NSOrderedSame != [[RollbarOsUtil detectOsVersionString] compare:oldVersion]);
+    return result;
 }
 
 #pragma mark - state access
@@ -174,7 +234,7 @@ static NSString * const SESSION_FILE_NAME = @"rollbar.session";
         else {
 
             self->_state = [RollbarSessionState new];
-            [self saveSessionState];
+            [self saveCurrentSessionState];
         }
     }
     return self;
@@ -189,10 +249,10 @@ static NSString * const SESSION_FILE_NAME = @"rollbar.session";
     return state;
 }
 
-- (BOOL)saveSessionState {
+- (BOOL)saveSessionState:(nonnull RollbarSessionState *)state {
     
     NSError *error;
-    NSData *data = [NSJSONSerialization rollbar_dataWithJSONObject:self->_state.jsonFriendlyData
+    NSData *data = [NSJSONSerialization rollbar_dataWithJSONObject:state.jsonFriendlyData
                                                            options:NSJSONWritingPrettyPrinted
                                                              error:&error
                                                               safe:true];
@@ -200,6 +260,11 @@ static NSString * const SESSION_FILE_NAME = @"rollbar.session";
         RollbarSdkLog(@"Error saving Rollbar Session State: %@ !!!", [error localizedDescription]);
     }
     [data writeToFile:self->_stateFilePath atomically:YES];
+}
+
+- (BOOL)saveCurrentSessionState {
+    
+    return [self saveSessionState:self->_state];
 }
 
 @end

@@ -9,6 +9,8 @@
 
 @class RollbarSessionState;
 
+typedef BOOL (^RollbarCrashReportCheck)();
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface RollbarSession : NSObject {
@@ -25,7 +27,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (RollbarSessionState *)getCurrentState;
 
-- (void)registerApplicationHooks;
+- (void)enableOomMonitoringWithCrashCheck:(RollbarCrashReportCheck)crashCheck;
+- (void)registerApplicationHooks; // probably can become a private method...
+
 
 #pragma mark - Sigleton pattern
 
@@ -44,6 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)dealloc NS_UNAVAILABLE;
 - (id)copy NS_UNAVAILABLE;
 - (id)mutableCopy NS_UNAVAILABLE;
+
 
 @end
 

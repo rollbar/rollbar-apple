@@ -18,6 +18,9 @@ static NSString * const DFK_SESSION_ID = @"session_id";
 static NSString * const DFK_SESSION_TIMESTAMP = @"session_timestamp";
 static NSString * const DFK_APP_MEMORY_WARNING_TIMESTAMP = @"app_memory_warning_timestamp";
 static NSString * const DFK_APP_TERMINATION_TIMESTAMP = @"app_termination_timestamp";
+
+static NSString * const DFK_SYS_SIGNAL = @"sys_signal";
+
 static NSString * const DFK_APP_IN_BACKGROUND_FLAG = @"app_in_background";
 
 @implementation RollbarSessionState
@@ -142,6 +145,18 @@ static NSString * const DFK_APP_IN_BACKGROUND_FLAG = @"app_in_background";
 - (void)setAppTerminationTimestamp:(NSDate *)value {
     
     [self setDate:value forKey:DFK_APP_TERMINATION_TIMESTAMP];
+}
+
+
+- (nullable NSString *)sysSignal {
+    
+    NSString *result = [self getDataByKey:DFK_SYS_SIGNAL];
+    return result;
+}
+
+- (void)setSysSignal:(nullable NSString *)value {
+    
+    [self setData:value byKey:DFK_SYS_SIGNAL];
 }
 
 

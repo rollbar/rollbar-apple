@@ -7,7 +7,7 @@
 @interface RollbarCachesDirectory : NSObject
 
 /// Path to the cache directory.
-+ (NSString *)directory;
++ (nonnull NSString *)directory;
 
 /// Ensures that the expected caches directory does exist, otherwise returns NO.
 + (BOOL)ensureCachesDirectoryExists;
@@ -23,7 +23,7 @@
 #pragma mark - Initializers
 
 /// Hides parameterless initializer.
-- (instancetype)init
+- (nonnull instancetype)init
 NS_UNAVAILABLE;
 
 @end
