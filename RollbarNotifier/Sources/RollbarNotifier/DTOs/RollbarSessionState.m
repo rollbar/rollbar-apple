@@ -20,6 +20,7 @@ static NSString * const DFK_APP_MEMORY_WARNING_TIMESTAMP = @"app_memory_warning_
 static NSString * const DFK_APP_TERMINATION_TIMESTAMP = @"app_termination_timestamp";
 
 static NSString * const DFK_SYS_SIGNAL = @"sys_signal";
+static NSString * const DFK_APP_CRASH_DETAILS = @"app_crash_details";
 
 static NSString * const DFK_APP_IN_BACKGROUND_FLAG = @"app_in_background";
 
@@ -157,6 +158,18 @@ static NSString * const DFK_APP_IN_BACKGROUND_FLAG = @"app_in_background";
 - (void)setSysSignal:(nullable NSString *)value {
     
     [self setData:value byKey:DFK_SYS_SIGNAL];
+}
+
+
+- (nullable NSString *)appCrashDetails {
+    
+    NSString *result = [self getDataByKey:DFK_APP_CRASH_DETAILS];
+    return result;
+}
+
+- (void)setAppCrashDetails:(nullable NSString *)value {
+    
+    [self setData:value byKey:DFK_APP_CRASH_DETAILS];
 }
 
 

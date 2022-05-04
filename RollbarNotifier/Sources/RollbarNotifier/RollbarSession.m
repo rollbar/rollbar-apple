@@ -7,6 +7,7 @@
 
 #import "RollbarSession.h"
 #import "RollbarSessionState.h"
+#import "RollbarLogger.h"
 #import <sys/stat.h>
 
 @import RollbarCommon;
@@ -53,7 +54,7 @@ static NSString * const SESSION_FILE_NAME = @"rollbar.session";
 - (void)enableOomMonitoringWithCrashCheck:(RollbarCrashReportCheck)crashCheck {
     
     self->_crashLocator =
-    crashCheck ? crashCheck : [RollbarSession registerDefaultCrashCheck];
+    crashCheck ? crashCheck : [self registerDefaultCrashCheck];
     
     [self deduceOomTermination];
     
@@ -66,6 +67,7 @@ static NSString * const SESSION_FILE_NAME = @"rollbar.session";
     self->_state.appMemoryWarningTimestamp = nil;
     self->_state.appTerminationTimestamp = nil;
     self->_state.sysSignal = nil;
+    self->_state.appCrashDetails = nil;
     self->_state.appInBackgroundFlag = RollbarTriStateFlag_None;
     
     [self saveCurrentSessionState];
@@ -76,7 +78,7 @@ static NSString * const SESSION_FILE_NAME = @"rollbar.session";
     //TODO: implement...
 }
 
-+ (RollbarCrashReportCheck)registerDefaultCrashCheck {
+- (RollbarCrashReportCheck)registerDefaultCrashCheck {
     
     if (NSGetUncaughtExceptionHandler()) {
         RollbarSdkLog(@"!!!: It looks like your application has already set an uncaught exception handler."
@@ -90,7 +92,7 @@ static NSString * const SESSION_FILE_NAME = @"rollbar.session";
     
     NSSetUncaughtExceptionHandler(&defaultExceptionHandler);
     
-    return [RollbarSession defaultCrashCheck];
+    return [self defaultCrashCheck];
 }
 
 static void defaultExceptionHandler(NSException *exception) {
@@ -105,20 +107,42 @@ static void defaultExceptionHandler(NSException *exception) {
                                   osVersion,
                                   backtrace
     ];
-    NSString *rollbarCrashReport = [NSString stringWithFormat:@"Uncaught exception: %@\n Details: \n%@\n",
+    NSString *rollbarCrashDetails = [NSString stringWithFormat:@"Uncaught exception: %@\n Details: \n%@\n",
                                     exception,
                                     exceptionDetails
     ];
-    //TODO: implement...
-    // add the rollbarCrashReport to the session state and save...
+
+    [[RollbarSession sharedInstance] captureAppCrashDetails:rollbarCrashDetails
+                                              withException:exception
+    ];
 }
 
-+ (RollbarCrashReportCheck)defaultCrashCheck {
+- (void)captureAppCrashDetails:(nonnull NSString *)crashDetails
+                 withException:(NSException *)exception {
+    
+    self->_state.appCrashDetails = crashDetails;
+    
+    [self saveCurrentSessionState];
+
+    [[RollbarLogger sharedInstance] log:RollbarLevel_Critical
+                              exception:exception
+                                   data:self->_state.jsonFriendlyData
+                                context:crashDetails
+    ];
+}
+
+- (RollbarCrashReportCheck)defaultCrashCheck {
     
     return ^() {
         
-        //TODO: implement...
-        return NO;
+        if (self->_state.appCrashDetails) {
+            
+            return YES;
+        }
+        else {
+            
+            return NO;
+        }
     };
 }
 

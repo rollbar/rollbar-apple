@@ -28,6 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) NSDate *appTerminationTimestamp;
 
 @property (atomic, copy, nullable) NSString *sysSignal;
+@property (atomic, copy, nullable) NSString *appCrashDetails;
 
 @property (atomic) RollbarTriStateFlag appInBackgroundFlag;
 
