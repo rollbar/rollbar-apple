@@ -47,11 +47,79 @@ static NSString * const SESSION_FILE_NAME = @"rollbar.session";
 @private
     RollbarSessionState *_state;
     NSString *_stateFilePath;
+    RollbarCrashReportCheck _crashLocator;
 }
 
 - (void)enableOomMonitoringWithCrashCheck:(RollbarCrashReportCheck)crashCheck {
     
+    self->_crashLocator =
+    crashCheck ? crashCheck : [RollbarSession registerDefaultCrashCheck];
+    
+    [self deduceOomTermination];
+    
+    self->_state.osUptimeInterval = [RollbarOsUtil detectOsUptimeInterval];
+    self->_state.osVersion = [RollbarOsUtil detectOsVersionString];
+    self->_state.appVersion = [RollbarBundleUtil detectAppBundleVersion];
+    // self->_state.appID = NOTE: we do not want to ever override this value...
+    self->_state.sessionID = [NSUUID new];
+    self->_state.sessionStartTimestamp = [NSDate date];
+    self->_state.appMemoryWarningTimestamp = nil;
+    self->_state.appTerminationTimestamp = nil;
+    self->_state.sysSignal = nil;
+    self->_state.appInBackgroundFlag = RollbarTriStateFlag_None;
+    
+    [self saveCurrentSessionState];
+}
+
+- (void)deduceOomTermination {
+    
     //TODO: implement...
+}
+
++ (RollbarCrashReportCheck)registerDefaultCrashCheck {
+    
+    if (NSGetUncaughtExceptionHandler()) {
+        RollbarSdkLog(@"!!!: It looks like your application has already set an uncaught exception handler."
+                      "Are you using some kind of crash reporting library?"
+                      "This will disable that code. If you would like to use that crash reporting library "
+                      "side-by-side with Rollbar OOM detection, make sure you pass a crashCheck block to "
+                      "enableOomMonitoringWithCrashCheck: method call that uses your crash reporting library's "
+                      "crashCheck equivalent."
+                      );
+    }
+    
+    NSSetUncaughtExceptionHandler(&defaultExceptionHandler);
+    
+    return [RollbarSession defaultCrashCheck];
+}
+
+static void defaultExceptionHandler(NSException *exception) {
+    
+    NSArray *backtrace = [exception callStackSymbols];
+    //NSString *platform = [[UIDevice currentDevice] platform];
+    //NSString *version = [[UIDevice currentDevice] systemVersion];
+    NSString *appVersion = [RollbarBundleUtil detectAppBundleVersion];
+    NSString *osVersion = [RollbarOsUtil detectOsVersionString];
+    NSString *exceptionDetails = [NSString stringWithFormat:@"App: %@. \nOS: %@. \nBacktrace: \n%@",
+                                  appVersion,
+                                  osVersion,
+                                  backtrace
+    ];
+    NSString *rollbarCrashReport = [NSString stringWithFormat:@"Uncaught exception: %@\n Details: \n%@\n",
+                                    exception,
+                                    exceptionDetails
+    ];
+    //TODO: implement...
+    // add the rollbarCrashReport to the session state and save...
+}
+
++ (RollbarCrashReportCheck)defaultCrashCheck {
+    
+    return ^() {
+        
+        //TODO: implement...
+        return NO;
+    };
 }
 
 #pragma mark - System and Application notification hooks
@@ -171,22 +239,17 @@ static void onSysSignal(int signalID) {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-#pragma mark - app termination checks
-
-
 #pragma mark - app/OS version change checks
 
 - (BOOL)didAppVersionChange:(nonnull NSString *)oldVersion {
     
-    BOOL result =
-    (NSOrderedSame != [[RollbarBundleUtil detectAppBundleVersion] compare:oldVersion]);
+    BOOL result = ![[RollbarBundleUtil detectAppBundleVersion] isEqualToString:oldVersion];
     return result;
 }
 
 - (BOOL)didOsVersionChange:(nonnull NSString *)oldVersion {
     
-    BOOL result =
-    (NSOrderedSame != [[RollbarOsUtil detectOsVersionString] compare:oldVersion]);
+    BOOL result = ![[RollbarOsUtil detectOsVersionString] isEqualToString:oldVersion];
     return result;
 }
 

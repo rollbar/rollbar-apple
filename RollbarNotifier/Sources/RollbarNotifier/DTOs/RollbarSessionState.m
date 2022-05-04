@@ -124,25 +124,25 @@ static NSString * const DFK_APP_IN_BACKGROUND_FLAG = @"app_in_background";
 }
 
 
-- (NSDate *)appMemoryWarningTimestamp {
+- (nullable NSDate *)appMemoryWarningTimestamp {
     
     NSDate *result = [self safelyGetDateByKey:DFK_APP_MEMORY_WARNING_TIMESTAMP withDefault:nil];
     return result;
 }
 
-- (void)setAppMemoryWarningTimestamp:(NSDate *)value {
+- (void)setAppMemoryWarningTimestamp:(nullable NSDate *)value {
     
     [self setDate:value forKey:DFK_APP_MEMORY_WARNING_TIMESTAMP];
 }
 
 
-- (NSDate *)appTerminationTimestamp {
+- (nullable NSDate *)appTerminationTimestamp {
     
     NSDate *result = [self safelyGetDateByKey:DFK_APP_TERMINATION_TIMESTAMP withDefault:nil];
     return result;
 }
 
-- (void)setAppTerminationTimestamp:(NSDate *)value {
+- (void)setAppTerminationTimestamp:(nullable NSDate *)value {
     
     [self setDate:value forKey:DFK_APP_TERMINATION_TIMESTAMP];
 }

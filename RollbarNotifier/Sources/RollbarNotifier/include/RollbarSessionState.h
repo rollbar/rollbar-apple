@@ -24,8 +24,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (atomic, nullable) NSUUID *sessionID;
 
 @property (nonatomic, copy, nonnull) NSDate *sessionStartTimestamp;
-@property (nonatomic, copy, nonnull) NSDate *appMemoryWarningTimestamp;
-@property (nonatomic, copy, nonnull) NSDate *appTerminationTimestamp;
+@property (nonatomic, copy, nullable) NSDate *appMemoryWarningTimestamp;
+@property (nonatomic, copy, nullable) NSDate *appTerminationTimestamp;
 
 @property (atomic, copy, nullable) NSString *sysSignal;
 
