@@ -75,7 +75,73 @@ static NSString * const SESSION_FILE_NAME = @"rollbar.session";
 
 - (void)deduceOomTermination {
     
-    //TODO: implement...
+    BOOL appUpgraded = [self didAppVersionChange:self->_state.appVersion];
+    if (YES == appUpgraded) {
+        
+        NSString *message = [NSString stringWithFormat:@"The application was upgraded from %@ to %@",
+                             self->_state.appVersion,
+                             [RollbarBundleUtil detectAppBundleVersion]
+        ];
+        [[RollbarLogger sharedInstance] log:RollbarLevel_Info
+                                    message:message
+                                       data:self->_state.jsonFriendlyData
+                                    context:nil
+        ];
+        return;
+    }
+    
+    BOOL appTerminated = (nil != self->_state.appTerminationTimestamp) ? YES : NO;
+    if (YES == appTerminated) {
+        
+        NSString *message = [NSString stringWithFormat:@"The application was terminated at %@",
+                             self->_state.appTerminationTimestamp
+        ];
+        [[RollbarLogger sharedInstance] log:RollbarLevel_Info
+                                    message:message
+                                       data:self->_state.jsonFriendlyData
+                                    context:nil
+        ];
+        return;
+    }
+    
+    BOOL appCrashed = self->_crashLocator();
+    if (YES == appCrashed) {
+        
+        NSString *message = @"The application had a crashe.";
+        [[RollbarLogger sharedInstance] log:RollbarLevel_Critical
+                                    message:message
+                                       data:self->_state.jsonFriendlyData
+                                    context:self->_state.appCrashDetails
+        ];
+        return;
+    }
+    
+    BOOL osUpgraded = [self didOsVersionChange:self->_state.osVersion];
+    if (YES == osUpgraded) {
+        
+        NSString *message = [NSString stringWithFormat:@"The OS was upgraded from %@ to %@",
+                             self->_state.osVersion,
+                             [RollbarOsUtil detectOsVersionString]
+        ];
+        [[RollbarLogger sharedInstance] log:RollbarLevel_Info
+                                    message:message
+                                       data:self->_state.jsonFriendlyData
+                                    context:nil
+        ];
+        return;
+    }
+    
+    NSString *oomContext = (YES == self->_state.appInBackgroundFlag) ? @"BOOM" : @"FOOM";
+    NSString *message =
+    [NSString stringWithFormat:
+     @"The application possibly was recycled due to Out-of-Memory problem (%@).", oomContext
+    ];
+    [[RollbarLogger sharedInstance] log:RollbarLevel_Warning
+                                message:message
+                                   data:self->_state.jsonFriendlyData
+                                context:nil
+    ];
+
 }
 
 - (RollbarCrashReportCheck)registerDefaultCrashCheck {
