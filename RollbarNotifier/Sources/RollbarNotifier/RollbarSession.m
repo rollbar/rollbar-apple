@@ -72,9 +72,14 @@ static NSString * const SESSION_FILE_NAME = @"rollbar.session";
     self->_state.appInBackgroundFlag = RollbarTriStateFlag_None;
     
     [self saveCurrentSessionState];
+    
+    [self registerForSystemSignals];
+    [self registerApplicationHooks];
 }
 
 - (void)deduceOomTermination {
+    
+    RollbarSdkLog(@"Deducing OOOM Termination based on: %@", self->_state);
     
     BOOL appUpgraded = [self didAppVersionChange:self->_state.appVersion];
     if (YES == appUpgraded) {
@@ -103,6 +108,7 @@ static NSString * const SESSION_FILE_NAME = @"rollbar.session";
 //                                       data:self->_state.jsonFriendlyData
 //                                    context:nil
 //        ];
+        RollbarSdkLog(@"%@", message);
         [Rollbar infoMessage:message data:self->_state.jsonFriendlyData];
         return;
     }
@@ -110,12 +116,13 @@ static NSString * const SESSION_FILE_NAME = @"rollbar.session";
     BOOL appCrashed = self->_crashLocator();
     if (YES == appCrashed) {
         
-        NSString *message = @"The app had a crashe.";
+        NSString *message = @"The app had a crash.";
 //        [[RollbarLogger sharedInstance] log:RollbarLevel_Critical
 //                                    message:message
 //                                       data:self->_state.jsonFriendlyData
 //                                    context:self->_state.appCrashDetails
 //        ];
+        RollbarSdkLog(@"%@", message);
         [Rollbar criticalMessage:message data:self->_state.jsonFriendlyData context:self->_state.appCrashDetails];
         return;
     }
@@ -132,11 +139,25 @@ static NSString * const SESSION_FILE_NAME = @"rollbar.session";
 //                                       data:self->_state.jsonFriendlyData
 //                                    context:nil
 //        ];
+        RollbarSdkLog(@"%@", message);
         [Rollbar infoMessage:message data:self->_state.jsonFriendlyData];
         return;
     }
     
-    NSString *oomContext = (YES == self->_state.appInBackgroundFlag) ? @"BOOM" : @"FOOM";
+    NSString *oomContext = nil;
+    switch (self->_state.appInBackgroundFlag) {
+            
+        case RollbarTriStateFlag_On:
+            oomContext = @"BOOM";
+            break;
+        case RollbarTriStateFlag_Off:
+            oomContext = @"FOOM";
+            break;
+        case RollbarTriStateFlag_None:
+        default:
+            oomContext = @"the app background state is unknown";
+            break;
+    }
     NSString *message =
     [NSString stringWithFormat:
      @"The app possibly was recycled due to Out-of-Memory problem (%@).", oomContext
@@ -146,8 +167,8 @@ static NSString * const SESSION_FILE_NAME = @"rollbar.session";
 //                                   data:self->_state.jsonFriendlyData
 //                                context:nil
 //    ];
+    RollbarSdkLog(@"%@", message);
     [Rollbar warningMessage:message data:self->_state.jsonFriendlyData];
-
 }
 
 - (RollbarCrashReportCheck)registerDefaultCrashCheck {

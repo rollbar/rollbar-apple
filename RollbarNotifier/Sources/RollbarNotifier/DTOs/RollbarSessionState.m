@@ -175,7 +175,7 @@ static NSString * const DFK_APP_IN_BACKGROUND_FLAG = @"app_in_background";
 
 - (RollbarTriStateFlag)appInBackgroundFlag {
     
-    BOOL result = [self safelyGetTriStateFlagByKey:DFK_APP_IN_BACKGROUND_FLAG];
+    RollbarTriStateFlag result = [self safelyGetTriStateFlagByKey:DFK_APP_IN_BACKGROUND_FLAG];
     return result;
 }
 

@@ -26,7 +26,7 @@ static RollbarCrashProcessor *crashProcessor = nil;
         telemetryOptionsObserver = [RollbarTelemetryOptionsObserver new];
     }
     
-    [[RollbarSession sharedInstance] registerApplicationHooks];
+    //[[RollbarSession sharedInstance] registerApplicationHooks];
     
 }
 
