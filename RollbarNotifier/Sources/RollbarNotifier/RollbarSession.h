@@ -27,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (RollbarSessionState *)getCurrentState;
 
-- (void)enableOomMonitoringWithCrashCheck:(RollbarCrashReportCheck)crashCheck;
+- (void)enableOomMonitoringWithCrashCheck:(nullable RollbarCrashReportCheck)crashCheck;
 - (void)registerApplicationHooks; // probably can become a private method...
 
 

@@ -8,6 +8,7 @@
 #import "RollbarSession.h"
 #import "RollbarSessionState.h"
 #import "RollbarLogger.h"
+#import "Rollbar.h"
 #import <sys/stat.h>
 
 @import RollbarCommon;
@@ -51,7 +52,7 @@ static NSString * const SESSION_FILE_NAME = @"rollbar.session";
     RollbarCrashReportCheck _crashLocator;
 }
 
-- (void)enableOomMonitoringWithCrashCheck:(RollbarCrashReportCheck)crashCheck {
+- (void)enableOomMonitoringWithCrashCheck:(nullable RollbarCrashReportCheck)crashCheck {
     
     self->_crashLocator =
     crashCheck ? crashCheck : [self registerDefaultCrashCheck];
@@ -78,41 +79,44 @@ static NSString * const SESSION_FILE_NAME = @"rollbar.session";
     BOOL appUpgraded = [self didAppVersionChange:self->_state.appVersion];
     if (YES == appUpgraded) {
         
-        NSString *message = [NSString stringWithFormat:@"The application was upgraded from %@ to %@",
+        NSString *message = [NSString stringWithFormat:@"The app was upgraded from %@ to %@",
                              self->_state.appVersion,
                              [RollbarBundleUtil detectAppBundleVersion]
         ];
-        [[RollbarLogger sharedInstance] log:RollbarLevel_Info
-                                    message:message
-                                       data:self->_state.jsonFriendlyData
-                                    context:nil
-        ];
+//        [[RollbarLogger sharedInstance] log:RollbarLevel_Info
+//                                    message:message
+//                                       data:self->_state.jsonFriendlyData
+//                                    context:nil
+//        ];
+        [Rollbar infoMessage:message data:self->_state.jsonFriendlyData];
         return;
     }
     
     BOOL appTerminated = (nil != self->_state.appTerminationTimestamp) ? YES : NO;
     if (YES == appTerminated) {
         
-        NSString *message = [NSString stringWithFormat:@"The application was terminated at %@",
+        NSString *message = [NSString stringWithFormat:@"The app was terminated at %@",
                              self->_state.appTerminationTimestamp
         ];
-        [[RollbarLogger sharedInstance] log:RollbarLevel_Info
-                                    message:message
-                                       data:self->_state.jsonFriendlyData
-                                    context:nil
-        ];
+//        [[RollbarLogger sharedInstance] log:RollbarLevel_Info
+//                                    message:message
+//                                       data:self->_state.jsonFriendlyData
+//                                    context:nil
+//        ];
+        [Rollbar infoMessage:message data:self->_state.jsonFriendlyData];
         return;
     }
     
     BOOL appCrashed = self->_crashLocator();
     if (YES == appCrashed) {
         
-        NSString *message = @"The application had a crashe.";
-        [[RollbarLogger sharedInstance] log:RollbarLevel_Critical
-                                    message:message
-                                       data:self->_state.jsonFriendlyData
-                                    context:self->_state.appCrashDetails
-        ];
+        NSString *message = @"The app had a crashe.";
+//        [[RollbarLogger sharedInstance] log:RollbarLevel_Critical
+//                                    message:message
+//                                       data:self->_state.jsonFriendlyData
+//                                    context:self->_state.appCrashDetails
+//        ];
+        [Rollbar criticalMessage:message data:self->_state.jsonFriendlyData context:self->_state.appCrashDetails];
         return;
     }
     
@@ -123,24 +127,26 @@ static NSString * const SESSION_FILE_NAME = @"rollbar.session";
                              self->_state.osVersion,
                              [RollbarOsUtil detectOsVersionString]
         ];
-        [[RollbarLogger sharedInstance] log:RollbarLevel_Info
-                                    message:message
-                                       data:self->_state.jsonFriendlyData
-                                    context:nil
-        ];
+//        [[RollbarLogger sharedInstance] log:RollbarLevel_Info
+//                                    message:message
+//                                       data:self->_state.jsonFriendlyData
+//                                    context:nil
+//        ];
+        [Rollbar infoMessage:message data:self->_state.jsonFriendlyData];
         return;
     }
     
     NSString *oomContext = (YES == self->_state.appInBackgroundFlag) ? @"BOOM" : @"FOOM";
     NSString *message =
     [NSString stringWithFormat:
-     @"The application possibly was recycled due to Out-of-Memory problem (%@).", oomContext
+     @"The app possibly was recycled due to Out-of-Memory problem (%@).", oomContext
     ];
-    [[RollbarLogger sharedInstance] log:RollbarLevel_Warning
-                                message:message
-                                   data:self->_state.jsonFriendlyData
-                                context:nil
-    ];
+//    [[RollbarLogger sharedInstance] log:RollbarLevel_Warning
+//                                message:message
+//                                   data:self->_state.jsonFriendlyData
+//                                context:nil
+//    ];
+    [Rollbar warningMessage:message data:self->_state.jsonFriendlyData];
 
 }
 
@@ -190,10 +196,14 @@ static void defaultExceptionHandler(NSException *exception) {
     
     [self saveCurrentSessionState];
 
-    [[RollbarLogger sharedInstance] log:RollbarLevel_Critical
-                              exception:exception
-                                   data:self->_state.jsonFriendlyData
-                                context:crashDetails
+//    [[RollbarLogger sharedInstance] log:RollbarLevel_Critical
+//                              exception:exception
+//                                   data:self->_state.jsonFriendlyData
+//                                context:crashDetails
+//    ];
+    [Rollbar criticalException:exception
+                          data:self->_state.jsonFriendlyData
+                       context:crashDetails
     ];
 }
 
@@ -322,6 +332,14 @@ static void onSysSignal(int signalID) {
 
     self->_state.appMemoryWarningTimestamp = [NSDate date];
     [self saveCurrentSessionState];
+    
+//    [[RollbarLogger sharedInstance] log:RollbarLevel_Warning
+//                                message:@"The app received a memory warning."
+//                                   data:self->_state.jsonFriendlyData
+//                                context:nil];
+    [Rollbar warningMessage:@"The app received a memory warning."
+                       data:self->_state.jsonFriendlyData
+    ];
 }
 
 - (void)dealloc {
