@@ -7,7 +7,7 @@ let package = Package(
     name: "RollbarSDK",
     platforms: [
         // Oldest targeted platform versions that are supported by this product.
-        .macOS(.v10_10),
+        .macOS(.v10_11),
         .iOS(.v9),
         .tvOS(.v11),
         .watchOS(.v7),
