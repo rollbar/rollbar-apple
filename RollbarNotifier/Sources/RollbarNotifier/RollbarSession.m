@@ -43,6 +43,9 @@
 //#endif
 
 static NSString * const SESSION_FILE_NAME = @"rollbar.session";
+static NSString * const APP_QUIT_FILE_NAME = @"rollbar.appquit";
+
+static char *appQuitFilePath;
 
 @implementation RollbarSession {
     
@@ -56,6 +59,10 @@ static NSString * const SESSION_FILE_NAME = @"rollbar.session";
     
     self->_crashLocator =
     crashCheck ? crashCheck : [self registerDefaultCrashCheck];
+    
+    if (YES == [RollbarCachesDirectory ensureCachesDirectoryExists]) {
+        appQuitFilePath = strdup([[RollbarCachesDirectory getCacheFilePath:APP_QUIT_FILE_NAME] UTF8String]);
+    }
     
     [self deduceOomTermination];
     
@@ -80,6 +87,17 @@ static NSString * const SESSION_FILE_NAME = @"rollbar.session";
 - (void)deduceOomTermination {
     
     RollbarSdkLog(@"Deducing OOOM Termination based on: %@", self->_state);
+    
+    
+    BOOL appQuit = NO;
+    struct stat statbuffer;
+    if (stat(appQuitFilePath, &statbuffer) == 0){
+        // A file exists at the path, we had an intentional quit
+        appQuit = YES;
+    }
+    if (YES == appQuit) {
+        //TODO: implement...
+    }
     
     BOOL appUpgraded = [self didAppVersionChange:self->_state.appVersion];
     if (YES == appUpgraded) {
@@ -169,6 +187,8 @@ static NSString * const SESSION_FILE_NAME = @"rollbar.session";
 //    ];
     RollbarSdkLog(@"%@", message);
     [Rollbar warningMessage:message data:self->_state.jsonFriendlyData];
+    
+    unlink(appQuitFilePath);
 }
 
 - (RollbarCrashReportCheck)registerDefaultCrashCheck {
@@ -250,10 +270,17 @@ static void defaultExceptionHandler(NSException *exception) {
     signal(SIGABRT, onSysSignal);
     signal(SIGQUIT, onSysSignal);
     signal(SIGTERM, onSysSignal);
+    //signal(SIGKILL, onSysSignal);
 }
 
 static void onSysSignal(int signalID) {
     
+    creat(appQuitFilePath, S_IREAD | S_IWRITE);
+    
+//    id activity = [NSProcessInfo.processInfo beginActivityWithOptions:NSActivityAutomaticTerminationDisabled
+//                                                               reason:@"Saving Rollbar session state..."
+//    ];
+
     NSString *signalDescriptor = nil;
     switch(signalID) {
         case SIGABRT:
@@ -265,11 +292,15 @@ static void onSysSignal(int signalID) {
         case SIGTERM:
             signalDescriptor = @"SIGTERM";
             break;
+//        case SIGKILL:
+//            signalDescriptor = @"SIGKIL";
+//            break;
         default:
             return;
     }
-    
     [[RollbarSession sharedInstance] captureSystemSignal:signalDescriptor];
+
+//    [NSProcessInfo.processInfo endActivity:activity];
 }
 
 - (void)captureSystemSignal:(nonnull NSString *)signal {
@@ -345,8 +376,14 @@ static void onSysSignal(int signalID) {
 
 - (void)applicationTerminated:(NSNotification *)notification {
 
+//    id activity = [NSProcessInfo.processInfo beginActivityWithOptions:NSActivityAutomaticTerminationDisabled
+//                                                               reason:@"Saving Rollbar session state..."
+//    ];
+    
     self->_state.appTerminationTimestamp = [NSDate date];
     [self saveCurrentSessionState];
+
+//    [NSProcessInfo.processInfo endActivity:activity];
 }
 
 - (void)applicationReceivedMemoryWarning:(NSNotification *)notification {

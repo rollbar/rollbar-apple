@@ -83,7 +83,16 @@ static RollbarCrashProcessor *crashProcessor = nil;
             [crashCollector collectCrashReportsWithObserver:crashProcessor];
         }
         
-        [[RollbarSession sharedInstance] enableOomMonitoringWithCrashCheck:nil];
+        RollbarCrashReportCheck crashRepoertCheck = ^() {
+            
+            BOOL result = NO;
+            if (crashProcessor.totalProcessedReports > 0) {
+                
+                result = YES;
+            }
+            return result;
+        };
+        [[RollbarSession sharedInstance] enableOomMonitoringWithCrashCheck:crashRepoertCheck];
     }
 }
 

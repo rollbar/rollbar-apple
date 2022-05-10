@@ -16,20 +16,9 @@ NS_ASSUME_NONNULL_BEGIN
 @interface RollbarSession : NSObject {
 }
 
-@property(atomic, readonly) NSDate *lastKnownAppStartupTimestamp;
-@property(atomic, readonly) NSString *lastKnownAppVersion;
-@property(atomic, readonly) NSString *lastKnownOsVersion;
-
-@property(atomic, readonly) BOOL anyLastKnownAppBackgroundState;
-@property(atomic, readonly) BOOL anyLastKnownAppCrash;
-@property(atomic, readonly) BOOL anyLastKnownAppTermination;
-@property(atomic, readonly) BOOL anyLastKnownAppGracefulQuit;
-
 - (RollbarSessionState *)getCurrentState;
 
 - (void)enableOomMonitoringWithCrashCheck:(nullable RollbarCrashReportCheck)crashCheck;
-- (void)registerApplicationHooks; // probably can become a private method...
-
 
 #pragma mark - Sigleton pattern
 
