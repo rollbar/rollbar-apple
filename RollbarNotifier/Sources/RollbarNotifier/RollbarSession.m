@@ -27,21 +27,6 @@
 #define __HAS_APPKIT_FRAMEWORK__
 #endif
 
-
-//@import SwiftUI;
-
-//#if TARGET_OS_WATCH
-//@import WatchKit;
-//#elif TARGET_OS_TV
-//#if TARGET_OS_TV
-//@import TVUIKit;
-//#elif TARGET_OS_IOS
-//@import UIKit;
-//@import TVUIKit;
-//#else
-//@import AppKit;
-//#endif
-
 static NSString * const SESSION_FILE_NAME = @"rollbar.session";
 static NSString * const APP_QUIT_FILE_NAME = @"rollbar.appquit";
 
@@ -88,7 +73,6 @@ static char *appQuitFilePath;
     
     RollbarSdkLog(@"Deducing OOOM Termination based on: %@", self->_state);
     
-    
     BOOL appQuit = NO;
     struct stat statbuffer;
     if (stat(appQuitFilePath, &statbuffer) == 0){
@@ -96,7 +80,10 @@ static char *appQuitFilePath;
         appQuit = YES;
     }
     if (YES == appQuit) {
-        //TODO: implement...
+
+        NSString *message = @"The app was exited at the end of last session.";
+        [Rollbar infoMessage:message data:self->_state.jsonFriendlyData];
+        return;
     }
     
     BOOL appUpgraded = [self didAppVersionChange:self->_state.appVersion];
@@ -106,11 +93,6 @@ static char *appQuitFilePath;
                              self->_state.appVersion,
                              [RollbarBundleUtil detectAppBundleVersion]
         ];
-//        [[RollbarLogger sharedInstance] log:RollbarLevel_Info
-//                                    message:message
-//                                       data:self->_state.jsonFriendlyData
-//                                    context:nil
-//        ];
         [Rollbar infoMessage:message data:self->_state.jsonFriendlyData];
         return;
     }
@@ -121,11 +103,6 @@ static char *appQuitFilePath;
         NSString *message = [NSString stringWithFormat:@"The app was terminated at %@",
                              self->_state.appTerminationTimestamp
         ];
-//        [[RollbarLogger sharedInstance] log:RollbarLevel_Info
-//                                    message:message
-//                                       data:self->_state.jsonFriendlyData
-//                                    context:nil
-//        ];
         RollbarSdkLog(@"%@", message);
         [Rollbar infoMessage:message data:self->_state.jsonFriendlyData];
         return;
@@ -135,11 +112,6 @@ static char *appQuitFilePath;
     if (YES == appCrashed) {
         
         NSString *message = @"The app had a crash.";
-//        [[RollbarLogger sharedInstance] log:RollbarLevel_Critical
-//                                    message:message
-//                                       data:self->_state.jsonFriendlyData
-//                                    context:self->_state.appCrashDetails
-//        ];
         RollbarSdkLog(@"%@", message);
         [Rollbar criticalMessage:message data:self->_state.jsonFriendlyData context:self->_state.appCrashDetails];
         return;
@@ -152,11 +124,6 @@ static char *appQuitFilePath;
                              self->_state.osVersion,
                              [RollbarOsUtil detectOsVersionString]
         ];
-//        [[RollbarLogger sharedInstance] log:RollbarLevel_Info
-//                                    message:message
-//                                       data:self->_state.jsonFriendlyData
-//                                    context:nil
-//        ];
         RollbarSdkLog(@"%@", message);
         [Rollbar infoMessage:message data:self->_state.jsonFriendlyData];
         return;
@@ -180,11 +147,6 @@ static char *appQuitFilePath;
     [NSString stringWithFormat:
      @"The app possibly was recycled due to Out-of-Memory problem (%@).", oomContext
     ];
-//    [[RollbarLogger sharedInstance] log:RollbarLevel_Warning
-//                                message:message
-//                                   data:self->_state.jsonFriendlyData
-//                                context:nil
-//    ];
     RollbarSdkLog(@"%@", message);
     [Rollbar warningMessage:message data:self->_state.jsonFriendlyData];
     
@@ -211,8 +173,6 @@ static char *appQuitFilePath;
 static void defaultExceptionHandler(NSException *exception) {
     
     NSArray *backtrace = [exception callStackSymbols];
-    //NSString *platform = [[UIDevice currentDevice] platform];
-    //NSString *version = [[UIDevice currentDevice] systemVersion];
     NSString *appVersion = [RollbarBundleUtil detectAppBundleVersion];
     NSString *osVersion = [RollbarOsUtil detectOsVersionString];
     NSString *exceptionDetails = [NSString stringWithFormat:@"App: %@. \nOS: %@. \nBacktrace: \n%@",
@@ -237,11 +197,6 @@ static void defaultExceptionHandler(NSException *exception) {
     
     [self saveCurrentSessionState];
 
-//    [[RollbarLogger sharedInstance] log:RollbarLevel_Critical
-//                              exception:exception
-//                                   data:self->_state.jsonFriendlyData
-//                                context:crashDetails
-//    ];
     [Rollbar criticalException:exception
                           data:self->_state.jsonFriendlyData
                        context:crashDetails
@@ -270,17 +225,12 @@ static void defaultExceptionHandler(NSException *exception) {
     signal(SIGABRT, onSysSignal);
     signal(SIGQUIT, onSysSignal);
     signal(SIGTERM, onSysSignal);
-    //signal(SIGKILL, onSysSignal);
 }
 
 static void onSysSignal(int signalID) {
     
     creat(appQuitFilePath, S_IREAD | S_IWRITE);
     
-//    id activity = [NSProcessInfo.processInfo beginActivityWithOptions:NSActivityAutomaticTerminationDisabled
-//                                                               reason:@"Saving Rollbar session state..."
-//    ];
-
     NSString *signalDescriptor = nil;
     switch(signalID) {
         case SIGABRT:
@@ -292,15 +242,10 @@ static void onSysSignal(int signalID) {
         case SIGTERM:
             signalDescriptor = @"SIGTERM";
             break;
-//        case SIGKILL:
-//            signalDescriptor = @"SIGKIL";
-//            break;
         default:
             return;
     }
     [[RollbarSession sharedInstance] captureSystemSignal:signalDescriptor];
-
-//    [NSProcessInfo.processInfo endActivity:activity];
 }
 
 - (void)captureSystemSignal:(nonnull NSString *)signal {
@@ -376,14 +321,8 @@ static void onSysSignal(int signalID) {
 
 - (void)applicationTerminated:(NSNotification *)notification {
 
-//    id activity = [NSProcessInfo.processInfo beginActivityWithOptions:NSActivityAutomaticTerminationDisabled
-//                                                               reason:@"Saving Rollbar session state..."
-//    ];
-    
     self->_state.appTerminationTimestamp = [NSDate date];
     [self saveCurrentSessionState];
-
-//    [NSProcessInfo.processInfo endActivity:activity];
 }
 
 - (void)applicationReceivedMemoryWarning:(NSNotification *)notification {
@@ -391,10 +330,6 @@ static void onSysSignal(int signalID) {
     self->_state.appMemoryWarningTimestamp = [NSDate date];
     [self saveCurrentSessionState];
     
-//    [[RollbarLogger sharedInstance] log:RollbarLevel_Warning
-//                                message:@"The app received a memory warning."
-//                                   data:self->_state.jsonFriendlyData
-//                                context:nil];
     [Rollbar warningMessage:@"The app received a memory warning."
                        data:self->_state.jsonFriendlyData
     ];
