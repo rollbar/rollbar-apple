@@ -6,6 +6,11 @@
 //
 
 #import "AppDelegate.h"
+#import "RollbarDemoSettings.h"
+
+@import RollbarNotifier;
+@import RollbarKSCrash;
+@import RollbarPLCrashReporter;
 
 @interface AppDelegate ()
 
@@ -16,6 +21,40 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+
+    [self initRollbar];
+    
+    NSData *data = [[NSData alloc] init];
+    NSError *error;
+    NSJSONReadingOptions serializationOptions = (NSJSONReadingMutableContainers | NSJSONReadingMutableLeaves);
+    NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data
+                                                            options:serializationOptions
+                                                              error:&error];
+    if (!payload && error) {
+        [Rollbar log:RollbarLevel_Error
+               error:error
+                data:nil
+             context:nil
+        ];
+    }
+    
+    @try {
+        [self callTroublemaker];
+    } @catch (NSException *exception) {
+        [Rollbar errorException:exception data:nil context:@"from @try-@catch"];
+    } @finally {
+        [Rollbar infoMessage:@"Post-trouble notification!"  data:nil context:@"from @try-@finally"];
+    }
+    
+    
+    // now, cause a crash:
+    //    [self callTroublemaker];
+    
+    //@throw NSInternalInconsistencyException;
+    
+    //    [self performSelector:@selector(die_die)];
+    //    [self performSelector:NSSelectorFromString(@"crashme:") withObject:nil afterDelay:10];
+    
     return YES;
 }
 
@@ -38,6 +77,32 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+}
+
+- (void)initRollbar {
+    
+    // configure Rollbar:
+    RollbarConfig *config = [RollbarConfig new];
+    
+    config.destination.accessToken = ROLLBAR_DEMO_PAYLOADS_ACCESS_TOKEN;
+    config.destination.environment = ROLLBAR_DEMO_ENVIRONMENT;
+    config.developerOptions.suppressSdkInfoLogging = YES;
+    config.telemetry.memoryStatsAutocollectionInterval = 0.5;
+    config.telemetry.enabled = YES;
+    //config.customData = @{ @"someKey": @"someValue", };
+    
+    // init Rollbar shared instance:
+    //id<RollbarCrashCollector> crashCollector = [[RollbarKSCrashCollector alloc] init];
+    id<RollbarCrashCollector> crashCollector = [[RollbarPLCrashCollector alloc] init];
+    
+    [Rollbar initWithConfiguration:config crashCollector:crashCollector];
+    
+    [Rollbar infoMessage:@"Rollbar is up and running! Enjoy your remote error and log monitoring..."];
+}
+
+- (void)callTroublemaker {
+    NSArray *items = @[@"one", @"two", @"three"];
+    NSLog(@"Here is the trouble-item: %@", items[10]);
 }
 
 
