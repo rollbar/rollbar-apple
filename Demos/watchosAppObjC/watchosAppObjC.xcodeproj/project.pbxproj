@@ -62,6 +62,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		554E6731282B4C3C00908A64 /* RollbarDemoSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RollbarDemoSettings.h; path = ../../RollbarDemoSettings.h; sourceTree = "<group>"; };
 		55889E432818B937002E0228 /* watchosAppObjC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = watchosAppObjC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55889E472818B937002E0228 /* watchosAppObjC WatchKit App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "watchosAppObjC WatchKit App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		55889E4D2818B937002E0228 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
@@ -124,6 +125,7 @@
 		55889E592818B939002E0228 /* watchosAppObjC WatchKit Extension */ = {
 			isa = PBXGroup;
 			children = (
+				554E6731282B4C3C00908A64 /* RollbarDemoSettings.h */,
 				55889E5A2818B939002E0228 /* InterfaceController.h */,
 				55889E5B2818B939002E0228 /* InterfaceController.m */,
 				55889E5D2818B939002E0228 /* ExtensionDelegate.h */,
