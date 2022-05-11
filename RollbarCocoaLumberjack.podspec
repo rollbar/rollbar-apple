@@ -7,7 +7,7 @@
 
 Pod::Spec.new do |s|
 
-    s.version      = "2.2.4"
+    s.version      = "2.3.0"
     s.name         = "RollbarCocoaLumberjack"
     s.summary      = "Application or client side SDK for interacting with the Rollbar API Server."
     s.description  = <<-DESC
