@@ -48,7 +48,7 @@ Pod::Spec.new do |sdk|
 
       #  When using multiple platforms:
       # common.ios.deployment_target = "9.0"
-      # common.osx.deployment_target = "10.10"
+      # common.osx.deployment_target = "10.11"
       # common.tvos.deployment_target = "11.0"
       # common.watchos.deployment_target = "4.0"
 
@@ -87,7 +87,7 @@ Pod::Spec.new do |sdk|
 
         #  When using multiple platforms:
         # deploys.ios.deployment_target = "9.0"
-        # deploys.osx.deployment_target = "10.10"
+        # deploys.osx.deployment_target = "10.11"
         # deploys.tvos.deployment_target = "11.0"
         # deploys.watchos.deployment_target = "4.0"
 
@@ -127,7 +127,7 @@ Pod::Spec.new do |sdk|
 
         #  When using multiple platforms:
         # notifier.ios.deployment_target = "9.0"
-        # notifier.osx.deployment_target = "10.10"
+        # notifier.osx.deployment_target = "10.11"
         # notifier.tvos.deployment_target = "11.0"
         # notifier.watchos.deployment_target = "4.0"
 
@@ -167,7 +167,7 @@ Pod::Spec.new do |sdk|
 
         #  When using multiple platforms:
         # kscrash.ios.deployment_target = "9.0"
-        # kscrash.osx.deployment_target = "10.10"
+        # kscrash.osx.deployment_target = "10.11"
         # kscrash.tvos.deployment_target = "11.0"
         # kscrash.watchos.deployment_target = "4.0"
 
@@ -206,7 +206,7 @@ Pod::Spec.new do |sdk|
 
         #  When using multiple platforms:
         # plcrash.ios.deployment_target = "9.0"
-        # plcrash.osx.deployment_target = "10.10"
+        # plcrash.osx.deployment_target = "10.11"
         # plcrash.tvos.deployment_target = "11.0"
         # plcrash.watchos.deployment_target = "4.0"
 
@@ -245,7 +245,7 @@ Pod::Spec.new do |sdk|
 
         #  When using multiple platforms:
         # swift.ios.deployment_target = "9.0"
-        # swift.osx.deployment_target = "10.10"
+        # swift.osx.deployment_target = "10.11"
         # swift.tvos.deployment_target = "11.0"
         # swift.watchos.deployment_target = "4.0"
 
@@ -285,7 +285,7 @@ Pod::Spec.new do |sdk|
 
         #  When using multiple platforms:
         # swift.ios.deployment_target = "9.0"
-        # swift.osx.deployment_target = "10.10"
+        # swift.osx.deployment_target = "10.11"
         # swift.tvos.deployment_target = "11.0"
         # swift.watchos.deployment_target = "4.0"
 
