@@ -11,8 +11,6 @@
 
 - (void)setUp {
     // Put setup code here. This method is called before the invocation of each test method in the class.
-    [self deleteSessionFile];
-    XCTAssertTrue(NO == [self sessionFileExists]);
 }
 
 - (void)tearDown {
@@ -21,7 +19,6 @@
 
 - (void)testRollbarSessionBasics {
 
-    XCTAssertTrue(NO == [self sessionFileExists]);
     RollbarSession *session = [RollbarSession sharedInstance];
     XCTAssertTrue(YES == [self sessionFileExists]);
     RollbarSessionState *persistedSessionState = [self readSessionState];
