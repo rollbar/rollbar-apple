@@ -82,7 +82,10 @@ __attribute__((noinline)) static void crashIt (void) {
     config.destination.environment = ROLLBAR_DEMO_ENVIRONMENT;
     //config.developerOptions.suppressSdkInfoLogging = YES;
     config.customData = @{ @"someKey": @"someValue", };
-    
+    config.telemetry.enabled = YES;
+    config.telemetry.memoryStatsAutocollectionInterval = 0.5;
+    config.telemetry.maximumTelemetryData = 30;
+
     [RollbarAulStoreMonitor.sharedInstance configureRollbarLogger:Rollbar.currentLogger];
     [RollbarAulStoreMonitor.sharedInstance start];
 
