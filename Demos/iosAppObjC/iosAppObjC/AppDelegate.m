@@ -84,7 +84,6 @@ didDiscardSceneSessions:(NSSet<UISceneSession *> *)sceneSessions {
     config.developerOptions.suppressSdkInfoLogging = YES;
     config.telemetry.memoryStatsAutocollectionInterval = 0.5;
     config.telemetry.enabled = YES;
-    //config.customData = @{ @"someKey": @"someValue", };
 
     // init Rollbar shared instance:
     //id<RollbarCrashCollector> crashCollector = [[RollbarKSCrashCollector alloc] init];
