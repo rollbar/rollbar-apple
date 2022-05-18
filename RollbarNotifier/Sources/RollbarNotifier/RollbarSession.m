@@ -71,7 +71,7 @@ static char *appQuitFilePath;
 
 - (void)deduceOomTermination {
     
-    RollbarSdkLog(@"Deducing OOOM Termination based on: %@", self->_state);
+    RollbarSdkLog(@"Deducing OOM Termination based on: %@", self->_state);
     
     BOOL appQuit = NO;
     struct stat statbuffer;
@@ -172,6 +172,8 @@ static char *appQuitFilePath;
 
 static void defaultExceptionHandler(NSException *exception) {
     
+    RollbarSdkLog(@"***OOM*** defaultExceptionHandler(...) is called.");
+
     NSArray *backtrace = [exception callStackSymbols];
     NSString *appVersion = [RollbarBundleUtil detectAppBundleVersion];
     NSString *osVersion = [RollbarOsUtil detectOsVersionString];
@@ -193,6 +195,7 @@ static void defaultExceptionHandler(NSException *exception) {
 - (void)captureAppCrashDetails:(nonnull NSString *)crashDetails
                  withException:(NSException *)exception {
     
+    RollbarSdkLog(@"***OOM*** captureAppCrashDetails:withException: is called.");
     self->_state.appCrashDetails = crashDetails;
     
     [self saveCurrentSessionState];
@@ -222,6 +225,8 @@ static void defaultExceptionHandler(NSException *exception) {
 
 - (void)registerForSystemSignals {
     
+    RollbarSdkLog(@"***OOM*** registerForSystemSignals is called.");
+
     signal(SIGABRT, onSysSignal);
     signal(SIGQUIT, onSysSignal);
     signal(SIGTERM, onSysSignal);
@@ -229,6 +234,8 @@ static void defaultExceptionHandler(NSException *exception) {
 
 static void onSysSignal(int signalID) {
     
+    RollbarSdkLog(@"***OOM*** onSysSignal(...) is called.");
+
     creat(appQuitFilePath, S_IREAD | S_IWRITE);
     
     NSString *signalDescriptor = nil;
@@ -250,12 +257,16 @@ static void onSysSignal(int signalID) {
 
 - (void)captureSystemSignal:(nonnull NSString *)signal {
     
+    RollbarSdkLog(@"***OOM*** captureSystemSignal: is called.");
+
     self->_state.sysSignal = signal;
     [self saveCurrentSessionState];
 }
 
 - (void)registerApplicationHooks {
     
+    RollbarSdkLog(@"***OOM*** registerApplicationHooks is called.");
+
 #if defined(__HAS_WATCHKIT_FRAMEWORK__)
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationInForeground:)
@@ -309,11 +320,15 @@ static void onSysSignal(int signalID) {
 
 - (void)applicationInForeground:(NSNotification *)notification {
     
+    RollbarSdkLog(@"***OOM*** applicationInForeground: is called.");
+
     self->_state.appInBackgroundFlag = RollbarTriStateFlag_Off;
     [self saveCurrentSessionState];
 }
 
 - (void)applicationInBackground:(NSNotification *)notification {
+
+    RollbarSdkLog(@"***OOM*** applicationInBackground: is called.");
 
     self->_state.appInBackgroundFlag = RollbarTriStateFlag_On;
     [self saveCurrentSessionState];
@@ -321,11 +336,15 @@ static void onSysSignal(int signalID) {
 
 - (void)applicationTerminated:(NSNotification *)notification {
 
+    RollbarSdkLog(@"***OOM*** applicationTerminated: is called.");
+
     self->_state.appTerminationTimestamp = [NSDate date];
     [self saveCurrentSessionState];
 }
 
 - (void)applicationReceivedMemoryWarning:(NSNotification *)notification {
+
+    RollbarSdkLog(@"***OOM*** applicationReceivedMemoryWarning: is called.");
 
     self->_state.appMemoryWarningTimestamp = [NSDate date];
     [self saveCurrentSessionState];
@@ -408,6 +427,8 @@ static void onSysSignal(int signalID) {
 
 - (RollbarSessionState *)loadSessionState {
    
+    RollbarSdkLog(@"***OOM*** loadSessionState is called.");
+
     NSData *data = [[NSData alloc] initWithContentsOfFile:self->_stateFilePath];
     RollbarSessionState *state = [[RollbarSessionState alloc] initWithJSONData:data];
     return state;
@@ -415,6 +436,8 @@ static void onSysSignal(int signalID) {
 
 - (BOOL)saveSessionState:(nonnull RollbarSessionState *)state {
     
+    RollbarSdkLog(@"***OOM*** saveSessionState: is called. State: %@", state);
+
     NSError *error;
     NSData *data = [NSJSONSerialization rollbar_dataWithJSONObject:state.jsonFriendlyData
                                                            options:NSJSONWritingPrettyPrinted
