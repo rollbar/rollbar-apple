@@ -6,6 +6,7 @@ static RollbarLevel const DEFAULT_LOG_LEVEL = RollbarLevel_Info;
 static RollbarLevel const DEFAULT_CRASH_LEVEL = RollbarLevel_Error;
 static NSUInteger const DEFAULT_MAX_REPORTS_PER_MINUTE = 60;
 static RollbarCaptureIpType const DEFAULT_IP_CAPTURE_TYPE = RollbarCaptureIpType_Full;
+static BOOL const DEFAULT_OOM_DETECTION = YES;
 
 #if TARGET_OS_IPHONE
 static NSString * const OPERATING_SYSTEM = @"ios";
@@ -22,6 +23,7 @@ static NSString * const DFK_IP_CAPTURE_TYPE = @"captureIp";
 static NSString * const DFK_CODE_VERSION = @"codeVersion";
 static NSString * const DFK_FRAMEWORK = @"framework";
 static NSString * const DFK_REQUEST_ID = @"requestId";
+static NSString * const DFK_OOM_DETECTION = @"oomDetection";
 
 #pragma mark - class implementation
 
@@ -35,7 +37,8 @@ static NSString * const DFK_REQUEST_ID = @"requestId";
                        captureIp:(RollbarCaptureIpType)captureIp
                      codeVersion:(nullable NSString *)codeVersion
                        framework:(nullable NSString *)framework
-                       requestId:(nullable NSString *)requestId {
+                       requestId:(nullable NSString *)requestId
+              enableOomDetection:(BOOL)enableOomDetection {
     
     self = [super initWithDictionary:@{
         DFK_LOG_LEVEL: [RollbarLevelUtil RollbarLevelToString:logLevel],
@@ -44,8 +47,29 @@ static NSString * const DFK_REQUEST_ID = @"requestId";
         DFK_IP_CAPTURE_TYPE: [RollbarCaptureIpTypeUtil CaptureIpTypeToString:DEFAULT_IP_CAPTURE_TYPE],
         DFK_CODE_VERSION: codeVersion ? codeVersion : [NSNull null],
         DFK_FRAMEWORK: framework ? framework : OPERATING_SYSTEM,
-        DFK_REQUEST_ID: requestId ? requestId : [NSNull null]
+        DFK_REQUEST_ID: requestId ? requestId : [NSNull null],
+        DFK_OOM_DETECTION: [NSNumber numberWithBool:enableOomDetection]
     }];
+    return self;
+}
+
+- (instancetype)initWithLogLevel:(RollbarLevel)logLevel
+                      crashLevel:(RollbarLevel)crashLevel
+         maximumReportsPerMinute:(NSUInteger)maximumReportsPerMinute
+                       captureIp:(RollbarCaptureIpType)captureIp
+                     codeVersion:(nullable NSString *)codeVersion
+                       framework:(nullable NSString *)framework
+                       requestId:(nullable NSString *)requestId {
+    
+    self = [self initWithLogLevel:logLevel
+                       crashLevel:crashLevel
+          maximumReportsPerMinute:maximumReportsPerMinute
+                        captureIp:captureIp
+                      codeVersion:codeVersion
+                        framework:framework
+                        requestId:requestId
+               enableOomDetection:DEFAULT_OOM_DETECTION
+    ];
     return self;
 }
 
@@ -190,6 +214,20 @@ static NSString * const DFK_REQUEST_ID = @"requestId";
 
 - (void)setRequestId:(nullable NSString *)value {
     [self setData:value byKey:DFK_REQUEST_ID];
+}
+
+- (BOOL)enableOomDetection {
+    
+    BOOL result = [self safelyGetBoolByKey:DFK_OOM_DETECTION
+                                    withDefault:DEFAULT_OOM_DETECTION];
+    return result;
+}
+
+- (void)setEnableOomDetection:(BOOL)value {
+    
+    [self setBool:value
+           forKey:DFK_OOM_DETECTION
+    ];
 }
 
 @end

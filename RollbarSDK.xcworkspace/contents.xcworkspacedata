@@ -100,6 +100,16 @@
       </FileRef>
       <Group
          location = "container:"
+         name = "macOS">
+         <FileRef
+            location = "group:Demos/macosAppSwift/macosAppSwift.xcodeproj">
+         </FileRef>
+         <FileRef
+            location = "group:Demos/macosAppObjC/macosAppObjC.xcodeproj">
+         </FileRef>
+      </Group>
+      <Group
+         location = "container:"
          name = "iOS">
          <FileRef
             location = "group:Demos/iosAppObjC/iosAppObjC.xcodeproj">
@@ -107,12 +117,16 @@
       </Group>
       <Group
          location = "container:"
-         name = "macOS">
+         name = "tvOS">
          <FileRef
-            location = "group:Demos/macosAppSwift/macosAppSwift.xcodeproj">
+            location = "group:Demos/tvosAppObjC/tvosAppObjC.xcodeproj">
          </FileRef>
+      </Group>
+      <Group
+         location = "container:"
+         name = "watchOS">
          <FileRef
-            location = "group:Demos/macosAppObjC/macosAppObjC.xcodeproj">
+            location = "group:Demos/watchosAppObjC/watchosAppObjC.xcodeproj">
          </FileRef>
       </Group>
    </Group>

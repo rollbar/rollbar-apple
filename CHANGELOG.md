@@ -25,6 +25,10 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 
 ## Release Notes
 
+### 2.3.0
+
+- feat: Detection of possible Out-of-Memory issues
+
 ### 2.2.4
 
 - fix:   resolve #161 - Fix type conversion within RollbarAulEntitySnapper.m

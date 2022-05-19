@@ -1,17 +1,9 @@
-//
-//  DTOsTests.m
-//  Rollbar
-//
-//  Created by Andrey Kornich on 2019-10-10.
-//  Copyright © 2019 Rollbar. All rights reserved.
-//
-
 @import Foundation;
 
-#if !TARGET_OS_WATCH
 #import <XCTest/XCTest.h>
 
 @import RollbarNotifier;
+@import RollbarCommon;
 
 @interface DTOsTests : XCTestCase
 
@@ -27,16 +19,70 @@
     // Put teardown code here. This method is called after the invocation of each test method in the class.
 }
 
-- (void)testExample {
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
-}
-
 - (void)testPerformanceExample {
     // This is an example of a performance test case.
     [self measureBlock:^{
         // Put the code you want to measure the time of here.
     }];
+}
+
+- (void)testRollbarSessionStateDTOInitialization {
+    
+    RollbarSessionState *state = [RollbarSessionState new];
+    
+    XCTAssertNotNil(state);
+    
+    XCTAssertNotNil(state.appID);
+    XCTAssertNotNil(state.sessionID);
+    XCTAssertNotNil(state.sessionStartTimestamp);
+    XCTAssertNotNil(state.appVersion);
+    XCTAssertNotNil(state.osVersion);
+    XCTAssertGreaterThan(state.osUptimeInterval, 0.0);
+    
+    XCTAssertNil(state.appMemoryWarningTimestamp);
+    XCTAssertNil(state.appTerminationTimestamp);
+    XCTAssertEqual(state.appInBackgroundFlag, RollbarTriStateFlag_None);
+    
+    XCTAssertNotEqualObjects(state.appID, state.sessionID);
+    XCTAssertNotEqual(state.appID, state.sessionID);
+    
+    XCTAssertEqual(state.osVersion, [RollbarOsUtil detectOsVersionString]);
+    
+    NSString *expectedVersion = [RollbarBundleUtil detectAppBundleVersion];
+    XCTAssertEqualObjects(state.appVersion, expectedVersion);
+    
+    NSString *json = [state serializeToJSONString];
+    RollbarSessionState *stateClone = [[RollbarSessionState alloc] initWithJSONString:json];
+
+    XCTAssertEqualObjects(stateClone.appID, state.appID);
+    XCTAssertEqualObjects(stateClone.sessionID, state.sessionID);
+    XCTAssertEqual(stateClone.sessionStartTimestamp, state.sessionStartTimestamp);
+    XCTAssertTrue([stateClone.appVersion compare:state.appVersion] ==  NSOrderedSame);
+    XCTAssertTrue([stateClone.osVersion compare:state.osVersion] == NSOrderedSame);
+    XCTAssertEqual(stateClone.osUptimeInterval, state.osUptimeInterval,);
+    XCTAssertEqual(stateClone.appMemoryWarningTimestamp, state.appMemoryWarningTimestamp);
+    XCTAssertEqual(stateClone.appTerminationTimestamp, state.appTerminationTimestamp);
+    XCTAssertEqual(stateClone.appInBackgroundFlag, state.appInBackgroundFlag);
+
+    stateClone.appID = [NSUUID new];
+    XCTAssertNotEqual(stateClone.appID, state.appID);
+    stateClone.sessionID = [NSUUID new];
+    XCTAssertNotEqual(stateClone.sessionID, state.sessionID);
+    stateClone.sessionStartTimestamp = [[NSDate date] dateByAddingTimeInterval:10.0];
+    XCTAssertNotEqual(stateClone.sessionStartTimestamp, state.sessionStartTimestamp);
+    stateClone.appVersion = @"new app version";
+    XCTAssertFalse([stateClone.appVersion compare:state.appVersion] ==  NSOrderedSame);
+    stateClone.osVersion = @"ne os version";
+    XCTAssertFalse([stateClone.osVersion compare:state.osVersion] == NSOrderedSame);
+    stateClone.osUptimeInterval = state.osUptimeInterval + 3.0;
+    XCTAssertNotEqual(stateClone.osUptimeInterval, state.osUptimeInterval);
+    stateClone.appMemoryWarningTimestamp = [[NSDate date] dateByAddingTimeInterval:20.0];
+    XCTAssertNotEqual(stateClone.appMemoryWarningTimestamp, state.appMemoryWarningTimestamp);
+    stateClone.appTerminationTimestamp = [[NSDate date] dateByAddingTimeInterval:30.0];
+    XCTAssertNotEqual(stateClone.appTerminationTimestamp, state.appTerminationTimestamp);
+    stateClone.appInBackgroundFlag = RollbarTriStateFlag_On;
+    XCTAssertNotEqual(stateClone.appInBackgroundFlag, state.appInBackgroundFlag);
+    XCTAssertEqual(stateClone.appInBackgroundFlag, RollbarTriStateFlag_On);
 }
 
 - (void)testBasicDTOInitializationWithJSONString {
@@ -1037,4 +1083,3 @@
 }
 
 @end
-#endif

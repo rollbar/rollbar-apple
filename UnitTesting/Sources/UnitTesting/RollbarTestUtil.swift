@@ -15,18 +15,18 @@ import RollbarCommon
     private static let telemetryFileName = "rollbar.telemetry";
 
     private static func getQueuedItemsFilePath() -> String {
-        let cachesDirectory = RollbarCachesDirectory.directory() ?? "";
+        let cachesDirectory = RollbarCachesDirectory.directory() ;
         let filePath = URL(fileURLWithPath: cachesDirectory).appendingPathComponent(queuedItemsFileName);
         return filePath.path;
     }
 
     private static func getQueuedItemsStateFilePath() -> String {
-        let cachesDirectory = RollbarCachesDirectory.directory() ?? "";
+        let cachesDirectory = RollbarCachesDirectory.directory() ;
         let filePath = URL(fileURLWithPath: cachesDirectory).appendingPathComponent(queuedItemsStateFileName);
         return filePath.path;
     }
     private static func getTelemetryFilePath() -> String {
-        let cachesDirectory = RollbarCachesDirectory.directory() ?? "";
+        let cachesDirectory = RollbarCachesDirectory.directory() ;
         let filePath = URL(fileURLWithPath: cachesDirectory).appendingPathComponent(telemetryFileName);
         return filePath.path;
     }

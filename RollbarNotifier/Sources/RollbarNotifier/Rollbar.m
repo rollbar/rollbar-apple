@@ -10,6 +10,7 @@
 #import "RollbarTelemetryOptionsObserver.h"
 #import "RollbarScrubbingOptions.h"
 #import "RollbarCrashProcessor.h"
+#import "RollbarSession.h"
 
 @implementation Rollbar
 
@@ -24,6 +25,9 @@ static RollbarCrashProcessor *crashProcessor = nil;
         
         telemetryOptionsObserver = [RollbarTelemetryOptionsObserver new];
     }
+    
+    //[[RollbarSession sharedInstance] registerApplicationHooks];
+    
 }
 
 + (void)initWithAccessToken:(NSString *)accessToken {
@@ -78,6 +82,18 @@ static RollbarCrashProcessor *crashProcessor = nil;
             crashProcessor = [[RollbarCrashProcessor alloc] init];
             [crashCollector collectCrashReportsWithObserver:crashProcessor];
         }
+        
+        RollbarCrashReportCheck crashRepoertCheck = ^() {
+            
+            BOOL result = NO;
+            if (crashProcessor.totalProcessedReports > 0) {
+                
+                result = YES;
+            }
+            return result;
+        };
+        [[RollbarSession sharedInstance] enableOomMonitoring:config.loggingOptions.enableOomDetection
+                                              withCrashCheck:crashRepoertCheck];
     }
 }
 

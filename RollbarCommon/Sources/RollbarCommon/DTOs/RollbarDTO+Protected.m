@@ -1,4 +1,5 @@
 #import "RollbarDTO+Protected.h"
+#import "NSDate+Rollbar.h"
 
 @implementation RollbarDTO (Protected)
 
@@ -232,10 +233,41 @@
     }
 }
 
-- (void)setTimeInterval:(NSTimeInterval)data forKey:(NSString *)key {
+- (void)setTimeInterval:(NSTimeInterval)data
+                 forKey:(NSString *)key {
     
     NSNumber *number = @(data);
     [self setNumber:number forKey:key];
+}
+
+- (nullable NSDate *)safelyGetDateByKey:(nonnull NSString *)key
+                            withDefault:(nullable NSDate *)defaultValue {
+    
+    NSString *dateString = [self safelyGetStringByKey:key];
+    if (dateString) {
+        
+        NSDate *value = [NSDate rollbar_dateFromString:dateString];
+        return value;
+    }
+    else {
+        
+        return defaultValue;
+    }
+}
+
+- (void)setDate:(nullable NSDate *)data
+         forKey:(nonnull NSString *)key {
+    
+    if (data) {
+        
+        NSString *dateString = [data rollbar_toString];
+        [self setString:dateString forKey:key];
+    }
+    else {
+        
+        [self setData:nil byKey:key];
+    }
+    
 }
 
 @end

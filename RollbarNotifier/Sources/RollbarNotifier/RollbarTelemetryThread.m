@@ -211,14 +211,15 @@ static  RollbarTelemetryThread * _Nullable singleton = nil;
 - (void)attemptMemoryStatsCollection {
     
     static NSDate *nextCollection = nil;
+    NSDate *now = [NSDate date];
     if (!nextCollection) {
         
         [self collectMemoryStats];
-        nextCollection = [[NSDate date]
+        nextCollection = [now
                           dateByAddingTimeInterval:self->_telemetryOptions.memoryStatsAutocollectionInterval
         ];
     }
-    else if ([[NSDate date] compare:nextCollection] == NSOrderedAscending) {
+    else if ([now compare:nextCollection] == NSOrderedDescending) {
 
         [self collectMemoryStats];
         nextCollection =

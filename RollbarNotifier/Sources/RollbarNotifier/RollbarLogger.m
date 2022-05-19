@@ -20,9 +20,9 @@
 
 #define MAX_PAYLOAD_SIZE 128 // The maximum payload size in kb
 
+static NSString * const PAYLOADS_FILE_NAME = @"rollbar.payloads";
 static NSString * const QUEUED_ITEMS_FILE_NAME = @"rollbar.items";
 static NSString * const QUEUED_ITEMS_STATE_FILE_NAME = @"rollbar.state";
-static NSString * const PAYLOADS_FILE_NAME = @"rollbar.payloads";
 
 /// Rollbar API Service enforced payload rate limit:
 static NSString * const RESPONSE_HEADER_RATE_LIMIT = @"x-rate-limit-limit";
@@ -35,10 +35,11 @@ static NSString * const RESPONSE_HEADER_REMAINING_SECONDS = @"x-rate-limit-remai
 
 static NSUInteger MAX_RETRY_COUNT = 5;
 
+static NSString *payloadsFilePath = nil;
+static NSString *oomDetectionFilePath = nil;
 static NSString *queuedItemsFilePath = nil;
 static NSString *stateFilePath = nil;
 static NSMutableDictionary *queueState = nil;
-static NSString *payloadsFilePath = nil;
 
 static RollbarThread *rollbarThread = nil;
 
@@ -62,17 +63,8 @@ static RollbarLogger *sharedSingleton = nil;
     if (self == [RollbarLogger class]) {
         
         // create working cache directory:
+        [RollbarCachesDirectory ensureCachesDirectoryExists];
         NSString *cachesDirectory = [RollbarCachesDirectory directory];
-        if (![[NSFileManager defaultManager] fileExistsAtPath:cachesDirectory]) {
-            NSError *error;
-            BOOL result =
-            [[NSFileManager defaultManager] createDirectoryAtPath:cachesDirectory
-                                      withIntermediateDirectories:YES
-                                                       attributes:nil
-                                                            error:&error
-             ];
-            NSLog(@"result %@", result);
-        }
         
         // make sure we have all the data files set:
         queuedItemsFilePath =

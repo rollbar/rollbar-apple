@@ -7,10 +7,10 @@ let package = Package(
     name: "RollbarCocoaLumberjack",
     platforms: [
         // Oldest targeted platform versions that are supported by this product.
-        .macOS(.v10_10),
+        .macOS(.v10_11),
         .iOS(.v9),
         .tvOS(.v11),
-        .watchOS(.v4),
+        .watchOS(.v7),
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.

@@ -35,4 +35,45 @@
     return cachesDirectory;
 }
 
++ (BOOL)ensureCachesDirectoryExists {
+    
+    NSString *cachesDirectory = [RollbarCachesDirectory directory];
+    BOOL success = [[NSFileManager defaultManager] fileExistsAtPath:cachesDirectory];
+    if (YES == success) {
+        
+        return success;
+    }
+
+    NSError *error;
+    success =
+    [[NSFileManager defaultManager] createDirectoryAtPath:cachesDirectory
+                              withIntermediateDirectories:YES
+                                               attributes:nil
+                                                    error:&error
+    ];
+    NSLog(@"Created a new caches directory: %@", [NSNumber numberWithBool:success]);
+    if (NO == success) {
+        
+        if (!error) {
+
+            NSLog(@"Error creating a new caches directory: %@", error);
+        }
+    }
+    return success;
+}
+
++ (BOOL)checkCacheFileExists:(nonnull NSString *)fileName {
+    
+    NSString *cachesDirectory = [RollbarCachesDirectory directory];
+    NSString *filePath = [cachesDirectory stringByAppendingPathComponent:fileName];
+    return [[NSFileManager defaultManager] fileExistsAtPath:filePath];
+}
+
++ (nonnull NSString *)getCacheFilePath:(nonnull NSString *)fileName {
+    
+    NSString *cachesDirectory = [RollbarCachesDirectory directory];
+    NSString *filePath = [cachesDirectory stringByAppendingPathComponent:fileName];
+    return filePath;
+}
+
 @end

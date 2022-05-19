@@ -78,6 +78,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setTimeInterval:(NSTimeInterval)data
                  forKey:(NSString *)key;
 
+- (nullable NSDate *)safelyGetDateByKey:(nonnull NSString *)key
+                            withDefault:(nullable NSDate *)defaultValue;
+- (void)setDate:(nullable NSDate *)data
+         forKey:(nonnull NSString *)key;
 
 @end
 

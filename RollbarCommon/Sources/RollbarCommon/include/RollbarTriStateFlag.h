@@ -8,7 +8,7 @@
 typedef NS_ENUM(NSUInteger, RollbarTriStateFlag) {
     RollbarTriStateFlag_None,
     RollbarTriStateFlag_On,
-    RollbarTriStateFlag_Off
+    RollbarTriStateFlag_Off,
 };
 
 #pragma mark - RollbarTriStateFlagUtil

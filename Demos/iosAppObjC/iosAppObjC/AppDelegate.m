@@ -45,7 +45,9 @@
 
     // now, cause a crash:
     //    [self callTroublemaker];
-    @throw NSInternalInconsistencyException;
+    
+    //@throw NSInternalInconsistencyException;
+    
     //    [self performSelector:@selector(die_die)];
     //    [self performSelector:NSSelectorFromString(@"crashme:") withObject:nil afterDelay:10];
 
@@ -79,7 +81,9 @@ didDiscardSceneSessions:(NSSet<UISceneSession *> *)sceneSessions {
     
     config.destination.accessToken = ROLLBAR_DEMO_PAYLOADS_ACCESS_TOKEN;
     config.destination.environment = ROLLBAR_DEMO_ENVIRONMENT;
-    config.customData = @{ @"someKey": @"someValue", };
+    config.developerOptions.suppressSdkInfoLogging = YES;
+    config.telemetry.memoryStatsAutocollectionInterval = 0.5;
+    config.telemetry.enabled = YES;
 
     // init Rollbar shared instance:
     //id<RollbarCrashCollector> crashCollector = [[RollbarKSCrashCollector alloc] init];

@@ -1,0 +1,388 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		554E672A282B44F600908A64 /* RollbarKSCrash in Frameworks */ = {isa = PBXBuildFile; productRef = 554E6729282B44F600908A64 /* RollbarKSCrash */; };
+		554E672C282B44F600908A64 /* RollbarPLCrashReporter in Frameworks */ = {isa = PBXBuildFile; productRef = 554E672B282B44F600908A64 /* RollbarPLCrashReporter */; };
+		55889E292818B83B002E0228 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 55889E282818B83B002E0228 /* AppDelegate.m */; };
+		55889E2C2818B83B002E0228 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55889E2B2818B83B002E0228 /* ViewController.m */; };
+		55889E2F2818B83B002E0228 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 55889E2D2818B83B002E0228 /* Main.storyboard */; };
+		55889E312818B83D002E0228 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55889E302818B83D002E0228 /* Assets.xcassets */; };
+		55889E342818B83D002E0228 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 55889E322818B83D002E0228 /* LaunchScreen.storyboard */; };
+		55889E362818B83D002E0228 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 55889E352818B83D002E0228 /* main.m */; };
+		55DD35832818C3150061AC50 /* RollbarNotifier in Frameworks */ = {isa = PBXBuildFile; productRef = 55DD35822818C3150061AC50 /* RollbarNotifier */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		554E6728282B448E00908A64 /* RollbarDemoSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RollbarDemoSettings.h; path = ../../RollbarDemoSettings.h; sourceTree = "<group>"; };
+		55889E242818B83B002E0228 /* tvosAppObjC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tvosAppObjC.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		55889E272818B83B002E0228 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		55889E282818B83B002E0228 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		55889E2A2818B83B002E0228 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		55889E2B2818B83B002E0228 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		55889E2E2818B83B002E0228 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		55889E302818B83D002E0228 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		55889E332818B83D002E0228 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		55889E352818B83D002E0228 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		55889E212818B83B002E0228 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				55DD35832818C3150061AC50 /* RollbarNotifier in Frameworks */,
+				554E672A282B44F600908A64 /* RollbarKSCrash in Frameworks */,
+				554E672C282B44F600908A64 /* RollbarPLCrashReporter in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		55889E1B2818B83B002E0228 = {
+			isa = PBXGroup;
+			children = (
+				55889E262818B83B002E0228 /* tvosAppObjC */,
+				55889E252818B83B002E0228 /* Products */,
+				55DD35812818C3150061AC50 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		55889E252818B83B002E0228 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				55889E242818B83B002E0228 /* tvosAppObjC.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		55889E262818B83B002E0228 /* tvosAppObjC */ = {
+			isa = PBXGroup;
+			children = (
+				554E6728282B448E00908A64 /* RollbarDemoSettings.h */,
+				55889E272818B83B002E0228 /* AppDelegate.h */,
+				55889E282818B83B002E0228 /* AppDelegate.m */,
+				55889E2A2818B83B002E0228 /* ViewController.h */,
+				55889E2B2818B83B002E0228 /* ViewController.m */,
+				55889E2D2818B83B002E0228 /* Main.storyboard */,
+				55889E302818B83D002E0228 /* Assets.xcassets */,
+				55889E322818B83D002E0228 /* LaunchScreen.storyboard */,
+				55889E352818B83D002E0228 /* main.m */,
+			);
+			path = tvosAppObjC;
+			sourceTree = "<group>";
+		};
+		55DD35812818C3150061AC50 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		55889E232818B83B002E0228 /* tvosAppObjC */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 55889E392818B83D002E0228 /* Build configuration list for PBXNativeTarget "tvosAppObjC" */;
+			buildPhases = (
+				55889E202818B83B002E0228 /* Sources */,
+				55889E212818B83B002E0228 /* Frameworks */,
+				55889E222818B83B002E0228 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = tvosAppObjC;
+			packageProductDependencies = (
+				55DD35822818C3150061AC50 /* RollbarNotifier */,
+				554E6729282B44F600908A64 /* RollbarKSCrash */,
+				554E672B282B44F600908A64 /* RollbarPLCrashReporter */,
+			);
+			productName = tvosAppObjC;
+			productReference = 55889E242818B83B002E0228 /* tvosAppObjC.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		55889E1C2818B83B002E0228 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1330;
+				TargetAttributes = {
+					55889E232818B83B002E0228 = {
+						CreatedOnToolsVersion = 13.3.1;
+					};
+				};
+			};
+			buildConfigurationList = 55889E1F2818B83B002E0228 /* Build configuration list for PBXProject "tvosAppObjC" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 55889E1B2818B83B002E0228;
+			productRefGroup = 55889E252818B83B002E0228 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				55889E232818B83B002E0228 /* tvosAppObjC */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		55889E222818B83B002E0228 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				55889E342818B83D002E0228 /* LaunchScreen.storyboard in Resources */,
+				55889E312818B83D002E0228 /* Assets.xcassets in Resources */,
+				55889E2F2818B83B002E0228 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		55889E202818B83B002E0228 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				55889E2C2818B83B002E0228 /* ViewController.m in Sources */,
+				55889E362818B83D002E0228 /* main.m in Sources */,
+				55889E292818B83B002E0228 /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		55889E2D2818B83B002E0228 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				55889E2E2818B83B002E0228 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		55889E322818B83D002E0228 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				55889E332818B83D002E0228 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		55889E372818B83D002E0228 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = appletvos;
+				TVOS_DEPLOYMENT_TARGET = 15.4;
+			};
+			name = Debug;
+		};
+		55889E382818B83D002E0228 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = appletvos;
+				TVOS_DEPLOYMENT_TARGET = 15.4;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		55889E3A2818B83D002E0228 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = LDX6L68VZJ;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.widespectrumcomputing.tvosAppObjC;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 3;
+			};
+			name = Debug;
+		};
+		55889E3B2818B83D002E0228 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = LDX6L68VZJ;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.widespectrumcomputing.tvosAppObjC;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 3;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		55889E1F2818B83B002E0228 /* Build configuration list for PBXProject "tvosAppObjC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				55889E372818B83D002E0228 /* Debug */,
+				55889E382818B83D002E0228 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		55889E392818B83D002E0228 /* Build configuration list for PBXNativeTarget "tvosAppObjC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				55889E3A2818B83D002E0228 /* Debug */,
+				55889E3B2818B83D002E0228 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		554E6729282B44F600908A64 /* RollbarKSCrash */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RollbarKSCrash;
+		};
+		554E672B282B44F600908A64 /* RollbarPLCrashReporter */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RollbarPLCrashReporter;
+		};
+		55DD35822818C3150061AC50 /* RollbarNotifier */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RollbarNotifier;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 55889E1C2818B83B002E0228 /* Project object */;
+}
