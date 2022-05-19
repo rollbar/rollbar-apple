@@ -40,33 +40,56 @@ static char *appQuitFilePath;
     RollbarCrashReportCheck _crashLocator;
 }
 
-- (void)enableOomMonitoringWithCrashCheck:(nullable RollbarCrashReportCheck)crashCheck {
+- (void)enableOomMonitoring:(BOOL)enableOomDetection
+             withCrashCheck:(nullable RollbarCrashReportCheck)crashCheck {
     
-    self->_crashLocator =
-    crashCheck ? crashCheck : [self registerDefaultCrashCheck];
-    
-    if (YES == [RollbarCachesDirectory ensureCachesDirectoryExists]) {
-        appQuitFilePath = strdup([[RollbarCachesDirectory getCacheFilePath:APP_QUIT_FILE_NAME] UTF8String]);
+    if (YES == enableOomDetection) {
+        
+        self->_crashLocator =
+        crashCheck ? crashCheck : [self registerDefaultCrashCheck];
+        
+        if (YES == [RollbarCachesDirectory ensureCachesDirectoryExists]) {
+            appQuitFilePath = strdup([[RollbarCachesDirectory getCacheFilePath:APP_QUIT_FILE_NAME] UTF8String]);
+        }
+        
+        [self deduceOomTermination];
+        
+        self->_state.osUptimeInterval = [RollbarOsUtil detectOsUptimeInterval];
+        self->_state.osVersion = [RollbarOsUtil detectOsVersionString];
+        self->_state.appVersion = [RollbarBundleUtil detectAppBundleVersion];
+        // self->_state.appID = NOTE: we do not want to ever override this value...
+        self->_state.sessionID = [NSUUID new];
+        self->_state.sessionStartTimestamp = [NSDate date];
+        self->_state.appMemoryWarningTimestamp = nil;
+        self->_state.appTerminationTimestamp = nil;
+        self->_state.sysSignal = nil;
+        self->_state.appCrashDetails = nil;
+        self->_state.appInBackgroundFlag = RollbarTriStateFlag_None;
+        
+        [self saveCurrentSessionState];
+        
+        [self registerForSystemSignals];
+        [self registerApplicationHooks];
     }
-    
-    [self deduceOomTermination];
-    
-    self->_state.osUptimeInterval = [RollbarOsUtil detectOsUptimeInterval];
-    self->_state.osVersion = [RollbarOsUtil detectOsVersionString];
-    self->_state.appVersion = [RollbarBundleUtil detectAppBundleVersion];
-    // self->_state.appID = NOTE: we do not want to ever override this value...
-    self->_state.sessionID = [NSUUID new];
-    self->_state.sessionStartTimestamp = [NSDate date];
-    self->_state.appMemoryWarningTimestamp = nil;
-    self->_state.appTerminationTimestamp = nil;
-    self->_state.sysSignal = nil;
-    self->_state.appCrashDetails = nil;
-    self->_state.appInBackgroundFlag = RollbarTriStateFlag_None;
-    
-    [self saveCurrentSessionState];
-    
-    [self registerForSystemSignals];
-    [self registerApplicationHooks];
+    else {
+        
+        self->_crashLocator = nil;
+        
+        self->_state.osUptimeInterval = [RollbarOsUtil detectOsUptimeInterval];
+        self->_state.osVersion = [RollbarOsUtil detectOsVersionString];
+        self->_state.appVersion = [RollbarBundleUtil detectAppBundleVersion];
+        // self->_state.appID = NOTE: we do not want to ever override this value...
+        self->_state.sessionID = [NSUUID new];
+        self->_state.sessionStartTimestamp = [NSDate date];
+        self->_state.sessionStartTimestamp = [NSDate date];
+        self->_state.appMemoryWarningTimestamp = nil;
+        self->_state.appTerminationTimestamp = nil;
+        self->_state.sysSignal = nil;
+        self->_state.appCrashDetails = nil;
+        self->_state.appInBackgroundFlag = RollbarTriStateFlag_None;
+
+        [self saveCurrentSessionState];
+    }
 }
 
 - (void)deduceOomTermination {

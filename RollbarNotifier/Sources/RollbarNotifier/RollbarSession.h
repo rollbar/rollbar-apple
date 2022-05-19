@@ -18,7 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (RollbarSessionState *)getCurrentState;
 
-- (void)enableOomMonitoringWithCrashCheck:(nullable RollbarCrashReportCheck)crashCheck;
+- (void)enableOomMonitoring:(BOOL)enableOomDetection
+             withCrashCheck:(nullable RollbarCrashReportCheck)crashCheck;
 
 #pragma mark - Sigleton pattern
 

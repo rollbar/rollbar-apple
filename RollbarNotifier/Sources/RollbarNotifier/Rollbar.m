@@ -92,7 +92,8 @@ static RollbarCrashProcessor *crashProcessor = nil;
             }
             return result;
         };
-        [[RollbarSession sharedInstance] enableOomMonitoringWithCrashCheck:crashRepoertCheck];
+        [[RollbarSession sharedInstance] enableOomMonitoring:config.loggingOptions.enableOomDetection
+                                              withCrashCheck:crashRepoertCheck];
     }
 }
 
