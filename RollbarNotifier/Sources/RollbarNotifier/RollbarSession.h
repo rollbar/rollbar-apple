@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface RollbarSession : NSObject {
 }
 
-- (RollbarSessionState *)getCurrentState;
+- (nullable RollbarSessionState *)getCurrentState;
 
 - (void)enableOomMonitoring:(BOOL)enableOomDetection
              withCrashCheck:(nullable RollbarCrashReportCheck)crashCheck;
