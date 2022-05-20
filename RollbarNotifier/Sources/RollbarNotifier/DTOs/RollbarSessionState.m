@@ -94,6 +94,7 @@ static NSString * const DFK_APP_IN_BACKGROUND_FLAG = @"app_in_background";
 }
 
 -(void)setAppID:(nullable NSUUID *)value {
+    
     [self setData:value.UUIDString byKey:DFK_APP_ID];
 }
 
@@ -109,13 +110,16 @@ static NSString * const DFK_APP_IN_BACKGROUND_FLAG = @"app_in_background";
 }
 
 -(void)setSessionID:(nullable NSUUID *)value {
+    
     [self setData:value.UUIDString byKey:DFK_SESSION_ID];
 }
 
 
-- (NSDate *)sessionStartTimestamp {
+- (nonnull NSDate *)sessionStartTimestamp {
     
-    NSDate *result = [self safelyGetDateByKey:DFK_SESSION_TIMESTAMP withDefault:nil];
+    NSDate *result = [self safelyGetDateByKey:DFK_SESSION_TIMESTAMP
+                                  withDefault:[NSDate date]
+    ];
     return result;
 }
 

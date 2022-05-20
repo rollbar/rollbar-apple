@@ -10,12 +10,21 @@
 
 #pragma mark - JSON processing routines
 
-+ (BOOL)isTransferableObject:(id)obj {
-    BOOL result = [NSJSONSerialization isValidJSONObject:obj];
-    return result;
++ (BOOL)isTransferableObject:(nullable id)obj {
+    
+    if (obj) {
+        
+        BOOL result = [NSJSONSerialization isValidJSONObject:obj];
+        return result;
+    }
+    else {
+        
+        return NO;
+    }
 }
 
 + (BOOL)isTransferableDataValue:(id)obj {
+    
     if (obj == [NSNull null]
         || [obj isKindOfClass:[NSString class]]
         || [obj isKindOfClass:[NSNumber class]]
@@ -338,24 +347,30 @@
     self->_dataArray = nil;
     self->_dataDictionary = nil;
     
-    if (!data) {
+    if (nil == data) {
+        
         data = [NSMutableDictionary dictionary];
     }
     
     if (![RollbarDTO isTransferableObject:data]) {
+        
         return self;
     }
     
     if ([data isKindOfClass:[NSMutableDictionary class]]) {
+        
         self->_data = (NSMutableDictionary *) data;
     }
     else {
+        
         self->_data = data.mutableCopy;
     }
     self->_dataArray = nil;
     self->_dataDictionary = (NSMutableDictionary<NSString *, id> *) self->_data;
     for (NSString *key in self->_dataDictionary.allKeys) {
+        
         if (self->_dataDictionary[key] == (id)[NSNull null]) {
+            
             [self->_dataDictionary removeObjectForKey:key];
         }
     }

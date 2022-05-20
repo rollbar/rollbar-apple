@@ -126,7 +126,7 @@ static void TMReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkRea
         return nil;
     }
     
-    SCNetworkReachabilityRef ref = SCNetworkReachabilityCreateWithName(NULL, [hostname UTF8String]);
+    SCNetworkReachabilityRef ref = SCNetworkReachabilityCreateWithName(NULL, utf8Hostname);
     if (ref)
     {
         id reachability = [[self alloc] initWithReachabilityRef:ref];

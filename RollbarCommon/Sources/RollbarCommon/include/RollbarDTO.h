@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Checks if the provided object is transferrable (ie could be converted to/from JSON).
 /// @param obj the object in question
-+ (BOOL)isTransferableObject:(id)obj;
++ (BOOL)isTransferableObject:(nullable id)obj;
 
 /// Checks if the provided object could be used as a DTO property/data value.
 /// @param obj the object in question

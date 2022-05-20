@@ -116,19 +116,29 @@
 
 #pragma mark - data setters by key
 
-- (void)setDictionary:(NSDictionary *)data forKey:(NSString *)key {
-    [self setData:data.mutableCopy byKey:key];
+- (void)setDictionary:(nullable NSDictionary *)data forKey:(NSString *)key {
+    
+    [self setData:!data ? data.mutableCopy : data
+            byKey:key
+    ];
 }
 
-- (void)setArray:(NSArray *)data forKey:(NSString *)key {
-    [self setData:data.mutableCopy byKey:key];
+- (void)setArray:(nullable NSArray *)data forKey:(NSString *)key {
+    
+    [self setData:!data ? data.mutableCopy : data
+            byKey:key
+    ];
 }
 
-- (void)setString:(NSString *)data forKey:(NSString *)key {
-    [self setData:data.mutableCopy byKey:key];
+- (void)setString:(nullable NSString *)data forKey:(NSString *)key {
+    
+    [self setData:!data ? data.mutableCopy : data
+            byKey:key
+    ];
 }
 
-- (void)setNumber:(NSNumber *)data forKey:(NSString *)key {
+- (void)setNumber:(nullable NSNumber *)data forKey:(NSString *)key {
+    
     [self setData:data byKey:key];
 }
 

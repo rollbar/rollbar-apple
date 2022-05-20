@@ -410,7 +410,7 @@ static void defaultExceptionHandler(NSException *exception) {
 
 #pragma mark - state access
 
-- (RollbarSessionState *)getCurrentState {
+- (nullable RollbarSessionState *)getCurrentState {
   
     NSString *json = [self->_state serializeToJSONString];
     if (!json) {
@@ -467,7 +467,7 @@ static void defaultExceptionHandler(NSException *exception) {
 
 #pragma mark - session state persistence
 
-- (RollbarSessionState *)loadSessionState {
+- (nullable RollbarSessionState *)loadSessionState {
    
     RollbarSdkLog(@"***OOM*** loadSessionState is called.");
 
