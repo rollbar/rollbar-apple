@@ -28,6 +28,8 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 ### 2.3.0
 
 - feat: Detection of possible Out-of-Memory issues
+- fix: resolve #176 - Rollbar crashes when device runs out of memory
+- fix: resolve #180 - SonarCloud: address current reliability issues
 
 ### 2.2.4
 
