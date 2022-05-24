@@ -33,6 +33,9 @@
     [dto setDictionary:Nil forKey:@"key"];
     XCTAssertNil([dto getDataByKey:@"key"]);
     
+    [dto setDictionary:nil forKey:@"key"];
+    XCTAssertNil([dto getDataByKey:@"key"]);
+    
     [dto setDictionary:@{} forKey:@"key"];
     XCTAssertNotNil([dto getDataByKey:@"key"]);
 }
