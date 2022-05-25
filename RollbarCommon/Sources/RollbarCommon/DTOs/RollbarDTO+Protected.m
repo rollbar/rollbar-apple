@@ -118,21 +118,21 @@
 
 - (void)setDictionary:(nullable NSDictionary *)data forKey:(NSString *)key {
     
-    [self setData:!data ? data.mutableCopy : data
+    [self setData:data ? data.mutableCopy : data
             byKey:key
     ];
 }
 
 - (void)setArray:(nullable NSArray *)data forKey:(NSString *)key {
     
-    [self setData:!data ? data.mutableCopy : data
+    [self setData:data ? data.mutableCopy : data
             byKey:key
     ];
 }
 
 - (void)setString:(nullable NSString *)data forKey:(NSString *)key {
     
-    [self setData:!data ? data.mutableCopy : data
+    [self setData:data ? data.mutableCopy : data
             byKey:key
     ];
 }
