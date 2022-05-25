@@ -21,7 +21,8 @@
     NSOperatingSystemVersion version = [RollbarOsUtil detectOsVersion];
     NSString *versionString = [RollbarOsUtil stringFromOsVersion:version];
     NSString *detectedVersionString = [RollbarOsUtil detectOsVersionString];
-    XCTAssertTrue([detectedVersionString containsString:versionString]);
+    XCTAssertTrue([detectedVersionString containsString:[versionString componentsSeparatedByString:@"."][0]]);
+    XCTAssertTrue([detectedVersionString containsString:[versionString componentsSeparatedByString:@"."][1]]);
 }
 
 - (void)testDetectOsUptimeInterval {
