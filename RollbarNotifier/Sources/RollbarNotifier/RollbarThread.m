@@ -44,9 +44,12 @@
     }
     
     @autoreleasepool {
+        
         if ((nil != _logger) && (NO == _logger.configuration.developerOptions.suppressSdkInfoLogging)) {
+        
             RollbarSdkLog(@"Checking items...");
         }
+        
         [_logger processSavedItems];
     }
 }
