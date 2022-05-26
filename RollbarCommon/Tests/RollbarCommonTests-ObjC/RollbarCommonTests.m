@@ -21,6 +21,25 @@
     NSLog(@"Teared down.");
 }
 
+- (void)testSetDictionaryWithNothing {
+    
+    RollbarDTO *dto = [[RollbarDTO alloc] initWithDictionary:@{}];
+    XCTAssertNotNil(dto);
+    XCTAssertNil([dto getDataByKey:@"key"]);
+
+    [dto setDictionary:NULL forKey:@"key"];
+    XCTAssertNil([dto getDataByKey:@"key"]);
+    
+    [dto setDictionary:Nil forKey:@"key"];
+    XCTAssertNil([dto getDataByKey:@"key"]);
+    
+    [dto setDictionary:nil forKey:@"key"];
+    XCTAssertNil([dto getDataByKey:@"key"]);
+    
+    [dto setDictionary:@{} forKey:@"key"];
+    XCTAssertNotNil([dto getDataByKey:@"key"]);
+}
+
 - (void)testRollbarTaskDispatcher {
     
     void (^task)(id) = ^(id taskInput) {

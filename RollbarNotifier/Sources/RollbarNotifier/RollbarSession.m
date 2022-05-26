@@ -27,10 +27,68 @@
 #define __HAS_APPKIT_FRAMEWORK__
 #endif
 
+#pragma mark - constants
+
 static NSString * const SESSION_FILE_NAME = @"rollbar.session";
 static NSString * const APP_QUIT_FILE_NAME = @"rollbar.appquit";
 
 static char *appQuitFilePath;
+
+#pragma mark - RollbarSession (Protected)
+
+@interface RollbarSession (Protected)
+
+- (void)captureSystemSignal:(nonnull NSString *)signal;
+- (void)captureAppCrashDetails:(nonnull NSString *)crashDetails
+                 withException:(NSException *)exception;
+@end
+
+static void onSysSignal(int signalID) {
+    
+    RollbarSdkLog(@"***OOM*** onSysSignal(...) is called.");
+    
+    creat(appQuitFilePath, S_IREAD | S_IWRITE);
+    
+    NSString *signalDescriptor = nil;
+    switch(signalID) {
+        case SIGABRT:
+            signalDescriptor = @"SIGABRT";
+            break;
+        case SIGQUIT:
+            signalDescriptor = @"SIGQUIT";
+            break;
+        case SIGTERM:
+            signalDescriptor = @"SIGTERM";
+            break;
+        default:
+            return;
+    }
+    [[RollbarSession sharedInstance] captureSystemSignal:signalDescriptor];
+}
+
+static void defaultExceptionHandler(NSException *exception) {
+    
+    RollbarSdkLog(@"***OOM*** defaultExceptionHandler(...) is called.");
+    
+    NSArray *backtrace = [exception callStackSymbols];
+    NSString *appVersion = [RollbarBundleUtil detectAppBundleVersion];
+    NSString *osVersion = [RollbarOsUtil detectOsVersionString];
+    NSString *exceptionDetails = [NSString stringWithFormat:@"App: %@. \nOS: %@. \nBacktrace: \n%@",
+                                  appVersion,
+                                  osVersion,
+                                  backtrace
+    ];
+    NSString *rollbarCrashDetails = [NSString stringWithFormat:@"Uncaught exception: %@\n Details: \n%@\n",
+                                     exception,
+                                     exceptionDetails
+    ];
+    
+    [[RollbarSession sharedInstance] captureAppCrashDetails:rollbarCrashDetails
+                                              withException:exception
+    ];
+}
+
+#pragma mark - RollbarSession implementation
 
 @implementation RollbarSession {
     
@@ -161,7 +219,6 @@ static char *appQuitFilePath;
         case RollbarTriStateFlag_Off:
             oomContext = @"FOOM";
             break;
-        case RollbarTriStateFlag_None:
         default:
             oomContext = @"the app background state is unknown";
             break;
@@ -191,28 +248,6 @@ static char *appQuitFilePath;
     NSSetUncaughtExceptionHandler(&defaultExceptionHandler);
     
     return [self defaultCrashCheck];
-}
-
-static void defaultExceptionHandler(NSException *exception) {
-    
-    RollbarSdkLog(@"***OOM*** defaultExceptionHandler(...) is called.");
-
-    NSArray *backtrace = [exception callStackSymbols];
-    NSString *appVersion = [RollbarBundleUtil detectAppBundleVersion];
-    NSString *osVersion = [RollbarOsUtil detectOsVersionString];
-    NSString *exceptionDetails = [NSString stringWithFormat:@"App: %@. \nOS: %@. \nBacktrace: \n%@",
-                                  appVersion,
-                                  osVersion,
-                                  backtrace
-    ];
-    NSString *rollbarCrashDetails = [NSString stringWithFormat:@"Uncaught exception: %@\n Details: \n%@\n",
-                                    exception,
-                                    exceptionDetails
-    ];
-
-    [[RollbarSession sharedInstance] captureAppCrashDetails:rollbarCrashDetails
-                                              withException:exception
-    ];
 }
 
 - (void)captureAppCrashDetails:(nonnull NSString *)crashDetails
@@ -253,29 +288,6 @@ static void defaultExceptionHandler(NSException *exception) {
     signal(SIGABRT, onSysSignal);
     signal(SIGQUIT, onSysSignal);
     signal(SIGTERM, onSysSignal);
-}
-
-static void onSysSignal(int signalID) {
-    
-    RollbarSdkLog(@"***OOM*** onSysSignal(...) is called.");
-
-    creat(appQuitFilePath, S_IREAD | S_IWRITE);
-    
-    NSString *signalDescriptor = nil;
-    switch(signalID) {
-        case SIGABRT:
-            signalDescriptor = @"SIGABRT";
-            break;
-        case SIGQUIT:
-            signalDescriptor = @"SIGQUIT";
-            break;
-        case SIGTERM:
-            signalDescriptor = @"SIGTERM";
-            break;
-        default:
-            return;
-    }
-    [[RollbarSession sharedInstance] captureSystemSignal:signalDescriptor];
 }
 
 - (void)captureSystemSignal:(nonnull NSString *)signal {
@@ -398,9 +410,16 @@ static void onSysSignal(int signalID) {
 
 #pragma mark - state access
 
-- (RollbarSessionState *)getCurrentState {
+- (nullable RollbarSessionState *)getCurrentState {
   
     NSString *json = [self->_state serializeToJSONString];
+    if (!json) {
+        
+        RollbarSdkLog(@"***OOM*** getCurrentState couldn't serialize the current state to JSON string.");
+        
+        return nil;
+    }
+    
     RollbarSessionState *stateClone = [[RollbarSessionState alloc] initWithJSONString:json];
     return stateClone;
 }
@@ -448,11 +467,17 @@ static void onSysSignal(int signalID) {
 
 #pragma mark - session state persistence
 
-- (RollbarSessionState *)loadSessionState {
+- (nullable RollbarSessionState *)loadSessionState {
    
     RollbarSdkLog(@"***OOM*** loadSessionState is called.");
 
     NSData *data = [[NSData alloc] initWithContentsOfFile:self->_stateFilePath];
+    if (nil == data) {
+        
+        RollbarSdkLog(@"***OOM*** loadSessionState failed to load session state data from: %@", self->_stateFilePath);
+        return nil;
+    }
+    
     RollbarSessionState *state = [[RollbarSessionState alloc] initWithJSONData:data];
     return state;
 }
@@ -468,8 +493,11 @@ static void onSysSignal(int signalID) {
                                                               safe:true];
     if (!data && error) {
         RollbarSdkLog(@"Error saving Rollbar Session State: %@ !!!", [error localizedDescription]);
+        return NO;
     }
-    [data writeToFile:self->_stateFilePath atomically:YES];
+    
+    BOOL result = [data writeToFile:self->_stateFilePath atomically:YES];
+    return result;
 }
 
 - (BOOL)saveCurrentSessionState {

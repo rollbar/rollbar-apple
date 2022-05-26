@@ -715,16 +715,14 @@ static RollbarLogger *sharedSingleton = nil;
         
         RollbarSdkLog(@"Couldn't generate and save JSON data from: %@", payload);
         if (error) {
+
             RollbarSdkLog(@"    Error: %@", [error localizedDescription]);
         }
         return;
     }
     
-    NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:queuedItemsFilePath];
-    [fileHandle seekToEndOfFile];
-    [fileHandle writeData:data];
-    [fileHandle writeData:[@"\n" dataUsingEncoding:NSUTF8StringEncoding]];
-    [fileHandle closeFile];
+    [RollbarFileWriter appendSafelyData:data toFile:queuedItemsFilePath];
+
     [[RollbarTelemetry sharedInstance] clearAllData];
 }
 
@@ -805,20 +803,8 @@ static RollbarLogger *sharedSingleton = nil;
             NSString *cachesDirectory = [RollbarCachesDirectory directory];
             NSString *payloadsLogFilePath =
             [cachesDirectory stringByAppendingPathComponent:rollbarConfig.developerOptions.payloadLogFile];
-            // create the payloads log file if it does not exist already:
-            if (![[NSFileManager defaultManager] fileExistsAtPath:payloadsLogFilePath]) {
-                
-                [[NSFileManager defaultManager] createFileAtPath:payloadsLogFilePath
-                                                        contents:nil
-                                                      attributes:nil];
-            }
-            // append-save this jsonPayload into the payloads log file:
-            NSFileHandle *fileHandle =
-            [NSFileHandle fileHandleForWritingAtPath:payloadsLogFilePath];
-            [fileHandle seekToEndOfFile];
-            [fileHandle writeData:jsonPayload];
-            [fileHandle writeData:[@"\n" dataUsingEncoding:NSUTF8StringEncoding]];
-            [fileHandle closeFile];
+            
+            [RollbarFileWriter appendSafelyData:jsonPayload toFile:payloadsLogFilePath];
         }
         
         BOOL success =
@@ -1023,7 +1009,10 @@ static RollbarLogger *sharedSingleton = nil;
                        error:(NSError *)error
                         data:(NSData *)data {
 
-    NSLog(@"HTTP response from Rollbar: %@", response);
+    if (NO == self.configuration.developerOptions.suppressSdkInfoLogging) {
+                
+        RollbarSdkLog(@"HTTP response from Rollbar: %@", response);
+    }
 
     // Lookup rate limiting headers and adjust reporting rate accordingly:
     NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;

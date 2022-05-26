@@ -21,7 +21,7 @@
     NSString *version  = [RollbarBundleUtil detectAppBundleVersion];
     XCTAssertNotNil(version);
     XCTAssertGreaterThan(version.length, 0);
-    XCTAssertEqual([version componentsSeparatedByString:@"."].count, 4);
+    XCTAssertGreaterThanOrEqual([version componentsSeparatedByString:@"."].count, 3);
 }
 
 - (void)testPerformanceDetectAppBundleVersion {

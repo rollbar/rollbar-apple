@@ -7,10 +7,10 @@ let package = Package(
     name: "RollbarPLCrashReporter",
     platforms: [
         // Oldest targeted platform versions that are supported by this product.
-        .macOS(.v10_10),
-        .iOS(.v9),
-        .tvOS(.v11),
-        .watchOS(.v4),
+        .macOS(.v10_15),
+        .iOS(.v13),
+        .tvOS(.v13),
+        .watchOS(.v7),
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.

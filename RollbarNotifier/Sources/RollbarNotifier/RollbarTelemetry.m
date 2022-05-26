@@ -21,8 +21,6 @@ static NSString * const TELEMETRY_FILE_NAME = @"rollbar.telemetry";
 
 static BOOL captureLog = false;
 
-static  RollbarTelemetry * _Nullable singleton = nil;
-
 // this queue is used for serializing state changes to the various
 // state in this class: captureLog, limit, dataArray
 static dispatch_queue_t queue = nil;
@@ -59,8 +57,9 @@ static dispatch_queue_t fileQueue = nil;
 
 #pragma mark - Singleton pattern
 
-+ (instancetype)sharedInstance {
++ (nonnull instancetype)sharedInstance {
     
+    static id singleton;
     static dispatch_once_t onceToken;
 
     dispatch_once(&onceToken, ^{
@@ -73,7 +72,7 @@ static dispatch_queue_t fileQueue = nil;
 
 + (BOOL)sharedInstanceExists {
     
-    return (nil != singleton);
+    return (nil != [RollbarTelemetry sharedInstance]);
 }
 
 #pragma mark - Initializers

@@ -43,10 +43,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Core API: data setters by key
 
-- (void)setDictionary:(NSDictionary *)data forKey:(NSString *)key;
-- (void)setArray:(NSArray *)data forKey:(NSString *)key;
-- (void)setString:(NSString *)data forKey:(NSString *)key;
-- (void)setNumber:(NSNumber *)data forKey:(NSString *)key;
+- (void)setDictionary:(nullable NSDictionary *)data forKey:(NSString *)key;
+- (void)setArray:(nullable NSArray *)data forKey:(NSString *)key;
+- (void)setString:(nullable NSString *)data forKey:(NSString *)key;
+- (void)setNumber:(nullable NSNumber *)data forKey:(NSString *)key;
 
 #pragma mark - Convenience API
 

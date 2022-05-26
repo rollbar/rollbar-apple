@@ -7,9 +7,9 @@ let package = Package(
     name: "RollbarNotifier",
     platforms: [
         // Oldest targeted platform versions that are supported by this product.
-        .macOS(.v10_11),
-        .iOS(.v9),
-        .tvOS(.v11),
+        .macOS(.v10_15),
+        .iOS(.v13),
+        .tvOS(.v13),
         .watchOS(.v7),
     ],
     products: [
