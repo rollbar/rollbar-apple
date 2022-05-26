@@ -5,6 +5,9 @@
 //  Created by Andrey Kornich on 2022-05-23.
 //
 
+#ifndef RollbarFileWriter_h
+#define RollbarFileWriter_h
+
 @import Foundation;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -22,3 +25,5 @@ NS_UNAVAILABLE;
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarFileWriter_h
