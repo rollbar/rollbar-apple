@@ -51,4 +51,4 @@ NS_ASSUME_NONNULL_BEGIN
 
 NS_ASSUME_NONNULL_END
 
-#endif //#ifndef RollbarDTO_CustomData_h
+#endif //RollbarDTO_CustomData_h

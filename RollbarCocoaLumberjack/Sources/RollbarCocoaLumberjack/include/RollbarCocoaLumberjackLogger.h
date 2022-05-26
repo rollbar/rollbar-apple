@@ -1,3 +1,6 @@
+#ifndef RollbarCocoaLumberjackLogger_h
+#define RollbarCocoaLumberjackLogger_h
+
 #import <Foundation/Foundation.h>
 @import CocoaLumberjack;
 @import RollbarNotifier;
@@ -38,3 +41,5 @@ NS_UNAVAILABLE;
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif //RollbarCocoaLumberjackLogger_h
