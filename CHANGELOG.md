@@ -25,6 +25,10 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 
 ## Release Notes
 
+### 2.3.2
+
+- fix: resolve #186 - Fix RollbarCommon Cocopods warnings
+
 ### 2.3.1
 
 - fix: resolve #183 - Fix broken Cocoapods build
