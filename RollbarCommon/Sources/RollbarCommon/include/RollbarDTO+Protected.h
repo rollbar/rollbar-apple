@@ -40,6 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (nonnull NSMutableArray *)safelyGetArrayByKey:(NSString *)key;
 - (nonnull NSMutableString *)safelyGetStringByKey:(NSString *)key;
 - (nullable NSNumber *)safelyGetNumberByKey:(NSString *)key;
+- (nullable NSDate *)safelyGetDateByKey:(nonnull NSString *)key;
 
 #pragma mark - Core API: data setters by key
 
@@ -78,8 +79,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setTimeInterval:(NSTimeInterval)data
                  forKey:(NSString *)key;
 
-- (nullable NSDate *)safelyGetDateByKey:(nonnull NSString *)key
-                            withDefault:(nullable NSDate *)defaultValue;
+- (nonnull NSDate *)safelyGetDateByKey:(nonnull NSString *)key
+                            withDefault:(nonnull NSDate *)defaultValue;
 - (void)setDate:(nullable NSDate *)data
          forKey:(nonnull NSString *)key;
 

@@ -8,7 +8,7 @@
     if (!(fileFullPath && (fileFullPath.length > 0))) {
         
         RollbarSdkLog(@"Can't ensure existance of this file: %@!", fileFullPath);
-        NO;
+        return NO;
     }
 
     // make sure the file exists:

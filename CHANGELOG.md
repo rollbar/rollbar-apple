@@ -29,6 +29,7 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 
 - fix: resolve #190 - Fix Cocoapods build warnings in RollbarNotifier 
 - fix: resolve #191 - Fix Cocoapods build warnings in RollbarCommon 
+- fix: resolve #192 - Fix SonarCloud detected bugs
 
 ### 2.3.2
 
