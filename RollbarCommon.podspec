@@ -7,7 +7,7 @@
 
 Pod::Spec.new do |s|
 
-    s.version      = "2.3.1"
+    s.version      = "2.3.2"
     s.name         = "RollbarCommon"
     s.summary      = "Application or client side SDK for interacting with the Rollbar API Server."
     s.description  = <<-DESC
@@ -34,9 +34,9 @@ Pod::Spec.new do |s|
 
     #  When using multiple platforms:
     s.osx.deployment_target = "10.11"
-    s.ios.deployment_target = "9.0"
-    s.tvos.deployment_target = "11.0"
-    s.watchos.deployment_target = "4.0"
+    s.ios.deployment_target = "13.0"
+    s.tvos.deployment_target = "13.0"
+    s.watchos.deployment_target = "6.0"
     # Any platform, if omitted:
     # s.platform     = :ios
     # s.platform     = :ios, "5.0"
