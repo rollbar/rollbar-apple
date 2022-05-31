@@ -83,11 +83,9 @@ static NSString * const DFK_EXCEPTION = @"exception";
     NSDictionary *exceptionInfo =
     [RollbarCrashReportUtil extractExceptionInfoFromCrashReport:crashReport];
     
-    NSString *exceptionTypePrefix = @"Exception Type: ";
     NSString *exceptionClass = (NSString *) exceptionInfo[@(RollbarExceptionInfo_Type)];
     exceptionClass = [exceptionClass stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 
-    NSString *exceptionCodesPrefix = @"Exception Codes: ";
     NSString *exceptionMessage = (NSString *) exceptionInfo[@(RollbarExceptionInfo_Codes)];
     exceptionMessage = [exceptionMessage stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 
