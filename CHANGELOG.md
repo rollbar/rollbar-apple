@@ -28,6 +28,7 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 ### 2.3.3
 
 - fix: resolve #190 - Fix Cocoapods build warnings in RollbarNotifier 
+- fix: resolve #191 - Fix Cocoapods build warnings in RollbarCommon 
 
 ### 2.3.2
 
