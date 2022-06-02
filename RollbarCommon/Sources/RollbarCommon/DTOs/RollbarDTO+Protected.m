@@ -250,14 +250,28 @@
     [self setNumber:number forKey:key];
 }
 
-- (nullable NSDate *)safelyGetDateByKey:(nonnull NSString *)key
-                            withDefault:(nullable NSDate *)defaultValue {
+- (nullable NSDate *)safelyGetDateByKey:(nonnull NSString *)key {
     
     NSString *dateString = [self safelyGetStringByKey:key];
     if (dateString) {
         
         NSDate *value = [NSDate rollbar_dateFromString:dateString];
         return value;
+    }
+    else {
+        
+        return nil;
+    }
+}
+
+- (nonnull NSDate *)safelyGetDateByKey:(nonnull NSString *)key
+                            withDefault:(nonnull NSDate *)defaultValue {
+    
+    NSString *dateString = [self safelyGetStringByKey:key];
+    if (dateString) {
+        
+        NSDate *value = [NSDate rollbar_dateFromString:dateString];
+        return value ? value : defaultValue;
     }
     else {
         

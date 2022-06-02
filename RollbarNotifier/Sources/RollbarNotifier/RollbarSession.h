@@ -9,7 +9,7 @@
 
 @class RollbarSessionState;
 
-typedef BOOL (^RollbarCrashReportCheck)();
+typedef BOOL (^RollbarCrashReportCheck)(void);
 
 NS_ASSUME_NONNULL_BEGIN
 

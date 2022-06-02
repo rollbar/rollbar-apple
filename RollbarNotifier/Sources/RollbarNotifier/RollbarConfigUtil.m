@@ -58,7 +58,7 @@ static NSString *configurationFilePath = nil;
         return nil;
     }
     NSData *configData = [NSData dataWithContentsOfFile:filePath
-                                                options:nil
+                                                options:NSDataReadingMappedIfSafe
                                                   error:error];
     if (nil != configData) {
         

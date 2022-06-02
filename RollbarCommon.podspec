@@ -7,7 +7,7 @@
 
 Pod::Spec.new do |s|
 
-    s.version      = "2.3.2"
+    s.version      = "2.3.3"
     s.name         = "RollbarCommon"
     s.summary      = "Application or client side SDK for interacting with the Rollbar API Server."
     s.description  = <<-DESC
@@ -33,7 +33,7 @@ Pod::Spec.new do |s|
     # s.resources = "Resources/*.png"
 
     #  When using multiple platforms:
-    s.osx.deployment_target = "10.11"
+    s.osx.deployment_target = "10.15"
     s.ios.deployment_target = "13.0"
     s.tvos.deployment_target = "13.0"
     s.watchos.deployment_target = "6.0"
