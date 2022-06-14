@@ -8,6 +8,7 @@
 #import "RollbarSession.h"
 #import "RollbarSessionState.h"
 #import "RollbarLogger.h"
+#import "RollbarNotifierFiles.h"
 #import "Rollbar.h"
 #import <sys/stat.h>
 
@@ -28,9 +29,6 @@
 #endif
 
 #pragma mark - constants
-
-static NSString * const SESSION_FILE_NAME = @"rollbar.session";
-static NSString * const APP_QUIT_FILE_NAME = @"rollbar.appquit";
 
 static char *appQuitFilePath;
 
@@ -107,7 +105,7 @@ static void defaultExceptionHandler(NSException *exception) {
         crashCheck ? crashCheck : [self registerDefaultCrashCheck];
         
         if (YES == [RollbarCachesDirectory ensureCachesDirectoryExists]) {
-            appQuitFilePath = strdup([[RollbarCachesDirectory getCacheFilePath:APP_QUIT_FILE_NAME] UTF8String]);
+            appQuitFilePath = strdup([[RollbarCachesDirectory getCacheFilePath:[RollbarNotifierFiles appQuit]] UTF8String]);
         }
         
         [self deduceOomTermination];
@@ -444,7 +442,7 @@ static void defaultExceptionHandler(NSException *exception) {
     self = [super init];
     if (self) {
         
-        self->_stateFilePath = [RollbarCachesDirectory getCacheFilePath:SESSION_FILE_NAME];
+        self->_stateFilePath = [RollbarCachesDirectory getCacheFilePath:[RollbarNotifierFiles runtimeSession]];
         
         if (NO == [RollbarCachesDirectory ensureCachesDirectoryExists]) {
             
@@ -452,7 +450,7 @@ static void defaultExceptionHandler(NSException *exception) {
             return self;
         }
         
-        if (YES == [RollbarCachesDirectory checkCacheFileExists:SESSION_FILE_NAME]) {
+        if (YES == [RollbarCachesDirectory checkCacheFileExists:[RollbarNotifierFiles runtimeSession]]) {
             
             self->_state = [self loadSessionState];
         }
