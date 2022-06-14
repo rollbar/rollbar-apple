@@ -1,4 +1,5 @@
 #import "RollbarDeveloperOptions.h"
+#import "../RollbarNotifierFiles.h"
 
 #pragma mark - constants
 
@@ -6,7 +7,6 @@ static BOOL const DEFAULT_ENABLED_FLAG = YES;
 static BOOL const DEFAULT_TRANSMIT_FLAG = YES;
 static BOOL const DEFAULT_SUPPRESS_SDK_INFO_LOGGING_FLAG = NO;
 static BOOL const DEFAULT_LOG_PAYLOADS_FLAG = NO;
-static NSString * const DEFAULT_PAYLOAD_LOG_FILE = @"rollbar.payloads";
 
 #pragma mark - data field keys
 
@@ -44,7 +44,8 @@ static NSString * const DFK_LOG_PAYLOAD_FILE = @"logPayloadFile";
     return [self initWithEnabled:enabled
                         transmit:transmit
                       logPayload:logPayload
-                  payloadLogFile:DEFAULT_PAYLOAD_LOG_FILE];
+                  payloadLogFile:[RollbarNotifierFiles payoadsLog]
+    ];
 }
 
 - (instancetype)initWithEnabled:(BOOL)enabled {
