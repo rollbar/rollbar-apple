@@ -6,6 +6,7 @@
 //
 
 #import <XCTest/XCTest.h>
+#import "../../Sources/RollbarNotifier/RollbarSender.h"
 
 @interface RollbarSenderTests : XCTestCase
 
@@ -30,6 +31,7 @@
     // This is an example of a performance test case.
     [self measureBlock:^{
         // Put the code you want to measure the time of here.
+        RollbarSender *sender = [RollbarSender new];
     }];
 }
 
