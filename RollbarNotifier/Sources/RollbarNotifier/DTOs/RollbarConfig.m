@@ -52,6 +52,30 @@ static NSString * const DFK_CUSTOM = @"custom";
 
 @implementation RollbarConfig
 
+#pragma mark - factory methods
+
++ (nonnull instancetype)configWithAccessToken:(nonnull NSString *)token {
+    
+    NSAssert(token, @"Access token must be initialized!");
+    NSAssert(token.length > 0, @"Access token must not be empty string!");
+
+    RollbarConfig *config = [RollbarConfig new];
+    config.destination.accessToken = token;
+    
+    return config;
+}
+
++ (nonnull instancetype)configWithAccessToken:(nonnull NSString *)token environment:(nonnull NSString *)env {
+    
+    NSAssert(env, @"Environment must be initialized!");
+    NSAssert(env.length > 0, @"Environment must not be empty string!");
+
+    RollbarConfig *config = [RollbarConfig configWithAccessToken:token];
+    config.destination.environment = env;
+    
+    return config;
+}
+
 #pragma mark - initializers
 
 - (instancetype)init {

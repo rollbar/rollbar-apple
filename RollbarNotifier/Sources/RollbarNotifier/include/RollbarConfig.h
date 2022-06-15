@@ -66,7 +66,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// Modifies payload data before sending
 @property (nullable, nonatomic, copy) RollbarData *(^modifyRollbarData)(RollbarData *rollbarData);
 
-
 #pragma mark - Convenience Methods
 
 /// Sets person/user related information to be sent with each payload
@@ -94,6 +93,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setNotifierName:(nullable NSString *)name
                 version:(nullable NSString *)version;
 
+#pragma mark - Factory Methods
+
++ (nonnull instancetype)configWithAccessToken:(nonnull NSString *)token;
++ (nonnull instancetype)configWithAccessToken:(nonnull NSString *)token environment:(nonnull NSString *)env;
 
 @end
 
