@@ -17,10 +17,16 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly) NSUInteger remainingSeconds;
 @property (readonly) NSDate *nextPostTime;
 
-- (instancetype)init NS_UNAVAILABLE;
+- (instancetype)initWithStatusCode:(NSUInteger)statusCode
+                         rateLimit:(NSUInteger)rateLimit
+                    remainingCount:(NSUInteger)remainingCount
+                  remainingSeconds:(NSUInteger)remainingSeconds;
+
+    - (instancetype)init NS_UNAVAILABLE;
 
 + (nullable RollbarPayloadPostReply *)replyFromHttpResponse:(nonnull NSHTTPURLResponse *)httpResponse;
 + (nonnull RollbarPayloadPostReply *)greenReply;
++ (nonnull RollbarPayloadPostReply *)redReply;
 
 @end
 
