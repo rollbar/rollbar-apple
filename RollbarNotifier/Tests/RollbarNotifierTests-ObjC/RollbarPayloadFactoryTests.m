@@ -6,6 +6,8 @@
 //
 
 #import <XCTest/XCTest.h>
+#import "XCTestCase+RollbarNotifierTest.h"
+
 #import "../../Sources/RollbarNotifier/RollbarPayloadFactory.h"
 
 @import UnitTesting;
@@ -28,8 +30,8 @@
 - (void)testCrashReportPayload {
 
     NSString *crashReport = @"Fake crash report!";
-    RollbarPayload *payload = [[self getPayloadFactory] payloadWithLevel:RollbarLevel_Critical
-                                                             crashReport:crashReport];
+    RollbarPayload *payload = [[self getPayloadFactory_Live_Default] payloadWithLevel:RollbarLevel_Critical
+                                                                          crashReport:crashReport];
     
     [self assertCommonComponentsOfPayload:payload];
     
@@ -45,10 +47,10 @@
 - (void)testMessagePayload {
     
     NSString *message = @"MessageMock";
-    RollbarPayload *payload = [[self getPayloadFactory] payloadWithLevel:RollbarLevel_Critical
-                                                                   message:message
-                                                                    data:nil
-                                                                 context:@"MockContext"];
+    RollbarPayload *payload = [[self getPayloadFactory_Live_Default] payloadWithLevel:RollbarLevel_Critical
+                                                                              message:message
+                                                                                 data:nil
+                                                                              context:@"MockContext"];
     
     [self assertCommonComponentsOfPayload:payload];
     
@@ -66,10 +68,10 @@
 - (void)testErrorPayload {
     
     NSError *error = [NSError errorWithDomain:@"NSErrorDomain" code:1001 userInfo:nil];
-    RollbarPayload *payload = [[self getPayloadFactory] payloadWithLevel:RollbarLevel_Critical
-                                                                   error:error
-                                                                    data:nil
-                                                                 context:@"MockContext"];
+    RollbarPayload *payload = [[self getPayloadFactory_Live_Default] payloadWithLevel:RollbarLevel_Critical
+                                                                                error:error
+                                                                                 data:nil
+                                                                              context:@"MockContext"];
     
     [self assertCommonComponentsOfPayload:payload];
     
@@ -88,10 +90,10 @@
 - (void)testExceptionPayload {
     
     NSException *exception = [NSException exceptionWithName:@"Oy vey!" reason:@"Don't ask!" userInfo:nil];
-    RollbarPayload *payload = [[self getPayloadFactory] payloadWithLevel:RollbarLevel_Critical
-                                                               exception:exception
-                                                                    data:nil
-                                                                 context:@"MockContext"];
+    RollbarPayload *payload = [[self getPayloadFactory_Live_Default] payloadWithLevel:RollbarLevel_Critical
+                                                                            exception:exception
+                                                                                 data:nil
+                                                                              context:@"MockContext"];
     
     [self assertCommonComponentsOfPayload:payload];
     
@@ -111,8 +113,8 @@
 
     [self measureBlock:^{
 
-        RollbarPayload *payload = [[self getPayloadFactory] payloadWithLevel:RollbarLevel_Critical
-                                                                 crashReport:crashReport];
+        RollbarPayload *payload = [[self getPayloadFactory_Live_Default] payloadWithLevel:RollbarLevel_Critical
+                                                                              crashReport:crashReport];
         [payload serializeToJSONString];
     }];
 }
@@ -123,10 +125,10 @@
 
     [self measureBlock:^{
 
-        RollbarPayload *payload = [[self getPayloadFactory] payloadWithLevel:RollbarLevel_Critical
-                                                                     message:message
-                                                                        data:nil
-                                                                     context:@"MockContext"];
+        RollbarPayload *payload = [[self getPayloadFactory_Live_Default] payloadWithLevel:RollbarLevel_Critical
+                                                                                  message:message
+                                                                                     data:nil
+                                                                                  context:@"MockContext"];
         [payload serializeToJSONString];
     }];
 }
@@ -137,10 +139,10 @@
 
     [self measureBlock:^{
 
-        RollbarPayload *payload = [[self getPayloadFactory] payloadWithLevel:RollbarLevel_Critical
-                                                                       error:error
-                                                                        data:nil
-                                                                     context:@"MockContext"];
+        RollbarPayload *payload = [[self getPayloadFactory_Live_Default] payloadWithLevel:RollbarLevel_Critical
+                                                                                    error:error
+                                                                                     data:nil
+                                                                                  context:@"MockContext"];
         [payload serializeToJSONString];
     }];
 }
@@ -151,10 +153,10 @@
 
     [self measureBlock:^{
         
-        RollbarPayload *payload = [[self getPayloadFactory] payloadWithLevel:RollbarLevel_Critical
-                                                                   exception:exception
-                                                                        data:nil
-                                                                     context:@"MockContext"];
+        RollbarPayload *payload = [[self getPayloadFactory_Live_Default] payloadWithLevel:RollbarLevel_Critical
+                                                                                exception:exception
+                                                                                     data:nil
+                                                                                  context:@"MockContext"];
         [payload serializeToJSONString];
     }];
 }
@@ -168,19 +170,5 @@
     //TODO: continue asserting presence and values of other expected common components of every payload...
 }
 
-- (nonnull RollbarPayloadFactory *)getPayloadFactory {
-    
-    RollbarPayloadFactory *factory = [RollbarPayloadFactory factoryWithConfig:[self getConfig]];
-    return factory;
-}
-
-- (nonnull RollbarConfig*) getConfig {
-    
-    RollbarConfig *config =
-    [RollbarConfig configWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
-                             environment:[RollbarTestHelper getRollbarEnvironment]];
-    
-    return config;
-}
 
 @end
