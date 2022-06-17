@@ -27,31 +27,34 @@
     // Put teardown code here. This method is called after the invocation of each test method in the class.
 }
 
+#pragma mark - tests of live-sending of different payload types
+
 - (void)testSendingCrashReport {
 
-    RollbarPayload *payload =[self getPayload_CrashReport];
-    NSData *payloadData = [payload serializeToJSONData];
-    RollbarSender *sender = [RollbarSender new];
-    RollbarPayloadPostReply *reply = [sender sendPayload:payloadData usingConfig:[self getConfig_Live_Default]];
-    
-    XCTAssertNotNil(reply);
-}
-
-- (void)testPerformanceSendingCrashReport {
-    
-    RollbarPayload *payload =[self getPayload_CrashReport];
-    NSData *payloadData = [payload serializeToJSONData];
-    RollbarSender *sender = [RollbarSender new];
-    
-    [self measureBlock:^{
-        // Put the code you want to measure the time of here.
-        RollbarPayloadPostReply *reply = [sender sendPayload:payloadData usingConfig:[self getConfig_Live_Default]];
-    }];
+    RollbarPayload *payload = [self getPayload_CrashReport];
+    [self sendAndAssertPayload:payload];
 }
 
 - (void)testSendingMessage {
     
-    RollbarPayload *payload =[self getPayload_Message];
+    RollbarPayload *payload = [self getPayload_Message];
+    [self sendAndAssertPayload:payload];
+}
+
+- (void)testSendingError {
+
+    RollbarPayload *payload = [self getPayload_Error];
+    [self sendAndAssertPayload:payload];
+}
+
+- (void)testSendingException {
+    
+    RollbarPayload *payload = [self getPayload_Exception];
+    [self sendAndAssertPayload:payload];
+}
+
+- (void)sendAndAssertPayload:(RollbarPayload *)payload {
+    
     NSData *payloadData = [payload serializeToJSONData];
     RollbarSender *sender = [RollbarSender new];
     RollbarPayloadPostReply *reply = [sender sendPayload:payloadData usingConfig:[self getConfig_Live_Default]];
@@ -59,65 +62,7 @@
     XCTAssertNotNil(reply);
 }
 
-- (void)testPerformanceSendingMessage {
-    
-    RollbarPayload *payload =[self getPayload_Message];
-    NSData *payloadData = [payload serializeToJSONData];
-    RollbarSender *sender = [RollbarSender new];
-    
-    [self measureBlock:^{
-        // Put the code you want to measure the time of here.
-        RollbarPayloadPostReply *reply = [sender sendPayload:payloadData usingConfig:[self getConfig_Live_Default]];
-    }];
-}
-
-- (void)testSendingError {
-
-//TODO: implement...
-//    RollbarPayload *payload =[self getPayload_Message];
-//    NSData *payloadData = [payload serializeToJSONData];
-//    RollbarSender *sender = [RollbarSender new];
-//    RollbarPayloadPostReply *reply = [sender sendPayload:payloadData usingConfig:[self getConfig_Live_Default]];
-//
-//    XCTAssertNotNil(reply);
-}
-
-- (void)testPerformanceSendingError {
-    
-    //TODO: implement...
-//    RollbarPayload *payload =[self getPayload_Message];
-//    NSData *payloadData = [payload serializeToJSONData];
-//    RollbarSender *sender = [RollbarSender new];
-//
-//    [self measureBlock:^{
-//        // Put the code you want to measure the time of here.
-//        RollbarPayloadPostReply *reply = [sender sendPayload:payloadData usingConfig:[self getConfig_Live_Default]];
-//    }];
-}
-
-- (void)testSendingException {
-    
-    //TODO: implement...
-    //    RollbarPayload *payload =[self getPayload_Message];
-    //    NSData *payloadData = [payload serializeToJSONData];
-    //    RollbarSender *sender = [RollbarSender new];
-    //    RollbarPayloadPostReply *reply = [sender sendPayload:payloadData usingConfig:[self getConfig_Live_Default]];
-    //
-    //    XCTAssertNotNil(reply);
-}
-
-- (void)testPerformanceSendingException {
-    
-    //TODO: implement...
-    //    RollbarPayload *payload =[self getPayload_Message];
-    //    NSData *payloadData = [payload serializeToJSONData];
-    //    RollbarSender *sender = [RollbarSender new];
-    //
-    //    [self measureBlock:^{
-    //        // Put the code you want to measure the time of here.
-    //        RollbarPayloadPostReply *reply = [sender sendPayload:payloadData usingConfig:[self getConfig_Live_Default]];
-    //    }];
-}
+#pragma mark - performance tests
 
 - (void)testPerformanceRollbarSenderInstantiation{
 
@@ -127,4 +72,63 @@
     }];
 }
 
+- (void)testPerformanceSendingCrashReport {
+    
+    RollbarPayload *payload = [self getPayload_CrashReport];
+    NSData *payloadData = [payload serializeToJSONData];
+    RollbarSender *sender = [RollbarSender new];
+    
+    [self measureBlock:^{
+        // Put the code you want to measure the time of here.
+        RollbarPayloadPostReply *reply = [sender sendPayload:payloadData usingConfig:[self getConfig_Live_Default]];
+    }];
+}
+
+- (void)testPerformanceSendingMessage {
+    
+    RollbarPayload *payload = [self getPayload_Message];
+    NSData *payloadData = [payload serializeToJSONData];
+    RollbarSender *sender = [RollbarSender new];
+    
+    [self measureBlock:^{
+        // Put the code you want to measure the time of here.
+        RollbarPayloadPostReply *reply = [sender sendPayload:payloadData usingConfig:[self getConfig_Live_Default]];
+    }];
+}
+
+- (void)testPerformanceSendingError {
+    
+    RollbarPayload *payload = [self getPayload_Error];
+    NSData *payloadData = [payload serializeToJSONData];
+    RollbarSender *sender = [RollbarSender new];
+    
+    [self measureBlock:^{
+        // Put the code you want to measure the time of here.
+        RollbarPayloadPostReply *reply = [sender sendPayload:payloadData usingConfig:[self getConfig_Live_Default]];
+    }];
+}
+
+- (void)testPerformanceSendingException {
+    
+    RollbarPayload *payload = [self getPayload_Exception];
+    //[self measureSendingPerformanceOfPayload:payload];
+    NSData *payloadData = [payload serializeToJSONData];
+    RollbarSender *sender = [RollbarSender new];
+    
+    [self measureBlock:^{
+        // Put the code you want to measure the time of here.
+        RollbarPayloadPostReply *reply = [sender sendPayload:payloadData usingConfig:[self getConfig_Live_Default]];
+    }];
+}
+
+- (void)measureSendingPerformanceOfPayload:(RollbarPayload *)payload {
+    
+    NSData *payloadData = [payload serializeToJSONData];
+    RollbarSender *sender = [RollbarSender new];
+    
+    [self measureBlock:^{
+        // Put the code you want to measure the time of here.
+        RollbarPayloadPostReply *reply = [sender sendPayload:payloadData usingConfig:[self getConfig_Live_Default]];
+    }];
+}
 @end

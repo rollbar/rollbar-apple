@@ -30,6 +30,12 @@
     return config;
 }
 
+- (nonnull NSString *)getCrashReport_PLCrashReporter_Symbolicated {
+    
+    return CRASH_REPORT_PLCRASH_SYMBOLICATED;
+}
+
+
 - (nonnull NSString *)getContextMock {
     
     return @"Unit test context mock...";
@@ -43,9 +49,9 @@
     };
 }
 
-- (nonnull NSString *)getCrashReport_PLCrashReporter_Symbolicated {
+- (nonnull NSString *)getCrashReportMock {
     
-    return CRASH_REPORT_PLCRASH_SYMBOLICATED;
+    return [self getCrashReport_PLCrashReporter_Symbolicated];
 }
 
 - (nonnull NSString *)getMessageMock {
@@ -53,12 +59,51 @@
     return @"Unit test message mock...";
 }
 
+- (nonnull NSError *)getErrorMock {
+
+    NSError *error = [NSError errorWithDomain:@"NSErrorDomain"
+                                         code:101
+                                     userInfo:@{
+        @"Arror attribute 1":@"attr 1",
+        @"Arror attribute 2":@202,
+    }];
+    
+    return error;
+}
+
+- (nonnull NSException *)getExceptionMock {
+    
+    NSException *simulatedException = nil;
+    @try {
+        [self callWithTrouble];
+    } @catch (NSException *exception) {
+        simulatedException = exception;
+    } @finally {
+        return simulatedException;
+    }
+}
+
+- (void)callWithTrouble {
+
+    [self simulateException];
+}
+
+- (void)simulateException {
+    
+    @throw [NSException exceptionWithName:NSGenericException //@"UnitTestException"
+                                   reason:@"simulation for a unit test"
+                                 userInfo:@{
+        
+    }];
+}
+
+#pragma mark - different types of payloads
 
 - (nonnull RollbarPayload *)getPayload_CrashReport {
     
     RollbarPayload *payload =
     [[self getPayloadFactory_Live_Default] payloadWithLevel:RollbarLevel_Critical
-                                                crashReport:[self getCrashReport_PLCrashReporter_Symbolicated]];
+                                                crashReport:[self getCrashReportMock]];
     return payload;
 }
 
@@ -67,6 +112,28 @@
     RollbarPayload *payload =
     [[self getPayloadFactory_Live_Default] payloadWithLevel:RollbarLevel_Warning
                                                     message:[self getMessageMock]
+                                                       data:[self getDataMock]
+                                                    context:[self getContextMock]
+    ];
+    return payload;
+}
+
+- (nonnull RollbarPayload *)getPayload_Error {
+    
+    RollbarPayload *payload =
+    [[self getPayloadFactory_Live_Default] payloadWithLevel:RollbarLevel_Warning
+                                                    error:[self getErrorMock]
+                                                       data:[self getDataMock]
+                                                    context:[self getContextMock]
+    ];
+    return payload;
+}
+
+- (nonnull RollbarPayload *)getPayload_Exception {
+    
+    RollbarPayload *payload =
+    [[self getPayloadFactory_Live_Default] payloadWithLevel:RollbarLevel_Warning
+                                                  exception:[self getExceptionMock]
                                                        data:[self getDataMock]
                                                     context:[self getContextMock]
     ];

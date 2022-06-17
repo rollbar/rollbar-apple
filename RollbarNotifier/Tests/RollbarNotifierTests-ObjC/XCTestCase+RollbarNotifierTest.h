@@ -19,13 +19,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (nonnull RollbarConfig*) getConfig_Live_Default;
 
-- (nonnull NSString *)getCrashReport_PLCrashReporter_Symbolicated;
+- (nonnull NSString *)getCrashReportMock;
 - (nonnull NSString *)getMessageMock;
 
 - (nonnull RollbarPayload *)getPayload_CrashReport;
 - (nonnull RollbarPayload *)getPayload_Message;
-
-
+- (nonnull RollbarPayload *)getPayload_Error;
+- (nonnull RollbarPayload *)getPayload_Exception;
 
 @end
 
