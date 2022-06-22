@@ -44,7 +44,7 @@ static NSString * const DFK_LOG_PAYLOAD_FILE = @"logPayloadFile";
     return [self initWithEnabled:enabled
                         transmit:transmit
                       logPayload:logPayload
-                  payloadLogFile:[RollbarNotifierFiles payoadsLog]
+                  payloadLogFile:[RollbarNotifierFiles payloadsLog]
     ];
 }
 

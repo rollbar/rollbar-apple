@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (nonnull NSString * const)appQuit;
 
-+ (nonnull NSString * const)payoadsLog;
++ (nonnull NSString * const)payloadsLog;
 
 + (nonnull NSString * const)config;
 

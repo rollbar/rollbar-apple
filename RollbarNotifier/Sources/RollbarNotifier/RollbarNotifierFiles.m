@@ -39,7 +39,7 @@ static NSString * const CONFIG_FILE_NAME = @"rollbar.config";
     return APP_QUIT_FILE_NAME;
 }
 
-+ (nonnull NSString * const)payoadsLog {
++ (nonnull NSString * const)payloadsLog {
     
     return PAYLOADS_FILE_NAME;
 }
