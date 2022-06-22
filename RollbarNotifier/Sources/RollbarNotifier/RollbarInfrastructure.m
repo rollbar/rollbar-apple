@@ -1,10 +1,3 @@
-//
-//  RollbarInfrastructure.m
-//  
-//
-//  Created by Andrey Kornich on 2022-06-09.
-//
-
 #import "RollbarInfrastructure.h"
 #import "RollbarConfig.h"
 #import "RollbarLogger.h"
@@ -51,10 +44,9 @@ const NSExceptionName RollbarInfrastructureNotConfiguredException;
     }
     
     self->_configuration = rollbarConfig;
-    self->_logger = [RollbarLogger loggerWithConfiguration:rollbarConfig];
+    self->_logger = nil;
     
     [self setupInternalStorage];
-    [self setupConfigurableStorage];
     
     return self;
 }
@@ -75,14 +67,11 @@ const NSExceptionName RollbarInfrastructureNotConfiguredException;
 
 - (nonnull RollbarLogger *)logger {
     
-    if (self->_logger) {
-        return self->_logger;
+    if (!self->_logger) {
+        self->_logger = [RollbarLogger loggerWithConfiguration:self.configuration];
     }
-    else {
-        [self assertValidConfiguration:self->_configuration];
-        [self raiseNotConfiguredException];
-        return nil;
-    }
+
+    return self->_logger;
 }
 
 #pragma mark - internal methods
@@ -153,23 +142,6 @@ const NSExceptionName RollbarInfrastructureNotConfiguredException;
         } mutableCopy];
         [self saveQueueState];
     }
-}
-
-//TODO: this method should go into RollbarLogger creation/initialization:
-- (void)setupConfigurableStorage {
-    
-    // create working cache directory:
-    [RollbarCachesDirectory ensureCachesDirectoryExists];
-    NSString *cachesDirectory = [RollbarCachesDirectory directory];
-
-    // make sure we have all the data files set:
-    self->_payloadsFilePath =
-    [cachesDirectory stringByAppendingPathComponent:[RollbarNotifierFiles payloadsLog]];
-    
-    // either create or overwrite the payloads log file:
-    [[NSFileManager defaultManager] createFileAtPath:self->_payloadsFilePath
-                                            contents:nil
-                                          attributes:nil];
 }
 
 - (void)configureInfrastructure {
