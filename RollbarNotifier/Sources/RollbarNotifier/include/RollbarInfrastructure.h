@@ -11,18 +11,16 @@
 #import <Foundation/Foundation.h>
 
 @class RollbarConfig;
+@class RollbarLogger;
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface RollbarInfrastructure : NSObject
 
-/// Current config object.
-@property(readonly) RollbarConfig *config;
+- (nonnull instancetype)configureWith:(nonnull RollbarConfig *)rollbarConfig;
 
-- (nonnull instancetype)configureWith:(RollbarConfig *)rollbarConfig;
-
-/// Hides the initializer.
-- (instancetype)init NS_UNAVAILABLE;
+@property(readonly, nonnull) RollbarConfig *configuration;
+@property(readonly, nonnull) RollbarLogger *logger;
 
 #pragma mark - Sigleton pattern
 
@@ -34,6 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (id)copyWithZone:(struct _NSZone *)zone NS_UNAVAILABLE;
 + (id)mutableCopyWithZone:(struct _NSZone *)zone NS_UNAVAILABLE;
 
+- (instancetype)init NS_UNAVAILABLE;
 - (void)dealloc NS_UNAVAILABLE;
 - (id)copy NS_UNAVAILABLE;
 - (id)mutableCopy NS_UNAVAILABLE;
