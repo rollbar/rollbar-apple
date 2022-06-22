@@ -3,6 +3,7 @@
 
 @import Foundation;
 
+#import "RollbarInfrastructure.h"
 #import "RollbarLevel.h"
 #import "RollbarTelemetry.h"
 #import "RollbarTelemetryType.h"
@@ -10,6 +11,18 @@
 @class RollbarConfig;
 @class RollbarLogger;
 @protocol RollbarCrashCollector;
+
+// Macros that help in throwing an exception with its source location metadata included:
+#define __ThrowException(name, reason, class, function, file, line, info) [NSException exceptionWithName:name reason:[NSString stringWithFormat:@"%s:%i (%@:%s) %@", file, line, class, function, reason]  userInfo:info];
+#define ThrowException(name, reason, info) __ThrowException(name, reason, [self class], _cmd, __FILE__, __LINE__, info)
+
+/// Globa;l uncaught exception handler that sends provided exception data to Rollbar via preconfigured RollbarInfrastructure's shared instnace.
+/// @param exception an exception to report to Rolbar
+// Add a call to the: NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
+// to the end of your: -(BOOL)application:didFinishLaunchingWithOptions: method in AppDelegate.
+// Make sure that the [RollbarInfrastructure sharedInstance] was already configured as early as possible within the:
+// -(BOOL)application:didFinishLaunchingWithOptions: method in AppDelegate.
+static void uncaughtExceptionHandler(NSException * _Nonnull exception);
 
 @interface Rollbar : NSObject
 

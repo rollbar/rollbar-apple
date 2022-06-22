@@ -11,6 +11,27 @@
 #import "RollbarScrubbingOptions.h"
 #import "RollbarCrashProcessor.h"
 #import "RollbarSession.h"
+#import "RollbarThread.h"
+#import "RollbarLoggingOptions.h"
+
+static void uncaughtExceptionHandler(NSException * _Nonnull exception) {
+    NSArray *backtrace = [exception callStackSymbols];
+    //    NSString *platform = [[UIDevice currentDevice] platform];
+    //    NSString *version = [[UIDevice currentDevice] systemVersion];
+    //    NSString *message = [NSString stringWithFormat:@"Device: %@. OS: %@. Backtrace:\n%@",
+    //                         platform,
+    //                         version,
+    //                         backtrace];
+    NSString *message = [NSString stringWithFormat:@"Backtrace:\n%@",
+                         backtrace];
+    
+    //TODO: complete implementation by calling RollbarInfrastructure logging method to capture the exception...
+    [[RollbarInfrastructure sharedInstance].logger log:RollbarLevel_Critical
+                                             exception:exception
+                                                  data:nil
+                                               context:message
+    ];
+}
 
 @implementation Rollbar
 
@@ -75,6 +96,9 @@ static RollbarCrashProcessor *crashProcessor = nil;
             
             config.destination.accessToken = accessToken;
         }
+        
+        //[[RollbarThread sharedInstance] setReportingRate:config.loggingOptions.maximumReportsPerMinute];
+        
         [Rollbar updateConfiguration:config];
 
         if (crashCollector) {
@@ -472,7 +496,9 @@ static RollbarCrashProcessor *crashProcessor = nil;
 
 + (void)sendJsonPayload:(NSData *)payload {
 
-    [logger sendPayload:payload];
+    [[RollbarThread sharedInstance] sendPayload:payload
+                                    usingConfig:[Rollbar currentConfiguration]
+    ];
 }
 
 #pragma mark - Telemetry API
