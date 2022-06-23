@@ -1,11 +1,6 @@
-//
-//  RollbarInfrastructureTests.m
-//  
-//
-//  Created by Andrey Kornich on 2022-06-22.
-//
-
 #import <XCTest/XCTest.h>
+
+@import RollbarNotifier;
 
 @interface RollbarInfrastructureTests : XCTestCase
 
@@ -21,9 +16,31 @@
     // Put teardown code here. This method is called after the invocation of each test method in the class.
 }
 
-- (void)testExample {
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
+- (void)testRollbarInfrastructureNotConfiguredException {
+    
+//    XCTAssertThrowsSpecificNamed([RollbarInfrastructure sharedInstance].configuration,
+//                                 NSException,
+//                                 @"RollbarInfrastructureNotConfiguredException",
+//                                 @"An RollbarInfrastructureNotConfiguredException is expected!");
+//    XCTAssertThrowsSpecificNamed([RollbarInfrastructure sharedInstance].logger,
+//                                 NSException,
+//                                 @"RollbarInfrastructureNotConfiguredException",
+//                                 @"An RollbarInfrastructureNotConfiguredException is expected!");
+    XCTAssertThrows([RollbarInfrastructure sharedInstance].configuration,
+                    @"An RollbarInfrastructureNotConfiguredException is expected!"
+                    );
+    XCTAssertThrows([RollbarInfrastructure sharedInstance].logger,
+                    @"An RollbarInfrastructureNotConfiguredException is expected!"
+                    );
+
+    [[RollbarInfrastructure sharedInstance] configureWith:[RollbarConfig new]];
+
+    XCTAssertNoThrow([RollbarInfrastructure sharedInstance].configuration,
+                     @"An RollbarInfrastructureNotConfiguredException is NOT expected!"
+                     );
+    XCTAssertNoThrow([RollbarInfrastructure sharedInstance].logger,
+                     @"An RollbarInfrastructureNotConfiguredException is NOT expected!"
+                     );
 }
 
 - (void)testPerformanceExample {
