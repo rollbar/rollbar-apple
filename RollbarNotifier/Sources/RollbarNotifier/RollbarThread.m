@@ -48,7 +48,7 @@ static NSUInteger MAX_RETRY_COUNT = 5;
         
         [self setupDataStorage];
         
-        self->_maxReportsPerMinute = 60;
+        self->_maxReportsPerMinute = 240;//60;
         self->_reachability = nil;
         self->_isNetworkReachable = YES;
         self->_nextSendTime = [[NSDate alloc] init];
