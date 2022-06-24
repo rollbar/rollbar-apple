@@ -177,40 +177,13 @@ static NSString *queuedItemsFilePath = nil;
 #pragma mark - Payload queueing/reporting
 
 - (void)report:(RollbarPayload *)payload {
+
     if (payload) {
-        [self queuePayload:payload.jsonFriendlyData];
-    }
-}
-
-- (void)queuePayload:(NSDictionary *)payload {
-    
-    [self performSelector:@selector(queuePayload_OnlyCallOnThread:)
-                 onThread:[RollbarThread sharedInstance] 
-               withObject:payload
-            waitUntilDone:NO
-     ];
-}
-
-- (void)queuePayload_OnlyCallOnThread:(NSDictionary *)payload {
-    
-    NSError *error = nil;
-    NSData *data = [NSJSONSerialization rollbar_dataWithJSONObject:payload
-                                                           options:0
-                                                             error:&error
-                                                              safe:true];
-    if (nil == data) {
-        
-        RollbarSdkLog(@"Couldn't generate and save JSON data from: %@", payload);
-        if (error) {
-
-            RollbarSdkLog(@"    Error: %@", [error localizedDescription]);
+        NSDictionary *payloadJsonData = payload.jsonFriendlyData;
+        if (payloadJsonData) {
+            [[RollbarThread sharedInstance] persistPayload:payloadJsonData];
         }
-        return;
     }
-    
-    [RollbarFileWriter appendSafelyData:data toFile:queuedItemsFilePath];
-
-    [[RollbarTelemetry sharedInstance] clearAllData];
 }
 
 #pragma mark - Update configuration methods
