@@ -41,7 +41,7 @@
     }
     
     self->_configuration = rollbarConfig;
-    self->_logger = nil;
+    self->_logger = nil; //will be created as needed using the new config...
     
     RollbarSdkLog(@"%@ is configured with this RollbarConfig instance: \n%@",
                   [RollbarInfrastructure className],
