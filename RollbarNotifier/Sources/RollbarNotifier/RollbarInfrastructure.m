@@ -3,8 +3,6 @@
 #import "RollbarLogger.h"
 #import "RollbarNotifierFiles.h"
 
-const NSExceptionName RollbarInfrastructureNotConfiguredException;
-
 @implementation RollbarInfrastructure {
     @private
     RollbarConfig *_configuration;
@@ -77,7 +75,7 @@ const NSExceptionName RollbarInfrastructureNotConfiguredException;
 #pragma mark - internal methods
 
 - (void)raiseNotConfiguredException {
-    [NSException raise:RollbarInfrastructureNotConfiguredException
+    [NSException raise:@"RollbarInfrastructureNotConfiguredException"
                 format:@"Make sure the [[RollbarInfrastructure sharedInstance] configureWith:...] is called "
      "providing a valid RollbarConfig instance!"
     ];
