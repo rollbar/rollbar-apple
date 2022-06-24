@@ -1,6 +1,7 @@
 #import <XCTest/XCTest.h>
 
 @import RollbarNotifier;
+@import UnitTesting;
 
 @interface RollbarInfrastructureTests : XCTestCase
 
@@ -41,6 +42,89 @@
     XCTAssertNoThrow([RollbarInfrastructure sharedInstance].logger,
                      @"An RollbarInfrastructureNotConfiguredException is NOT expected!"
                      );
+}
+
+- (void)testBasics {
+    
+    [RollbarLogger clearSdkDataStore];
+    NSArray *items = [RollbarLogger readLogItemsFromStore];
+    XCTAssertNotNil(items);
+    XCTAssertEqual(0, items.count);
+    items = [RollbarLogger readPayloadsFromSdkLog];
+    XCTAssertNotNil(items);
+    XCTAssertEqual(0, items.count);
+    
+    RollbarConfig *config = [RollbarConfig configWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
+                                                     environment:[RollbarTestHelper getRollbarEnvironment]
+    ];
+    config.developerOptions.transmit = NO;
+    config.developerOptions.logPayload = YES;
+    config.loggingOptions.maximumReportsPerMinute = 180;
+    [[RollbarInfrastructure sharedInstance] configureWith:config];
+    [[RollbarInfrastructure sharedInstance].logger log:RollbarLevel_Critical
+                                               message:@"RollbarInfrastructure basics test!"
+                                                  data:nil
+                                               context:nil
+    ];
+    
+
+    [NSThread sleepForTimeInterval:0.30f];
+    
+//    items = [RollbarLogger readLogItemsFromStore];
+//    XCTAssertNotNil(items);
+//    XCTAssertEqual(0, items.count);
+    items = [RollbarLogger readPayloadsFromSdkLog];
+    XCTAssertNotNil(items);
+    XCTAssertEqual(1, items.count);
+
+    [RollbarLogger clearSdkDataStore];
+    items = [RollbarLogger readLogItemsFromStore];
+    XCTAssertNotNil(items);
+    XCTAssertEqual(0, items.count);
+    items = [RollbarLogger readPayloadsFromSdkLog];
+    XCTAssertNotNil(items);
+    XCTAssertEqual(0, items.count);
+}
+
+- (void)testLive {
+    
+    [RollbarLogger clearSdkDataStore];
+    NSArray *items = [RollbarLogger readLogItemsFromStore];
+    XCTAssertNotNil(items);
+    XCTAssertEqual(0, items.count);
+    items = [RollbarLogger readPayloadsFromSdkLog];
+    XCTAssertNotNil(items);
+    XCTAssertEqual(0, items.count);
+    
+    RollbarConfig *config = [RollbarConfig configWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
+                                                     environment:[RollbarTestHelper getRollbarEnvironment]
+    ];
+    config.developerOptions.transmit = YES;
+    config.developerOptions.logPayload = YES;
+    [[RollbarInfrastructure sharedInstance] configureWith:config];
+    [[RollbarInfrastructure sharedInstance].logger log:RollbarLevel_Critical
+                                               message:@"RollbarInfrastructure basics test!"
+                                                  data:nil
+                                               context:nil
+    ];
+    
+    
+    [NSThread sleepForTimeInterval:5.0f];
+    
+    //    items = [RollbarLogger readLogItemsFromStore];
+    //    XCTAssertNotNil(items);
+    //    XCTAssertEqual(0, items.count);
+    items = [RollbarLogger readPayloadsFromSdkLog];
+    XCTAssertNotNil(items);
+    XCTAssertEqual(1, items.count);
+
+    [RollbarLogger clearSdkDataStore];
+    items = [RollbarLogger readLogItemsFromStore];
+    XCTAssertNotNil(items);
+    XCTAssertEqual(0, items.count);
+    items = [RollbarLogger readPayloadsFromSdkLog];
+    XCTAssertNotNil(items);
+    XCTAssertEqual(0, items.count);
 }
 
 //- (void)testPerformanceExample {
