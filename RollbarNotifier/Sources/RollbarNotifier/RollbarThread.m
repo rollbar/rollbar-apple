@@ -78,6 +78,8 @@ static NSUInteger MAX_RETRY_COUNT = 5;
 
     }
     
+    [self start];
+    
     return self;
 }
 
@@ -160,27 +162,6 @@ static NSUInteger MAX_RETRY_COUNT = 5;
 //    }
 }
 
-- (void)checkItems {
-    
-    if (self.cancelled) {
-        if (_timer) {
-            [_timer invalidate];
-            _timer = nil;
-        }
-        [NSThread exit];
-    }
-    
-    @autoreleasepool {
-        
-//        if ((nil != _logger) && (NO == _logger.configuration.developerOptions.suppressSdkInfoLogging)) {
-//        
-//            RollbarSdkLog(@"Checking items...");
-//        }
-        
-        [self processSavedItems];
-    }
-}
-
 - (void)run {
     
     @autoreleasepool {
@@ -200,6 +181,63 @@ static NSUInteger MAX_RETRY_COUNT = 5;
         while (self.active) {
             [runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
         }
+    }
+}
+
+#pragma mark - persisting payload items
+
+- (void)persistPayload:(nonnull NSDictionary *)payload {
+    
+    [self performSelector:@selector(queuePayload_OnlyCallOnThread:)
+                 onThread:[RollbarThread sharedInstance]
+               withObject:payload
+            waitUntilDone:NO
+    ];
+}
+
+
+- (void)queuePayload_OnlyCallOnThread:(NSDictionary *)payload {
+    
+    NSError *error = nil;
+    NSData *data = [NSJSONSerialization rollbar_dataWithJSONObject:payload
+                                                           options:0
+                                                             error:&error
+                                                              safe:true];
+    if (nil == data) {
+        
+        RollbarSdkLog(@"Couldn't generate and save JSON data from: %@", payload);
+        if (error) {
+            
+            RollbarSdkLog(@"    Error: %@", [error localizedDescription]);
+        }
+        return;
+    }
+    
+    [RollbarFileWriter appendSafelyData:data toFile:self->_queuedItemsFilePath];
+    
+    [[RollbarTelemetry sharedInstance] clearAllData];
+}
+
+#pragma mark - processing persisted payload items
+
+- (void)checkItems {
+    
+    if (self.cancelled) {
+        if (_timer) {
+            [_timer invalidate];
+            _timer = nil;
+        }
+        [NSThread exit];
+    }
+    
+    @autoreleasepool {
+        
+        //        if ((nil != _logger) && (NO == _logger.configuration.developerOptions.suppressSdkInfoLogging)) {
+        //
+        //            RollbarSdkLog(@"Checking items...");
+        //        }
+        
+        [self processSavedItems];
     }
 }
 
@@ -424,7 +462,7 @@ static NSUInteger MAX_RETRY_COUNT = 5;
     }
     
     RollbarPayloadPostReply *reply = [[RollbarSender new] sendPayload:payload usingConfig:config];
-    if (reply && (0 == reply.statusCode)) {
+    if (reply && (200 == reply.statusCode)) {
         return YES;
     }
     
