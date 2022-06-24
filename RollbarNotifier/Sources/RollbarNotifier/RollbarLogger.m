@@ -67,7 +67,7 @@ static NSString *queuedItemsFilePath = nil;
     return [self initWithConfiguration:config];
 }
 
-- (instancetype)initWithConfiguration:(RollbarConfig *)configuration {
+- (instancetype)initWithConfiguration:(nonnull RollbarConfig *)configuration {
 
     if ((self = [super init])) {
         
