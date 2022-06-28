@@ -318,6 +318,14 @@
     return NO;
 }
 
+#pragma mark - NSCopying protocol
+
+-(id) copyWithZone: (NSZone *) zone {
+
+    RollbarDTO *clone = [[[self class] allocWithZone:zone] initWithJSONString:[self serializeToJSONString]];
+    return clone;
+}
+
 #pragma mark - Initializers
 
 - (instancetype)initWithJSONString: (NSString *)jsonString {

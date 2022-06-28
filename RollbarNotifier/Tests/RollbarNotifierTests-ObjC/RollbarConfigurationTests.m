@@ -29,6 +29,21 @@
     [super tearDown];
 }
 
+- (void)testConfigCloning {
+
+    RollbarConfig *rc = [RollbarConfig new];
+    NSString *customEnv = @"CUSTOM_ENV";
+
+    XCTAssertNotEqual(rc.destination.environment, customEnv);
+    XCTAssertFalse(NSOrderedSame == [rc.destination.environment compare: customEnv]);
+    rc.destination.environment = customEnv;
+    XCTAssertTrue(NSOrderedSame == [rc.destination.environment compare: customEnv]);
+
+    RollbarConfig *rcClone = (RollbarConfig *)[rc copy];
+    XCTAssertNotEqual(rc.destination, rcClone.destination);
+    XCTAssertTrue(NSOrderedSame == [rcClone.destination.environment compare: customEnv]);
+}
+
 - (void)testDefaultRollbarConfiguration {
     
     RollbarConfig *rc = [RollbarConfig new];
