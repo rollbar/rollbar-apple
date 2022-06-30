@@ -6,7 +6,21 @@
 //
 
 #import "RollbarLoggerRecord.h"
+#import "RollbarLogger.h"
+#import "RollbarLogger+Extension.h"
 
 @implementation RollbarLoggerRecord
+
+- (instancetype)initWithConfig:(nonnull RollbarConfig *)config
+             andRegistryRecord:(nonnull RollbarLoggerRegistryRecord *)registryRecord {
+    
+    if (self = [super init]) {
+        
+        self->_logger = [[RollbarLogger alloc] initWithConfiguration:config andLoggerRecord:self];
+        self->_registryRecord = registryRecord;
+    }
+    
+    return self;
+}
 
 @end

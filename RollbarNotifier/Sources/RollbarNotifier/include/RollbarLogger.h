@@ -12,42 +12,38 @@ NS_ASSUME_NONNULL_BEGIN
 /// Models interface of a Rollbar logger
 @interface RollbarLogger : NSObject
 
-#pragma mark - factory methods
 
-/// Logger factory method
-/// @param accessToken a Rollbar project's access token
+#pragma mark - //TODO: to be removed
+
 + (instancetype)loggerWithAccessToken:(nonnull NSString *)accessToken;
-
-/// Logger factory method
-/// @param accessToken a Rollbar project's access token
-/// @param environment a Rollbar project's environment
 + (instancetype)loggerWithAccessToken:(nonnull NSString *)accessToken
                      andEnvironment:(nonnull NSString *)environment;
-
-/// Logger factory method
-/// @param configuration the config object
 + (instancetype)loggerWithConfiguration:(nonnull RollbarConfig *)configuration;
 
-#pragma mark - initializers
-
-/// Logger initializer
-/// @param accessToken a Rollbar project's access token
 - (instancetype)initWithAccessToken:(nonnull NSString *)accessToken;
-
-/// Logger initializer
-/// @param accessToken a Rollbar project's access token
-/// @param environment a Rollbar project's environment
 - (instancetype)initWithAccessToken:(nonnull NSString *)accessToken
                      andEnvironment:(nonnull NSString *)environment;
-
-/// Designated logger initializer
-/// @param configuration the config object
 - (instancetype)initWithConfiguration:(nonnull RollbarConfig *)configuration
 NS_DESIGNATED_INITIALIZER;
+
+- (void)updateConfiguration:(nonnull RollbarConfig *)configuration;
+- (void)updateAccessToken:(nonnull NSString *)accessToken;
+- (void)updateReportingRate:(NSUInteger)maximumReportsPerMinute;
+
+//- (BOOL)sendItem:(nonnull NSDictionary *)payload
+//      nextOffset:(NSUInteger)nextOffset;
+//- (BOOL)sendPayload:(nonnull NSData *)payload;
+
+
+
+
+
+#pragma mark - initializers
 
 /// Disallowed initializer
 - (instancetype)init
 NS_UNAVAILABLE;
+
 
 #pragma mark - properties
 
@@ -89,33 +85,6 @@ NS_UNAVAILABLE;
       error:(nonnull NSError *)error
        data:(nullable NSDictionary<NSString *, id> *)data
     context:(nullable NSString *)context;
-
-/// Sends an item batch in a blocking manner.
-/// @param payload an item to send
-/// @param nextOffset the offset in the item queue file of the item immediately after this batch.
-/// If the send is successful or the retry limit is hit, nextOffset will be saved to the queueState as the offset to use for the next batch
-/// @return YES if this batch should be discarded if it was successful or a retry limit was hit. Otherwise NO is returned if this batch should be retried.
-//- (BOOL)sendItem:(nonnull NSDictionary *)payload
-//      nextOffset:(NSUInteger)nextOffset;
-
-
-/// Sends a fully composed JSON payload.
-/// @param payload complete Rollbar payload as JSON string
-/// @return YES if successful. NO if not.
-//- (BOOL)sendPayload:(nonnull NSData *)payload;
-
-/// Updates key configuration elements
-/// @param configuration the Rollbar configuration object
-- (void)updateConfiguration:(nonnull RollbarConfig *)configuration;
-//                     isRoot:(BOOL)isRoot;
-
-/// Updates the Rollbar project access token
-/// @param accessToken the Rollbar project access token
-- (void)updateAccessToken:(nonnull NSString *)accessToken;
-
-/// Updates allowed reporting rate
-/// @param maximumReportsPerMinute the maximum allowed reports transmission rate
-- (void)updateReportingRate:(NSUInteger)maximumReportsPerMinute;
 
 @end
 

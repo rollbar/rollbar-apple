@@ -7,6 +7,7 @@
 @import RollbarCommon;
 
 #import "RollbarLogger.h"
+#import "RollbarLogger+Extension.h"
 #import "RollbarThread.h"
 #import "RollbarTelemetryThread.h"
 #import "RollbarReachability.h"
@@ -15,6 +16,7 @@
 #import "RollbarPayloadTruncator.h"
 #import "RollbarConfig.h"
 #import "RollbarNotifierFiles.h"
+#import "RollbarLoggerRegistry.h"
 
 #import "RollbarPayloadDTOs.h"
 
@@ -29,36 +31,23 @@ static NSString *queuedItemsFilePath = nil;
     NSDictionary *m_osData;
 }
 
-#pragma mark - factory methods
+#pragma mark - //TODO: to be removed
 
-/// Logger factory method
-/// @param accessToken a Rollbar project's access token
 + (instancetype)loggerWithAccessToken:(nonnull NSString *)accessToken {
     return [[RollbarLogger alloc] initWithAccessToken:accessToken];
 }
-
-/// Logger factory method
-/// @param accessToken a Rollbar project's access token
-/// @param environment a Rollbar project's environment
 + (instancetype)loggerWithAccessToken:(nonnull NSString *)accessToken
                        andEnvironment:(nonnull NSString *)environment {
     return [[RollbarLogger alloc] initWithAccessToken:accessToken andEnvironment:environment];
 }
-
-/// Logger factory method
-/// @param configuration the config object
 + (instancetype)loggerWithConfiguration:(nonnull RollbarConfig *)configuration {
     return [[RollbarLogger alloc] initWithConfiguration:configuration];
 }
-
-#pragma mark - initializers
-
 - (instancetype)initWithAccessToken:(NSString *)accessToken {
     RollbarConfig *config = [RollbarConfig new];
     config.destination.accessToken = accessToken;
     return [self initWithConfiguration:config];
 }
-
 - (instancetype)initWithAccessToken:(nonnull NSString *)accessToken
                      andEnvironment:(nonnull NSString *)environment {
     RollbarConfig *config = [RollbarConfig new];
@@ -66,13 +55,51 @@ static NSString *queuedItemsFilePath = nil;
     config.destination.environment = environment;
     return [self initWithConfiguration:config];
 }
-
 - (instancetype)initWithConfiguration:(nonnull RollbarConfig *)configuration {
 
     if ((self = [super init])) {
-        
+
         [self updateConfiguration:configuration];
 
+        NSString *cachesDirectory = [RollbarCachesDirectory directory];
+        if (nil != self.configuration.developerOptions.payloadLogFile
+            && self.configuration.developerOptions.payloadLogFile.length > 0) {
+
+            payloadsFilePath =
+            [cachesDirectory stringByAppendingPathComponent:self.configuration.developerOptions.payloadLogFile];
+        }
+        else {
+
+            payloadsFilePath =
+            [cachesDirectory stringByAppendingPathComponent:[RollbarNotifierFiles payloadsLog]];
+        }
+    }
+
+    return self;
+}
+
+
+
+
+
+
+
+
+
+#pragma mark - initializers
+
+- (instancetype)initWithConfiguration:(nonnull RollbarConfig *)config
+                      andLoggerRecord:(nonnull RollbarLoggerRecord *)loggerRecord {
+    
+    NSAssert(config, @"Config must not be null!");
+    NSAssert(loggerRecord, @"LoggerRecord must not be null!");
+
+    if ((self = [super init])) {
+        
+        self->_loggerRecord = loggerRecord;
+        
+        [self updateConfiguration:config];
+        
         NSString *cachesDirectory = [RollbarCachesDirectory directory];
         if (nil != self.configuration.developerOptions.payloadLogFile
             && self.configuration.developerOptions.payloadLogFile.length > 0) {
@@ -86,7 +113,7 @@ static NSString *queuedItemsFilePath = nil;
             [cachesDirectory stringByAppendingPathComponent:[RollbarNotifierFiles payloadsLog]];
         }
     }
-
+    
     return self;
 }
 

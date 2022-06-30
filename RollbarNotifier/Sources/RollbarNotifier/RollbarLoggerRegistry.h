@@ -7,9 +7,19 @@
 
 #import <Foundation/Foundation.h>
 
+@class RollbarLogger;
+@class RollbarConfig;
+@class RollbarDestination;
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface RollbarLoggerRegistry : NSObject
+
+- (nonnull RollbarLogger *)loggerWithConfiguration:(nonnull RollbarConfig *)config;
+- (void)unregisterLogger:(nonnull RollbarLogger *)logger;
+- (NSUInteger)totalRegistryRecords;
+
++ (nonnull NSString *)destinationID:(nonnull RollbarDestination *)destination;
 
 @end
 
