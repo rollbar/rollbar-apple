@@ -17,7 +17,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (nonnull RollbarLogger *)loggerWithConfiguration:(nonnull RollbarConfig *)config;
 - (void)unregisterLogger:(nonnull RollbarLogger *)logger;
-- (NSUInteger)totalRegistryRecords;
+- (NSUInteger)totalDestinationRecords;
+- (NSUInteger)totalLoggerRecords;
 
 + (nonnull NSString *)destinationID:(nonnull RollbarDestination *)destination;
 

@@ -21,12 +21,15 @@ const NSUInteger DEFAULT_RegistryCapacity = 10;
     @private
     NSMutableDictionary<NSString *, RollbarLoggerRegistryRecord *> *_registryRecords;
 }
+
 - (instancetype)init {
     
     if (self = [super init]) {
         self->_registryRecords = [NSMutableDictionary dictionaryWithCapacity:DEFAULT_RegistryCapacity];
     }
+    return self;
 }
+
 - (nonnull RollbarLogger *)loggerWithConfiguration:(nonnull RollbarConfig *)config {
 
     NSAssert(config, @"Config must not be null!");
@@ -38,6 +41,7 @@ const NSUInteger DEFAULT_RegistryCapacity = 10;
         registryRecord = [[RollbarLoggerRegistryRecord alloc] initWithDestinationID:destinationID
                                                                         andRegistry:self
         ];
+        self->_registryRecords[destinationID] = registryRecord;
     }
     
     RollbarLogger *logger = [registryRecord addLoggerWithConfig:config];
@@ -48,13 +52,22 @@ const NSUInteger DEFAULT_RegistryCapacity = 10;
     [logger.loggerRecord.registryRecord removeLoggerRecord:logger.loggerRecord];
 }
 
-- (NSUInteger)totalRegistryRecords {
+- (NSUInteger)totalDestinationRecords {
     return self->_registryRecords.count;
 }
 
-- (NSString *)debugDescription {
-    NSString *description = [NSString stringWithFormat:@"totalRegistryRecords: %lu, record keys: %@",
-                             (unsigned long)[self totalRegistryRecords],
+- (NSUInteger)totalLoggerRecords {
+    NSUInteger total = 0;
+    for (RollbarLoggerRegistryRecord *destinationRecord in self->_registryRecords.allValues) {
+        total += destinationRecord.totalLoggerRecords;
+    }
+    return total;
+}
+
+- (nonnull NSString *)description {
+    NSString *description = [NSString stringWithFormat:@"%@ - totalDestinationRecords: %lu, record keys: %@",
+                             super.description,
+                             (unsigned long)[self totalDestinationRecords],
                              self->_registryRecords.allKeys.description
     ];
     return description;
