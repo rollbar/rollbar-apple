@@ -39,6 +39,16 @@ const NSUInteger DEFAULT_DestinationRecordCapacity = 10;
     return self;
 }
 
+#pragma mark - overrides
+
+- (nonnull NSString *)description {
+    NSString *description = [NSString stringWithFormat:@"%@ - totalLoggerRecords: %lu",
+                             super.description,
+                             (unsigned long)[self totalLoggerRecords]
+    ];
+    return description;
+}
+
 #pragma mark - de/registration of loggers
 
 - (nonnull RollbarLogger *)addLoggerWithConfig:(nonnull RollbarConfig *)loggerConfig {

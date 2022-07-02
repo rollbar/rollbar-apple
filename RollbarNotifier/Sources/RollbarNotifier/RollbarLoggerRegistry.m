@@ -64,14 +64,18 @@ const NSUInteger DEFAULT_RegistryCapacity = 10;
     return total;
 }
 
+#pragma mark - overrides
+
 - (nonnull NSString *)description {
-    NSString *description = [NSString stringWithFormat:@"%@ - totalDestinationRecords: %lu, record keys: %@",
+    NSString *description = [NSString stringWithFormat:@"%@ - totalDestinationRecords: %lu, records: %@",
                              super.description,
                              (unsigned long)[self totalDestinationRecords],
-                             self->_destinationRecords.allKeys.description
+                             self->_destinationRecords
     ];
     return description;
 }
+
+#pragma mark - class methods
 
 + (nonnull NSString *)destinationID:(nonnull RollbarDestination *)destination {
     
