@@ -1,5 +1,5 @@
 //
-//  RollbarLoggerRegistryRecord.h
+//  RollbarDestinationRecord.h
 //  
 //
 //  Created by Andrey Kornich on 2022-06-28.
@@ -14,7 +14,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface RollbarLoggerRegistryRecord : NSObject
+@interface RollbarDestinationRecord : NSObject
 
 @property (readonly, nonnull) NSString *destinationID;
 @property (readonly, nonnull) NSSet<RollbarLoggerRecord *> *loggerRecords;

@@ -11,7 +11,7 @@
 @import RollbarNotifier;
 
 #import "../../Sources/RollbarNotifier/RollbarLoggerRegistry.h"
-#import "../../Sources/RollbarNotifier/RollbarLoggerRegistryRecord.h"
+#import "../../Sources/RollbarNotifier/RollbarDestinationRecord.h"
 #import "../../Sources/RollbarNotifier/RollbarLoggerRecord.h"
 #import "../../Sources/RollbarNotifier/RollbarLogger+Extension.h"
 
@@ -41,30 +41,32 @@
     XCTAssertNotNil(loggerA);
     XCTAssertEqual(1, [registry totalDestinationRecords]);
     XCTAssertEqual(1, [registry totalLoggerRecords]);
-    XCTAssertEqual(1, loggerA.loggerRecord.registryRecord.totalLoggerRecords);
+    XCTAssertEqual(1, loggerA.loggerRecord.destinationRecord.totalLoggerRecords);
 
     RollbarLogger *loggerA1 = [registry loggerWithConfiguration:config];
     XCTAssertNotNil(loggerA1);
     XCTAssertEqual(1, [registry totalDestinationRecords]);
     XCTAssertEqual(2, [registry totalLoggerRecords]);
-    XCTAssertEqual(2, loggerA1.loggerRecord.registryRecord.totalLoggerRecords);
+    XCTAssertEqual(2, loggerA1.loggerRecord.destinationRecord.totalLoggerRecords);
     
     config = [RollbarConfig configWithAccessToken:@"Token_B"];
+    
     RollbarLogger *loggerB = [registry loggerWithConfiguration:config];
     XCTAssertNotNil(loggerB);
     XCTAssertEqual(2, [registry totalDestinationRecords]);
     XCTAssertEqual(3, [registry totalLoggerRecords]);
-    XCTAssertEqual(1, loggerB.loggerRecord.registryRecord.totalLoggerRecords);
+    XCTAssertEqual(1, loggerB.loggerRecord.destinationRecord.totalLoggerRecords);
+    
     
     [registry unregisterLogger:loggerA];
     XCTAssertEqual(2, [registry totalDestinationRecords], @"All registry records stay!");
     XCTAssertEqual(2, [registry totalLoggerRecords]);
-    XCTAssertEqual(1, loggerA1.loggerRecord.registryRecord.totalLoggerRecords);
+    XCTAssertEqual(1, loggerA1.loggerRecord.destinationRecord.totalLoggerRecords);
 
     [registry unregisterLogger:loggerA1];
     XCTAssertEqual(2, [registry totalDestinationRecords], @"All registry records stay!");
     XCTAssertEqual(1, [registry totalLoggerRecords]);
-    XCTAssertEqual(1, loggerB.loggerRecord.registryRecord.totalLoggerRecords);
+    XCTAssertEqual(1, loggerB.loggerRecord.destinationRecord.totalLoggerRecords);
 
     [registry unregisterLogger:loggerB];
     XCTAssertEqual(2, [registry totalDestinationRecords], @"All registry records stay!");

@@ -1,19 +1,19 @@
 //
-//  RollbarLoggerRegistryRecord.m
+//  RollbarDestinationRecord.m
 //  
 //
 //  Created by Andrey Kornich on 2022-06-28.
 //
 
-#import "RollbarLoggerRegistryRecord.h"
+#import "RollbarDestinationRecord.h"
 #import "RollbarLoggerRecord.h"
 #import "RollbarLogger.h"
 #import "RollbarConfig.h"
 #import "RollbarDestination.h"
 
-const NSUInteger DEFAULT_RegistryRecordCapacity = 10;
+const NSUInteger DEFAULT_DestinationRecordCapacity = 10;
 
-@implementation RollbarLoggerRegistryRecord {
+@implementation RollbarDestinationRecord {
     @private
     NSMutableSet<RollbarLoggerRecord *> *_loggerRecords;
 }
@@ -34,7 +34,7 @@ const NSUInteger DEFAULT_RegistryRecordCapacity = 10;
         
         self->_registry = registry;
         self->_destinationID = destinationID;
-        self->_loggerRecords = [NSMutableSet setWithCapacity:DEFAULT_RegistryRecordCapacity];
+        self->_loggerRecords = [NSMutableSet setWithCapacity:DEFAULT_DestinationRecordCapacity];
     }
     return self;
 }
@@ -44,7 +44,7 @@ const NSUInteger DEFAULT_RegistryRecordCapacity = 10;
 - (nonnull RollbarLogger *)addLoggerWithConfig:(nonnull RollbarConfig *)loggerConfig {
     
     RollbarLoggerRecord *loggerRecord = [[RollbarLoggerRecord alloc] initWithConfig:loggerConfig
-                                                                  andRegistryRecord:self];
+                                                               andDestinationRecord:self];
     [self->_loggerRecords addObject:loggerRecord];
     return loggerRecord.logger;
 }

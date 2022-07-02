@@ -9,17 +9,17 @@
 
 @class RollbarConfig;
 @class RollbarLogger;
-@class RollbarLoggerRegistryRecord;
+@class RollbarDestinationRecord;
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface RollbarLoggerRecord : NSObject
 
 @property (readonly, nonnull) RollbarLogger *logger;
-@property (readonly, nonnull) RollbarLoggerRegistryRecord *registryRecord;
+@property (readonly, nonnull) RollbarDestinationRecord *destinationRecord;
 
 - (instancetype)initWithConfig:(nonnull RollbarConfig *)config
-             andRegistryRecord:(nonnull RollbarLoggerRegistryRecord *)registryRecord;
+          andDestinationRecord:(nonnull RollbarDestinationRecord *)destinationRecord;
 - (instancetype)init NS_UNAVAILABLE;
 
 @end

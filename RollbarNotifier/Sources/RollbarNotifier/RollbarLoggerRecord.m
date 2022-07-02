@@ -12,12 +12,13 @@
 @implementation RollbarLoggerRecord
 
 - (instancetype)initWithConfig:(nonnull RollbarConfig *)config
-             andRegistryRecord:(nonnull RollbarLoggerRegistryRecord *)registryRecord {
+             andDestinationRecord:(nonnull RollbarDestinationRecord *)destinationRecord {
     
     if (self = [super init]) {
         
-        self->_logger = [[RollbarLogger alloc] initWithConfiguration:config andLoggerRecord:self];
-        self->_registryRecord = registryRecord;
+        self->_logger = [[RollbarLogger alloc] initWithConfiguration:config
+                                                     andLoggerRecord:self];
+        self->_destinationRecord = destinationRecord;
     }
     
     return self;
