@@ -86,6 +86,11 @@ static  RollbarTelemetryThread * _Nullable singleton = nil;
     return self;
 }
 
+- (nonnull RollbarTelemetryOptions *)telemetryOptions {
+    
+    return self->_telemetryOptions;
+}
+
 - (BOOL)setupTimer {
     
     self->_collectionTimeInterval = [RollbarTelemetryThread calculateCollectionTimeInterval:self->_telemetryOptions];
