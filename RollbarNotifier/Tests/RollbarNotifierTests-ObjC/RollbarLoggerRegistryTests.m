@@ -73,6 +73,31 @@
     XCTAssertEqual(0, [registry totalLoggerRecords]);
 }
 
+- (void)testLoggerScope {
+    
+    RollbarConfig *config = [RollbarConfig configWithAccessToken:@"Token"];
+    [[RollbarInfrastructure sharedInstance] configure:config];
+
+    RollbarLoggerRegistry *registry = [RollbarLoggerRegistry new];
+
+    XCTAssertNotNil(registry);
+    XCTAssertEqual(0, [registry totalDestinationRecords]);
+    
+    [self useLoggerWithinLimitedScope:registry];
+}
+
+- (void)useLoggerWithinLimitedScope:(nonnull RollbarLoggerRegistry *)registry {
+    
+    @autoreleasepool {
+        RollbarLogger *logger = [registry loggerWithConfiguration:[RollbarConfig new]]; //[[RollbarInfrastructure sharedInstance] createLogger];
+        XCTAssertNotNil(logger);
+        XCTAssertEqual(1, [registry totalDestinationRecords]);
+        XCTAssertEqual(1, [registry totalLoggerRecords]);
+        XCTAssertEqual(1, logger.loggerRecord.destinationRecord.totalLoggerRecords);
+        XCTAssertTrue(logger.loggerRecord.isInScope);
+    }
+}
+
 - (void)testPerformanceExample {
     // This is an example of a performance test case.
     [self measureBlock:^{

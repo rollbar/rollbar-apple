@@ -17,6 +17,8 @@
 #import "RollbarConfig.h"
 #import "RollbarNotifierFiles.h"
 #import "RollbarLoggerRegistry.h"
+#import "RollbarLoggerRecord.h"
+#import "RollbarDestinationRecord.h"
 
 #import "RollbarPayloadDTOs.h"
 
@@ -115,6 +117,13 @@ static NSString *queuedItemsFilePath = nil;
     }
     
     return self;
+}
+
+#pragma mark - finalizers
+
+- (void)dealloc {
+    
+    [self.loggerRecord markAsOutOfScope];
 }
 
 #pragma mark - logging methods

@@ -2,11 +2,13 @@
 #import "RollbarConfig.h"
 #import "RollbarLogger.h"
 #import "RollbarNotifierFiles.h"
+#import "RollbarLoggerRegistry.h"
 
 @implementation RollbarInfrastructure {
     @private
     RollbarConfig *_configuration;
     RollbarLogger *_logger;
+    RollbarLoggerRegistry *_loggerRegistry;
 }
 
 #pragma mark - Sigleton pattern
@@ -18,37 +20,74 @@
     
     dispatch_once(&onceToken, ^{
         
-        singleton = [self new];
+        singleton = [RollbarInfrastructure new];
 
         RollbarSdkLog(@"%@ singleton created!",
-                      [RollbarInfrastructure className]
+                      [RollbarInfrastructure rollbar_objectClassName]
                       );
     });
     
     return singleton;
 }
 
-#pragma mark - configuration
-
-- (nonnull instancetype)configureWith:(nonnull RollbarConfig *)rollbarConfig {
+- (instancetype)init {
     
-    [self assertValidConfiguration:rollbarConfig];
+    if (self = [super init]) {
+        
+        self->_loggerRegistry = [RollbarLoggerRegistry new];
+    }
+    return self;
+}
+
+#pragma mark - instance methods
+
+- (nonnull instancetype)configure:(nonnull RollbarConfig *)config {
+    
+    [self assertValidConfiguration:config];
     
     if (self->_configuration
-        && (NSOrderedSame == [[rollbarConfig serializeToJSONString] compare:[self->_configuration serializeToJSONString]])
+        && (NSOrderedSame == [[config serializeToJSONString] compare:[self->_configuration serializeToJSONString]])
         ) {
         return self; // no need to reconfigure with an identical configuration...
     }
     
-    self->_configuration = rollbarConfig;
+    self->_configuration = config;
     self->_logger = nil; //will be created as needed using the new config...
     
     RollbarSdkLog(@"%@ is configured with this RollbarConfig instance: \n%@",
-                  [RollbarInfrastructure className],
-                  rollbarConfig
+                  [RollbarInfrastructure rollbar_objectClassName],
+                  config
                   );
     
     return self;
+}
+
+- (nonnull RollbarLogger *)createLogger {
+
+    return [self createLoggerWithConfig:self.configuration];
+}
+
+- (nonnull RollbarLogger *)createLoggerWithConfig:(nonnull RollbarConfig *)config {
+    
+    RollbarLogger *logger = [self->_loggerRegistry loggerWithConfiguration:config];
+    return logger;
+}
+
+#pragma mark - class methods
+
++ (nonnull RollbarLogger *)sharedLogger {
+
+    return [RollbarInfrastructure sharedInstance].logger;
+}
+
++ (nonnull RollbarLogger *)logger {
+
+    return [[RollbarInfrastructure sharedInstance] createLogger];
+}
+
++ (nonnull RollbarLogger *)loggerWithConfig:(nonnull RollbarConfig *)config {
+
+    return [[RollbarInfrastructure sharedInstance] createLoggerWithConfig:config];
 }
 
 #pragma mark - properties
@@ -68,7 +107,7 @@
 - (nonnull RollbarLogger *)logger {
     
     if (!self->_logger) {
-        self->_logger = [RollbarLogger loggerWithConfiguration:self.configuration];
+        self->_logger = [self->_loggerRegistry loggerWithConfiguration:self.configuration];
     }
 
     return self->_logger;

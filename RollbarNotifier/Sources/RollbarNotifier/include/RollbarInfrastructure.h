@@ -17,10 +17,22 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface RollbarInfrastructure : NSObject
 
-- (nonnull instancetype)configureWith:(nonnull RollbarConfig *)rollbarConfig;
+#pragma mark - propeties
 
 @property(readonly, nonnull) RollbarConfig *configuration;
 @property(readonly, nonnull) RollbarLogger *logger;
+
+#pragma mark - instance methods
+
+- (nonnull instancetype)configure:(nonnull RollbarConfig *)config;
+- (nonnull RollbarLogger *)createLogger;
+- (nonnull RollbarLogger *)createLoggerWithConfig:(nonnull RollbarConfig *)config;
+
+#pragma mark - class methods
+
++ (nonnull RollbarLogger *)sharedLogger;
++ (nonnull RollbarLogger *)logger;
++ (nonnull RollbarLogger *)loggerWithConfig:(nonnull RollbarConfig *)config;
 
 #pragma mark - Sigleton pattern
 

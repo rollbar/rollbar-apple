@@ -34,7 +34,7 @@
                     @"An RollbarInfrastructureNotConfiguredException is expected!"
                     );
 
-    [[RollbarInfrastructure sharedInstance] configureWith:[RollbarConfig new]];
+    [[RollbarInfrastructure sharedInstance] configure:[RollbarConfig new]];
 
     XCTAssertNoThrow([RollbarInfrastructure sharedInstance].configuration,
                      @"An RollbarInfrastructureNotConfiguredException is NOT expected!"
@@ -60,7 +60,7 @@
     config.developerOptions.transmit = NO;
     config.developerOptions.logPayload = YES;
     config.loggingOptions.maximumReportsPerMinute = 180;
-    [[RollbarInfrastructure sharedInstance] configureWith:config];
+    [[RollbarInfrastructure sharedInstance] configure:config];
     [[RollbarInfrastructure sharedInstance].logger log:RollbarLevel_Critical
                                                message:@"RollbarInfrastructure basics test!"
                                                   data:nil
@@ -101,7 +101,7 @@
     ];
     config.developerOptions.transmit = YES;
     config.developerOptions.logPayload = YES;
-    [[RollbarInfrastructure sharedInstance] configureWith:config];
+    [[RollbarInfrastructure sharedInstance] configure:config];
     [[RollbarInfrastructure sharedInstance].logger log:RollbarLevel_Critical
                                                message:@"RollbarInfrastructure basics test!"
                                                   data:nil
