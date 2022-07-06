@@ -23,6 +23,10 @@
 
 #import <sys/utsname.h>
 
+#if TARGET_OS_IOS | TARGET_OS_TV | TARGET_OS_MACCATALYST
+@import UIKit;
+#endif
+
 @implementation RollbarPayloadFactory {
     
     @private
