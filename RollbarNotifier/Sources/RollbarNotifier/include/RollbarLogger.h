@@ -6,25 +6,17 @@
 @class RollbarConfig;
 
 #import "RollbarLevel.h"
+#import "RollbarLoggerProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 /// Models interface of a Rollbar logger
-@interface RollbarLogger : NSObject
+@interface RollbarLogger : NSObject<RollbarLogger>
 
 
 #pragma mark - //TODO: to be removed
 
-+ (instancetype)loggerWithAccessToken:(nonnull NSString *)accessToken;
-+ (instancetype)loggerWithAccessToken:(nonnull NSString *)accessToken
-                     andEnvironment:(nonnull NSString *)environment;
-+ (instancetype)loggerWithConfiguration:(nonnull RollbarConfig *)configuration;
 
-- (instancetype)initWithAccessToken:(nonnull NSString *)accessToken;
-- (instancetype)initWithAccessToken:(nonnull NSString *)accessToken
-                     andEnvironment:(nonnull NSString *)environment;
-- (instancetype)initWithConfiguration:(nonnull RollbarConfig *)configuration
-NS_DESIGNATED_INITIALIZER;
 
 - (void)updateConfiguration:(nonnull RollbarConfig *)configuration;
 - (void)updateAccessToken:(nonnull NSString *)accessToken;
@@ -36,55 +28,65 @@ NS_DESIGNATED_INITIALIZER;
 
 
 
+#pragma mark - factory methods
 
++ (instancetype)loggerWithAccessToken:(nonnull NSString *)accessToken;
++ (instancetype)loggerWithAccessToken:(nonnull NSString *)accessToken
+                       andEnvironment:(nonnull NSString *)environment;
++ (instancetype)loggerWithConfiguration:(nonnull RollbarConfig *)configuration;
 
 #pragma mark - initializers
+
+- (instancetype)initWithAccessToken:(nonnull NSString *)accessToken;
+- (instancetype)initWithAccessToken:(nonnull NSString *)accessToken
+                     andEnvironment:(nonnull NSString *)environment;
+- (instancetype)initWithConfiguration:(nonnull RollbarConfig *)configuration
+NS_DESIGNATED_INITIALIZER;
 
 /// Disallowed initializer
 - (instancetype)init
 NS_UNAVAILABLE;
 
-
-#pragma mark - properties
-
-/// Notifier's config object
-@property (nullable, atomic, strong) RollbarConfig *configuration;
-
-#pragma mark - logging methods
-
-/// Captures a crash report
-/// @param crashReport the crash report
-- (void)logCrashReport:(nonnull NSString *)crashReport;
-
-/// Captures a log entry
-/// @param level Rollbar error/log level
-/// @param message message
-/// @param data extra data
-/// @param context extra context
-- (void)log:(RollbarLevel)level
-    message:(nonnull NSString *)message
-       data:(nullable NSDictionary<NSString *, id> *)data
-    context:(nullable NSString *)context;
-
-/// Captures a log entry
-/// @param level Rollbar error/log level
-/// @param exception exception
-/// @param data extra data
-/// @param context extra context
-- (void)log:(RollbarLevel)level
-  exception:(nonnull NSException *)exception
-       data:(nullable NSDictionary<NSString *, id> *)data
-    context:(nullable NSString *)context;
-
-/// Capture a log entry based on an NSError
-/// @param level Rollbar error/log level
-/// @param error an NSError
-/// @param data extra data
-/// @param context extra context
-- (void)log:(RollbarLevel)level
-      error:(nonnull NSError *)error
-       data:(nullable NSDictionary<NSString *, id> *)data
-    context:(nullable NSString *)context;
+//#pragma mark - properties
+//
+///// Notifier's config object
+//@property (nullable, atomic, strong) RollbarConfig *configuration;
+//
+//#pragma mark - logging methods
+//
+///// Captures a crash report
+///// @param crashReport the crash report
+//- (void)logCrashReport:(nonnull NSString *)crashReport;
+//
+///// Captures a log entry
+///// @param level Rollbar error/log level
+///// @param message message
+///// @param data extra data
+///// @param context extra context
+//- (void)log:(RollbarLevel)level
+//    message:(nonnull NSString *)message
+//       data:(nullable NSDictionary<NSString *, id> *)data
+//    context:(nullable NSString *)context;
+//
+///// Captures a log entry
+///// @param level Rollbar error/log level
+///// @param exception exception
+///// @param data extra data
+///// @param context extra context
+//- (void)log:(RollbarLevel)level
+//  exception:(nonnull NSException *)exception
+//       data:(nullable NSDictionary<NSString *, id> *)data
+//    context:(nullable NSString *)context;
+//
+///// Capture a log entry based on an NSError
+///// @param level Rollbar error/log level
+///// @param error an NSError
+///// @param data extra data
+///// @param context extra context
+//- (void)log:(RollbarLevel)level
+//      error:(nonnull NSError *)error
+//       data:(nullable NSDictionary<NSString *, id> *)data
+//    context:(nullable NSString *)context;
 
 @end
 

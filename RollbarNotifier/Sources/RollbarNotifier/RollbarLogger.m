@@ -33,6 +33,12 @@ static NSString *queuedItemsFilePath = nil;
     NSDictionary *m_osData;
 }
 
+@synthesize configuration;
+
+
+
+
+
 #pragma mark - //TODO: to be removed
 
 + (instancetype)loggerWithAccessToken:(nonnull NSString *)accessToken {

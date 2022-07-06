@@ -1,14 +1,15 @@
 #import "RollbarInfrastructure.h"
 #import "RollbarConfig.h"
+#import "RollbarDestination.h"
 #import "RollbarLogger.h"
 #import "RollbarNotifierFiles.h"
-#import "RollbarLoggerRegistry.h"
+//#import "RollbarLoggerRegistry.h"
 
 @implementation RollbarInfrastructure {
     @private
     RollbarConfig *_configuration;
     RollbarLogger *_logger;
-    RollbarLoggerRegistry *_loggerRegistry;
+//    RollbarLoggerRegistry *_loggerRegistry;
 }
 
 #pragma mark - Sigleton pattern
@@ -30,14 +31,14 @@
     return singleton;
 }
 
-- (instancetype)init {
-    
-    if (self = [super init]) {
-        
-        self->_loggerRegistry = [RollbarLoggerRegistry new];
-    }
-    return self;
-}
+//- (instancetype)init {
+//    
+//    if (self = [super init]) {
+//        
+////        self->_loggerRegistry = [RollbarLoggerRegistry new];
+//    }
+//    return self;
+//}
 
 #pragma mark - instance methods
 
@@ -62,32 +63,63 @@
     return self;
 }
 
-- (nonnull RollbarLogger *)createLogger {
+- (nonnull id<RollbarLogger>)createLogger {
 
     return [self createLoggerWithConfig:self.configuration];
 }
 
 - (nonnull RollbarLogger *)createLoggerWithConfig:(nonnull RollbarConfig *)config {
     
-    RollbarLogger *logger = [self->_loggerRegistry loggerWithConfiguration:config];
+    RollbarLogger *logger = [RollbarLogger loggerWithConfiguration:config];
+    //RollbarLogger *logger = [self->_loggerRegistry loggerWithConfiguration:config];
+    return logger;
+}
+
+- (nonnull id<RollbarLogger>)createLoggerWithAccessToken:(nonnull NSString *)token {
+    
+    RollbarConfig *config = [self.configuration copy];
+    config.destination.accessToken = token;
+    id logger = [self createLoggerWithConfig:config];
+    return logger;
+}
+
+- (nonnull id<RollbarLogger>)createLoggerWithAccessToken:(nonnull NSString *)token
+                                        andEnvironment:(nonnull NSString *)env {
+    
+    RollbarConfig *config = [self.configuration copy];
+    config.destination.accessToken = token;
+    config.destination.environment = env;
+    id logger = [self createLoggerWithConfig:config];
     return logger;
 }
 
 #pragma mark - class methods
 
-+ (nonnull RollbarLogger *)sharedLogger {
++ (nonnull id<RollbarLogger>)sharedLogger {
 
     return [RollbarInfrastructure sharedInstance].logger;
 }
 
-+ (nonnull RollbarLogger *)logger {
++ (nonnull id<RollbarLogger>)logger {
 
     return [[RollbarInfrastructure sharedInstance] createLogger];
 }
 
-+ (nonnull RollbarLogger *)loggerWithConfig:(nonnull RollbarConfig *)config {
++ (nonnull id<RollbarLogger>)loggerWithConfig:(nonnull RollbarConfig *)config {
 
     return [[RollbarInfrastructure sharedInstance] createLoggerWithConfig:config];
+}
+
++ (nonnull id<RollbarLogger>)loggerWithAccessToken:(nonnull NSString *)token {
+ 
+    return [[RollbarInfrastructure sharedInstance] createLoggerWithAccessToken:token];
+}
+
++ (nonnull id<RollbarLogger>)loggerWithAccessToken:(nonnull NSString *)token
+                                  andEnvironment:(nonnull NSString *)env {
+    
+    return [[RollbarInfrastructure sharedInstance] createLoggerWithAccessToken:token
+                                                                andEnvironment:env];
 }
 
 #pragma mark - properties
@@ -104,10 +136,10 @@
     }
 }
 
-- (nonnull RollbarLogger *)logger {
+- (nonnull id<RollbarLogger>)logger {
     
     if (!self->_logger) {
-        self->_logger = [self->_loggerRegistry loggerWithConfiguration:self.configuration];
+        self->_logger = [RollbarLogger loggerWithConfiguration:self.configuration];
     }
 
     return self->_logger;

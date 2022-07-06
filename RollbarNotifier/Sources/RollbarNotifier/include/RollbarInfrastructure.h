@@ -11,7 +11,7 @@
 #import <Foundation/Foundation.h>
 
 @class RollbarConfig;
-@class RollbarLogger;
+@protocol RollbarLogger;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -20,19 +20,25 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - propeties
 
 @property(readonly, nonnull) RollbarConfig *configuration;
-@property(readonly, nonnull) RollbarLogger *logger;
+@property(readonly, nonnull) id<RollbarLogger> logger;
 
 #pragma mark - instance methods
 
 - (nonnull instancetype)configure:(nonnull RollbarConfig *)config;
-- (nonnull RollbarLogger *)createLogger;
-- (nonnull RollbarLogger *)createLoggerWithConfig:(nonnull RollbarConfig *)config;
+- (nonnull id<RollbarLogger>)createLogger;
+- (nonnull id<RollbarLogger>)createLoggerWithConfig:(nonnull RollbarConfig *)config;
+- (nonnull id<RollbarLogger>)createLoggerWithAccessToken:(nonnull NSString *)token;
+- (nonnull id<RollbarLogger>)createLoggerWithAccessToken:(nonnull NSString *)token
+                                        andEnvironment:(nonnull NSString *)env;
 
 #pragma mark - class methods
 
-+ (nonnull RollbarLogger *)sharedLogger;
-+ (nonnull RollbarLogger *)logger;
-+ (nonnull RollbarLogger *)loggerWithConfig:(nonnull RollbarConfig *)config;
++ (nonnull id<RollbarLogger>)sharedLogger;
++ (nonnull id<RollbarLogger>)logger;
++ (nonnull id<RollbarLogger>)loggerWithConfig:(nonnull RollbarConfig *)config;
++ (nonnull id<RollbarLogger>)loggerWithAccessToken:(nonnull NSString *)token
+                                    andEnvironment:(nonnull NSString *)env;
++ (nonnull id<RollbarLogger>)loggerWithAccessToken:(nonnull NSString *)token;
 
 #pragma mark - Sigleton pattern
 
