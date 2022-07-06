@@ -15,8 +15,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface RollbarLoggerRecord : NSObject
 
+@property (readonly) BOOL isInScope;
 @property (readonly, nonnull) RollbarLogger *logger;
 @property (readonly, nonnull) RollbarDestinationRecord *destinationRecord;
+
+- (void)markAsOutOfScope;
 
 - (instancetype)initWithConfig:(nonnull RollbarConfig *)config
           andDestinationRecord:(nonnull RollbarDestinationRecord *)destinationRecord;
