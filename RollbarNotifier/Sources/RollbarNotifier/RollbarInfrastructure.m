@@ -1,6 +1,7 @@
 #import "RollbarInfrastructure.h"
 #import "RollbarConfig.h"
-#import "RollbarDestination.h"
+//#import "RollbarDestination.h"
+#import "RollbarLoggerProtocol.h"
 #import "RollbarLogger.h"
 #import "RollbarNotifierFiles.h"
 //#import "RollbarLoggerRegistry.h"
@@ -32,9 +33,9 @@
 }
 
 //- (instancetype)init {
-//    
+//
 //    if (self = [super init]) {
-//        
+//
 ////        self->_loggerRegistry = [RollbarLoggerRegistry new];
 //    }
 //    return self;
@@ -68,10 +69,20 @@
     return [self createLoggerWithConfig:self.configuration];
 }
 
-- (nonnull RollbarLogger *)createLoggerWithConfig:(nonnull RollbarConfig *)config {
+- (nonnull id<RollbarLogger>)createLoggerWithConfig:(nonnull RollbarConfig *)config {
     
     RollbarLogger *logger = [RollbarLogger loggerWithConfiguration:config];
     //RollbarLogger *logger = [self->_loggerRegistry loggerWithConfiguration:config];
+    return logger;
+}
+
+- (nonnull id<RollbarLogger>)createLoggerWithAccessToken:(nonnull NSString *)token
+                                          andEnvironment:(nonnull NSString *)env {
+    
+    RollbarConfig *config = [self.configuration copy];
+    config.destination.accessToken = token;
+    config.destination.environment = env;
+    id logger = [self createLoggerWithConfig:config];
     return logger;
 }
 
@@ -83,44 +94,34 @@
     return logger;
 }
 
-- (nonnull id<RollbarLogger>)createLoggerWithAccessToken:(nonnull NSString *)token
-                                        andEnvironment:(nonnull NSString *)env {
-    
-    RollbarConfig *config = [self.configuration copy];
-    config.destination.accessToken = token;
-    config.destination.environment = env;
-    id logger = [self createLoggerWithConfig:config];
-    return logger;
-}
-
 #pragma mark - class methods
 
-+ (nonnull id<RollbarLogger>)sharedLogger {
-
-    return [RollbarInfrastructure sharedInstance].logger;
-}
-
-+ (nonnull id<RollbarLogger>)logger {
-
-    return [[RollbarInfrastructure sharedInstance] createLogger];
-}
-
-+ (nonnull id<RollbarLogger>)loggerWithConfig:(nonnull RollbarConfig *)config {
-
-    return [[RollbarInfrastructure sharedInstance] createLoggerWithConfig:config];
-}
-
-+ (nonnull id<RollbarLogger>)loggerWithAccessToken:(nonnull NSString *)token {
- 
-    return [[RollbarInfrastructure sharedInstance] createLoggerWithAccessToken:token];
-}
-
-+ (nonnull id<RollbarLogger>)loggerWithAccessToken:(nonnull NSString *)token
-                                  andEnvironment:(nonnull NSString *)env {
-    
-    return [[RollbarInfrastructure sharedInstance] createLoggerWithAccessToken:token
-                                                                andEnvironment:env];
-}
+//+ (nonnull id<RollbarLogger>)sharedLogger {
+//
+//    return [RollbarInfrastructure sharedInstance].logger;
+//}
+//
+//+ (nonnull id<RollbarLogger>)newLogger {
+//    
+//    return [[RollbarInfrastructure sharedInstance] createLogger];
+//}
+//
+//+ (nonnull id<RollbarLogger>)newLoggerWithConfig:(nonnull RollbarConfig *)config {
+//
+//    return [[RollbarInfrastructure sharedInstance] createLoggerWithConfig:config];
+//}
+//
+//+ (nonnull id<RollbarLogger>)newLoggerWithAccessToken:(nonnull NSString *)token {
+// 
+//    return [[RollbarInfrastructure sharedInstance] createLoggerWithAccessToken:token];
+//}
+//
+//+ (nonnull id<RollbarLogger>)newLoggerWithAccessToken:(nonnull NSString *)token
+//                                  andEnvironment:(nonnull NSString *)env {
+//    
+//    return [[RollbarInfrastructure sharedInstance] createLoggerWithAccessToken:token
+//                                                                andEnvironment:env];
+//}
 
 #pragma mark - properties
 

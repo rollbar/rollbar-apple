@@ -3,7 +3,6 @@
 #import "RollbarLoggerRecord.h"
 
 #import "RollbarLogger.h"
-#import "RollbarLogger+Extension.h"
 
 #import "RollbarConfig.h"
 #import "RollbarDestination.h"
@@ -41,9 +40,9 @@ const NSUInteger DEFAULT_RegistryCapacity = 10;
     return logger;
 }
 
-- (void)unregisterLogger:(nonnull RollbarLogger *)logger {
-    [logger.loggerRecord.destinationRecord removeLoggerRecord:logger.loggerRecord];
-}
+//- (void)unregisterLogger:(nonnull RollbarLogger *)logger {
+//    [logger.loggerRecord.destinationRecord removeLoggerRecord:logger.loggerRecord];
+//}
 
 - (NSUInteger)totalDestinationRecords {
     return self->_destinationRecords.count;

@@ -8,6 +8,11 @@
 #ifndef RollbarLoggerProtocol_h
 #define RollbarLoggerProtocol_h
 
+#import <Foundation/Foundation.h>
+
+#import "RollbarLevel.h"
+#import "RollbarConfig.h"
+
 @protocol RollbarLogger
 
 #pragma mark - properties
@@ -50,7 +55,6 @@
       error:(nonnull NSError *)error
        data:(nullable NSDictionary<NSString *, id> *)data
     context:(nullable NSString *)context;
-
 
 @end
 

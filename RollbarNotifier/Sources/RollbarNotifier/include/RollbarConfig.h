@@ -1,21 +1,21 @@
 #ifndef RollbarConfig_h
 #define RollbarConfig_h
 
+#import "RollbarDestination.h"
+#import "RollbarDeveloperOptions.h"
+#import "RollbarProxy.h"
+#import "RollbarScrubbingOptions.h"
+#import "RollbarServerConfig.h"
+#import "RollbarPerson.h"
+#import "RollbarModule.h"
+#import "RollbarTelemetryOptions.h"
+#import "RollbarLoggingOptions.h"
+#import "RollbarData.h"
+
 #import "RollbarCaptureIpType.h"
 #import "RollbarLevel.h"
 
 @import RollbarCommon;
-
-@class RollbarDestination;
-@class RollbarDeveloperOptions;
-@class RollbarProxy;
-@class RollbarScrubbingOptions;
-@class RollbarServerConfig;
-@class RollbarPerson;
-@class RollbarModule;
-@class RollbarTelemetryOptions;
-@class RollbarLoggingOptions;
-@class RollbarData;
 
 NS_ASSUME_NONNULL_BEGIN
 

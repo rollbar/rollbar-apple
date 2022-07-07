@@ -7,7 +7,6 @@
 @import RollbarCommon;
 
 #import "RollbarLogger.h"
-#import "RollbarLogger+Extension.h"
 #import "RollbarThread.h"
 #import "RollbarTelemetryThread.h"
 #import "RollbarReachability.h"
@@ -35,22 +34,23 @@ static NSString *queuedItemsFilePath = nil;
 
 @synthesize configuration;
 
-
-
-
-
-#pragma mark - //TODO: to be removed
+#pragma mark - factory methods
 
 + (instancetype)loggerWithAccessToken:(nonnull NSString *)accessToken {
     return [[RollbarLogger alloc] initWithAccessToken:accessToken];
 }
+
 + (instancetype)loggerWithAccessToken:(nonnull NSString *)accessToken
                        andEnvironment:(nonnull NSString *)environment {
     return [[RollbarLogger alloc] initWithAccessToken:accessToken andEnvironment:environment];
 }
+
 + (instancetype)loggerWithConfiguration:(nonnull RollbarConfig *)configuration {
     return [[RollbarLogger alloc] initWithConfiguration:configuration];
 }
+
+#pragma mark - initializers
+
 - (instancetype)initWithAccessToken:(NSString *)accessToken {
     RollbarConfig *config = [RollbarConfig new];
     config.destination.accessToken = accessToken;
@@ -64,49 +64,10 @@ static NSString *queuedItemsFilePath = nil;
     return [self initWithConfiguration:config];
 }
 - (instancetype)initWithConfiguration:(nonnull RollbarConfig *)configuration {
-
+    
     if ((self = [super init])) {
-
+        
         [self updateConfiguration:configuration];
-
-        NSString *cachesDirectory = [RollbarCachesDirectory directory];
-        if (nil != self.configuration.developerOptions.payloadLogFile
-            && self.configuration.developerOptions.payloadLogFile.length > 0) {
-
-            payloadsFilePath =
-            [cachesDirectory stringByAppendingPathComponent:self.configuration.developerOptions.payloadLogFile];
-        }
-        else {
-
-            payloadsFilePath =
-            [cachesDirectory stringByAppendingPathComponent:[RollbarNotifierFiles payloadsLog]];
-        }
-    }
-
-    return self;
-}
-
-
-
-
-
-
-
-
-
-#pragma mark - initializers
-
-- (instancetype)initWithConfiguration:(nonnull RollbarConfig *)config
-                      andLoggerRecord:(nonnull RollbarLoggerRecord *)loggerRecord {
-    
-    NSAssert(config, @"Config must not be null!");
-    NSAssert(loggerRecord, @"LoggerRecord must not be null!");
-
-    if ((self = [super init])) {
-        
-        self->_loggerRecord = loggerRecord;
-        
-        [self updateConfiguration:config];
         
         NSString *cachesDirectory = [RollbarCachesDirectory directory];
         if (nil != self.configuration.developerOptions.payloadLogFile
@@ -123,13 +84,6 @@ static NSString *queuedItemsFilePath = nil;
     }
     
     return self;
-}
-
-#pragma mark - finalizers
-
-- (void)dealloc {
-    
-    [self.loggerRecord markAsOutOfScope];
 }
 
 #pragma mark - logging methods

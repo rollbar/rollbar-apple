@@ -1,6 +1,5 @@
 #import "RollbarLoggerRecord.h"
 #import "RollbarLogger.h"
-#import "RollbarLogger+Extension.h"
 #import "RollbarInfrastructure.h"
 
 @implementation RollbarLoggerRecord {
@@ -30,8 +29,8 @@
         
         self->_isInScope = YES;
         
-        self->_logger = [[RollbarLogger alloc] initWithConfiguration:config
-                                                     andLoggerRecord:self];
+//        self->_logger = [[RollbarLogger alloc] initWithConfiguration:config
+//                                                     andLoggerRecord:self];
         self->_destinationRecord = destinationRecord;
     }
     

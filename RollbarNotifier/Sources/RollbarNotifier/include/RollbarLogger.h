@@ -1,12 +1,8 @@
 #ifndef RollbarLogger_h
 #define RollbarLogger_h
 
-@import Foundation;
-
-@class RollbarConfig;
-
-#import "RollbarLevel.h"
 #import "RollbarLoggerProtocol.h"
+@import Foundation;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -15,8 +11,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 #pragma mark - //TODO: to be removed
-
-
 
 - (void)updateConfiguration:(nonnull RollbarConfig *)configuration;
 - (void)updateAccessToken:(nonnull NSString *)accessToken;

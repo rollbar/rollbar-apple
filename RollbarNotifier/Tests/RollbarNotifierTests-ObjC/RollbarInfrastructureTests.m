@@ -109,6 +109,9 @@
     ];
     
     
+//    id<RollbarLogger> logger = [RollbarInfrastructure newLogger];
+//    [logger log:RollbarLevel_Critical message:@"From Logger!" data:nil context:nil];
+    
     [NSThread sleepForTimeInterval:5.0f];
     
     //    items = [RollbarLogger readLogItemsFromStore];
