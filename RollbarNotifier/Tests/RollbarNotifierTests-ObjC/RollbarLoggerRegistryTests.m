@@ -75,7 +75,7 @@
 - (void)testLoggerScope {
     
     RollbarConfig *config = [RollbarConfig configWithAccessToken:@"Token"];
-    [[RollbarInfrastructure sharedInstance] configure:config];
+    [[RollbarInfrastructure sharedInstance] configureWith:config];
 
     RollbarLoggerRegistry *registry = [RollbarLoggerRegistry new];
 

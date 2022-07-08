@@ -4,12 +4,15 @@
 #import "RollbarLoggerProtocol.h"
 #import "RollbarLogger.h"
 #import "RollbarNotifierFiles.h"
+#import "RollbarCrashProcessor.h"
+#import "RollbarSession.h"
 //#import "RollbarLoggerRegistry.h"
 
 @implementation RollbarInfrastructure {
     @private
     RollbarConfig *_configuration;
     RollbarLogger *_logger;
+    RollbarCrashProcessor *_crashProcessor;
 //    RollbarLoggerRegistry *_loggerRegistry;
 }
 
@@ -43,7 +46,14 @@
 
 #pragma mark - instance methods
 
-- (nonnull instancetype)configure:(nonnull RollbarConfig *)config {
+- (nonnull instancetype)configureWith:(nonnull RollbarConfig *)config {
+    
+    return [self configureWith:config
+             andCrashCollector:nil];
+}
+
+- (nonnull instancetype)configureWith:(nonnull RollbarConfig *)config
+                    andCrashCollector:(nullable id<RollbarCrashCollector>)crashCollector {
     
     [self assertValidConfiguration:config];
     
@@ -54,11 +64,31 @@
     }
     
     self->_configuration = config;
-    self->_logger = nil; //will be created as needed using the new config...
+    self->_logger = nil; //will be created as needed using the current self->_configuration...
     
-    RollbarSdkLog(@"%@ is configured with this RollbarConfig instance: \n%@",
+    RollbarCrashReportCheck crashReportCheck = nil;
+    if (crashCollector) {
+        
+        self->_crashProcessor = [RollbarCrashProcessor new];
+        [crashCollector collectCrashReportsWithObserver:self->_crashProcessor];
+        crashReportCheck = ^() {
+            
+            BOOL result = NO;
+            if (self->_crashProcessor.totalProcessedReports > 0) {
+                
+                result = YES;
+            }
+            return result;
+        };
+    }
+
+    [[RollbarSession sharedInstance] enableOomMonitoring:config.loggingOptions.enableOomDetection
+                                          withCrashCheck:crashReportCheck];
+    
+    RollbarSdkLog(@"%@ is configured with this RollbarConfig instance: \n%@ \nand crash collector %@",
                   [RollbarInfrastructure rollbar_objectClassName],
-                  config
+                  config,
+                  crashCollector
                   );
     
     return self;

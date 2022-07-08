@@ -12,6 +12,7 @@
 
 #import "RollbarLoggerProtocol.h"
 #import "RollbarConfig.h"
+#import "RollbarCrashCollectorProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -24,7 +25,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - instance methods
 
-- (nonnull instancetype)configure:(nonnull RollbarConfig *)config;
+- (nonnull instancetype)configureWith:(nonnull RollbarConfig *)config;
+- (nonnull instancetype)configureWith:(nonnull RollbarConfig *)config
+                    andCrashCollector:(nullable id<RollbarCrashCollector>)crashCollector;
 - (nonnull id<RollbarLogger>)createLogger;
 - (nonnull id<RollbarLogger>)createLoggerWithConfig:(nonnull RollbarConfig *)config;
 - (nonnull id<RollbarLogger>)createLoggerWithAccessToken:(nonnull NSString *)token
