@@ -1,15 +1,9 @@
-#import "RollbarLoggerRegistry.h"
+#import "RollbarRegistry.h"
 #import "RollbarDestinationRecord.h"
-#import "RollbarLoggerRecord.h"
-
-#import "RollbarLogger.h"
-
-#import "RollbarConfig.h"
-#import "RollbarDestination.h"
 
 const NSUInteger DEFAULT_RegistryCapacity = 10;
 
-@implementation RollbarLoggerRegistry {
+@implementation RollbarRegistry {
     @private
     NSMutableDictionary<NSString *, RollbarDestinationRecord *> *_destinationRecords;
 }
@@ -22,12 +16,11 @@ const NSUInteger DEFAULT_RegistryCapacity = 10;
     return self;
 }
 
-- (nonnull RollbarLogger *)loggerWithConfiguration:(nonnull RollbarConfig *)config {
-
-    NSAssert(config, @"Config must not be null!");
-
-    NSString *destinationID = [RollbarLoggerRegistry destinationID:config.destination];
+- (nonnull RollbarDestinationRecord *)getRecordForDestination:(nonnull RollbarDestination *)destination {
     
+    NSAssert(destination, @"Destination must not be null!");
+    
+    NSString *destinationID = [RollbarRegistry destinationID:destination];
     RollbarDestinationRecord *destinationRecord = self->_destinationRecords[destinationID];
     if (!destinationRecord) {
         destinationRecord = [[RollbarDestinationRecord alloc] initWithDestinationID:destinationID
@@ -35,25 +28,12 @@ const NSUInteger DEFAULT_RegistryCapacity = 10;
         ];
         self->_destinationRecords[destinationID] = destinationRecord;
     }
-    
-    RollbarLogger *logger = [destinationRecord addLoggerWithConfig:config];
-    return logger;
-}
 
-//- (void)unregisterLogger:(nonnull RollbarLogger *)logger {
-//    [logger.loggerRecord.destinationRecord removeLoggerRecord:logger.loggerRecord];
-//}
+    return destinationRecord;
+}
 
 - (NSUInteger)totalDestinationRecords {
     return self->_destinationRecords.count;
-}
-
-- (NSUInteger)totalLoggerRecords {
-    NSUInteger total = 0;
-    for (RollbarDestinationRecord *destinationRecord in self->_destinationRecords.allValues) {
-        total += destinationRecord.totalLoggerRecords;
-    }
-    return total;
 }
 
 #pragma mark - overrides

@@ -8,26 +8,17 @@
 #import <Foundation/Foundation.h>
 
 @class RollbarConfig;
-@class RollbarLoggerRecord;
-@class RollbarLoggerRegistry;
-@class RollbarLogger;
+@class RollbarRegistry;
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface RollbarDestinationRecord : NSObject
 
 @property (readonly, nonnull) NSString *destinationID;
-@property (readonly, nonnull) NSSet<RollbarLoggerRecord *> *loggerRecords;
-@property (readonly, nonnull) RollbarLoggerRegistry *registry;
-
-- (nonnull RollbarLogger *)addLoggerWithConfig:(nonnull RollbarConfig *)loggerConfig;
-//- (void)removeLogger:(nonnull RollbarLogger *)logger;
-- (void)removeLoggerRecord:(nonnull RollbarLoggerRecord *)loggerRecord;
-- (NSUInteger)totalLoggerRecords;
-
+@property (readonly, nonnull) RollbarRegistry *registry;
 
 - (instancetype)initWithDestinationID:(nonnull NSString *)destinationID
-                          andRegistry:(RollbarLoggerRegistry *)registry
+                          andRegistry:(nonnull RollbarRegistry *)registry
 NS_DESIGNATED_INITIALIZER;
 - (instancetype)init NS_UNAVAILABLE;
 
