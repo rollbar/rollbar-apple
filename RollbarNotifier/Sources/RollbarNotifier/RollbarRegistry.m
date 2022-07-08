@@ -16,11 +16,12 @@ const NSUInteger DEFAULT_RegistryCapacity = 10;
     return self;
 }
 
-- (nonnull RollbarDestinationRecord *)getRecordForDestination:(nonnull RollbarDestination *)destination {
+- (nonnull RollbarDestinationRecord *)getRecordForConfig:(nonnull RollbarConfig *)config {
     
-    NSAssert(destination, @"Destination must not be null!");
+    NSAssert(config, @"Config must not be null!");
+    NSAssert(config.destination, @"Destination must not be null!");
     
-    NSString *destinationID = [RollbarRegistry destinationID:destination];
+    NSString *destinationID = [RollbarRegistry destinationID:config.destination];
     RollbarDestinationRecord *destinationRecord = self->_destinationRecords[destinationID];
     if (!destinationRecord) {
         destinationRecord = [[RollbarDestinationRecord alloc] initWithDestinationID:destinationID
@@ -29,6 +30,12 @@ const NSUInteger DEFAULT_RegistryCapacity = 10;
         self->_destinationRecords[destinationID] = destinationRecord;
     }
 
+    if (destinationRecord.localWindowLimit < config.loggingOptions.maximumReportsPerMinute) {
+        
+        // we use lagest configured limit per destination:
+        destinationRecord.localWindowLimit = config.loggingOptions.maximumReportsPerMinute;
+    }
+    
     return destinationRecord;
 }
 

@@ -7,16 +7,27 @@
 
 #import <Foundation/Foundation.h>
 
-@class RollbarConfig;
-@class RollbarRegistry;
+#import "RollbarConfig.h"
+#import "RollbarRegistry.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface RollbarDestinationRecord : NSObject
 
 @property (readonly, nonnull) NSString *destinationID;
+
+@property (readwrite) NSUInteger localWindowLimit;
+
+@property (readonly) NSUInteger localWindowCount;
+@property (readonly) NSUInteger serverWindowCount;
+@property (readonly, nullable) NSDate *nextLocalWindowStart;
+@property (readonly, nullable) NSDate *nextServerWindowStart;
+
 @property (readonly, nonnull) RollbarRegistry *registry;
 
+- (instancetype)initWithConfig:(nonnull RollbarConfig *)config
+                   andRegistry:(nonnull RollbarRegistry *)registry
+NS_DESIGNATED_INITIALIZER;
 - (instancetype)initWithDestinationID:(nonnull NSString *)destinationID
                           andRegistry:(nonnull RollbarRegistry *)registry
 NS_DESIGNATED_INITIALIZER;

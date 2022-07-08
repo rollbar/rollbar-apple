@@ -7,14 +7,15 @@
 
 #import <Foundation/Foundation.h>
 
-#import "RollbarDestination.h"
-#import "RollbarDestinationRecord.h"
+#import "RollbarConfig.h"
+
+@class RollbarDestinationRecord;
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface RollbarRegistry : NSObject
 
-- (nonnull RollbarDestinationRecord *)getRecordForDestination:(nonnull RollbarDestination *)destination;
+- (nonnull RollbarDestinationRecord *)getRecordForConfig:(nonnull RollbarConfig *)config;
 - (NSUInteger)totalDestinationRecords;
 
 + (nonnull NSString *)destinationID:(nonnull RollbarDestination *)destination;

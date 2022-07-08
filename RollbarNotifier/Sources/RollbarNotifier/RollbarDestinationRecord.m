@@ -8,6 +8,25 @@
 
 #pragma mark - initializers
 
+- (instancetype)initWithConfig:(nonnull RollbarConfig *)config
+                   andRegistry:(nonnull RollbarRegistry *)registry {
+    
+    NSAssert(config, @"Config can not be nil!");
+    NSAssert(config.destination, @"Config destination can not be nil!");
+    NSAssert(registry, @"Registry can not be nil!");
+    
+    if (self = [super init]) {
+        
+        self->_registry = registry;
+        self->_destinationID = [RollbarRegistry destinationID:config.destination];
+        self->_localWindowLimit = config.loggingOptions.maximumReportsPerMinute;
+        self->_localWindowCount = 0;
+        self->_serverWindowCount =0;
+        self->_nextLocalWindowStart = nil;
+        self->_nextServerWindowStart = nil;
+    }
+}
+
 - (instancetype)initWithDestinationID:(nonnull NSString *)destinationID
                           andRegistry:(nonnull RollbarRegistry *)registry {
     
@@ -15,6 +34,11 @@
         
         self->_registry = registry;
         self->_destinationID = destinationID;
+        self->_localWindowLimit = 0;
+        self->_localWindowCount = 0;
+        self->_serverWindowCount =0;
+        self->_nextLocalWindowStart = nil;
+        self->_nextServerWindowStart = nil;
     }
     return self;
 }
