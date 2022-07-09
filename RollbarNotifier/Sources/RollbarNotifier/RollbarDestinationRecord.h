@@ -8,7 +8,9 @@
 #import <Foundation/Foundation.h>
 
 #import "RollbarConfig.h"
-#import "RollbarRegistry.h"
+#import "RollbarPayloadPostReply.h"
+
+@class RollbarRegistry;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -24,6 +26,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, nullable) NSDate *nextServerWindowStart;
 
 @property (readonly, nonnull) RollbarRegistry *registry;
+
+- (BOOL)canPost;
+- (void)recordPostReply:(nullable RollbarPayloadPostReply *)reply;
 
 - (instancetype)initWithConfig:(nonnull RollbarConfig *)config
                    andRegistry:(nonnull RollbarRegistry *)registry

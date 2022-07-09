@@ -16,6 +16,7 @@
 #import "RollbarProxy.h"
 #import "RollbarSender.h"
 #import "RollbarPayloadPostReply.h"
+#import "RollbarRegistry.h"
 
 static NSUInteger MAX_RETRY_COUNT = 5;
 
@@ -24,6 +25,7 @@ static NSUInteger MAX_RETRY_COUNT = 5;
 @private
     //RollbarLogger *_logger;
     NSUInteger _maxReportsPerMinute;
+    RollbarRegistry *_registry;
     NSTimer *_timer;
     
     NSString *_queuedItemsFilePath;
@@ -49,6 +51,8 @@ static NSUInteger MAX_RETRY_COUNT = 5;
         [self setupDataStorage];
         
         self->_maxReportsPerMinute = 240;//60;
+        self->_registry = [RollbarRegistry new];
+        
         self->_reachability = nil;
         self->_isNetworkReachable = YES;
         self->_nextSendTime = [[NSDate alloc] init];
@@ -461,7 +465,15 @@ static NSUInteger MAX_RETRY_COUNT = 5;
         return NO;
     }
     
-    RollbarPayloadPostReply *reply = [[RollbarSender new] sendPayload:payload usingConfig:config];
+    RollbarDestinationRecord *record = [self->_registry getRecordForConfig:config];
+    if (![record canPost]) {
+        return NO;
+    }
+    
+    RollbarPayloadPostReply *reply = [[RollbarSender new] sendPayload:payload
+                                                          usingConfig:config
+    ];
+    [record recordPostReply:reply];
     if (reply && (200 == reply.statusCode)) {
         return YES;
     }

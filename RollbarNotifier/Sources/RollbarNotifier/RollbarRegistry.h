@@ -7,9 +7,8 @@
 
 #import <Foundation/Foundation.h>
 
+#import "RollbarDestinationRecord.h"
 #import "RollbarConfig.h"
-
-@class RollbarDestinationRecord;
 
 NS_ASSUME_NONNULL_BEGIN
 

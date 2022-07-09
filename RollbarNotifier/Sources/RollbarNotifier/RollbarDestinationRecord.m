@@ -1,4 +1,5 @@
 #import "RollbarDestinationRecord.h"
+#import "RollbarRegistry.h"
 
 @implementation RollbarDestinationRecord {
     @private
@@ -41,6 +42,20 @@
         self->_nextServerWindowStart = nil;
     }
     return self;
+}
+
+#pragma mark - methods
+
+- (BOOL)canPost {
+ 
+    //TODO: implement...
+    return YES;
+}
+
+- (void)recordPostReply:(nullable RollbarPayloadPostReply *)reply {
+    
+    //TODO: implement...
+    //      should be able to process nil as reply!
 }
 
 #pragma mark - overrides
