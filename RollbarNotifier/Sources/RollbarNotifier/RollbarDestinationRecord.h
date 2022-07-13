@@ -21,9 +21,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readwrite) NSUInteger localWindowLimit;
 
 @property (readonly) NSUInteger localWindowCount;
-@property (readonly) NSUInteger serverWindowCount;
+@property (readonly) NSUInteger serverWindowRemainingCount;
 @property (readonly, nullable) NSDate *nextLocalWindowStart;
 @property (readonly, nullable) NSDate *nextServerWindowStart;
+@property (readonly, nonnull) NSDate *nextEarliestPost;
 
 @property (readonly, nonnull) RollbarRegistry *registry;
 

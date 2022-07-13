@@ -54,23 +54,56 @@ static NSString * const RESPONSE_HEADER_REMAINING_SECONDS = @"x-rate-limit-remai
     return self;
 }
 
-+ (nonnull RollbarPayloadPostReply *)greenReply {
+#pragma mark - overrides
 
-    return [[RollbarPayloadPostReply alloc] initWithStatusCode:200
+- (nonnull NSString *)description {
+    NSString *description = [NSString stringWithFormat:@"%@:\n"
+                             "   statusCode:       %li\n"
+                             "   rateLimit:        %lu\n"
+                             "   remainingCount:   %lu\n"
+                             "   remainingSeconds: %lu\n"
+                             "   nextPostTime:     %@\n"
+                             ,
+                             super.description,
+                             self->_statusCode,
+                             self->_rateLimit,
+                             self->_remainingCount,
+                             self->_remainingSeconds,
+                             self->_nextPostTime
+    ];
+    return description;
+}
+
+#pragma mark - factory methods
+
++ (nonnull RollbarPayloadPostReply *)greenReply {
+    
+    // the last POST was OK and can continue POSTing:
+    return [[RollbarPayloadPostReply alloc] initWithStatusCode:200 // OK
                                                      rateLimit:1
                                                 remainingCount:1
                                               remainingSeconds:1
     ];
 }
 
-+ (nonnull RollbarPayloadPostReply *)redReply {
++ (nonnull RollbarPayloadPostReply *)yellowReply {
     
-    return [[RollbarPayloadPostReply alloc] initWithStatusCode:200
+    // the last POST was OK but can not continue POSTing for another 10 [sec]:
+    return [[RollbarPayloadPostReply alloc] initWithStatusCode:200 // OK
                                                      rateLimit:1
                                                 remainingCount:0
-                                              remainingSeconds:1
+                                              remainingSeconds:10
     ];
 }
 
++ (nonnull RollbarPayloadPostReply *)redReply {
+    
+    // the last POST failed due too many requests and can not continue POSTing for another 10 [sec]:
+    return [[RollbarPayloadPostReply alloc] initWithStatusCode:429 // too many requests...
+                                                     rateLimit:1
+                                                remainingCount:0
+                                              remainingSeconds:10
+    ];
+}
 
 @end

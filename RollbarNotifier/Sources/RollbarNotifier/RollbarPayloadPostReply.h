@@ -22,10 +22,12 @@ NS_ASSUME_NONNULL_BEGIN
                     remainingCount:(NSUInteger)remainingCount
                   remainingSeconds:(NSUInteger)remainingSeconds;
 
-    - (instancetype)init NS_UNAVAILABLE;
+- (instancetype)init NS_UNAVAILABLE;
++ (instancetype)new NS_UNAVAILABLE;
 
 + (nullable RollbarPayloadPostReply *)replyFromHttpResponse:(nonnull NSHTTPURLResponse *)httpResponse;
 + (nonnull RollbarPayloadPostReply *)greenReply;
++ (nonnull RollbarPayloadPostReply *)yellowReply;
 + (nonnull RollbarPayloadPostReply *)redReply;
 
 @end
