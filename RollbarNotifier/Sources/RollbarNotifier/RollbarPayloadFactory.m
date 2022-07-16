@@ -125,7 +125,9 @@
             RollbarSdkLog(@"checkIgnore error: %@", e.reason);
             
             // Remove checkIgnore to prevent future exceptions
-            self->_config.checkIgnoreRollbarData = nil;
+            //self->_config.checkIgnoreRollbarData = nil;
+            NSAssert(false, @"Provided checkIgnore implementation throws an exception!");
+            
             return NO;
         }
     }

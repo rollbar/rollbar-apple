@@ -91,7 +91,7 @@ static RollbarCrashProcessor *crashProcessor = nil;
         RollbarSdkLog(@"Rollbar has already been initialized.");
     } else {
         
-        RollbarConfig *config = configuration ? configuration : [RollbarConfig new];
+        RollbarMutableConfig *config = configuration ? [configuration mutableCopy] : [RollbarMutableConfig new];
         if (accessToken && accessToken.length > 0) {
             
             config.destination.accessToken = accessToken;
@@ -143,9 +143,9 @@ static RollbarCrashProcessor *crashProcessor = nil;
         logger = [[RollbarLogger alloc] initWithConfiguration:configuration];
     }
     
-    if (oldReportingRate != configuration.loggingOptions.maximumReportsPerMinute) {
-        [logger updateReportingRate:configuration.loggingOptions.maximumReportsPerMinute];
-    }
+//    if (oldReportingRate != configuration.loggingOptions.maximumReportsPerMinute) {
+//        [logger updateReportingRate:configuration.loggingOptions.maximumReportsPerMinute];
+//    }
     
     if (configuration && configuration.telemetry) {
         

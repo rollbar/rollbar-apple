@@ -20,7 +20,7 @@
 
     if (!Rollbar.currentConfiguration) {
 
-        RollbarConfig *config = [[RollbarConfig alloc] init];
+        RollbarMutableConfig *config = [[RollbarMutableConfig alloc] init];
         config.destination.accessToken = [RollbarTestHelper getRollbarPayloadsAccessToken];
         config.destination.environment = [RollbarTestHelper getRollbarEnvironment];
         config.developerOptions.transmit = YES;
@@ -45,8 +45,9 @@
     
     for( int i = 0; i < 20; i++) {
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY,0), ^(){
-            RollbarLogger *logger = [[RollbarLogger alloc] initWithAccessToken:Rollbar.currentConfiguration.destination.accessToken];
-            logger.configuration.destination.environment = [RollbarTestHelper getRollbarEnvironment];
+            RollbarMutableConfig *config = [Rollbar.currentConfiguration mutableCopy];
+            config.destination.environment = [RollbarTestHelper getRollbarEnvironment];
+            RollbarLogger *logger = [[RollbarLogger alloc] initWithConfiguration:config];
             for (int j = 0; j < 20; j++) {
                 [logger log:RollbarLevel_Error
                     message:@"error"
@@ -83,8 +84,10 @@
                    Rollbar.currentConfiguration.destination.environment);
     
     // create and configure another notifier:
-    RollbarLogger *notifier = [[RollbarLogger alloc] initWithAccessToken:@"AT_1"];
-    notifier.configuration.destination.environment = @"ENV_1";
+    RollbarMutableConfig *config = [RollbarMutableConfig new];
+    config.destination.accessToken = @"AT_1";
+    config.destination.environment = @"ENV_1";
+    RollbarLogger *notifier = [[RollbarLogger alloc] initWithConfiguration:config];
     XCTAssertTrue([notifier.configuration.destination.accessToken compare:@"AT_1"] == NSOrderedSame);
     XCTAssertTrue([notifier.configuration.destination.environment compare:@"ENV_1"] == NSOrderedSame);
 

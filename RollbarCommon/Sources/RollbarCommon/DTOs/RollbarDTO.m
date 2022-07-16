@@ -1,6 +1,7 @@
 #import "RollbarDTO.h"
 #import "RollbarSdkLog.h"
 #import "NSJSONSerialization+Rollbar.h"
+#import "NSObject+Rollbar.h"
 
 @import ObjectiveC.runtime;
 
@@ -318,14 +319,6 @@
     return NO;
 }
 
-#pragma mark - NSCopying protocol
-
--(id) copyWithZone: (NSZone *) zone {
-
-    RollbarDTO *clone = [[[self class] allocWithZone:zone] initWithJSONString:[self serializeToJSONString]];
-    return clone;
-}
-
 #pragma mark - Initializers
 
 - (instancetype)initWithJSONString: (NSString *)jsonString {
@@ -431,6 +424,70 @@
         self->_dataDictionary = nil;
     }
     return self;
+}
+
+//-(instancetype)init {
+//
+//    if (self = [self initWithDictionary:@{}]) {
+//        return self;
+//    }
+//    return nil;
+//}
+
+
+#pragma mark - NSCopying protocol
+
+-(id) copyWithZone: (NSZone *) zone {
+    
+    NSString *thisClassName = [self rollbar_objectClassName];
+
+    if (YES == [thisClassName hasPrefix:@"RollbarMutable"]) {
+        NSBundle *classBundle = [NSBundle bundleForClass:[self class]];
+        NSString *immutableClassName = [thisClassName stringByReplacingOccurrencesOfString:@"RollbarMutable"
+                                                                                withString:@"Rollbar"];
+        Class immutableClass = [classBundle classNamed:immutableClassName];
+        if (immutableClass) {
+            RollbarDTO *clone = [[immutableClass allocWithZone:zone] initWithJSONString:[self serializeToJSONString]];
+            return clone;
+        }
+    }
+    else if ((YES == [thisClassName hasPrefix:@"Rollbar"]) && (NO == [thisClassName hasPrefix:@"RollbarMutable"])) {
+        NSBundle *classBundle = [NSBundle bundleForClass:[self class]];
+        NSString *mutableClassName = [thisClassName stringByReplacingOccurrencesOfString:@"Rollbar"
+                                                                              withString:@"RollbarMutable"];
+        Class mutableClass = [classBundle classNamed:mutableClassName];
+        if (mutableClass) {
+            // OPTIMIZATION:
+            // Since we have a mutable alternative to ths class,
+            // it means this is an instance of an immutable class.
+            // Hence, there is no need to clone an immutable object.
+            return self;
+        }
+    }
+    
+    RollbarDTO *clone = [[[self class] allocWithZone:zone] initWithJSONString:[self serializeToJSONString]];
+    return clone;
+}
+
+#pragma mark - NSMutableCopying protocol
+
+-(id) mutableCopyWithZone: (NSZone *) zone {
+    
+    NSString *thisClassName = [self rollbar_objectClassName];
+    
+    if ((NO == [thisClassName hasPrefix:@"RollbarMutable"]) && (YES == [thisClassName hasPrefix:@"Rollbar"])) {
+        NSBundle *classBundle = [NSBundle bundleForClass:[self class]];
+        NSString *mutableClassName = [thisClassName stringByReplacingOccurrencesOfString:@"Rollbar"
+                                                                              withString:@"RollbarMutable"];
+        Class mutableClass = [classBundle classNamed:mutableClassName];
+        if (mutableClass) {
+            RollbarDTO *clone = [[mutableClass allocWithZone:zone] initWithJSONString:[self serializeToJSONString]];
+            return clone;
+        }
+    }
+    
+    RollbarDTO *clone = [[[self class] allocWithZone:zone] initWithJSONString:[self serializeToJSONString]];
+    return clone;
 }
 
 @end

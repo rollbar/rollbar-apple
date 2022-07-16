@@ -60,22 +60,42 @@ static NSString * const DFK_ENVIRONMENT = @"environment";
     return result;
 }
 
-- (void)setEndpoint:(NSString *)value {
-    [self setString:value forKey:DFK_ENDPOINT];
-}
-
 - (NSString *)accessToken {
     NSString *result = [self safelyGetStringByKey:DFK_ACCESS_TOKEN];
     return result;
 }
 
-- (void)setAccessToken:(NSString *)value {
-    [self setString:value forKey:DFK_ACCESS_TOKEN];
-}
-
 - (NSString *)environment {
     NSString *result = [self safelyGetStringByKey:DFK_ENVIRONMENT];
     return result;
+}
+
+@end
+
+@implementation RollbarMutableDestination
+
+#pragma mark - initializers
+
+-(instancetype)init {
+    
+    if (self = [super initWithDictionary:@{}]) {
+        return self;
+    }
+    return nil;
+}
+
+#pragma mark - property accessors
+
+@dynamic endpoint;
+@dynamic accessToken;
+@dynamic environment;
+
+- (void)setEndpoint:(NSString *)value {
+    [self setString:value forKey:DFK_ENDPOINT];
+}
+
+- (void)setAccessToken:(NSString *)value {
+    [self setString:value forKey:DFK_ACCESS_TOKEN];
 }
 
 - (void)setEnvironment:(NSString *)value {

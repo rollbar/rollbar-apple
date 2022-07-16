@@ -149,7 +149,7 @@
 }
 
 - (void)testRollbarScrubbingOptionsDTO {
-    RollbarScrubbingOptions *dto = [[RollbarScrubbingOptions alloc] initWithScrubFields:@[@"field1", @"field2"]];
+    RollbarMutableScrubbingOptions *dto = [[RollbarMutableScrubbingOptions alloc] initWithScrubFields:@[@"field1", @"field2"]];
     XCTAssertTrue(dto.enabled,
                   @"Enabled by default"
                   );
@@ -160,7 +160,7 @@
                   @"Has NO whitelist fields"
                   );
     
-    dto.safeListFields = @[@"tf1", @"tf2", @"tf3"];
+    dto.safeListFields = [@[@"tf1", @"tf2", @"tf3"] mutableCopy];
     XCTAssertTrue(dto.safeListFields.count == 3,
                   @"Has some whitelist fields"
                   );
@@ -172,11 +172,11 @@
 }
 
 - (void)testRollbarServerConfigDTO {
-    RollbarServerConfig *dto = [[RollbarServerConfig alloc] initWithHost:@"HOST"
-                                                                    root:@"ROOT"
-                                                                  branch:@"BRANCH"
-                                                             codeVersion:@"1.2.3"
-                                ];
+    RollbarMutableServerConfig *dto = [[RollbarMutableServerConfig alloc] initWithHost:@"HOST"
+                                                                                  root:@"ROOT"
+                                                                                branch:@"BRANCH"
+                                                                           codeVersion:@"1.2.3"
+    ];
     XCTAssertTrue(NSOrderedSame == [dto.host compare:@"HOST"],
                   @"Proper host"
                   );
@@ -208,7 +208,7 @@
                   );
     
     
-    RollbarConfig *rc = [RollbarConfig new];
+    RollbarMutableConfig *rc = [RollbarMutableConfig new];
     rc.destination.accessToken = @"ACCESSTOKEN";
     rc.destination.environment = @"ENVIRONMENT";
     rc.destination.endpoint = @"ENDPOINT";
@@ -225,9 +225,9 @@
 }
 
 - (void)testRollbarPersonDTO {
-    RollbarPerson *dto = [[RollbarPerson alloc] initWithID:@"ID"
-                                                  username:@"USERNAME"
-                                                     email:@"EMAIL"
+    RollbarMutablePerson *dto = [[RollbarMutablePerson alloc] initWithID:@"ID"
+                                                                username:@"USERNAME"
+                                                                   email:@"EMAIL"
                           ];
     XCTAssertTrue(NSOrderedSame == [dto.ID compare:@"ID"],
                   @"Proper ID"
@@ -252,7 +252,7 @@
                   @"Proper email"
                   );
     
-    dto = [[RollbarPerson alloc] initWithID:@"ID007"];
+    dto = [[RollbarMutablePerson alloc] initWithID:@"ID007"];
     XCTAssertTrue(NSOrderedSame == [dto.ID compare:@"ID007"],
                   @"Proper ID"
                   );
@@ -265,9 +265,9 @@
 }
 
 - (void)testRollbarModuleDTO {
-    RollbarModule *dto = [[RollbarModule alloc] initWithName:@"ModuleName"
-                                                  version:@"v1.2.3"
-                          ];
+    RollbarMutableModule *dto = [[RollbarMutableModule alloc] initWithName:@"ModuleName"
+                                                                   version:@"v1.2.3"
+    ];
     XCTAssertTrue([dto.name isEqualToString:@"ModuleName"],
                   @"Proper name"
                   );
@@ -284,7 +284,7 @@
                   @"Proper version"
                   );
 
-    dto = [[RollbarModule alloc] initWithName:@"Module"];
+    dto = [[RollbarMutableModule alloc] initWithName:@"Module"];
     XCTAssertTrue([dto.name isEqualToString:@"Module"],
                   @"Proper name"
                   );
@@ -323,7 +323,7 @@
                   @"Proper view inputs scrubber white list fields count"
                   );
     
-    dto = [[RollbarTelemetryOptions alloc] init];
+    dto = [[RollbarMutableTelemetryOptions alloc] init];
     XCTAssertTrue(!dto.enabled,
                   @"Proper enabled"
                   );
@@ -346,9 +346,9 @@
 }
 
 - (void)testRollbarLoggingOptionsDTO {
-    RollbarLoggingOptions *dto = [[RollbarLoggingOptions alloc] initWithLogLevel:RollbarLevel_Error
-                                                                          crashLevel:RollbarLevel_Info
-                                                             maximumReportsPerMinute:45];
+    RollbarMutableLoggingOptions *dto = [[RollbarMutableLoggingOptions alloc] initWithLogLevel:RollbarLevel_Error
+                                                                                    crashLevel:RollbarLevel_Info
+                                                                       maximumReportsPerMinute:45];
     dto.captureIp = RollbarCaptureIpType_Anonymize;
     dto.codeVersion = @"CODEVERSION";
     dto.framework = @"FRAMEWORK";
@@ -376,7 +376,7 @@
                   @"Proper request ID"
                   );
     
-    dto = [[RollbarLoggingOptions alloc] init];
+    dto = [[RollbarMutableLoggingOptions alloc] init];
     XCTAssertTrue(dto.logLevel == RollbarLevel_Info,
                   @"Proper default log level"
                   );
@@ -402,7 +402,7 @@
 
 
 - (void)testRollbarConfigDTO {
-    RollbarConfig *rc = [RollbarConfig new];
+    RollbarMutableConfig *rc = [RollbarMutableConfig new];
     //id destination = rc.destination;
     rc.destination.accessToken = @"ACCESSTOKEN";
     rc.destination.environment = @"ENVIRONMENT";
@@ -413,7 +413,7 @@
     [rc setServerHost:@"SERVERHOST" root:@"SERVERROOT" branch:@"SERVERBRANCH" codeVersion:@"SERVERCODEVERSION"];
     [rc setNotifierName:@"NOTIFIERNAME" version:@"NOTIFIERVERSION"];
     
-    RollbarConfig *rcClone = [[RollbarConfig alloc] initWithJSONString:[rc serializeToJSONString]];
+    RollbarMutableConfig *rcClone = [[RollbarMutableConfig alloc] initWithJSONString:[rc serializeToJSONString]];
     
 //    id scrubList = rc.scrubFields;
 //    id scrubListClone = rcClone.scrubFields;
@@ -437,7 +437,7 @@
 //                  [rcClone serializeToJSONString]
 //                  );
 
-    rcClone = [[RollbarConfig alloc] initWithJSONString:[rc serializeToJSONString]];
+    rcClone = [[RollbarMutableConfig alloc] initWithJSONString:[rc serializeToJSONString]];
     rcClone.httpProxy.proxyUrl = @"SOME_OTHER_ONE";
     XCTAssertTrue(![rc isEqual:rcClone],
                   @"Two DTOs are NOT expected to be equal"

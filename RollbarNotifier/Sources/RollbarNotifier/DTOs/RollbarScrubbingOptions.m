@@ -65,46 +65,83 @@ static NSString * const DFK_SAFELIST_FIELDS = @"safeListFields"; // do not scrub
     return [result boolValue];
 }
 
-- (void)setEnabled:(BOOL)value {
-    [self setNumber:[[NSNumber alloc] initWithBool:value] forKey:DFK_ENABLED];
-}
-
 - (NSArray<NSString *> *)scrubFields {
     NSArray *result = [self safelyGetArrayByKey:DFK_SCRUB_FIELDS];
     return result;
 }
 
-- (void)setScrubFields:(NSArray<NSString *> *)scrubFields {
-    [self setArray:scrubFields forKey:DFK_SCRUB_FIELDS];
-}
-
-- (void)addScrubField:(NSString *)field {
-    self.scrubFields =
-    [self.scrubFields arrayByAddingObject:field];
-}
-
-- (void)removeScrubField:(NSString *)field {
-    NSMutableArray *mutableCopy = self.scrubFields.mutableCopy;
-    [mutableCopy removeObject:field];
-    self.scrubFields = mutableCopy.copy;
-}
 - (NSArray<NSString *> *)safeListFields {
     NSArray<NSString *> *result = [self safelyGetArrayByKey:DFK_SAFELIST_FIELDS];
     return result;
 }
 
+@end
+
+
+@implementation RollbarMutableScrubbingOptions
+
+#pragma mark - initializers
+
+-(instancetype)init {
+    
+    if (self = [super initWithDictionary:@{}]) {
+        return self;
+    }
+    return nil;
+}
+
+#pragma mark - property accessors
+
+@dynamic enabled;
+
+- (void)setEnabled:(BOOL)value {
+    [self setNumber:[[NSNumber alloc] initWithBool:value] forKey:DFK_ENABLED];
+}
+
+- (NSMutableArray<NSString *> *)scrubFields {
+    NSMutableArray<NSString *> *result = [self safelyGetArrayByKey:DFK_SCRUB_FIELDS];
+    return result;
+}
+
+- (void)setScrubFields:(NSArray<NSString *> *)scrubFields {
+    [self setArray:[scrubFields mutableCopy] forKey:DFK_SCRUB_FIELDS];
+}
+
+- (NSMutableArray<NSString *> *)safeListFields {
+    NSMutableArray<NSString *> *result = [self safelyGetArrayByKey:DFK_SAFELIST_FIELDS];
+    return result;
+}
+
 - (void)setSafeListFields:(NSArray<NSString *> *)whitelistFields {
-    [self setArray:whitelistFields forKey:DFK_SAFELIST_FIELDS];
+    [self setArray:[whitelistFields mutableCopy] forKey:DFK_SAFELIST_FIELDS];
+}
+
+#pragma mark - methods
+
+- (void)addScrubField:(NSString *)field {
+//    self.scrubFields =
+//    [self.scrubFields arrayByAddingObject:field];
+    [self.scrubFields addObject:field];
+}
+
+- (void)removeScrubField:(NSString *)field {
+//    NSMutableArray *mutableCopy = self.scrubFields.mutableCopy;
+//    [mutableCopy removeObject:field];
+//    self.scrubFields = mutableCopy.copy;
+    [self.scrubFields removeObject:field];
 }
 
 - (void)addScrubSafeListField:(NSString *)field {
-    self.safeListFields = [self.safeListFields arrayByAddingObject:field];
+//    self.safeListFields = [self.safeListFields arrayByAddingObject:field];
+    [self.safeListFields addObject:field];
 }
 
 - (void)removeScrubSafeListField:(NSString *)field {
-    NSMutableArray *mutableCopy = self.safeListFields.mutableCopy;
-    [mutableCopy removeObject:field];
-    self.safeListFields = mutableCopy.copy;
+//    NSMutableArray *mutableCopy = self.safeListFields.mutableCopy;
+//    [mutableCopy removeObject:field];
+//    self.safeListFields = mutableCopy.copy;
+    [self.safeListFields removeObject:field];
 }
+
 
 @end

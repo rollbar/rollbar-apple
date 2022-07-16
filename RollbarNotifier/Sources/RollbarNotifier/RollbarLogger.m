@@ -49,17 +49,19 @@ static NSString *queuedItemsFilePath = nil;
 #pragma mark - initializers
 
 - (instancetype)initWithAccessToken:(NSString *)accessToken {
-    RollbarConfig *config = [RollbarConfig new];
+    RollbarMutableConfig *config = [RollbarMutableConfig new];
     config.destination.accessToken = accessToken;
     return [self initWithConfiguration:config];
 }
+
 - (instancetype)initWithAccessToken:(nonnull NSString *)accessToken
                      andEnvironment:(nonnull NSString *)environment {
-    RollbarConfig *config = [RollbarConfig new];
+    RollbarMutableConfig *config = [RollbarMutableConfig new];
     config.destination.accessToken = accessToken;
     config.destination.environment = environment;
     return [self initWithConfiguration:config];
 }
+
 - (instancetype)initWithConfiguration:(nonnull RollbarConfig *)configuration {
     
     if ((self = [super init])) {
@@ -186,18 +188,18 @@ static NSString *queuedItemsFilePath = nil;
     self.configuration = configuration;
 }
 
-- (void)updateAccessToken:(NSString *)accessToken {
-    self.configuration.destination.accessToken = accessToken;
-}
+//- (void)updateAccessToken:(NSString *)accessToken {
+//    self.configuration.destination.accessToken = accessToken;
+//}
 
-- (void)updateReportingRate:(NSUInteger)maximumReportsPerMinute {
-    if (nil != self.configuration) {
-        self.configuration.loggingOptions.maximumReportsPerMinute = maximumReportsPerMinute;
-    }
-
-    //[[RollbarThread sharedInstance] cancel];
-    //[[RollbarThread sharedInstance] setReportingRate:maximumReportsPerMinute];
-    //[[RollbarThread sharedInstance] start];
-}
+//- (void)updateReportingRate:(NSUInteger)maximumReportsPerMinute {
+//    if (nil != self.configuration) {
+//        self.configuration.loggingOptions.maximumReportsPerMinute = maximumReportsPerMinute;
+//    }
+//
+//    //[[RollbarThread sharedInstance] cancel];
+//    //[[RollbarThread sharedInstance] setReportingRate:maximumReportsPerMinute];
+//    //[[RollbarThread sharedInstance] start];
+//}
     
 @end

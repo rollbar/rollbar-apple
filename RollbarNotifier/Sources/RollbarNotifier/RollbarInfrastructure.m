@@ -109,7 +109,7 @@
 - (nonnull id<RollbarLogger>)createLoggerWithAccessToken:(nonnull NSString *)token
                                           andEnvironment:(nonnull NSString *)env {
     
-    RollbarConfig *config = [self.configuration copy];
+    RollbarMutableConfig *config = [self.configuration mutableCopy];
     config.destination.accessToken = token;
     config.destination.environment = env;
     id logger = [self createLoggerWithConfig:config];
@@ -118,7 +118,7 @@
 
 - (nonnull id<RollbarLogger>)createLoggerWithAccessToken:(nonnull NSString *)token {
     
-    RollbarConfig *config = [self.configuration copy];
+    RollbarMutableConfig *config = [self.configuration mutableCopy];
     config.destination.accessToken = token;
     id logger = [self createLoggerWithConfig:config];
     return logger;

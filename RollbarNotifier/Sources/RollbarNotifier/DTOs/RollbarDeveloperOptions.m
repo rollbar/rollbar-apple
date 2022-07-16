@@ -66,17 +66,9 @@ static NSString * const DFK_LOG_PAYLOAD_FILE = @"logPayloadFile";
     return [result boolValue];
 }
 
-- (void)setEnabled:(BOOL)value {
-    [self setNumber:[[NSNumber alloc] initWithBool:value] forKey:DFK_ENABLED];
-}
-
 - (BOOL)transmit {
     NSNumber *result = [self safelyGetNumberByKey:DFK_TRANSMIT];
     return [result boolValue];
-}
-
-- (void)setTransmit:(BOOL)value {
-    [self setNumber:[[NSNumber alloc] initWithBool:value] forKey:DFK_TRANSMIT];
 }
 
 - (BOOL)suppressSdkInfoLogging {
@@ -84,23 +76,48 @@ static NSString * const DFK_LOG_PAYLOAD_FILE = @"logPayloadFile";
     return [result boolValue];
 }
 
-- (void)setSuppressSdkInfoLogging:(BOOL)value {
-    [self setNumber:[[NSNumber alloc] initWithBool:value] forKey:DFK_SUPPRESS_SDK_INFO_LOGGING];
-}
-
 - (BOOL)logPayload {
     NSNumber *result = [self safelyGetNumberByKey:DFK_LOG_PAYLOAD];
     return [result boolValue];
-}
-
-- (void)setLogPayload:(BOOL)value {
-    [self setNumber:[[NSNumber alloc] initWithBool:value] forKey:DFK_LOG_PAYLOAD];
 }
 
 - (NSString *)payloadLogFile {
     NSString *result = [self safelyGetStringByKey:DFK_LOG_PAYLOAD_FILE];
     return result;
 }
+
+@end
+
+@implementation RollbarMutableDeveloperOptions
+
+@dynamic enabled;
+@dynamic transmit;
+@dynamic suppressSdkInfoLogging;
+@dynamic logPayload;
+@dynamic payloadLogFile;
+
+#pragma mark - property accessors
+
+- (void)setEnabled:(BOOL)value {
+    [self setNumber:[[NSNumber alloc] initWithBool:value] forKey:DFK_ENABLED];
+}
+
+- (void)setTransmit:(BOOL)value {
+    [self setNumber:[[NSNumber alloc] initWithBool:value] forKey:DFK_TRANSMIT];
+}
+
+- (void)setSuppressSdkInfoLogging:(BOOL)value {
+    [self setNumber:[[NSNumber alloc] initWithBool:value] forKey:DFK_SUPPRESS_SDK_INFO_LOGGING];
+}
+
+- (void)setLogPayload:(BOOL)value {
+    [self setNumber:[[NSNumber alloc] initWithBool:value] forKey:DFK_LOG_PAYLOAD];
+}
+
+//- (NSString *)payloadLogFile {
+//    NSString *result = [self safelyGetStringByKey:DFK_LOG_PAYLOAD_FILE];
+//    return result;
+//}
 
 - (void)setPayloadLogFile:(NSString *)value {
     [self setString:value forKey:DFK_LOG_PAYLOAD_FILE];

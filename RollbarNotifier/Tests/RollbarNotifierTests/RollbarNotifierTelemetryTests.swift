@@ -23,7 +23,7 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
     }
     
     override func tearDown() {
-        Rollbar.updateConfiguration(RollbarConfig());
+        Rollbar.updateConfiguration(RollbarMutableConfig());
         super.tearDown();
     }
     
@@ -32,7 +32,7 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
         RollbarTestUtil.clearLogFile();
         RollbarTestUtil.clearTelemetryFile();
         
-        let config = RollbarConfig();
+        let config = RollbarMutableConfig();
         config.destination.accessToken = RollbarTestHelper.getRollbarPayloadsAccessToken();
         config.destination.environment = RollbarTestHelper.getRollbarEnvironment();
         config.developerOptions.transmit = false;
@@ -66,7 +66,7 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
         RollbarTestUtil.clearLogFile();
         RollbarTestUtil.clearTelemetryFile();
         
-        let config = RollbarConfig();
+        let config = RollbarMutableConfig();
         config.destination.accessToken = RollbarTestHelper.getRollbarPayloadsAccessToken();
         config.destination.environment = RollbarTestHelper.getRollbarEnvironment();
         config.telemetry.enabled = true;
@@ -269,8 +269,8 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
         
         Rollbar.currentConfiguration()?.telemetry.enabled = true;
         Rollbar.currentConfiguration()?.telemetry.viewInputsScrubber.enabled = true;
-        Rollbar.currentConfiguration()?.telemetry.viewInputsScrubber.scrubFields.append("password");
-        Rollbar.currentConfiguration()?.telemetry.viewInputsScrubber.scrubFields.append("pin");
+        Rollbar.currentConfiguration()?.telemetry.viewInputsScrubber.scrubFields.add("password");
+        Rollbar.currentConfiguration()?.telemetry.viewInputsScrubber.scrubFields.add("pin");
         
         Rollbar.updateConfiguration(Rollbar.currentConfiguration()!);
         

@@ -21,7 +21,7 @@ final class RollbarNotifierTruncationTests: XCTestCase {
     }
     
     override func tearDown() {
-        Rollbar.updateConfiguration(RollbarConfig());
+        Rollbar.updateConfiguration(RollbarMutableConfig());
         super.tearDown();
     }
     

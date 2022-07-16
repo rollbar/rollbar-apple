@@ -31,7 +31,7 @@ final class RollbarNotifierLoggerTests: XCTestCase {
         
         RollbarTestUtil.waitForPesistenceToComplete(waitTimeInSeconds: 2.0);
 
-        Rollbar.updateConfiguration(RollbarConfig());
+        Rollbar.updateConfiguration(RollbarMutableConfig());
         super.tearDown();
     }
     
@@ -62,8 +62,10 @@ final class RollbarNotifierLoggerTests: XCTestCase {
                        Rollbar.currentConfiguration()?.destination.environment);
         
         // create and configure another notifier:
-        let notifier = RollbarLogger(accessToken: "AT_1");
-        notifier.configuration!.destination.environment = "ENV_1";
+        let config = Rollbar.currentConfiguration()!;
+        config.destination.accessToken = "AT_1";
+        config.destination.environment = "ENV_1";
+        let notifier = RollbarLogger(configuration: config);
         XCTAssertTrue(notifier.configuration!.destination.accessToken.compare("AT_1") == .orderedSame);
         XCTAssertTrue(notifier.configuration!.destination.environment.compare("ENV_1") == .orderedSame);
 

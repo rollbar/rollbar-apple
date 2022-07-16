@@ -13,8 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - //TODO: to be removed
 
 - (void)updateConfiguration:(nonnull RollbarConfig *)configuration;
-- (void)updateAccessToken:(nonnull NSString *)accessToken;
-- (void)updateReportingRate:(NSUInteger)maximumReportsPerMinute;
+//- (void)updateAccessToken:(nonnull NSString *)accessToken;
+//- (void)updateReportingRate:(NSUInteger)maximumReportsPerMinute;
 
 //- (BOOL)sendItem:(nonnull NSDictionary *)payload
 //      nextOffset:(NSUInteger)nextOffset;

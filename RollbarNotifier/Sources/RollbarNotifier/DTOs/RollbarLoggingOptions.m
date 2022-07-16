@@ -158,19 +158,9 @@ static NSString * const DFK_OOM_DETECTION = @"oomDetection";
     return [RollbarLevelUtil RollbarLevelFromString:logLevelString];
 }
 
-- (void)setLogLevel:(RollbarLevel)level {
-    NSString *levelString = [RollbarLevelUtil RollbarLevelToString:level];
-    [self setString:levelString forKey:DFK_LOG_LEVEL];
-}
-
 - (RollbarLevel)crashLevel {
     NSString *logLevelString = [self safelyGetStringByKey:DFK_CRASH_LEVEL];
     return [RollbarLevelUtil RollbarLevelFromString:logLevelString];
-}
-
-- (void)setCrashLevel:(RollbarLevel)level {
-    NSString *levelString = [RollbarLevelUtil RollbarLevelToString:level];
-    [self setString:levelString forKey:DFK_CRASH_LEVEL];
 }
 
 - (NSUInteger)maximumReportsPerMinute {
@@ -178,42 +168,21 @@ static NSString * const DFK_OOM_DETECTION = @"oomDetection";
                             withDefault:DEFAULT_MAX_REPORTS_PER_MINUTE];
 }
 
-- (void)setMaximumReportsPerMinute:(NSUInteger)value {
-    [self setUInteger:value forKey:DFK_MAX_REPORTS_PER_MINUTE];
-}
-
 - (RollbarCaptureIpType)captureIp {
     NSString *valueString = [self safelyGetStringByKey:DFK_IP_CAPTURE_TYPE];
     return [RollbarCaptureIpTypeUtil CaptureIpTypeFromString:valueString];
-}
-
-- (void)setCaptureIp:(RollbarCaptureIpType)value {
-    NSString *valueString = [RollbarCaptureIpTypeUtil CaptureIpTypeToString:value];
-    [self setString:valueString forKey:DFK_IP_CAPTURE_TYPE];
 }
 
 - (nullable NSString *)codeVersion {
     return [self getDataByKey:DFK_CODE_VERSION];
 }
 
-- (void)setCodeVersion:(nullable NSString *)value {
-    [self setData:value byKey:DFK_CODE_VERSION];
-}
-
 - (nullable NSString *)framework; {
     return [self getDataByKey:DFK_FRAMEWORK];
 }
 
-- (void)setFramework:(nullable NSString *)value {
-    [self setData:value byKey:DFK_FRAMEWORK];
-}
-
 - (nullable NSString *)requestId {
     return [self getDataByKey:DFK_REQUEST_ID];
-}
-
-- (void)setRequestId:(nullable NSString *)value {
-    [self setData:value byKey:DFK_REQUEST_ID];
 }
 
 - (BOOL)enableOomDetection {
@@ -221,6 +190,74 @@ static NSString * const DFK_OOM_DETECTION = @"oomDetection";
     BOOL result = [self safelyGetBoolByKey:DFK_OOM_DETECTION
                                     withDefault:DEFAULT_OOM_DETECTION];
     return result;
+}
+
+@end
+
+@implementation RollbarMutableLoggingOptions
+
+#pragma mark - initializers
+
+-(instancetype)init {
+    
+    if (self = [super initWithDictionary:@{}]) {
+        return self;
+    }
+    return nil;
+}
+
+#pragma mark - property accessors
+
+@dynamic logLevel;
+@dynamic crashLevel;
+@dynamic maximumReportsPerMinute;
+@dynamic captureIp;
+@dynamic codeVersion;
+@dynamic framework;
+@dynamic requestId;
+@dynamic enableOomDetection;
+
+- (void)setLogLevel:(RollbarLevel)level {
+    NSString *levelString = [RollbarLevelUtil RollbarLevelToString:level];
+    [self setString:levelString forKey:DFK_LOG_LEVEL];
+}
+
+- (void)setCrashLevel:(RollbarLevel)level {
+    NSString *levelString = [RollbarLevelUtil RollbarLevelToString:level];
+    [self setString:levelString forKey:DFK_CRASH_LEVEL];
+}
+
+- (void)setMaximumReportsPerMinute:(NSUInteger)value {
+    [self setUInteger:value forKey:DFK_MAX_REPORTS_PER_MINUTE];
+}
+
+- (void)setCaptureIp:(RollbarCaptureIpType)value {
+    NSString *valueString = [RollbarCaptureIpTypeUtil CaptureIpTypeToString:value];
+    [self setString:valueString forKey:DFK_IP_CAPTURE_TYPE];
+}
+
+//- (nullable NSString *)codeVersion {
+//    return [self getDataByKey:DFK_CODE_VERSION];
+//}
+
+- (void)setCodeVersion:(nullable NSString *)value {
+    [self setData:value byKey:DFK_CODE_VERSION];
+}
+
+//- (nullable NSString *)framework; {
+//    return [self getDataByKey:DFK_FRAMEWORK];
+//}
+
+- (void)setFramework:(nullable NSString *)value {
+    [self setData:value byKey:DFK_FRAMEWORK];
+}
+
+//- (nullable NSString *)requestId {
+//    return [self getDataByKey:DFK_REQUEST_ID];
+//}
+
+- (void)setRequestId:(nullable NSString *)value {
+    [self setData:value byKey:DFK_REQUEST_ID];
 }
 
 - (void)setEnableOomDetection:(BOOL)value {

@@ -76,7 +76,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
     
     func testRollbarScrubbingOptionsDTO() {
         
-        let dto = RollbarScrubbingOptions(scrubFields: ["field1", "field2"]);
+        let dto = RollbarMutableScrubbingOptions(scrubFields: ["field1", "field2"]);
         XCTAssertTrue(dto.enabled,
                       "Enabled by default"
                       );
@@ -100,7 +100,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
 
     func testRollbarServerConfigDTO() {
         
-        var dto = RollbarServerConfig(host: "HOST", root: "ROOT", branch: "BRANCH", codeVersion: "1.2.3");
+        var dto = RollbarMutableServerConfig(host: "HOST", root: "ROOT", branch: "BRANCH", codeVersion: "1.2.3");
         
         XCTAssertTrue(.orderedSame == dto.host!.compare("HOST"),
                       "Proper host"
@@ -133,7 +133,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
                       );
         
         
-        let rc = RollbarConfig();
+        let rc = RollbarMutableConfig();
         rc.destination.accessToken = "ACCESSTOKEN";
         rc.destination.environment = "ENVIRONMENT";
         rc.destination.endpoint = "ENDPOINT";
@@ -151,7 +151,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
 
     func testRollbarPersonDTO() {
         
-        var dto = RollbarPerson(id: "ID", username: "USERNAME", email: "EMAIL");
+        var dto = RollbarMutablePerson(id: "ID", username: "USERNAME", email: "EMAIL");
 
         XCTAssertTrue(.orderedSame == dto.id.compare("ID"),
                       "Proper ID"
@@ -176,7 +176,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
                       "Proper email"
                       );
         
-        dto = RollbarPerson(id: "ID007");
+        dto = RollbarMutablePerson(id: "ID007");
         XCTAssertTrue(.orderedSame == dto.id.compare("ID007"),
                       "Proper ID"
                       );
@@ -187,7 +187,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
                      "Proper default email"
                      );
         
-        dto = RollbarPerson(id: "nil", username: "USERNAME", email: "EMAIL");
+        dto = RollbarMutablePerson(id: "nil", username: "USERNAME", email: "EMAIL");
         XCTAssertTrue(.orderedSame == dto.id.compare("nil"),
                       "Proper initial ID"
                       );
@@ -205,7 +205,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
 
     func testRollbarModuleDTO() {
         
-        var dto = RollbarModule(name: "ModuleName", version: "v1.2.3");
+        var dto = RollbarMutableModule(name: "ModuleName", version: "v1.2.3");
         
         XCTAssertTrue(.orderedSame == dto.name!.compare("ModuleName"),
                       "Proper name"
@@ -223,7 +223,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
                       "Proper version"
                       );
 
-        dto = RollbarModule(name: "Module");
+        dto = RollbarMutableModule(name: "Module");
         XCTAssertTrue(.orderedSame == dto.name!.compare("Module"),
                       "Proper name"
                       );
@@ -265,7 +265,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
                       "Proper view inputs scrubber white list fields count"
                       );
         
-        dto = RollbarTelemetryOptions();
+        dto = RollbarMutableTelemetryOptions();
         XCTAssertTrue(!dto.enabled,
                       "Proper enabled"
                       );
@@ -289,7 +289,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
     
     func testRollbarLoggingOptionsDTO() {
         
-        var dto = RollbarLoggingOptions(
+        var dto = RollbarMutableLoggingOptions(
             logLevel: .error,
             crash: .info,
             maximumReportsPerMinute: UInt(45)
@@ -321,7 +321,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
                       "Proper request ID"
                       );
         
-        dto = RollbarLoggingOptions();
+        dto = RollbarMutableLoggingOptions();
         XCTAssertTrue(dto.logLevel == .info,
                       "Proper default log level"
                       );
@@ -350,7 +350,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
     
     func testRollbarConfigDTO() {
         
-        let rc = RollbarConfig();
+        let rc = RollbarMutableConfig();
         //id destination = rc.destination;
         rc.destination.accessToken = "ACCESSTOKEN";
         rc.destination.environment = "ENVIRONMENT";
@@ -361,7 +361,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         rc.setServerHost("SERVERHOST", root:"SERVERROOT", branch: "SERVERBRANCH", codeVersion: "SERVERCODEVERSION");
         rc.setNotifierName("NOTIFIERNAME", version: "NOTIFIERVERSION");
         
-        var rcClone = RollbarConfig(jsonString: rc.serializeToJSONString()!);
+        var rcClone = RollbarMutableConfig(jsonString: rc.serializeToJSONString()!);
         
     //    id scrubList = rc.scrubFields;
     //    id scrubListClone = rcClone.scrubFields;
@@ -385,7 +385,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
     //                  [rcClone serializeToJSONString]
     //                  );
 
-        rcClone = RollbarConfig(jsonString: rc.serializeToJSONString()!);
+        rcClone = RollbarMutableConfig(jsonString: rc.serializeToJSONString()!);
         rcClone.httpProxy.proxyUrl = "SOME_OTHER_ONE";
         XCTAssertTrue(!rc.isEqual(rcClone),
                       "Two DTOs are NOT expected to be equal"

@@ -31,7 +31,7 @@
 
 - (void)testConfigCloning {
 
-    RollbarConfig *rc = [RollbarConfig new];
+    RollbarMutableConfig *rc = [RollbarMutableConfig new];
     NSString *customEnv = @"CUSTOM_ENV";
 
     XCTAssertNotEqual(rc.destination.environment, customEnv);
@@ -209,7 +209,7 @@
 
 
     Rollbar.currentConfiguration.developerOptions.enabled = NO;
-    Rollbar.currentLogger.configuration.developerOptions.enabled = NO;
+    //Rollbar.currentLogger.configuration.developerOptions.enabled = NO;
     [Rollbar debugMessage:@"Test1"];
     [RollbarLogger flushRollbarThread];
 

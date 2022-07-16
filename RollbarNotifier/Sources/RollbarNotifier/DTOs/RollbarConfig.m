@@ -59,9 +59,9 @@ static NSString * const DFK_CUSTOM = @"custom";
     NSAssert(token, @"Access token must be initialized!");
     NSAssert(token.length > 0, @"Access token must not be empty string!");
 
-    RollbarConfig *config = [RollbarConfig new];
-    config.destination.accessToken = token;
-    
+    RollbarConfig *config = [[RollbarConfig alloc] initWithAccessToken:token
+                                                           environment:nil];
+
     return config;
 }
 
@@ -70,16 +70,54 @@ static NSString * const DFK_CUSTOM = @"custom";
     NSAssert(env, @"Environment must be initialized!");
     NSAssert(env.length > 0, @"Environment must not be empty string!");
 
-    RollbarConfig *config = [RollbarConfig configWithAccessToken:token];
-    config.destination.environment = env;
+    RollbarConfig *config = [[RollbarConfig alloc] initWithAccessToken:token
+                                                           environment:env];
     
     return config;
 }
 
 #pragma mark - initializers
 
-- (instancetype)init {
 
+- (instancetype)initWithAccessToken:(nullable NSString *)token environment:(nullable NSString *)env {
+
+    RollbarDestination *destination = nil;
+    if (token && env) {
+        destination = [[RollbarDestination alloc] initWithAccessToken:token environment:env];
+    }
+    else if (token) {
+        destination = [[RollbarDestination alloc] initWithAccessToken:token];
+    }
+    else {
+        destination = [[RollbarMutableDestination alloc] init];
+    }
+    
+    if (!destination) {
+        return nil;
+    }
+    
+    if (self = [super initWithDictionary:@{
+        DFK_DESTINATION:destination.jsonFriendlyData,
+        DFK_DEVELOPER_OPTIONS:[RollbarDeveloperOptions new].jsonFriendlyData,
+        DFK_LOGGING_OPTIONS:[RollbarLoggingOptions new].jsonFriendlyData,
+        DFK_HTTP_PROXY:[RollbarProxy new].jsonFriendlyData,
+        DFK_HTTPS_PROXY:[RollbarProxy new].jsonFriendlyData,
+        DFK_DATA_SCRUBBER:[RollbarScrubbingOptions new].jsonFriendlyData,
+        DFK_TELEMETRY:[RollbarTelemetryOptions new].jsonFriendlyData,
+        DFK_NOTIFIER:[[RollbarModule alloc] initWithName:NOTIFIER_NAME version:NOTIFIER_VERSION].jsonFriendlyData,
+        DFK_SERVER:[RollbarServerConfig new].jsonFriendlyData,
+        DFK_PERSON: [NSMutableDictionary<NSString *, id> new],
+        DFK_CUSTOM: [NSMutableDictionary<NSString *, id> new]
+    }]) {
+        
+        return self;
+    }
+    
+    return nil;
+}
+
+- (instancetype)init {
+    
     self = [super initWithDictionary:@{
         DFK_DESTINATION:[RollbarDestination new].jsonFriendlyData,
         DFK_DEVELOPER_OPTIONS:[RollbarDeveloperOptions new].jsonFriendlyData,
@@ -96,17 +134,12 @@ static NSString * const DFK_CUSTOM = @"custom";
     return self;
 }
 
-
 #pragma mark - Rollbar destination
 
 - (RollbarDestination *)destination {
     id data = [self safelyGetDictionaryByKey:DFK_DESTINATION];
     id dto = [[RollbarDestination alloc] initWithDictionary:data];
     return dto;
-}
-
-- (void)setDestination:(RollbarDestination *)destination {
-    [self setDataTransferObject:destination forKey:DFK_DESTINATION];
 }
 
 #pragma mark - Developer options
@@ -116,19 +149,11 @@ static NSString * const DFK_CUSTOM = @"custom";
     return [[RollbarDeveloperOptions alloc] initWithDictionary:data];
 }
 
-- (void)setDeveloperOptions:(RollbarDeveloperOptions *)developerOptions {
-    [self setDataTransferObject:developerOptions forKey:DFK_DEVELOPER_OPTIONS];
-}
-
 #pragma mark - Logging options
 
 - (RollbarLoggingOptions *)loggingOptions {
     id data = [self safelyGetDictionaryByKey:DFK_LOGGING_OPTIONS];
     return [[RollbarLoggingOptions alloc] initWithDictionary:data];
-}
-
-- (void)setLoggingOptions:(RollbarLoggingOptions *)developerOptions {
-    [self setDataTransferObject:developerOptions forKey:DFK_LOGGING_OPTIONS];
 }
 
 #pragma mark - Notifier
@@ -138,19 +163,11 @@ static NSString * const DFK_CUSTOM = @"custom";
     return [[RollbarModule alloc] initWithDictionary:data];
 }
 
-- (void)setNotifier:(RollbarModule *)developerOptions {
-    [self setDataTransferObject:developerOptions forKey:DFK_NOTIFIER];
-}
-
 #pragma mark - Data scrubber
 
 - (RollbarScrubbingOptions *)dataScrubber {
     id data = [self safelyGetDictionaryByKey:DFK_DATA_SCRUBBER];
     return [[RollbarScrubbingOptions alloc] initWithDictionary:data];
-}
-
-- (void)setDataScrubber:(RollbarScrubbingOptions *)value {
-    [self setDataTransferObject:value forKey:DFK_DATA_SCRUBBER];
 }
 
 #pragma mark - Server
@@ -160,19 +177,11 @@ static NSString * const DFK_CUSTOM = @"custom";
     return [[RollbarServerConfig alloc] initWithDictionary:data];
 }
 
-- (void)setServer:(RollbarServerConfig *)value {
-    [self setDataTransferObject:value forKey:DFK_SERVER];
-}
-
 #pragma mark - Person
 
 - (RollbarPerson *)person {
     id data = [self safelyGetDictionaryByKey:DFK_PERSON];
     return [[RollbarPerson alloc] initWithDictionary:data];
-}
-
-- (void)setPerson:(RollbarPerson *)value {
-    [self setDataTransferObject:value forKey:DFK_PERSON];
 }
 
 #pragma mark - HTTP Proxy Settings
@@ -182,19 +191,11 @@ static NSString * const DFK_CUSTOM = @"custom";
     return [[RollbarProxy alloc] initWithDictionary:data];
 }
 
-- (void)setHttpProxy:(RollbarProxy *)value {
-    [self setDataTransferObject:value forKey:DFK_HTTP_PROXY];
-}
-
 #pragma mark - HTTPS Proxy Settings
 
 - (RollbarProxy *)httpsProxy {
     id data = [self safelyGetDictionaryByKey:DFK_HTTPS_PROXY];
     return [[RollbarProxy alloc] initWithDictionary:data];
-}
-
-- (void)setHttpsProxy:(RollbarProxy *)value {
-    [self setDataTransferObject:value forKey:DFK_HTTPS_PROXY];
 }
 
 #pragma mark - Telemetry
@@ -204,8 +205,164 @@ static NSString * const DFK_CUSTOM = @"custom";
     return [[RollbarTelemetryOptions alloc] initWithDictionary:data];
 }
 
+#pragma mark - Custom data
+
+- (NSDictionary<NSString *, id> *)customData {
+    NSMutableDictionary *result = [self safelyGetDictionaryByKey:DFK_CUSTOM];
+    return result;
+}
+
+#pragma mark - Payload Content Related
+
+@synthesize checkIgnoreRollbarData = _checkIgnoreRollbarData;
+
+@synthesize modifyRollbarData = _modifyRollbarData;
+
+
+//#pragma mark - RollbarPersistent protocol
+//
+//- (BOOL)loadFromFile:(nonnull NSString *)filePath {
+//}
+//
+//- (BOOL)saveToFile:(nonnull NSString *)filePath {
+//}
+
+@end
+
+@implementation RollbarMutableConfig
+
+#pragma mark - initializers
+
+-(instancetype)init {
+    
+    if (self = [super initWithDictionary:@{}]) {
+        return self;
+    }
+    return nil;
+}
+
+#pragma mark - Payload Content Related
+
+@dynamic checkIgnoreRollbarData;
+@dynamic modifyRollbarData;
+
+- (void)setCheckIgnoreRollbarData:(BOOL (^)(RollbarData * _Nonnull))checkIgnoreRollbarData {
+    self->_checkIgnoreRollbarData = checkIgnoreRollbarData;
+}
+
+- (void)setModifyRollbarData:(RollbarData * _Nonnull (^)(RollbarData * _Nonnull))modifyRollbarData {
+    self->_modifyRollbarData = modifyRollbarData;
+}
+
+#pragma mark - Rollbar destination
+
+- (RollbarMutableDestination *)destination {
+    id data = [self safelyGetDictionaryByKey:DFK_DESTINATION];
+    id dto = [[RollbarMutableDestination alloc] initWithDictionary:data];
+    return dto;
+}
+
+- (void)setDestination:(RollbarDestination *)destination {
+    [self setDataTransferObject:[destination mutableCopy] forKey:DFK_DESTINATION];
+}
+
+#pragma mark - Developer options
+
+- (RollbarMutableDeveloperOptions *)developerOptions {
+    id data = [self safelyGetDictionaryByKey:DFK_DEVELOPER_OPTIONS];
+    return [[RollbarMutableDeveloperOptions alloc] initWithDictionary:data];
+}
+
+- (void)setDeveloperOptions:(RollbarDeveloperOptions *)developerOptions {
+    [self setDataTransferObject:[developerOptions mutableCopy] forKey:DFK_DEVELOPER_OPTIONS];
+}
+
+#pragma mark - Logging options
+
+- (RollbarMutableLoggingOptions *)loggingOptions {
+    id data = [self safelyGetDictionaryByKey:DFK_LOGGING_OPTIONS];
+    return [[RollbarMutableLoggingOptions alloc] initWithDictionary:data];
+}
+
+- (void)setLoggingOptions:(RollbarLoggingOptions *)loggingOptions {
+    [self setDataTransferObject:[loggingOptions mutableCopy] forKey:DFK_LOGGING_OPTIONS];
+}
+
+#pragma mark - Notifier
+
+- (RollbarMutableModule *)notifier {
+    id data = [self safelyGetDictionaryByKey:DFK_NOTIFIER];
+    return [[RollbarMutableModule alloc] initWithDictionary:data];
+}
+
+- (void)setNotifier:(RollbarModule *)developerOptions {
+    [self setDataTransferObject:developerOptions forKey:DFK_NOTIFIER];
+}
+
+#pragma mark - Data scrubber
+
+- (RollbarMutableScrubbingOptions *)dataScrubber {
+    id data = [self safelyGetDictionaryByKey:DFK_DATA_SCRUBBER];
+    return [[RollbarMutableScrubbingOptions alloc] initWithDictionary:data];
+}
+
+- (void)setDataScrubber:(RollbarScrubbingOptions *)value {
+    [self setDataTransferObject:[value mutableCopy] forKey:DFK_DATA_SCRUBBER];
+}
+
+#pragma mark - Server
+
+- (RollbarMutableServerConfig *)server {
+    id data = [self safelyGetDictionaryByKey:DFK_SERVER];
+    return [[RollbarMutableServerConfig alloc] initWithDictionary:data];
+}
+
+- (void)setServer:(RollbarServerConfig *)value {
+    [self setDataTransferObject:[value mutableCopy] forKey:DFK_SERVER];
+}
+
+#pragma mark - Person
+
+- (RollbarMutablePerson *)person {
+    id data = [self safelyGetDictionaryByKey:DFK_PERSON];
+    return [[RollbarMutablePerson alloc] initWithDictionary:data];
+}
+
+- (void)setPerson:(RollbarPerson *)value {
+    [self setDataTransferObject:value forKey:DFK_PERSON];
+}
+
+#pragma mark - HTTP Proxy Settings
+
+- (RollbarMutableProxy *)httpProxy {
+    id data = [self safelyGetDictionaryByKey:DFK_HTTP_PROXY];
+    return [[RollbarMutableProxy alloc] initWithDictionary:data];
+}
+
+- (void)setHttpProxy:(RollbarProxy *)value {
+    [self setDataTransferObject:[value mutableCopy] forKey:DFK_HTTP_PROXY];
+}
+
+#pragma mark - HTTPS Proxy Settings
+
+- (RollbarMutableProxy *)httpsProxy {
+    id data = [self safelyGetDictionaryByKey:DFK_HTTPS_PROXY];
+    return [[RollbarMutableProxy alloc] initWithDictionary:data];
+}
+
+- (void)setHttpsProxy:(RollbarProxy *)value {
+    [self setDataTransferObject:[value mutableCopy] forKey:DFK_HTTPS_PROXY];
+}
+
+#pragma mark - Telemetry
+
+- (RollbarMutableTelemetryOptions *)telemetry {
+    id data = [self safelyGetDictionaryByKey:DFK_TELEMETRY];
+    return [[RollbarMutableTelemetryOptions alloc] initWithDictionary:data];
+}
+
 - (void)setTelemetry:(RollbarTelemetryOptions *)value {
-    [self setDataTransferObject:value forKey:DFK_TELEMETRY];
+    [self setDataTransferObject:[value mutableCopy] forKey:DFK_TELEMETRY];
 }
 
 #pragma mark - Convenience Methods
@@ -236,21 +393,13 @@ static NSString * const DFK_CUSTOM = @"custom";
 
 #pragma mark - Custom data
 
-- (NSDictionary<NSString *, id> *)customData {
+- (NSMutableDictionary<NSString *, id> *)customData {
     NSMutableDictionary *result = [self safelyGetDictionaryByKey:DFK_CUSTOM];
     return result;
 }
 
-- (void)setCustomData:(NSDictionary<NSString *, id> *)value {
+- (void)setCustomData:(NSMutableDictionary<NSString *, id> *)value {
     [self setDictionary:value forKey:DFK_CUSTOM];
 }
-
-//#pragma mark - RollbarPersistent protocol
-//
-//- (BOOL)loadFromFile:(nonnull NSString *)filePath {
-//}
-//
-//- (BOOL)saveToFile:(nonnull NSString *)filePath {
-//}
 
 @end

@@ -22,12 +22,12 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
     }
     
     override func tearDown() {
-        Rollbar.updateConfiguration(RollbarConfig());
+        Rollbar.updateConfiguration(RollbarMutableConfig());
         super.tearDown();
     }
     
     func testDefaultRollbarConfiguration() {
-        let rc = RollbarConfig();
+        let rc = RollbarMutableConfig();
         NSLog("%@", rc);
     }
 
@@ -130,13 +130,13 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         let element1 = "password";
         let element2 = "pin";
         
-        Rollbar.currentConfiguration()?.telemetry.viewInputsScrubber.scrubFields.append(element1);
-        Rollbar.currentConfiguration()?.telemetry.viewInputsScrubber.scrubFields.append(element2);
+        Rollbar.currentConfiguration()?.telemetry.viewInputsScrubber.scrubFields.add(element1);
+        Rollbar.currentConfiguration()?.telemetry.viewInputsScrubber.scrubFields.add(element2);
         
         Rollbar.updateConfiguration(Rollbar.currentConfiguration()!);
 
         XCTAssertTrue(
-            RollbarTelemetry.sharedInstance().viewInputsToScrub!.count == (RollbarScrubbingOptions().scrubFields.count + 2),
+            RollbarTelemetry.sharedInstance().viewInputsToScrub!.count == (RollbarMutableScrubbingOptions().scrubFields.count + 2),
             "RollbarTelemetry.sharedInstance.viewInputsToScrub is expected to count = 2"
             );
         XCTAssertTrue(
@@ -154,7 +154,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         Rollbar.updateConfiguration(Rollbar.currentConfiguration()!);
 
         XCTAssertTrue(
-            RollbarTelemetry.sharedInstance().viewInputsToScrub!.count == RollbarScrubbingOptions().scrubFields.count,
+            RollbarTelemetry.sharedInstance().viewInputsToScrub!.count == RollbarMutableScrubbingOptions().scrubFields.count,
             "RollbarTelemetry.sharedInstance.viewInputsToScrub is expected to count = 0"
             );
     }
@@ -170,7 +170,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
 
 
         Rollbar.currentConfiguration()?.developerOptions.enabled = false;
-        Rollbar.currentLogger().configuration!.developerOptions.enabled = false;
+        //Rollbar.currentLogger().configuration!.developerOptions.enabled = false;
         Rollbar.debugMessage("Test1");
         RollbarTestUtil.waitForPesistenceToComplete();
         logItems = RollbarTestUtil.readItemStringsFromLogFile();

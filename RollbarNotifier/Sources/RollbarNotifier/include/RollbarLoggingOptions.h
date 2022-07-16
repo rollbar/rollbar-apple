@@ -13,28 +13,28 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Properties
 
 /// A minimum threshold level to log from
-@property (nonatomic) RollbarLevel logLevel;
+@property (nonatomic, readonly) RollbarLevel logLevel;
 
 /// A log level to use for crsh reports
-@property (nonatomic) RollbarLevel crashLevel;
+@property (nonatomic, readonly) RollbarLevel crashLevel;
 
 /// Reporting rate limit
-@property (nonatomic) NSUInteger maximumReportsPerMinute;
+@property (nonatomic, readonly) NSUInteger maximumReportsPerMinute;
 
 /// A way of capturing IP addresses
-@property (nonatomic) RollbarCaptureIpType captureIp;
+@property (nonatomic, readonly) RollbarCaptureIpType captureIp;
 
 /// A code version to mark payloads with
-@property (nonatomic, copy, nullable) NSString *codeVersion;
+@property (nonatomic, copy, nullable, readonly) NSString *codeVersion;
 
 /// A framework tag to mark payloads with
-@property (nonatomic, copy, nullable) NSString *framework;
+@property (nonatomic, copy, nullable, readonly, readonly) NSString *framework;
 
 /// A request ID to mark payloads with
-@property (nonatomic, copy, nullable) NSString *requestId;
+@property (nonatomic, copy, nullable, readonly) NSString *requestId;
 
 /// A flag enabling potential OOM (Out-of-Memory) detection
-@property (nonatomic) BOOL enableOomDetection;
+@property (nonatomic, readonly) BOOL enableOomDetection;
 
 
 #pragma mark - Initializers
@@ -126,6 +126,41 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param crashLevel log level to mark crash reports with
 - (instancetype)initWithLogLevel:(RollbarLevel)logLevel
                       crashLevel:(RollbarLevel)crashLevel;
+
+@end
+
+@interface RollbarMutableLoggingOptions : RollbarLoggingOptions
+
+#pragma mark - initializers
+
+- (instancetype)init
+NS_DESIGNATED_INITIALIZER;
+
+#pragma mark - Properties
+
+/// A minimum threshold level to log from
+@property (nonatomic, readwrite) RollbarLevel logLevel;
+
+/// A log level to use for crsh reports
+@property (nonatomic, readwrite) RollbarLevel crashLevel;
+
+/// Reporting rate limit
+@property (nonatomic, readwrite) NSUInteger maximumReportsPerMinute;
+
+/// A way of capturing IP addresses
+@property (nonatomic, readwrite) RollbarCaptureIpType captureIp;
+
+/// A code version to mark payloads with
+@property (nonatomic, copy, nullable, readwrite) NSString *codeVersion;
+
+/// A framework tag to mark payloads with
+@property (nonatomic, copy, nullable, readwrite) NSString *framework;
+
+/// A request ID to mark payloads with
+@property (nonatomic, copy, nullable, readwrite) NSString *requestId;
+
+/// A flag enabling potential OOM (Out-of-Memory) detection
+@property (nonatomic, readwrite) BOOL enableOomDetection;
 
 @end
 
