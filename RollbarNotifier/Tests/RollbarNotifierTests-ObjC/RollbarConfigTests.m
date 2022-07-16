@@ -494,10 +494,10 @@
     XCTAssertNotNil(mutable.viewInputsScrubber.safeListFields);
     XCTAssertEqual(mutable.viewInputsScrubber.scrubFields.count, 2);
     XCTAssertEqual(mutable.viewInputsScrubber.safeListFields.count, 2);
-    XCTAssertEqual(mutable.viewInputsScrubber.scrubFields[0], @"F1");
-    XCTAssertEqual(mutable.viewInputsScrubber.safeListFields[0], @"S1");
-    XCTAssertEqual(mutable.viewInputsScrubber.scrubFields[1], @"F2");
-    XCTAssertEqual(mutable.viewInputsScrubber.safeListFields[1], @"S2");
+    XCTAssertTrue([mutable.viewInputsScrubber.scrubFields[0] isEqualToString:@"F1"]);
+    XCTAssertTrue([mutable.viewInputsScrubber.safeListFields[0] isEqualToString:@"S1"]);
+    XCTAssertTrue([mutable.viewInputsScrubber.scrubFields[1] isEqualToString:@"F2"]);
+    XCTAssertTrue([mutable.viewInputsScrubber.safeListFields[1] isEqualToString:@"S2"]);
 
     NSString *content = [mutable serializeToJSONString];
     XCTAssertNotNil(content);
@@ -520,10 +520,10 @@
     XCTAssertNotNil(immutable.viewInputsScrubber.safeListFields);
     XCTAssertEqual(immutable.viewInputsScrubber.scrubFields.count, 2);
     XCTAssertEqual(immutable.viewInputsScrubber.safeListFields.count, 2);
-    XCTAssertEqual(immutable.viewInputsScrubber.scrubFields[0], @"F1");
-    XCTAssertEqual(immutable.viewInputsScrubber.safeListFields[0], @"S1");
-    XCTAssertEqual(immutable.viewInputsScrubber.scrubFields[1], @"F2");
-    XCTAssertEqual(immutable.viewInputsScrubber.safeListFields[1], @"S2");
+    XCTAssertTrue([immutable.viewInputsScrubber.scrubFields[0] isEqualToString:@"F1"]);
+    XCTAssertTrue([immutable.viewInputsScrubber.safeListFields[0] isEqualToString:@"S1"]);
+    XCTAssertTrue([immutable.viewInputsScrubber.scrubFields[1] isEqualToString:@"F2"]);
+    XCTAssertTrue([immutable.viewInputsScrubber.safeListFields[1] isEqualToString:@"S2"]);
 
     content = [immutable serializeToJSONString];
     XCTAssertNotNil(content);
