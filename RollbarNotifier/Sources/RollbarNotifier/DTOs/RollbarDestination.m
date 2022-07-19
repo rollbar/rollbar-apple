@@ -78,7 +78,7 @@ static NSString * const DFK_ENVIRONMENT = @"environment";
 
 -(instancetype)init {
     
-    if (self = [super initWithDictionary:@{}]) {
+    if (self = [super init]) {
         return self;
     }
     return nil;

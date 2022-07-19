@@ -200,7 +200,7 @@ static NSString * const DFK_OOM_DETECTION = @"oomDetection";
 
 -(instancetype)init {
     
-    if (self = [super initWithDictionary:@{}]) {
+    if (self = [super init]) {
         return self;
     }
     return nil;

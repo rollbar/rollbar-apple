@@ -110,9 +110,14 @@ static NSString *const DFK_AUTOCOLLECTION_INTERVAL_MEM_STATS = @"memoryStatsAuto
 
 -(instancetype)init {
 
-    if (self = [super initWithDictionary:@{}]) {
+    if (self = [super initWithEnabled:DEFAULT_ENABLED_FLAG
+                      captureLog:DEFAULT_CAPTURE_LOG_FLAG
+             captureConnectivity:DEFAULT_CAPTURE_CONNECTIVITY_FLAG
+              viewInputsScrubber:[RollbarMutableScrubbingOptions new]
+               ]) {
         return self;
     }
+    
     return nil;
 }
 

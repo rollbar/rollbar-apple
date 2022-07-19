@@ -33,8 +33,8 @@ static NSString * const DFK_SAFELIST_FIELDS = @"safeListFields"; // do not scrub
                     safeListFields:(NSArray<NSString *> *)safeListFields {
 
     return [self initWithEnabled:DEFAULT_ENABLED_FLAG
-                     scrubFields:scrubFields
-                  safeListFields:safeListFields
+                     scrubFields:[scrubFields mutableCopy]
+                  safeListFields:[safeListFields mutableCopy]
             ];
 }
 
@@ -84,7 +84,7 @@ static NSString * const DFK_SAFELIST_FIELDS = @"safeListFields"; // do not scrub
 
 -(instancetype)init {
     
-    if (self = [super initWithDictionary:@{}]) {
+    if (self = [super init]) {
         return self;
     }
     return nil;

@@ -235,7 +235,7 @@ static NSString * const DFK_CUSTOM = @"custom";
 
 -(instancetype)init {
     
-    if (self = [super initWithDictionary:@{}]) {
+    if (self = [super init]) {
         return self;
     }
     return nil;

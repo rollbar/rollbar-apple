@@ -25,6 +25,10 @@
 }
 
 - (void)testRollbarDestination {
+
+    NSString *defaultMutable = [[RollbarMutableDestination new] serializeToJSONString];
+    NSString *defaultImmutable = [[RollbarDestination new] serializeToJSONString];
+    XCTAssertTrue([defaultMutable isEqualToString:defaultImmutable]);
     
     RollbarMutableDestination *mutable = [RollbarMutableDestination new];
     mutable.endpoint = @"test_EP";
@@ -67,6 +71,10 @@
 }
 
 - (void)testRollbarDeveloperOptions {
+    
+    NSString *defaultMutable = [[RollbarMutableDeveloperOptions new] serializeToJSONString];
+    NSString *defaultImmutable = [[RollbarDeveloperOptions new] serializeToJSONString];
+    XCTAssertTrue([defaultMutable isEqualToString:defaultImmutable]);
     
     RollbarMutableDeveloperOptions *mutable = [RollbarMutableDeveloperOptions new];
     mutable.enabled = NO;
@@ -122,6 +130,10 @@
 }
 
 - (void)testRollbarLoggingOptions {
+    
+    NSString *defaultMutable = [[RollbarMutableLoggingOptions new] serializeToJSONString];
+    NSString *defaultImmutable = [[RollbarLoggingOptions new] serializeToJSONString];
+    XCTAssertTrue([defaultMutable isEqualToString:defaultImmutable]);
     
     RollbarMutableLoggingOptions *mutable = [RollbarMutableLoggingOptions new];
     mutable.logLevel = RollbarLevel_Info;
@@ -205,6 +217,10 @@
 
 - (void)testRollbarModule {
     
+    NSString *defaultMutable = [[RollbarMutableModule new] serializeToJSONString];
+    NSString *defaultImmutable = [[[RollbarModule alloc] initWithName:nil] serializeToJSONString];
+    XCTAssertTrue([defaultMutable isEqualToString:defaultImmutable]);
+    
     RollbarMutableModule *mutable = [RollbarMutableModule new];
     mutable.name = @"test_N_old";
     mutable.version = @"test_V_old";
@@ -246,6 +262,10 @@
 }
 
 - (void)testRollbarPerson {
+    
+    NSString *defaultMutable = [[[RollbarMutablePerson alloc] initWithID:@"ID"] serializeToJSONString];
+    NSString *defaultImmutable = [[[RollbarPerson alloc] initWithID:@"ID"] serializeToJSONString];
+    XCTAssertTrue([defaultMutable isEqualToString:defaultImmutable]);
     
     RollbarMutablePerson *mutable = [RollbarMutablePerson new];
     mutable.ID = @"test_ID_old";
@@ -296,6 +316,10 @@
 
 - (void)testRollbarProxy {
     
+    NSString *defaultMutable = [[RollbarMutableProxy new] serializeToJSONString];
+    NSString *defaultImmutable = [[RollbarProxy new] serializeToJSONString];
+    XCTAssertTrue([defaultMutable isEqualToString:defaultImmutable]);
+    
     RollbarMutableProxy *mutable = [RollbarMutableProxy new];
     mutable.enabled = NO;
     mutable.proxyUrl = @"test_URL_old";
@@ -342,6 +366,10 @@
 }
 
 - (void)testRollbarServerConfig {
+    
+    NSString *defaultMutable = [[RollbarMutableServerConfig new] serializeToJSONString];
+    NSString *defaultImmutable = [[RollbarServerConfig new] serializeToJSONString];
+    XCTAssertTrue([defaultMutable isEqualToString:defaultImmutable]);
     
     RollbarMutableServerConfig *mutable = [RollbarMutableServerConfig new];
     mutable.host = @"test_H_old";
@@ -398,6 +426,10 @@
 }
 
 - (void)testRollbarScrubbingOptions {
+    
+    NSString *defaultMutable = [[RollbarMutableScrubbingOptions new] serializeToJSONString];
+    NSString *defaultImmutable = [[RollbarScrubbingOptions new] serializeToJSONString];
+    XCTAssertTrue([defaultMutable isEqualToString:defaultImmutable]);
     
     RollbarMutableScrubbingOptions *mutable = [RollbarMutableScrubbingOptions new];
     mutable.enabled = NO;
@@ -456,6 +488,10 @@
 
 - (void)testRollbarTelemetryOptions {
     
+    NSString *defaultMutable = [[RollbarMutableTelemetryOptions new] serializeToJSONString];
+    NSString *defaultImmutable = [[RollbarTelemetryOptions new] serializeToJSONString];
+    XCTAssertTrue([defaultMutable isEqualToString:defaultImmutable]);
+    
     RollbarMutableTelemetryOptions *mutable = [RollbarMutableTelemetryOptions new];
     mutable.enabled = NO;
     mutable.captureLog = NO;
@@ -472,9 +508,9 @@
     XCTAssertNotNil(mutable.viewInputsScrubber);
     XCTAssertNotNil(mutable.viewInputsScrubber.scrubFields);
     XCTAssertNotNil(mutable.viewInputsScrubber.safeListFields);
-    XCTAssertEqual(mutable.viewInputsScrubber.scrubFields.count, 1);
+    XCTAssertEqual(mutable.viewInputsScrubber.scrubFields.count, 9);
     XCTAssertEqual(mutable.viewInputsScrubber.safeListFields.count, 1);
-    XCTAssertEqual(mutable.viewInputsScrubber.scrubFields[0], @"F1");
+    XCTAssertEqual(mutable.viewInputsScrubber.scrubFields[8], @"F1");
     XCTAssertEqual(mutable.viewInputsScrubber.safeListFields[0], @"S1");
 
     mutable.enabled = YES;
@@ -492,11 +528,11 @@
     XCTAssertNotNil(mutable.viewInputsScrubber);
     XCTAssertNotNil(mutable.viewInputsScrubber.scrubFields);
     XCTAssertNotNil(mutable.viewInputsScrubber.safeListFields);
-    XCTAssertEqual(mutable.viewInputsScrubber.scrubFields.count, 2);
+    XCTAssertEqual(mutable.viewInputsScrubber.scrubFields.count, 10);
     XCTAssertEqual(mutable.viewInputsScrubber.safeListFields.count, 2);
-    XCTAssertTrue([mutable.viewInputsScrubber.scrubFields[0] isEqualToString:@"F1"]);
+    XCTAssertTrue([mutable.viewInputsScrubber.scrubFields[8] isEqualToString:@"F1"]);
     XCTAssertTrue([mutable.viewInputsScrubber.safeListFields[0] isEqualToString:@"S1"]);
-    XCTAssertTrue([mutable.viewInputsScrubber.scrubFields[1] isEqualToString:@"F2"]);
+    XCTAssertTrue([mutable.viewInputsScrubber.scrubFields[9] isEqualToString:@"F2"]);
     XCTAssertTrue([mutable.viewInputsScrubber.safeListFields[1] isEqualToString:@"S2"]);
 
     NSString *content = [mutable serializeToJSONString];
@@ -518,11 +554,11 @@
     XCTAssertNotNil(immutable.viewInputsScrubber);
     XCTAssertNotNil(immutable.viewInputsScrubber.scrubFields);
     XCTAssertNotNil(immutable.viewInputsScrubber.safeListFields);
-    XCTAssertEqual(immutable.viewInputsScrubber.scrubFields.count, 2);
+    XCTAssertEqual(immutable.viewInputsScrubber.scrubFields.count, 10);
     XCTAssertEqual(immutable.viewInputsScrubber.safeListFields.count, 2);
-    XCTAssertTrue([immutable.viewInputsScrubber.scrubFields[0] isEqualToString:@"F1"]);
+    XCTAssertTrue([immutable.viewInputsScrubber.scrubFields[8] isEqualToString:@"F1"]);
     XCTAssertTrue([immutable.viewInputsScrubber.safeListFields[0] isEqualToString:@"S1"]);
-    XCTAssertTrue([immutable.viewInputsScrubber.scrubFields[1] isEqualToString:@"F2"]);
+    XCTAssertTrue([immutable.viewInputsScrubber.scrubFields[9] isEqualToString:@"F2"]);
     XCTAssertTrue([immutable.viewInputsScrubber.safeListFields[1] isEqualToString:@"S2"]);
 
     content = [immutable serializeToJSONString];
@@ -550,6 +586,48 @@
 
 - (void)testRollbarConfig {
     
+    NSString *defaultMutable = [[RollbarMutableConfig new] serializeToJSONString];
+    NSString *defaultImmutable = [[RollbarConfig new] serializeToJSONString];
+    XCTAssertTrue([defaultMutable isEqualToString:defaultImmutable]);
+    
+    RollbarMutableConfig *mutable = [RollbarMutableConfig new];
+    mutable.destination.accessToken = @"test_AT_old";
+    RollbarMutableDeveloperOptions *devOptions = [RollbarMutableDeveloperOptions new];
+    devOptions.payloadLogFile = @"test_PL_old";
+    mutable.developerOptions = devOptions;
+    
+    XCTAssertTrue([mutable.destination.accessToken isEqualToString:@"test_AT_old"]);
+    XCTAssertTrue([mutable.developerOptions.payloadLogFile isEqualToString:@"test_PL_old"]);
+    
+    NSString *content = [mutable serializeToJSONString];
+    XCTAssertNotNil(content);
+    XCTAssertTrue([content containsString:@"test_AT_old"]);
+    XCTAssertTrue([content containsString:@"test_PL_old"]);
+    
+    mutable.destination.accessToken = @"test_AT";
+    mutable.developerOptions.payloadLogFile = @"test_PL";
+    
+    XCTAssertTrue([mutable.destination.accessToken isEqualToString:@"test_AT"]);
+    XCTAssertTrue([mutable.developerOptions.payloadLogFile isEqualToString:@"test_PL"]);
+    
+    content = [mutable serializeToJSONString];
+    XCTAssertNotNil(content);
+    XCTAssertTrue([content containsString:@"test_AT"]);
+    XCTAssertTrue([content containsString:@"test_PL"]);
+    XCTAssertTrue(![content containsString:@"test_AT_old"]);
+    XCTAssertTrue(![content containsString:@"test_PL_old"]);
+
+    RollbarConfig *immutable = [mutable copy];
+
+    XCTAssertTrue([immutable.destination.accessToken isEqualToString:@"test_AT"]);
+    XCTAssertTrue([immutable.developerOptions.payloadLogFile isEqualToString:@"test_PL"]);
+    
+    content = [immutable serializeToJSONString];
+    XCTAssertNotNil(content);
+    XCTAssertTrue([content containsString:@"test_AT"]);
+    XCTAssertTrue([content containsString:@"test_PL"]);
+    XCTAssertTrue(![content containsString:@"test_AT_old"]);
+    XCTAssertTrue(![content containsString:@"test_PL_old"]);
 }
 
 - (void)testPerformanceExample {

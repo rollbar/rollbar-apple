@@ -298,7 +298,7 @@
     [[RollbarScrubbingOptions alloc] initWithEnabled:YES
                                          scrubFields:@[@"one", @"two"]
                                       safeListFields:@[@"two", @"three", @"four"]
-     ];
+    ];
     RollbarTelemetryOptions *dto = [[RollbarTelemetryOptions alloc] initWithEnabled:YES
                                                                          captureLog:YES
                                                                 captureConnectivity:YES
