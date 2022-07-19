@@ -48,22 +48,30 @@ static void uncaughtExceptionHandler(NSException * _Nonnull exception);
 + (void)initWithConfiguration:(nonnull RollbarConfig *)configuration
                crashCollector:(nullable id<RollbarCrashCollector>)crashCollector;
 
-#pragma mark - Shared/global notifier
-
-/// The shared singleton logger.
-+ (nonnull RollbarLogger *)currentLogger;
-
 #pragma mark - Configuration
 
 /// The shared Rollbar master configuration.
-+ (nullable RollbarMutableConfig *)currentConfiguration;
++ (nullable RollbarConfig *)configuration;
 
 /// Updates with a shared configuration.
 /// @param configuration a new Rollbar configuration
 + (void)updateConfiguration:(nonnull RollbarConfig *)configuration;
 
-/// Forces fundamental configuration update
-+ (void)reapplyConfiguration;
+
+// TODO: remove this method...
+//+ (nullable RollbarMutableConfig *)currentConfiguration;
+
+
+// TODO: remove this method...
+//+ (void)reapplyConfiguration;
+
+#pragma mark - Shared/global notifier
+
+// TODO: remove this method...
+//+ (nonnull RollbarLogger *)currentLogger;
+
+
+
 
 #pragma mark - Logging methods
 

@@ -35,21 +35,21 @@ static void uncaughtExceptionHandler(NSException * _Nonnull exception) {
 
 @implementation Rollbar
 
-static RollbarLogger *logger = nil;
-static RollbarTelemetryOptionsObserver *telemetryOptionsObserver = nil;
-static id<RollbarCrashCollector> crashCollector = nil;
-static RollbarCrashProcessor *crashProcessor = nil;
+//static RollbarLogger *logger = nil;
+//static RollbarTelemetryOptionsObserver *telemetryOptionsObserver = nil;
+//static id<RollbarCrashCollector> crashCollector = nil;
+//static RollbarCrashProcessor *crashProcessor = nil;
 
-+ (void)initialize {
-    
-    if (self == [Rollbar class]) {
-        
-        telemetryOptionsObserver = [RollbarTelemetryOptionsObserver new];
-    }
-    
-    //[[RollbarSession sharedInstance] registerApplicationHooks];
-    
-}
+//+ (void)initialize {
+//
+//    if (self == [Rollbar class]) {
+//
+//        telemetryOptionsObserver = [RollbarTelemetryOptionsObserver new];
+//    }
+//
+//    //[[RollbarSession sharedInstance] registerApplicationHooks];
+//
+//}
 
 + (void)initWithAccessToken:(NSString *)accessToken {
     
@@ -86,143 +86,131 @@ static RollbarCrashProcessor *crashProcessor = nil;
               configuration:(nullable RollbarConfig *)configuration
              crashCollector:(nullable id<RollbarCrashCollector>)crashCollector {
 
-    if (logger) {
+    RollbarMutableConfig *config = configuration ? [configuration mutableCopy] : [RollbarMutableConfig new];
+    if (accessToken && accessToken.length > 0) {
         
-        RollbarSdkLog(@"Rollbar has already been initialized.");
-    } else {
-        
-        RollbarMutableConfig *config = configuration ? [configuration mutableCopy] : [RollbarMutableConfig new];
-        if (accessToken && accessToken.length > 0) {
-            
-            config.destination.accessToken = accessToken;
-        }
-        
-        //[[RollbarThread sharedInstance] setReportingRate:config.loggingOptions.maximumReportsPerMinute];
-        
-        [Rollbar updateConfiguration:config];
-
-        if (crashCollector) {
-            
-            crashProcessor = [[RollbarCrashProcessor alloc] init];
-            [crashCollector collectCrashReportsWithObserver:crashProcessor];
-        }
-        
-        RollbarCrashReportCheck crashRepoertCheck = ^() {
-            
-            BOOL result = NO;
-            if (crashProcessor.totalProcessedReports > 0) {
-                
-                result = YES;
-            }
-            return result;
-        };
-        [[RollbarSession sharedInstance] enableOomMonitoring:config.loggingOptions.enableOomDetection
-                                              withCrashCheck:crashRepoertCheck];
+        config.destination.accessToken = accessToken;
     }
+
+    [[RollbarInfrastructure sharedInstance] configureWith:config
+                                        andCrashCollector:crashCollector];
 }
 
-+ (RollbarConfig *)currentConfiguration {
++ (RollbarConfig *)configuration {
     
-    return logger.configuration;
-}
-
-+ (RollbarLogger *)currentLogger {
-    
-    return logger;
+    return [RollbarInfrastructure sharedInstance].configuration;
 }
 
 + (void)updateConfiguration:(RollbarConfig *)configuration {
-    
-    NSUInteger oldReportingRate = 0;
-    
-    if (logger) {
-        oldReportingRate = logger.configuration.loggingOptions.maximumReportsPerMinute;
-        [logger updateConfiguration:configuration];
-    }
-    else {
-        logger = [[RollbarLogger alloc] initWithConfiguration:configuration];
-    }
-    
-//    if (oldReportingRate != configuration.loggingOptions.maximumReportsPerMinute) {
-//        [logger updateReportingRate:configuration.loggingOptions.maximumReportsPerMinute];
+
+    [[RollbarInfrastructure sharedInstance] configureWith:configuration
+                                        andCrashCollector:nil];
+
+//    NSUInteger oldReportingRate = 0;
+//
+//    if (logger) {
+//        oldReportingRate = logger.configuration.loggingOptions.maximumReportsPerMinute;
+//        [logger updateConfiguration:configuration];
 //    }
-    
-    if (configuration && configuration.telemetry) {
-        
-        [[RollbarTelemetry sharedInstance] configureWithOptions:configuration.telemetry];
-    }
+//    else {
+//        logger = [[RollbarLogger alloc] initWithConfiguration:configuration];
+//    }
+//
+////    if (oldReportingRate != configuration.loggingOptions.maximumReportsPerMinute) {
+////        [logger updateReportingRate:configuration.loggingOptions.maximumReportsPerMinute];
+////    }
+//
+//    if (configuration && configuration.telemetry) {
+//
+//        [[RollbarTelemetry sharedInstance] configureWithOptions:configuration.telemetry];
+//    }
 }
 
-+ (void)reapplyConfiguration {
-    
-    RollbarConfig *config = Rollbar.currentConfiguration;
-    if (nil != config) {
-        [Rollbar updateConfiguration:config];
-    }
-}
+#pragma mark - Legacy methods to remove
+
+// TODO: remove this method...
+//+ (RollbarConfig *)currentConfiguration {
+//
+//    return logger.configuration;
+//}
+
+// TODO: remove this method...
+//+ (RollbarLogger *)currentLogger {
+//
+//    return logger;
+//}
+
+// TODO: remove this method...
+//+ (void)reapplyConfiguration {
+//    
+//    RollbarConfig *config = Rollbar.currentConfiguration;
+//    if (nil != config) {
+//        [Rollbar updateConfiguration:config];
+//    }
+//}
 
 #pragma mark - Logging methods
 
 + (void)logCrashReport:(NSString *)crashReport {
     
-    [logger logCrashReport:crashReport];
+    [[RollbarInfrastructure sharedInstance].logger logCrashReport:crashReport];
 }
 
 + (void)log:(RollbarLevel)level
     message:(NSString *)message {
 
-    [logger log:level
-        message:message
-           data:nil
-        context:nil];
+    [[RollbarInfrastructure sharedInstance].logger log:level
+                                               message:message
+                                                  data:nil
+                                               context:nil];
 }
 
 + (void)log:(RollbarLevel)level
   exception:(NSException *)exception {
 
-    [logger log:level
-      exception:exception
-           data:nil
-        context:nil];
+    [[RollbarInfrastructure sharedInstance].logger log:level
+                                             exception:exception
+                                                  data:nil
+                                               context:nil];
 }
 
 + (void)log:(RollbarLevel)level
       error:(NSError *)error {
     
-    [logger log:level
-          error:error
-           data:nil
-        context:nil];
+    [[RollbarInfrastructure sharedInstance].logger log:level
+                                                 error:error
+                                                  data:nil
+                                               context:nil];
 }
 
 + (void)log:(RollbarLevel)level
     message:(NSString *)message
        data:(NSDictionary<NSString *, NSObject *> *)data {
     
-    [logger log:level
-        message:message
-           data:data
-        context:nil];
+    [[RollbarInfrastructure sharedInstance].logger log:level
+                                               message:message
+                                                  data:data
+                                               context:nil];
 }
 
 + (void)log:(RollbarLevel)level
   exception:(NSException *)exception
        data:(NSDictionary<NSString *, NSObject *> *)data {
     
-    [logger log:level
-      exception:exception
-           data:data
-        context:nil];
+    [[RollbarInfrastructure sharedInstance].logger log:level
+                                             exception:exception
+                                                  data:data
+                                               context:nil];
 }
 
 + (void)log:(RollbarLevel)level
       error:(NSError *)error
        data:(NSDictionary<NSString *, id> *)data {
     
-    [logger log:level
-          error:error
-           data:data
-        context:nil];
+    [[RollbarInfrastructure sharedInstance].logger log:level
+                                                 error:error
+                                                  data:data
+                                               context:nil];
 }
 
 + (void)log:(RollbarLevel)level
@@ -230,10 +218,10 @@ static RollbarCrashProcessor *crashProcessor = nil;
        data:(NSDictionary<NSString *, NSObject *> *)data
     context:(NSString *)context {
 
-    [logger log:level
-        message:message
-           data:data
-        context:context];
+    [[RollbarInfrastructure sharedInstance].logger log:level
+                                               message:message
+                                                  data:data
+                                               context:context];
 }
 
 + (void)log:(RollbarLevel)level
@@ -241,10 +229,10 @@ static RollbarCrashProcessor *crashProcessor = nil;
        data:(NSDictionary<NSString *, NSObject *> *)data
     context:(NSString *)context {
 
-    [logger log:level
-      exception:exception
-           data:data
-        context:context];
+    [[RollbarInfrastructure sharedInstance].logger log:level
+                                             exception:exception
+                                                  data:data
+                                               context:context];
 }
 
 + (void)log:(RollbarLevel)level
@@ -252,10 +240,10 @@ static RollbarCrashProcessor *crashProcessor = nil;
        data:(NSDictionary<NSString *, id> *)data
     context:(NSString *)context {
     
-    [logger log:level
-          error:error
-           data:data
-        context:context];
+    [[RollbarInfrastructure sharedInstance].logger log:level
+                                                 error:error
+                                                  data:data
+                                               context:context];
 }
 
 #pragma mark - Convenience logging methods
@@ -497,11 +485,13 @@ static RollbarCrashProcessor *crashProcessor = nil;
 + (void)sendJsonPayload:(NSData *)payload {
 
     [[RollbarThread sharedInstance] sendPayload:payload
-                                    usingConfig:[Rollbar currentConfiguration]
+                                    usingConfig:[Rollbar configuration]
     ];
 }
 
+
 #pragma mark - Telemetry API
+
 
 #pragma mark - Dom
 

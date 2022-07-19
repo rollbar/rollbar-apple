@@ -6,6 +6,7 @@
 #import "RollbarNotifierFiles.h"
 #import "RollbarCrashProcessor.h"
 #import "RollbarSession.h"
+#import "RollbarTelemetry.h"
 //#import "RollbarLoggerRegistry.h"
 
 @implementation RollbarInfrastructure {
@@ -84,7 +85,9 @@
 
     [[RollbarSession sharedInstance] enableOomMonitoring:config.loggingOptions.enableOomDetection
                                           withCrashCheck:crashReportCheck];
-    
+
+    [[RollbarTelemetry sharedInstance] configureWithOptions:config.telemetry];
+
     RollbarSdkLog(@"%@ is configured with this RollbarConfig instance: \n%@ \nand crash collector %@",
                   [RollbarInfrastructure rollbar_objectClassName],
                   config,
