@@ -17,12 +17,11 @@
     [super setUp];
 
     [RollbarLogger clearSdkDataStore];
-
-    if (!Rollbar.currentConfiguration) {
-        [Rollbar initWithAccessToken: [RollbarTestHelper getRollbarPayloadsAccessToken]];
-        Rollbar.currentConfiguration.destination.environment = [RollbarTestHelper getRollbarEnvironment];
-    }
-
+    
+    RollbarMutableConfig *config =
+    [RollbarMutableConfig configWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
+                                    environment:[RollbarTestHelper getRollbarEnvironment]];
+    [Rollbar updateConfiguration:config];
 }
 
 - (void)tearDown {
@@ -32,8 +31,9 @@
 
 - (void)testTelemetryCapture {
     
-    Rollbar.currentConfiguration.telemetry.enabled = YES;
-    [Rollbar reapplyConfiguration];
+    RollbarMutableConfig *config = [[Rollbar configuration] mutableCopy];
+    config.telemetry.enabled = YES;
+    [Rollbar updateConfiguration:config];
     
     [Rollbar recordNavigationEventForLevel:RollbarLevel_Info from:@"from" to:@"to"];
     [Rollbar recordConnectivityEventForLevel:RollbarLevel_Info status:@"status"];
@@ -78,7 +78,9 @@
 
 - (void)testErrorReportingWithTelemetry {
     
-    Rollbar.currentConfiguration.telemetry.enabled = YES;
+    RollbarMutableConfig *config = [[Rollbar configuration] mutableCopy];
+    config.telemetry.enabled = YES;
+    [Rollbar updateConfiguration:config];
 
     [Rollbar recordNavigationEventForLevel:RollbarLevel_Info from:@"SomeNavigationSource" to:@"SomeNavigationDestination"];
     [Rollbar recordConnectivityEventForLevel:RollbarLevel_Info status:@"SomeConnectivityStatus"];
@@ -130,11 +132,12 @@
 
 - (void)testTelemetryViewEventScrubbing {
     
-    Rollbar.currentConfiguration.telemetry.enabled = YES;
-    Rollbar.currentConfiguration.telemetry.viewInputsScrubber.enabled = YES;
-    [Rollbar.currentConfiguration.telemetry.viewInputsScrubber addScrubField:@"password"];
-    [Rollbar.currentConfiguration.telemetry.viewInputsScrubber addScrubField:@"pin"];
-    [Rollbar reapplyConfiguration];
+    RollbarMutableConfig *config = [[Rollbar configuration] mutableCopy];
+    config.telemetry.enabled = YES;
+    config.telemetry.viewInputsScrubber.enabled = YES;
+    [config.telemetry.viewInputsScrubber addScrubField:@"password"];
+    [config.telemetry.viewInputsScrubber addScrubField:@"pin"];
+    [Rollbar updateConfiguration:config];
 
     [Rollbar recordViewEventForLevel:RollbarLevel_Debug
                              element:@"password"
@@ -154,9 +157,10 @@
 
 - (void)testRollbarLog {
     
-    Rollbar.currentConfiguration.telemetry.enabled = YES;
-    Rollbar.currentConfiguration.telemetry.captureLog = YES;
-    [Rollbar reapplyConfiguration];
+    RollbarMutableConfig *config = [[Rollbar configuration] mutableCopy];
+    config.telemetry.enabled = YES;
+    config.telemetry.captureLog = YES;
+    [Rollbar updateConfiguration:config];
 
     [RollbarTelemetry.sharedInstance clearAllData];
     [NSThread sleepForTimeInterval:2.0f];

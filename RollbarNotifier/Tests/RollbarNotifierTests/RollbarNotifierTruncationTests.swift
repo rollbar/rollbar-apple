@@ -14,10 +14,9 @@ final class RollbarNotifierTruncationTests: XCTestCase {
         RollbarTestUtil.clearLogFile();
         RollbarTestUtil.clearTelemetryFile();
         
-        //if Rollbar.currentConfiguration() != nil {
-        Rollbar.initWithAccessToken(RollbarTestHelper.getRollbarPayloadsAccessToken());
-        Rollbar.currentConfiguration()?.destination.environment = RollbarTestHelper.getRollbarEnvironment();
-        //}
+        let config = RollbarMutableConfig(accessToken: RollbarTestHelper.getRollbarPayloadsAccessToken(),
+                                          environment: RollbarTestHelper.getRollbarEnvironment());
+        Rollbar.updateConfiguration(config);
     }
     
     override func tearDown() {
@@ -26,7 +25,7 @@ final class RollbarNotifierTruncationTests: XCTestCase {
     }
     
     func testDefaultRollbarConfiguration() {
-        NSLog("%@", Rollbar.currentConfiguration()!);
+        NSLog("%@", Rollbar.configuration());
     }
 
     func testMeasureTotalEncodingBytes() {

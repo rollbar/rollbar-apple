@@ -13,13 +13,9 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
         RollbarTestUtil.clearLogFile();
         RollbarTestUtil.clearTelemetryFile();
         
-        if Rollbar.currentConfiguration() != nil {
-            print("Info: Rollbar already pre-configured!");
-        }
-        else {
-            Rollbar.initWithAccessToken(RollbarTestHelper.getRollbarPayloadsAccessToken());
-            Rollbar.currentConfiguration()?.destination.environment = RollbarTestHelper.getRollbarEnvironment();
-        }
+        let config = RollbarMutableConfig(accessToken: RollbarTestHelper.getRollbarPayloadsAccessToken(),
+                                          environment: RollbarTestHelper.getRollbarEnvironment());
+        Rollbar.updateConfiguration(config);
     }
     
     override func tearDown() {
@@ -88,9 +84,9 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
         RollbarTestUtil.clearLogFile();
         RollbarTestUtil.clearTelemetryFile();
 
-        Rollbar.currentConfiguration()?.telemetry.enabled = true;
-        
-        Rollbar.updateConfiguration(Rollbar.currentConfiguration()!);
+        let config = Rollbar.configuration().mutableCopy();
+        config.telemetry.enabled = true;
+        Rollbar.updateConfiguration(config);
         
         Rollbar.recordNavigationEvent(
             for: .info,
@@ -178,7 +174,9 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
         RollbarTestUtil.clearLogFile();
         RollbarTestUtil.clearTelemetryFile();
 
-        Rollbar.currentConfiguration()!.telemetry.enabled = true;
+        let config = Rollbar.configuration().mutableCopy();
+        config.telemetry.enabled = true;
+        Rollbar.updateConfiguration(config);
 
         Rollbar.recordNavigationEvent(
             for: .info,
@@ -267,12 +265,12 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
 
     func testTelemetryViewEventScrubbing() {
         
-        Rollbar.currentConfiguration()?.telemetry.enabled = true;
-        Rollbar.currentConfiguration()?.telemetry.viewInputsScrubber.enabled = true;
-        Rollbar.currentConfiguration()?.telemetry.viewInputsScrubber.scrubFields.add("password");
-        Rollbar.currentConfiguration()?.telemetry.viewInputsScrubber.scrubFields.add("pin");
-        
-        Rollbar.updateConfiguration(Rollbar.currentConfiguration()!);
+        let config = Rollbar.configuration().mutableCopy();
+        config.telemetry.enabled = true;
+        config.telemetry.viewInputsScrubber.enabled = true;
+        config.telemetry.viewInputsScrubber.scrubFields.add("password");
+        config.telemetry.viewInputsScrubber.scrubFields.add("pin");        
+        Rollbar.updateConfiguration(config);
         
         Rollbar.recordViewEvent(
             for: .debug,

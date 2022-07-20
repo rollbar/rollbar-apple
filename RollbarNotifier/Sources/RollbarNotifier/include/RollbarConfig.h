@@ -18,6 +18,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class RollbarMutableConfig;
+
 /// Immutable Rollbar configuration structured model
 @interface RollbarConfig : RollbarDTO {
     
@@ -76,6 +78,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Modifies payload data before sending
 @property (nullable, atomic, readonly, copy) RollbarData *(^modifyRollbarData)(RollbarData *rollbarData);
+
+#pragma mark - overrides
+
+- (nonnull RollbarMutableConfig *) mutableCopy;
 
 @end
 
@@ -158,6 +164,10 @@ NS_DESIGNATED_INITIALIZER;
 /// @param version notifier version
 - (void)setNotifierName:(nullable NSString *)name
                 version:(nullable NSString *)version;
+
+#pragma mark - overrides
+
+- (nonnull RollbarConfig *) copy;
 
 @end
 

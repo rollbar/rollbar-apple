@@ -36,8 +36,10 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         RollbarTestUtil.clearLogFile();
 
         var expectedFlag = false;
-        Rollbar.currentConfiguration()?.telemetry.enabled = expectedFlag;
-        Rollbar.reapplyConfiguration();
+        
+        let config = Rollbar.configuration().mutableCopy();
+        config.telemetry.enabled = expectedFlag;
+        Rollbar.updateConfiguration(config);
 
         XCTAssertTrue(RollbarTelemetry.sharedInstance().enabled == expectedFlag,
                       "RollbarTelemetry.sharedInstance.enabled is expected to be NO."
@@ -48,8 +50,8 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
             Rollbar.recordErrorEvent(for: .debug, message: "test");
         }
 
-        Rollbar.currentConfiguration()?.loggingOptions.maximumReportsPerMinute = max;
-        Rollbar.reapplyConfiguration();
+        config.loggingOptions.maximumReportsPerMinute = max;
+        Rollbar.updateConfiguration(config);
 
         var telemetryCollection = RollbarTelemetry.sharedInstance().getAllData()!;
         XCTAssertTrue(telemetryCollection.count == 0,
@@ -57,8 +59,8 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
                       );
 
         expectedFlag = true;
-        Rollbar.currentConfiguration()?.telemetry.enabled = expectedFlag;
-        Rollbar.reapplyConfiguration();
+        config.telemetry.enabled = expectedFlag;
+        Rollbar.updateConfiguration(config);
 
         XCTAssertTrue(RollbarTelemetry.sharedInstance().enabled == expectedFlag,
                       "RollbarTelemetry.sharedInstance.enabled is expected to be YES."
@@ -67,8 +69,8 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
             Rollbar.recordErrorEvent(for: .debug, message: "test");
         }
 
-        Rollbar.currentConfiguration()?.loggingOptions.maximumReportsPerMinute = max;
-        Rollbar.reapplyConfiguration();
+        config.loggingOptions.maximumReportsPerMinute = max;
+        Rollbar.updateConfiguration(config);
 
         telemetryCollection = RollbarTelemetry.sharedInstance().getAllData()!;
         XCTAssertTrue(telemetryCollection.count == max,
@@ -81,17 +83,18 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         
         RollbarTestUtil.clearLogFile();
         
-        Rollbar.currentConfiguration()?.telemetry.enabled = true;
-        Rollbar.updateConfiguration(Rollbar.currentConfiguration()!);
-        
+        let config = Rollbar.configuration().mutableCopy();
+        config.telemetry.enabled = true;
+        Rollbar.updateConfiguration(config);
+
         let testCount = 10;
         let max:UInt = 5;
         for _ in 0..<testCount {
             Rollbar.recordErrorEvent(for: .debug, message: "test");
         }
-        Rollbar.currentConfiguration()?.telemetry.maximumTelemetryData = max;
-        Rollbar.updateConfiguration(Rollbar.currentConfiguration()!);
-        
+        config.telemetry.maximumTelemetryData = max;
+        Rollbar.updateConfiguration(config);
+
         Rollbar.debugMessage("Test");
         
         var logItem:String?;
@@ -109,15 +112,16 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
     func testScrubViewInputsTelemetryConfig() {
 
         var expectedFlag = false;
-        Rollbar.currentConfiguration()?.telemetry.viewInputsScrubber.enabled = expectedFlag;
-        Rollbar.updateConfiguration(Rollbar.currentConfiguration()!);
+        let config = Rollbar.configuration().mutableCopy();
+        config.telemetry.viewInputsScrubber.enabled = expectedFlag;
+        Rollbar.updateConfiguration(config);
         XCTAssertTrue(RollbarTelemetry.sharedInstance().scrubViewInputs == expectedFlag,
                       "RollbarTelemetry.sharedInstance.scrubViewInputs is expected to be NO."
                       );
         
         expectedFlag = true;
-        Rollbar.currentConfiguration()?.telemetry.viewInputsScrubber.enabled = expectedFlag;
-        Rollbar.updateConfiguration(Rollbar.currentConfiguration()!);
+        config.telemetry.viewInputsScrubber.enabled = expectedFlag;
+        Rollbar.updateConfiguration(config);
         XCTAssertTrue(RollbarTelemetry.sharedInstance().scrubViewInputs == expectedFlag,
                       "RollbarTelemetry.sharedInstance.scrubViewInputs is expected to be YES."
                       );
@@ -130,10 +134,11 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         let element1 = "password";
         let element2 = "pin";
         
-        Rollbar.currentConfiguration()?.telemetry.viewInputsScrubber.scrubFields.add(element1);
-        Rollbar.currentConfiguration()?.telemetry.viewInputsScrubber.scrubFields.add(element2);
+        let config = Rollbar.configuration().mutableCopy();
+        config.telemetry.viewInputsScrubber.scrubFields.add(element1);
+        config.telemetry.viewInputsScrubber.scrubFields.add(element2);
         
-        Rollbar.updateConfiguration(Rollbar.currentConfiguration()!);
+        Rollbar.updateConfiguration(config);
 
         XCTAssertTrue(
             RollbarTelemetry.sharedInstance().viewInputsToScrub!.count == (RollbarMutableScrubbingOptions().scrubFields.count + 2),
@@ -148,10 +153,10 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
             "RollbarTelemetry.sharedInstance.viewInputsToScrub is expected to conatin \(element2)"
             );
         
-        Rollbar.currentConfiguration()?.telemetry.viewInputsScrubber.removeScrubField(element1);
-        Rollbar.currentConfiguration()?.telemetry.viewInputsScrubber.removeScrubField(element2);
+        config.telemetry.viewInputsScrubber.removeScrubField(element1);
+        config.telemetry.viewInputsScrubber.removeScrubField(element2);
         
-        Rollbar.updateConfiguration(Rollbar.currentConfiguration()!);
+        Rollbar.updateConfiguration(config);
 
         XCTAssertTrue(
             RollbarTelemetry.sharedInstance().viewInputsToScrub!.count == RollbarMutableScrubbingOptions().scrubFields.count,
@@ -169,7 +174,8 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
                       );
 
 
-        Rollbar.currentConfiguration()?.developerOptions.enabled = false;
+        let config = Rollbar.configuration().mutableCopy();
+        config.developerOptions.enabled = false;
         //Rollbar.currentLogger().configuration!.developerOptions.enabled = false;
         Rollbar.debugMessage("Test1");
         RollbarTestUtil.waitForPesistenceToComplete();
@@ -178,7 +184,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
                       "logItems count is expected to be 0. Actual value is \(logItems.count)"
                       );
 
-        Rollbar.currentConfiguration()?.developerOptions.enabled = true;
+        config.developerOptions.enabled = true;
         Rollbar.debugMessage("Test2");
         RollbarTestUtil.waitForPesistenceToComplete();
         logItems = RollbarTestUtil.readItemStringsFromLogFile();
@@ -186,7 +192,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
                       "logItems count is expected to be 1. Actual value is \(logItems.count)"
                       );
 
-        Rollbar.currentConfiguration()?.developerOptions.enabled = false;
+        config.developerOptions.enabled = false;
         Rollbar.debugMessage("Test3");
         RollbarTestUtil.waitForPesistenceToComplete();
         logItems = RollbarTestUtil.readItemStringsFromLogFile();
@@ -206,7 +212,8 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         var logItems = RollbarTestUtil.readItemStringsFromLogFile();
         XCTAssertTrue(logItems.count == 1, "Log item count should be 1");
 
-        Rollbar.currentConfiguration()!.checkIgnoreRollbarData = { rollbarData in return true; };
+        let config = Rollbar.configuration().mutableCopy();
+        config.checkIgnoreRollbarData = { rollbarData in return true; };
         Rollbar.debugMessage("Ignore this");
         logItems = RollbarTestUtil.readItemStringsFromLogFile();
         XCTAssertTrue(logItems.count == 1, "Log item count should be 1");
@@ -216,11 +223,13 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         
         RollbarTestUtil.clearLogFile();
         
+        let config = Rollbar.configuration().mutableCopy();
+
         let host = "testHost";
         let root = "testRoot";
         let branch = "testBranch";
         let codeVersion = "testCodeVersion";
-        Rollbar.currentConfiguration()?.setServerHost(host, root: root, branch: branch, codeVersion: codeVersion);
+        config.setServerHost(host, root: root, branch: branch, codeVersion: codeVersion);
         
         Rollbar.debugMessage("test");
 
@@ -248,12 +257,15 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         
         RollbarTestUtil.clearLogFile();
 
+        let config = Rollbar.configuration().mutableCopy();
+
         let newMsg = "Modified message";
-        Rollbar.currentConfiguration()?.modifyRollbarData = {rollbarData in
+        config.modifyRollbarData = {rollbarData in
             rollbarData.body.message?.body = newMsg;
             rollbarData.body.message?.addKeyed("body2", string: newMsg)
             return rollbarData;
         };
+        Rollbar.updateConfiguration(config);
         Rollbar.debugMessage("test");
 
         RollbarTestUtil.waitForPesistenceToComplete();
@@ -275,12 +287,14 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         
         RollbarTestUtil.clearLogFile();
 
+        let config = Rollbar.configuration().mutableCopy();
+
         let scrubedContent = "*****";
         let keys = ["client.ios.app_name", "client.ios.os_version", "body.message.body"];
         
         // define scrub fields:
         for key in keys {
-            Rollbar.currentConfiguration()?.dataScrubber.addScrubField(key);
+            config.dataScrubber.addScrubField(key);
         }
         
         Rollbar.debugMessage("test");
@@ -300,7 +314,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
 
         // define scrub whitelist fields (the same as the scrub fields - to counterbalance them):
         for key in keys {
-            Rollbar.currentConfiguration()?.dataScrubber.addScrubSafeListField(key);
+            config.dataScrubber.addScrubSafeListField(key);
         }
 
         Rollbar.debugMessage("test");
@@ -323,8 +337,9 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         
         RollbarTestUtil.clearLogFile();
         
-        XCTAssertNotNil(Rollbar.currentConfiguration());
-        let config = Rollbar.currentConfiguration()!;
+        XCTAssertNotNil(Rollbar.configuration());
+        
+        let config = Rollbar.configuration().mutableCopy();
         let person = config.person;
         XCTAssertNotNil(person);
         
@@ -333,7 +348,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         person.email = "EMAIL";
         
         let personJson =
-        Rollbar.currentConfiguration()?.person.serializeToJSONString();
+        config.person.serializeToJSONString();
         XCTAssertNotNil(personJson, "Json serialization works.");
         let expectedPersonJson =
         "{\n  \"email\" : \"EMAIL\",\n  \"id\" : \"ID\",\n  \"username\" : \"USERNAME\"\n}";
@@ -362,18 +377,19 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         
         RollbarTestUtil.clearLogFile();
         
-        XCTAssertNotNil(Rollbar.currentConfiguration());
-        let config = Rollbar.currentConfiguration()!;
+        XCTAssertNotNil(Rollbar.configuration());
+        
+        let config = Rollbar.configuration().mutableCopy();
         let person = config.person;
         XCTAssertNotNil(person);
         
-        Rollbar.currentConfiguration()!.setPersonId("ID",
-                                                    username: "USERNAME",
-                                                    email: "EMAIL"
+        config.setPersonId("ID",
+                           username: "USERNAME",
+                           email: "EMAIL"
         );
         
         let personJson =
-        Rollbar.currentConfiguration()?.person.serializeToJSONString();
+        config.person.serializeToJSONString();
         XCTAssertNotNil(personJson, "Json serialization works.");
         let expectedPersonJson =
         "{\n  \"email\" : \"EMAIL\",\n  \"id\" : \"ID\",\n  \"username\" : \"USERNAME\"\n}";

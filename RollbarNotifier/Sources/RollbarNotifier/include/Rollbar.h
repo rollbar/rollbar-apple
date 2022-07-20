@@ -51,7 +51,7 @@ static void uncaughtExceptionHandler(NSException * _Nonnull exception);
 #pragma mark - Configuration
 
 /// The shared Rollbar master configuration.
-+ (nullable RollbarConfig *)configuration;
++ (nonnull RollbarConfig *)configuration;
 
 /// Updates with a shared configuration.
 /// @param configuration a new Rollbar configuration

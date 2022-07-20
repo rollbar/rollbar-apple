@@ -18,9 +18,12 @@
     
     [RollbarLogger clearSdkDataStore];
     
-    if (!Rollbar.currentConfiguration) {
-        [Rollbar initWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]];
-        Rollbar.currentConfiguration.destination.environment = [RollbarTestHelper getRollbarEnvironment];
+    if (![Rollbar configuration]) {
+        RollbarMutableConfig *config =
+        [RollbarMutableConfig configWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
+                                        environment:[RollbarTestHelper getRollbarEnvironment]];
+
+        [Rollbar initWithConfiguration:config];
     }
 }
 
