@@ -53,7 +53,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Time interval for auto-collecting memtory stats
 /// @note 0.0 means no collection!
-@property (atomic, readonly) NSTimeInterval memoryStatsAutocollectionInterval; //[sec]
+@property (nonatomic, readonly) NSTimeInterval memoryStatsAutocollectionInterval; //[sec]
 
 @end
 
@@ -84,7 +84,7 @@ NS_DESIGNATED_INITIALIZER;
 
 /// Time interval for auto-collecting memtory stats
 /// @note 0.0 means no collection!
-@property (atomic, readwrite) NSTimeInterval memoryStatsAutocollectionInterval; //[sec]
+@property (nonatomic, readwrite) NSTimeInterval memoryStatsAutocollectionInterval; //[sec]
 
 @end
 

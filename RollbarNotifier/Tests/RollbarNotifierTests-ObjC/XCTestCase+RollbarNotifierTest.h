@@ -7,7 +7,7 @@
 
 #import <XCTest/XCTest.h>
 
-@class RollbarConfig;
+@class RollbarMutableConfig;
 @class RollbarPayloadFactory;
 @class RollbarPayload;
 
@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (nonnull RollbarPayloadFactory *)getPayloadFactory_Live_Default;
 
-- (nonnull RollbarConfig*) getConfig_Live_Default;
+- (nonnull RollbarMutableConfig*) getConfig_Live_Default;
 
 - (nonnull NSString *)getCrashReportMock;
 - (nonnull NSString *)getMessageMock;

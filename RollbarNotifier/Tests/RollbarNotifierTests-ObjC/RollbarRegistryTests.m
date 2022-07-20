@@ -35,7 +35,7 @@
     RollbarRegistry *registry = [RollbarRegistry new];
     XCTAssertEqual(0, registry.totalDestinationRecords);
     
-    RollbarConfig *config = [RollbarConfig configWithAccessToken:@"AT1"
+    RollbarConfig *config = [RollbarConfig mutableConfigWithAccessToken:@"AT1"
                                                      environment:@"Env1"];
     
     RollbarDestinationRecord *record = [registry getRecordForConfig:config];

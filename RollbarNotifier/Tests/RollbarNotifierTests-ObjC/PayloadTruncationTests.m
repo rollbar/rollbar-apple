@@ -18,13 +18,15 @@
     
     [RollbarLogger clearSdkDataStore];
     
-    if (![Rollbar configuration]) {
-        RollbarMutableConfig *config =
-        [RollbarMutableConfig configWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
-                                        environment:[RollbarTestHelper getRollbarEnvironment]];
+    RollbarMutableConfig *config =
+    [RollbarMutableConfig mutableConfigWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
+                                           environment:[RollbarTestHelper getRollbarEnvironment]];
+    
+    [Rollbar initWithConfiguration:config];
 
-        [Rollbar initWithConfiguration:config];
-    }
+    [NSThread sleepForTimeInterval:5.0f];
+    NSArray *items = [RollbarLogger readLogItemsFromStore];
+    XCTAssertEqual(items.count, 0);
 }
 
 - (void)tearDown {
@@ -184,6 +186,10 @@
 
 - (void)testPayloadTruncation {
 
+    //[NSThread sleepForTimeInterval:5.0f];
+    NSArray *items = [RollbarLogger readLogItemsFromStore];
+    XCTAssertEqual(items.count, 0);
+
     @try {
         NSArray *crew = [NSArray arrayWithObjects:
                          @"Dave",
@@ -198,7 +204,7 @@
     
     [RollbarLogger flushRollbarThread];
 
-    NSArray *items = [RollbarLogger readLogItemsFromStore];
+    items = [RollbarLogger readLogItemsFromStore];
     
     for (id payload in items) {
         NSMutableArray *frames = [payload mutableArrayValueForKeyPath:@"body.trace.frames"];
@@ -242,14 +248,12 @@
         [Rollbar criticalMessage:simulatedLongString
                             data:@{@"extra_truncatable_data": simulatedLongString}
          ];
+        NSArray *items = [RollbarLogger readLogItemsFromStore];
+        XCTAssertTrue(items.count > 0);
 
-        [NSThread sleepForTimeInterval:1.0f];
-
-        // What is this doing?
-//        [Rollbar.currentNotifier updateReportingRate:10];
-//        [Rollbar.currentNotifier updateReportingRate:60];
-//        [Rollbar.currentNotifier updateReportingRate:20];
-//        [Rollbar.currentNotifier updateReportingRate:60];
+        [NSThread sleepForTimeInterval:5.0f];
+        items = [RollbarLogger readLogItemsFromStore];
+        XCTAssertEqual(items.count, 0);
     }
 }
 

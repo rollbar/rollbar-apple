@@ -32,9 +32,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Factory Methods
 
-+ (nonnull instancetype)configWithAccessToken:(nonnull NSString *)token;
++ (nonnull RollbarConfig *)configWithAccessToken:(nonnull NSString *)token;
 
-+ (nonnull instancetype)configWithAccessToken:(nonnull NSString *)token environment:(nonnull NSString *)env;
++ (nonnull RollbarConfig *)configWithAccessToken:(nonnull NSString *)token
+                                     environment:(nonnull NSString *)env;
+
++ (nonnull RollbarMutableConfig *)mutableConfigWithAccessToken:(nonnull NSString *)token;
+
++ (nonnull RollbarMutableConfig *)mutableConfigWithAccessToken:(nonnull NSString *)token
+                                                   environment:(nonnull NSString *)env;
 
 #pragma mark - properties
 /// Destination related settings

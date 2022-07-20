@@ -16,11 +16,28 @@
 
     [super setUp];
     
+//    [RollbarLogger clearSdkDataStore];
+//
+//    if (!Rollbar.configuration) {
+//        [Rollbar initWithAccessToken:@""];
+//    }
+    
+    
+    
+    
     [RollbarLogger clearSdkDataStore];
     
-    if (!Rollbar.configuration) {
-        [Rollbar initWithAccessToken:@""];
-    }
+    RollbarMutableConfig *config =
+    [RollbarMutableConfig mutableConfigWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
+                                           environment:[RollbarTestHelper getRollbarEnvironment]];
+    //config.telemetry.memoryStatsAutocollectionInterval = 0.0;
+    
+    [Rollbar initWithConfiguration:config];
+    
+    //[NSThread sleepForTimeInterval:10.0f];
+    NSArray *items = [RollbarLogger readLogItemsFromStore];
+    XCTAssertEqual(items.count, 0);
+
 }
 
 - (void)tearDown {

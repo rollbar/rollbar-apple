@@ -54,7 +54,7 @@ static NSString * const DFK_CUSTOM = @"custom";
 
 #pragma mark - factory methods
 
-+ (nonnull instancetype)configWithAccessToken:(nonnull NSString *)token {
++ (nonnull RollbarConfig *)configWithAccessToken:(nonnull NSString *)token {
     
     NSAssert(token, @"Access token must be initialized!");
     NSAssert(token.length > 0, @"Access token must not be empty string!");
@@ -65,13 +65,37 @@ static NSString * const DFK_CUSTOM = @"custom";
     return config;
 }
 
-+ (nonnull instancetype)configWithAccessToken:(nonnull NSString *)token environment:(nonnull NSString *)env {
++ (nonnull RollbarConfig *)configWithAccessToken:(nonnull NSString *)token
+                                     environment:(nonnull NSString *)env {
     
     NSAssert(env, @"Environment must be initialized!");
     NSAssert(env.length > 0, @"Environment must not be empty string!");
 
     RollbarConfig *config = [[RollbarConfig alloc] initWithAccessToken:token
                                                            environment:env];
+    
+    return config;
+}
+
++ (nonnull RollbarMutableConfig *)mutableConfigWithAccessToken:(nonnull NSString *)token {
+    
+    NSAssert(token, @"Access token must be initialized!");
+    NSAssert(token.length > 0, @"Access token must not be empty string!");
+    
+    RollbarMutableConfig *config = [[RollbarMutableConfig alloc] initWithAccessToken:token
+                                                                         environment:nil];
+    
+    return config;
+}
+
++ (nonnull RollbarMutableConfig *)mutableConfigWithAccessToken:(nonnull NSString *)token
+                                                   environment:(nonnull NSString *)env {
+    
+    NSAssert(env, @"Environment must be initialized!");
+    NSAssert(env.length > 0, @"Environment must not be empty string!");
+    
+    RollbarMutableConfig *config = [[RollbarMutableConfig alloc] initWithAccessToken:token
+                                                                         environment:env];
     
     return config;
 }
@@ -218,6 +242,12 @@ static NSString * const DFK_CUSTOM = @"custom";
 
 @synthesize modifyRollbarData = _modifyRollbarData;
 
+#pragma mark - overrides
+
+- (nonnull RollbarMutableConfig *) mutableCopy {
+    
+    return [self mutableCopyWithZone:nil];
+}
 
 //#pragma mark - RollbarPersistent protocol
 //
@@ -401,5 +431,13 @@ static NSString * const DFK_CUSTOM = @"custom";
 - (void)setCustomData:(NSMutableDictionary<NSString *, id> *)value {
     [self setDictionary:value forKey:DFK_CUSTOM];
 }
+
+#pragma mark - overrides
+
+- (nonnull RollbarConfig *) copy {
+    
+    return [self copyWithZone:nil];
+}
+
 
 @end

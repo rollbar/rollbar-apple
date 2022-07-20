@@ -54,8 +54,9 @@
     XCTAssertNotNil(items);
     XCTAssertEqual(0, items.count);
     
-    RollbarMutableConfig *config = [RollbarMutableConfig configWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
-                                                                   environment:[RollbarTestHelper getRollbarEnvironment]
+    RollbarMutableConfig *config =
+    [RollbarMutableConfig mutableConfigWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
+                                           environment:[RollbarTestHelper getRollbarEnvironment]
     ];
     config.developerOptions.transmit = NO;
     config.developerOptions.logPayload = YES;
@@ -97,8 +98,8 @@
     XCTAssertEqual(0, items.count);
     
     RollbarMutableConfig *config =
-    [RollbarMutableConfig configWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
-                                    environment:[RollbarTestHelper getRollbarEnvironment]];
+    [RollbarMutableConfig mutableConfigWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
+                                           environment:[RollbarTestHelper getRollbarEnvironment]];
     config.developerOptions.transmit = YES;
     config.developerOptions.logPayload = YES;
     [[RollbarInfrastructure sharedInstance] configureWith:config];

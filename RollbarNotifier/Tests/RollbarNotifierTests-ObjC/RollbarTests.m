@@ -18,21 +18,18 @@
 
     [RollbarLogger clearSdkDataStore];
 
-    if (!Rollbar.configuration) {
-
-        RollbarMutableConfig *config = [[RollbarMutableConfig alloc] init];
-        config.destination.accessToken = [RollbarTestHelper getRollbarPayloadsAccessToken];
-        config.destination.environment = [RollbarTestHelper getRollbarEnvironment];
-        config.developerOptions.transmit = YES;
-        config.developerOptions.logPayload = YES;
-        config.loggingOptions.maximumReportsPerMinute = 5000;
-        // for the stress test specifically:
-        config.telemetry.enabled = YES;
-        config.loggingOptions.captureIp = RollbarCaptureIpType_Full;
-        NSLog(@"%@", config)
-
-        [Rollbar initWithConfiguration:config];
-    }
+    RollbarMutableConfig *config = [[RollbarMutableConfig alloc] init];
+    config.destination.accessToken = [RollbarTestHelper getRollbarPayloadsAccessToken];
+    config.destination.environment = [RollbarTestHelper getRollbarEnvironment];
+    config.developerOptions.transmit = YES;
+    config.developerOptions.logPayload = YES;
+    config.loggingOptions.maximumReportsPerMinute = 5000;
+    // for the stress test specifically:
+    config.telemetry.enabled = YES;
+    config.loggingOptions.captureIp = RollbarCaptureIpType_Full;
+    NSLog(@"%@", config)
+    
+    [Rollbar initWithConfiguration:config];
 }
 
 - (void)tearDown {

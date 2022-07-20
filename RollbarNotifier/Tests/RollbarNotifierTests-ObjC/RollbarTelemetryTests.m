@@ -19,8 +19,8 @@
     [RollbarLogger clearSdkDataStore];
     
     RollbarMutableConfig *config =
-    [RollbarMutableConfig configWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
-                                    environment:[RollbarTestHelper getRollbarEnvironment]];
+    [RollbarMutableConfig mutableConfigWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
+                                           environment:[RollbarTestHelper getRollbarEnvironment]];
     [Rollbar updateConfiguration:config];
 }
 

@@ -15,8 +15,10 @@ final class RollbarNotifierLoggerTests: XCTestCase {
         RollbarTestUtil.clearTelemetryFile();
         RollbarTestUtil.waitForPesistenceToComplete();
         
-        let config = RollbarMutableConfig(accessToken: RollbarTestHelper.getRollbarPayloadsAccessToken(),
-                                          environment: RollbarTestHelper.getRollbarEnvironment());
+        let config = RollbarMutableConfig.mutableConfig(
+            withAccessToken: RollbarTestHelper.getRollbarPayloadsAccessToken(),
+            environment: RollbarTestHelper.getRollbarEnvironment()
+        );
         config.developerOptions.transmit = true;
         config.developerOptions.logPayload = true;
         config.loggingOptions.maximumReportsPerMinute = 5000;

@@ -13,8 +13,10 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
         RollbarTestUtil.clearLogFile();
         RollbarTestUtil.clearTelemetryFile();
         
-        let config = RollbarMutableConfig(accessToken: RollbarTestHelper.getRollbarPayloadsAccessToken(),
-                                          environment: RollbarTestHelper.getRollbarEnvironment());
+        let config = RollbarConfig.mutableConfig(
+            withAccessToken: RollbarTestHelper.getRollbarPayloadsAccessToken(),
+            environment: RollbarTestHelper.getRollbarEnvironment()
+        );
         Rollbar.updateConfiguration(config);
     }
     

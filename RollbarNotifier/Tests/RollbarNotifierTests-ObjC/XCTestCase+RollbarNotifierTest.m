@@ -21,11 +21,11 @@
     return factory;
 }
 
-- (nonnull RollbarConfig*) getConfig_Live_Default {
+- (nonnull RollbarMutableConfig*) getConfig_Live_Default {
     
-    RollbarConfig *config =
-    [RollbarConfig configWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
-                             environment:[RollbarTestHelper getRollbarEnvironment]];
+    RollbarMutableConfig *config =
+    [RollbarConfig mutableConfigWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
+                                    environment:[RollbarTestHelper getRollbarEnvironment]];
     
     return config;
 }
