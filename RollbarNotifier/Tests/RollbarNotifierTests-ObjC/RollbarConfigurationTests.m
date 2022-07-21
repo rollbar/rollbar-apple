@@ -16,25 +16,15 @@
 
     [super setUp];
     
-//    [RollbarLogger clearSdkDataStore];
-//
-//    if (!Rollbar.configuration) {
-//        [Rollbar initWithAccessToken:@""];
-//    }
-    
-    
-    
-    
     [RollbarLogger clearSdkDataStore];
     
     RollbarMutableConfig *config =
     [RollbarMutableConfig mutableConfigWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
                                            environment:[RollbarTestHelper getRollbarEnvironment]];
-    //config.telemetry.memoryStatsAutocollectionInterval = 0.0;
-    
     [Rollbar initWithConfiguration:config];
     
-    //[NSThread sleepForTimeInterval:10.0f];
+    [NSThread sleepForTimeInterval:1.0f];
+    [RollbarLogger clearSdkDataStore];
     NSArray *items = [RollbarLogger readLogItemsFromStore];
     XCTAssertEqual(items.count, 0);
 
@@ -425,6 +415,9 @@
     config.telemetry.enabled = YES;
     config.telemetry.captureLog = YES;
     [Rollbar updateConfiguration:config];
+    [RollbarLogger flushRollbarThread];
+    [RollbarLogger clearSdkDataStore];
+
     // The following line ensures the captureLogAsTelemetryData setting is flushed through the internal queue
     [[RollbarTelemetry sharedInstance] getAllData];
     NSLog(logMsg);
