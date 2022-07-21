@@ -59,6 +59,8 @@
     [self assertValidConfiguration:config];
     
     if (self->_configuration
+        && self->_configuration.modifyRollbarData == config.modifyRollbarData
+        && self->_configuration.checkIgnoreRollbarData == config.checkIgnoreRollbarData
         && (NSOrderedSame == [[config serializeToJSONString] compare:[self->_configuration serializeToJSONString]])
         ) {
         return self; // no need to reconfigure with an identical configuration...

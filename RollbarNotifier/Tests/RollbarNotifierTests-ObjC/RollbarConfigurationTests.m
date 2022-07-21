@@ -4,6 +4,7 @@
 #if !TARGET_OS_WATCH
 #import <XCTest/XCTest.h>
 
+@import RollbarCommon;
 @import RollbarNotifier;
 
 @interface RollbarConfigurationTests : XCTestCase
@@ -352,7 +353,7 @@
     
     NSString *newMsg = @"Modified message";
     RollbarMutableConfig *config = [[Rollbar configuration] mutableCopy];
-    config.modifyRollbarData = ^RollbarData *(RollbarData *payloadData) {
+    config.modifyRollbarData = ^RollbarData *_Nonnull(RollbarData *payloadData) {
 //        [payloadData setValue:newMsg forKeyPath:@"body.message.body"];
 //        [payloadData setValue:newMsg forKeyPath:@"body.message.body2"];
         payloadData.body.message.body = newMsg;

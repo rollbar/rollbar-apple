@@ -20,11 +20,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class RollbarMutableConfig;
 
+typedef BOOL (^RollbarCheckIgnoreData)(RollbarData *rollbarData);
+typedef RollbarData *_Nonnull(^RollbarModifyData)(RollbarData *rollbarData);
+
+
 /// Immutable Rollbar configuration structured model
 @interface RollbarConfig : RollbarDTO {
     
-    BOOL (^_checkIgnoreRollbarData)(RollbarData *rollbarData);
-    RollbarData *(^_modifyRollbarData)(RollbarData *rollbarData);
+    RollbarCheckIgnoreData _checkIgnoreRollbarData;
+    RollbarModifyData _modifyRollbarData;
 
     //TODO: to be removed:
     BOOL _isRootConfiguration;
@@ -80,10 +84,10 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Payload Content Related
 
 /// Decides whether or not to send provided payload data. Returns true to ignore, false to send
-@property (nullable, atomic, readonly, copy) BOOL (^checkIgnoreRollbarData)(RollbarData *rollbarData);
+@property (nullable, atomic, readonly, copy) RollbarCheckIgnoreData checkIgnoreRollbarData;
 
 /// Modifies payload data before sending
-@property (nullable, atomic, readonly, copy) RollbarData *(^modifyRollbarData)(RollbarData *rollbarData);
+@property (nullable, atomic, readonly, copy) RollbarModifyData modifyRollbarData;
 
 #pragma mark - overrides
 
@@ -139,10 +143,10 @@ NS_DESIGNATED_INITIALIZER;
 #pragma mark - Payload Content Related
 
 /// Decides whether or not to send provided payload data. Returns true to ignore, false to send
-@property (nullable, atomic, readwrite, copy) BOOL (^checkIgnoreRollbarData)(RollbarData *rollbarData);
+@property (nullable, atomic, readwrite, copy) RollbarCheckIgnoreData checkIgnoreRollbarData;
 
 /// Modifies payload data before sending
-@property (nullable, atomic, readwrite, copy) RollbarData *(^modifyRollbarData)(RollbarData *rollbarData);
+@property (nullable, atomic, readwrite, copy) RollbarModifyData modifyRollbarData;
 
 #pragma mark - Convenience Methods
 
