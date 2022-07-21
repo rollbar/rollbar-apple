@@ -17,7 +17,7 @@
     // Put teardown code here. This method is called after the invocation of each test method in the class.
 }
 
-- (void)testRollbarInfrastructureNotConfiguredException {
+- (void)test1_RollbarInfrastructureNotConfiguredException {
     
 //    XCTAssertThrowsSpecificNamed([RollbarInfrastructure sharedInstance].configuration,
 //                                 NSException,
@@ -44,7 +44,7 @@
                      );
 }
 
-- (void)testBasics {
+- (void)test2_Basics {
     
     [RollbarLogger clearSdkDataStore];
     NSArray *items = [RollbarLogger readLogItemsFromStore];
@@ -62,21 +62,23 @@
     config.developerOptions.logPayload = YES;
     config.loggingOptions.maximumReportsPerMinute = 180;
     [[RollbarInfrastructure sharedInstance] configureWith:config];
+    
+    [NSThread sleepForTimeInterval:1.0f];
+    items = [RollbarLogger readPayloadsFromSdkLog];
+    XCTAssertNotNil(items);
+    int expectedCount = items.count;
+
     [[RollbarInfrastructure sharedInstance].logger log:RollbarLevel_Critical
                                                message:@"RollbarInfrastructure basics test!"
                                                   data:nil
                                                context:nil
     ];
     
-
-    [NSThread sleepForTimeInterval:0.30f];
-    
-//    items = [RollbarLogger readLogItemsFromStore];
-//    XCTAssertNotNil(items);
-//    XCTAssertEqual(0, items.count);
+    [NSThread sleepForTimeInterval:1.0f];
+    expectedCount++;
     items = [RollbarLogger readPayloadsFromSdkLog];
     XCTAssertNotNil(items);
-    XCTAssertEqual(1, items.count);
+    XCTAssertEqual(expectedCount, items.count);
 
     [RollbarLogger clearSdkDataStore];
     items = [RollbarLogger readLogItemsFromStore];
@@ -87,7 +89,7 @@
     XCTAssertEqual(0, items.count);
 }
 
-- (void)testLive {
+- (void)test3_Live {
     
     [RollbarLogger clearSdkDataStore];
     NSArray *items = [RollbarLogger readLogItemsFromStore];
@@ -103,24 +105,24 @@
     config.developerOptions.transmit = YES;
     config.developerOptions.logPayload = YES;
     [[RollbarInfrastructure sharedInstance] configureWith:config];
+    
+    
+    [NSThread sleepForTimeInterval:3.0f];
+    items = [RollbarLogger readPayloadsFromSdkLog];
+    XCTAssertNotNil(items);
+    int expectedCount = items.count;
+    
     [[RollbarInfrastructure sharedInstance].logger log:RollbarLevel_Critical
                                                message:@"RollbarInfrastructure basics test!"
                                                   data:nil
                                                context:nil
     ];
-    
-    
-//    id<RollbarLogger> logger = [RollbarInfrastructure newLogger];
-//    [logger log:RollbarLevel_Critical message:@"From Logger!" data:nil context:nil];
-    
-    [NSThread sleepForTimeInterval:5.0f];
-    
-    //    items = [RollbarLogger readLogItemsFromStore];
-    //    XCTAssertNotNil(items);
-    //    XCTAssertEqual(0, items.count);
+        
+    [NSThread sleepForTimeInterval:1.0f];
+    expectedCount++;
     items = [RollbarLogger readPayloadsFromSdkLog];
     XCTAssertNotNil(items);
-    XCTAssertEqual(1, items.count);
+    XCTAssertEqual(expectedCount, items.count);
 
     [RollbarLogger clearSdkDataStore];
     items = [RollbarLogger readLogItemsFromStore];

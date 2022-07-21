@@ -55,7 +55,7 @@
     RollbarPayloadPostReply *reply = [RollbarPayloadPostReply redReply];
     NSDate *now = [NSDate date];
     XCTAssertEqual([now earlierDate:reply.nextPostTime], now);
-    XCTAssertTrue([reply.nextPostTime timeIntervalSinceDate:now] <= 1);
+    XCTAssertTrue([reply.nextPostTime timeIntervalSinceDate:now] <= reply.remainingSeconds);
 }
 
 - (void)testPerformanceExample {
