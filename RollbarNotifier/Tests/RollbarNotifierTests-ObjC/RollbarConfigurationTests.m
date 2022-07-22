@@ -37,6 +37,19 @@
     [super tearDown];
 }
 
+- (BOOL)rollbarStoreContains:(nonnull NSString *)string {
+    
+    [RollbarLogger flushRollbarThread];
+    NSArray *logItems = [RollbarLogger readLogItemsFromStore];
+    for (NSDictionary *item in logItems) {
+        RollbarPayload *payload = [[RollbarPayload alloc] initWithDictionary:item];
+        if ([[payload serializeToJSONString] containsString:string]) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
 - (void)testConfigCloning {
 
     RollbarMutableConfig *rc = [RollbarMutableConfig new];
@@ -227,36 +240,18 @@
     //Rollbar.currentLogger.configuration.developerOptions.enabled = NO;
     [Rollbar updateConfiguration:config];
     [Rollbar debugMessage:@"Test1"];
-    [RollbarLogger flushRollbarThread];
-
-    logItems = [RollbarLogger readLogItemsFromStore];
-    XCTAssertTrue(logItems.count == 0,
-                  @"logItems count is expected to be 0. Actual value is %lu",
-                  (unsigned long) logItems.count
-                  );
-
+    XCTAssertTrue(![self rollbarStoreContains:@"Test1"]);
+    
     config.developerOptions.enabled = YES;
     [Rollbar updateConfiguration:config];
     [Rollbar debugMessage:@"Test2"];
-    [RollbarLogger flushRollbarThread];
-
-    logItems = [RollbarLogger readLogItemsFromStore];
-    XCTAssertTrue(logItems.count == 1,
-                  @"logItems count is expected to be 1. Actual value is %lu",
-                  (unsigned long) logItems.count
-                  );
+    XCTAssertTrue([self rollbarStoreContains:@"Test2"]);
 
     config.developerOptions.enabled = NO;
     [Rollbar updateConfiguration:config];
     [Rollbar debugMessage:@"Test3"];
-    [RollbarLogger flushRollbarThread];
+    XCTAssertTrue(![self rollbarStoreContains:@"Test3"]);
 
-    logItems = [RollbarLogger readLogItemsFromStore];
-    XCTAssertTrue(logItems.count == 1,
-                  @"logItems count is expected to be 1. Actual value is %lu",
-                  (unsigned long) logItems.count
-                  );
-    
     [RollbarLogger clearSdkDataStore];
 }
 
@@ -279,7 +274,7 @@
     [RollbarLogger flushRollbarThread];
 
     NSArray *logItems = [RollbarLogger readLogItemsFromStore];
-    NSDictionary *item = logItems[0];
+    NSDictionary *item = logItems[logItems.count - 1];
     NSArray *telemetryData = [item valueForKeyPath:@"body.telemetry"];
     XCTAssertTrue(telemetryData.count == max,
                   @"Telemetry item count is %lu, should be %lu",
@@ -291,19 +286,15 @@
 - (void)testCheckIgnore {
     
     [Rollbar debugMessage:@"Don't ignore this"];
-    [RollbarLogger flushRollbarThread];
-
-    NSArray *logItems = [RollbarLogger readLogItemsFromStore];
-    XCTAssertTrue(logItems.count == 1, @"Log item count should be 1");
+    XCTAssertTrue([self rollbarStoreContains:@"Don't ignore this"]);
 
     RollbarMutableConfig *config = [[Rollbar configuration] mutableCopy];
     config.checkIgnoreRollbarData = ^BOOL(RollbarData *payloadData) {
         return true;
     };
     [Rollbar updateConfiguration:config];
-    [Rollbar debugMessage:@"Ignore this"];
-    logItems = [RollbarLogger readLogItemsFromStore];
-    XCTAssertTrue(logItems.count == 1, @"Log item count should be 1");
+    [Rollbar debugMessage:@"Must ignore this"];
+    XCTAssertTrue(![self rollbarStoreContains:@"Must ignore this"]);
 }
 
 - (void)testServerData {
@@ -434,8 +425,6 @@
                   telemetryMsg,
                   logMsg
                   );
-    
-    //[NSThread sleepForTimeInterval:3.0f];
 }
 
 @end

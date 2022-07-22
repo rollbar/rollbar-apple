@@ -185,7 +185,7 @@ static NSString *queuedItemsFilePath = nil;
 
 - (void)updateConfiguration:(RollbarConfig *)configuration {
 
-    self.configuration = configuration;
+    self.configuration = [configuration copy];
 }
 
 //- (void)updateAccessToken:(NSString *)accessToken {

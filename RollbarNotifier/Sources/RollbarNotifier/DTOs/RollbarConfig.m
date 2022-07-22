@@ -257,6 +257,31 @@ static NSString * const DFK_CUSTOM = @"custom";
 //- (BOOL)saveToFile:(nonnull NSString *)filePath {
 //}
 
+
+#pragma mark - NSCopying protocol
+
+-(id) copyWithZone: (NSZone *) zone {
+    
+    RollbarConfig *clone = [super copyWithZone:zone];
+    if (clone != self) {
+        clone->_checkIgnoreRollbarData = self->_checkIgnoreRollbarData;
+        clone->_modifyRollbarData = self->_modifyRollbarData;
+    }
+    return clone;
+}
+
+#pragma mark - NSMutableCopying protocol
+
+-(id) mutableCopyWithZone: (NSZone *) zone {
+    
+    RollbarConfig *clone = [super mutableCopyWithZone:zone];
+    if (clone != self) {
+        clone->_checkIgnoreRollbarData = self->_checkIgnoreRollbarData;
+        clone->_modifyRollbarData = self->_modifyRollbarData;
+    }
+    return clone;
+}
+
 @end
 
 @implementation RollbarMutableConfig

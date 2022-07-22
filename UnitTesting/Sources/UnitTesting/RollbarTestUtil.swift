@@ -66,7 +66,7 @@ import RollbarCommon
         }
     }
 
-    @objc public static func readFirstItemStringsFromLogFile() -> String? {
+    @objc public static func readFirstItemStringFromLogFile() -> String? {
         
         let filePath = RollbarTestUtil.getQueuedItemsFilePath();
         let fileReader = RollbarFileReader(filePath: filePath, andOffset: 0);

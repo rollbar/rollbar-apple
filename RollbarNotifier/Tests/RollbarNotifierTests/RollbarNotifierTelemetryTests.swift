@@ -42,7 +42,7 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
         Rollbar.criticalMessage("Must contain memory telemetry!");
         RollbarTestUtil.waitForPesistenceToComplete();
 
-        let logItem = RollbarTestUtil.readFirstItemStringsFromLogFile()!;
+        let logItem = RollbarTestUtil.readFirstItemStringFromLogFile()!;
         let payload = RollbarPayload(jsonString: logItem);
         let telemetryEvents = payload.data.body.telemetry!;
         XCTAssertTrue(telemetryEvents.count > 0);
@@ -125,7 +125,7 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
 
         RollbarTestUtil.waitForPesistenceToComplete();
 
-        let logItem = RollbarTestUtil.readFirstItemStringsFromLogFile()!;
+        let logItem = RollbarTestUtil.readFirstItemStringFromLogFile()!;
         let payload = RollbarPayload(jsonString: logItem);
         let telemetryEvents = payload.data.body.telemetry!;
         XCTAssertTrue(telemetryEvents.count > 0);

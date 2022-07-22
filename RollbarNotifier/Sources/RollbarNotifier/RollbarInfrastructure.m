@@ -61,12 +61,12 @@
     if (self->_configuration
         && self->_configuration.modifyRollbarData == config.modifyRollbarData
         && self->_configuration.checkIgnoreRollbarData == config.checkIgnoreRollbarData
-        && (NSOrderedSame == [[config serializeToJSONString] compare:[self->_configuration serializeToJSONString]])
+        && [[self->_configuration serializeToJSONString] isEqualToString:[config serializeToJSONString]]
         ) {
         return self; // no need to reconfigure with an identical configuration...
     }
     
-    self->_configuration = config;
+    self->_configuration = [config copy];
     self->_logger = nil; //will be created as needed using the current self->_configuration...
     
     RollbarCrashReportCheck crashReportCheck = nil;

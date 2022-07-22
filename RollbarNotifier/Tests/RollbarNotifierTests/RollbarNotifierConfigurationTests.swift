@@ -99,7 +99,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         
         var logItem:String?;
         while (nil == logItem) {
-            logItem = RollbarTestUtil.readFirstItemStringsFromLogFile();
+            logItem = RollbarTestUtil.readFirstItemStringFromLogFile();
             RollbarTestUtil.waitForPesistenceToComplete();
         }
         let payload = RollbarPayload(jsonString: logItem!);
@@ -230,12 +230,14 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         let branch = "testBranch";
         let codeVersion = "testCodeVersion";
         config.setServerHost(host, root: root, branch: branch, codeVersion: codeVersion);
+        Rollbar .updateConfiguration(config);
         
         Rollbar.debugMessage("test");
 
         RollbarTestUtil.waitForPesistenceToComplete();
 
-        let logItem = RollbarTestUtil.readFirstItemStringsFromLogFile()!;
+        let logItems = RollbarTestUtil.readItemStringsFromLogFile();
+        let logItem = logItems[logItems.count - 1];
         let payload = RollbarPayload(jsonString: logItem);
         let server = payload.data.server!;
 
@@ -270,7 +272,8 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
 
         RollbarTestUtil.waitForPesistenceToComplete();
 
-        let logItem = RollbarTestUtil.readFirstItemStringsFromLogFile()!;
+        let logItems = RollbarTestUtil.readItemStringsFromLogFile();
+        let logItem = logItems[logItems.count - 1];
         let payload = RollbarPayload(jsonString: logItem);
         let msg1 = payload.data.body.message!.body;
         let msg2 = payload.data.body.message!.getDataByKey("body2") as! String;
@@ -301,8 +304,9 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         RollbarTestUtil.waitForPesistenceToComplete();
         
         // verify the fields were scrubbed:
-        var logItem = RollbarTestUtil.readFirstItemStringsFromLogFile();
-        var payload = RollbarPayload(jsonString: logItem!);
+        var logItems = RollbarTestUtil.readItemStringsFromLogFile();
+        var logItem = logItems[logItems.count - 1];
+        var payload = RollbarPayload(jsonString: logItem);
         for key in keys {
             let content = payload.data.jsonFriendlyData.value(forKeyPath: key) as! String;
             XCTAssertTrue(
@@ -321,8 +325,9 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         RollbarTestUtil.waitForPesistenceToComplete();
 
         // verify the fields were not scrubbed:
-        logItem = RollbarTestUtil.readFirstItemStringsFromLogFile();
-        payload = RollbarPayload(jsonString: logItem!);
+        logItems = RollbarTestUtil.readItemStringsFromLogFile();
+        logItem = logItems[logItems.count - 1];
+        payload = RollbarPayload(jsonString: logItem);
         for key in keys {
             let content = payload.data.jsonFriendlyData.value(forKeyPath: key) as! String;
             XCTAssertTrue(
@@ -360,7 +365,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         Rollbar.debugMessage("test");
         RollbarTestUtil.waitForPesistenceToComplete();
         // verify the fields were scrubbed:
-        let logItem = RollbarTestUtil.readFirstItemStringsFromLogFile();
+        let logItem = RollbarTestUtil.readFirstItemStringFromLogFile();
         let payload = RollbarPayload(jsonString: logItem!);
         XCTAssertTrue(
             .orderedSame == payload.data.person!.serializeToJSONString()!.compare(expectedPersonJson),
@@ -401,7 +406,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         Rollbar.debugMessage("test");
         RollbarTestUtil.waitForPesistenceToComplete();
         // verify the fields were scrubbed:
-        let logItem = RollbarTestUtil.readFirstItemStringsFromLogFile();
+        let logItem = RollbarTestUtil.readFirstItemStringFromLogFile();
         let payload = RollbarPayload(jsonString: logItem!);
         XCTAssertTrue(
             .orderedSame == payload.data.person!.serializeToJSONString()!.compare(expectedPersonJson),
