@@ -74,35 +74,36 @@
     
     [Rollbar updateConfiguration:config];
     
-    XCTAssertEqual([Rollbar configuration].destination.accessToken,
-                   config.destination.accessToken);
-    XCTAssertEqual([Rollbar configuration].destination.environment,
-                   config.destination.environment);
-    
-    XCTAssertEqual([Rollbar configuration].destination.accessToken,
-                   config.destination.accessToken);
-    XCTAssertEqual([Rollbar configuration].destination.environment,
-                   config.destination.environment);
+    XCTAssertTrue([[Rollbar configuration].destination.accessToken
+                   isEqualToString:config.destination.accessToken]);
+    XCTAssertTrue([[Rollbar configuration].destination.environment
+                   isEqualToString:config.destination.environment]);
     
     // create and configure another notifier:
     config = [RollbarMutableConfig new];
     config.destination.accessToken = @"AT_1";
     config.destination.environment = @"ENV_1";
     RollbarLogger *notifier = [[RollbarLogger alloc] initWithConfiguration:config];
-    XCTAssertTrue([notifier.configuration.destination.accessToken compare:@"AT_1"] == NSOrderedSame);
-    XCTAssertTrue([notifier.configuration.destination.environment compare:@"ENV_1"] == NSOrderedSame);
+    XCTAssertTrue([notifier.configuration.destination.accessToken
+                   isEqualToString:@"AT_1"]);
+    XCTAssertTrue([notifier.configuration.destination.environment
+                   isEqualToString:@"ENV_1"]);
 
     // reconfigure the root notifier:
     config = [[Rollbar configuration] mutableCopy];
     config.destination.accessToken = @"AT_N";
     config.destination.environment = @"ENV_N";
     [Rollbar updateConfiguration:config];
-    XCTAssertTrue([[RollbarInfrastructure sharedInstance].logger.configuration.destination.accessToken compare:@"AT_N"] == NSOrderedSame);
-    XCTAssertTrue([[RollbarInfrastructure sharedInstance].logger.configuration.destination.environment compare:@"ENV_N"] == NSOrderedSame);
+    XCTAssertTrue([[RollbarInfrastructure sharedInstance].logger.configuration.destination.accessToken
+                   isEqualToString:@"AT_N"]);
+    XCTAssertTrue([[RollbarInfrastructure sharedInstance].logger.configuration.destination.environment
+                   isEqualToString:@"ENV_N"]);
 
     // make sure the other notifier is still has its original configuration:
-    XCTAssertTrue([notifier.configuration.destination.accessToken compare:@"AT_1"] == NSOrderedSame);
-    XCTAssertTrue([notifier.configuration.destination.environment compare:@"ENV_1"] == NSOrderedSame);
+    XCTAssertTrue([notifier.configuration.destination.accessToken
+                   isEqualToString:@"AT_1"]);
+    XCTAssertTrue([notifier.configuration.destination.environment
+                   isEqualToString:@"ENV_1"]);
 
     //TODO: to make this test even more valuable we need to make sure the other notifier's payloads
     //      are actually sent to its intended destination. But that is something we will be able to do
