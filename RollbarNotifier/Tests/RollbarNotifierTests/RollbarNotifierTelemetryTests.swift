@@ -40,9 +40,10 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
         
         Thread.sleep(forTimeInterval: 5.0);
         Rollbar.criticalMessage("Must contain memory telemetry!");
-        RollbarTestUtil.waitForPesistenceToComplete();
+        RollbarLogger.flushRollbarThread();
 
-        let logItem = RollbarTestUtil.readFirstItemStringFromLogFile()!;
+        let logItems = RollbarTestUtil.readItemStringsFromLogFile();
+        let logItem = logItems[logItems.count - 1];
         let payload = RollbarPayload(jsonString: logItem);
         let telemetryEvents = payload.data.body.telemetry!;
         XCTAssertTrue(telemetryEvents.count > 0);
@@ -89,7 +90,8 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
         let config = Rollbar.configuration().mutableCopy();
         config.telemetry.enabled = true;
         Rollbar.updateConfiguration(config);
-        
+        RollbarLogger.flushRollbarThread();
+
         Rollbar.recordNavigationEvent(
             for: .info,
             from: "from",
@@ -119,13 +121,12 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
             withData: ["data" : "content"]
         );
 
-        //RollbarTestUtil.waitForPesistenceToComplete();
-        
+        RollbarLogger.flushRollbarThread();
         Rollbar.debugMessage("Test");
+        RollbarLogger.flushRollbarThread();
 
-        RollbarTestUtil.waitForPesistenceToComplete();
-
-        let logItem = RollbarTestUtil.readFirstItemStringFromLogFile()!;
+        let logItems = RollbarTestUtil.readItemStringsFromLogFile();
+        let logItem = logItems[logItems.count - 1];
         let payload = RollbarPayload(jsonString: logItem);
         let telemetryEvents = payload.data.body.telemetry!;
         XCTAssertTrue(telemetryEvents.count > 0);

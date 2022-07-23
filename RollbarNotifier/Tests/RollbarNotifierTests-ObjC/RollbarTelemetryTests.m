@@ -46,7 +46,7 @@
     [RollbarLogger flushRollbarThread];
 
     NSArray *logItems = [RollbarLogger readLogItemsFromStore];
-    NSDictionary *item = logItems[0];
+    NSDictionary *item = logItems[logItems.count - 1];
     NSArray *telemetryData = [item valueForKeyPath:@"body.telemetry"];
     XCTAssertTrue(telemetryData.count > 0);
 

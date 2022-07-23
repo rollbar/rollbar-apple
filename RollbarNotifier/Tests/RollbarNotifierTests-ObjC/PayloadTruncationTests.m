@@ -24,7 +24,8 @@
     
     [Rollbar initWithConfiguration:config];
 
-    [NSThread sleepForTimeInterval:5.0f];
+    [RollbarTestUtil waitForPesistenceToCompleteWithWaitTimeInSeconds:3];
+    [RollbarLogger clearSdkDataStore];
     NSArray *items = [RollbarLogger readLogItemsFromStore];
     XCTAssertEqual(items.count, 0);
 }

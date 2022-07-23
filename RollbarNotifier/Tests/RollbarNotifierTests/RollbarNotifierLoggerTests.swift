@@ -148,16 +148,23 @@ final class RollbarNotifierLoggerTests: XCTestCase {
             }
         }
 
-        RollbarTestUtil.waitForPesistenceToComplete();
+        RollbarLogger.flushRollbarThread();
 
         let items = RollbarTestUtil.readItemStringsFromLogFile();
+        XCTAssertTrue(items.count >= notificationText.count);
+        var count:Int = 0;
         for item in items {
+            if (!item.contains("testing-")) {
+                continue;
+            }
             let payload = RollbarPayload(jsonString: item);
             let level = payload.data.level;
             let message: String? = payload.data.body.message?.body;
             let params = notificationText[RollbarLevelUtil.rollbarLevel(toString: level)]!;
             XCTAssertTrue(message!.compare(params[0] as String) == .orderedSame, "Expects '\(params[0])', got '\(message ?? "")'.");
+            count += 1;
         }
+        XCTAssertEqual(count, notificationText.count);
     }
     
     func testNSErrorReporting() {

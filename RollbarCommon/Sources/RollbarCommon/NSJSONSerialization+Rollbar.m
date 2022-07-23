@@ -57,7 +57,7 @@ NS_ASSUME_NONNULL_BEGIN
         } else if ([obj isKindOfClass:[NSArray class]]) {
             
             [safeData setObject:((NSArray *)obj).mutableCopy forKey:key];
-        } else if ([obj isKindOfClass:[NSNull class]]) {
+        } else if (obj == [NSNull null] || [obj isKindOfClass:[NSNull class]]) {
             
             [safeData setObject:obj forKey:key];
         } else if ([NSJSONSerialization isValidJSONObject:obj]) {
