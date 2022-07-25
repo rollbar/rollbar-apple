@@ -8,29 +8,23 @@
 #import "RollbarTelemetry.h"
 #import "RollbarTelemetryType.h"
 
-@class RollbarConfig;
-@class RollbarLogger;
-@protocol RollbarCrashCollector;
+#import "RollbarCrashCollectorProtocol.h"
+#import "RollbarConfig.h"
+//#import "RollbarLogger.h"
 
-// Macros that help in throwing an exception with its source location metadata included:
-#define __ThrowException(name, reason, class, function, file, line, info) [NSException exceptionWithName:name reason:[NSString stringWithFormat:@"%s:%i (%@:%s) %@", file, line, class, function, reason]  userInfo:info];
-#define ThrowException(name, reason, info) __ThrowException(name, reason, [self class], _cmd, __FILE__, __LINE__, info)
 
-/// Globa;l uncaught exception handler that sends provided exception data to Rollbar via preconfigured RollbarInfrastructure's shared instnace.
-/// @param exception an exception to report to Rolbar
-// Add a call to the: NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
-// to the end of your: -(BOOL)application:didFinishLaunchingWithOptions: method in AppDelegate.
-// Make sure that the [RollbarInfrastructure sharedInstance] was already configured as early as possible within the:
-// -(BOOL)application:didFinishLaunchingWithOptions: method in AppDelegate.
-static void uncaughtExceptionHandler(NSException * _Nonnull exception);
+#pragma mark - Initialization Facade Protocol
 
-@interface Rollbar : NSObject
+/// Rollbar facade initialization protocol
+@protocol RollbarFacadeInitialization
 
-#pragma mark - Class Initializers
+@required
 
 /// Class initializer.
 /// @param accessToken Rollbar project access token
 + (void)initWithAccessToken:(nonnull NSString *)accessToken;
+
+@optional
 
 /// Class initializer.
 /// @param configuration a Rollbar configuration
@@ -47,33 +41,32 @@ static void uncaughtExceptionHandler(NSException * _Nonnull exception);
 /// @param crashCollector a crash collector
 + (void)initWithConfiguration:(nonnull RollbarConfig *)configuration
                crashCollector:(nullable id<RollbarCrashCollector>)crashCollector;
+ @end
 
-#pragma mark - Configuration
+
+#pragma mark - Configuration Facade Protocol
+
+/// Rollbar facade configuration protocol
+@protocol RollbarFacadeConfiguration //<NSObject>
+
+@required
 
 /// The shared Rollbar master configuration.
 + (nonnull RollbarConfig *)configuration;
 
 /// Updates with a shared configuration.
 /// @param configuration a new Rollbar configuration
-+ (void)updateConfiguration:(nonnull RollbarConfig *)configuration;
++ (void)updateWithConfiguration:(nonnull RollbarConfig *)configuration;
+
+@end
 
 
-// TODO: remove this method...
-//+ (nullable RollbarMutableConfig *)currentConfiguration;
+#pragma mark - Logging Facade Protocol
 
+/// Rollbar facade logging protocol
+@protocol RollbarFacadeLogging //<NSObject>
 
-// TODO: remove this method...
-//+ (void)reapplyConfiguration;
-
-#pragma mark - Shared/global notifier
-
-// TODO: remove this method...
-//+ (nonnull RollbarLogger *)currentLogger;
-
-
-
-
-#pragma mark - Logging methods
+@required
 
 /// Logs a crash report
 /// @param crashReport a crash report
@@ -151,7 +144,7 @@ static void uncaughtExceptionHandler(NSException * _Nonnull exception);
        data:(nullable NSDictionary<NSString *, id> *)data
     context:(nullable NSString *)context;
 
-#pragma mark - Convenience logging methods
+@optional
 
 /// Performs debug level logging
 /// @param message a message
@@ -424,14 +417,15 @@ static void uncaughtExceptionHandler(NSException * _Nonnull exception);
                  data:(nullable NSDictionary<NSString *, id> *)data
               context:(nullable NSString *)context;
 
+@end
 
-#pragma mark - Send manually constructed JSON payload
 
-/// Posts a Json payload
-/// @param payload a Json payload
-+ (void)sendJsonPayload:(nonnull NSData *)payload;
+#pragma mark - Telemetry Facade Protocol
 
-#pragma mark - Telemetry API
+/// Rollbar facade telemetry protocol
+@protocol RollbarFacadeTelemetry //<NSObject>
+
+@required
 
 /// Captures a view telemetry event
 /// @param level Rollbar log level
@@ -528,5 +522,53 @@ static void uncaughtExceptionHandler(NSException * _Nonnull exception);
                          withData:(nullable NSDictionary<NSString *, id> *)extraData;
 
 @end
+
+
+#pragma mark - Rollbar Facade Utility Class
+
+/// Rollbar facade utility class
+@interface Rollbar
+: NSObject<RollbarFacadeInitialization, RollbarFacadeConfiguration, RollbarFacadeLogging, RollbarFacadeTelemetry>
+
+#pragma mark - Send manually constructed JSON payload
+
+/// Posts a Json payload
+/// @param payload a Json payload
++ (void)sendJsonPayload:(nonnull NSData *)payload;
+
+#pragma mark - Instantiation blockers
+
++ (nonnull instancetype)new NS_UNAVAILABLE;
++ (nonnull instancetype)allocWithZone:(nullable struct _NSZone *)zone NS_UNAVAILABLE;
++ (nonnull instancetype)alloc NS_UNAVAILABLE;
++ (nullable id)copyWithZone:(nullable struct _NSZone *)zone NS_UNAVAILABLE;
++ (nullable id)mutableCopyWithZone:(nullable struct _NSZone *)zone NS_UNAVAILABLE;
+
+- (nonnull instancetype)init NS_UNAVAILABLE;
+- (void)dealloc NS_UNAVAILABLE;
+- (nonnull id)copy NS_UNAVAILABLE;
+- (nonnull id)mutableCopy NS_UNAVAILABLE;
+
+@end
+
+
+#pragma mark - Exception Raising
+
+// Macros that help in throwing an exception with its source location metadata included:
+#define __ThrowException(name, reason, class, function, file, line, info) [NSException exceptionWithName:name reason:[NSString stringWithFormat:@"%s:%i (%@:%s) %@", file, line, class, function, reason]  userInfo:info];
+#define ThrowException(name, reason, info) __ThrowException(name, reason, [self class], _cmd, __FILE__, __LINE__, info)
+
+
+#pragma mark - Unhandled Exception Handler
+
+/// Globa;l uncaught exception handler that sends provided exception data to Rollbar via preconfigured RollbarInfrastructure's shared instnace.
+/// @param exception an exception to report to Rolbar
+// Add a call to the: NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
+// to the end of your: -(BOOL)application:didFinishLaunchingWithOptions: method in AppDelegate.
+// Make sure that the [RollbarInfrastructure sharedInstance] was already configured as early as possible within the:
+// -(BOOL)application:didFinishLaunchingWithOptions: method in AppDelegate.
+static void uncaughtExceptionHandler(NSException * _Nonnull exception);
+
+
 
 #endif //Rollbar_h

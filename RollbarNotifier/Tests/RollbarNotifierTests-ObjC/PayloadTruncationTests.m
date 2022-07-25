@@ -32,7 +32,7 @@
 
 - (void)tearDown {
     
-    [Rollbar updateConfiguration:[RollbarConfig new]];
+    [Rollbar updateWithConfiguration:[RollbarConfig new]];
     [super tearDown];
 }
 

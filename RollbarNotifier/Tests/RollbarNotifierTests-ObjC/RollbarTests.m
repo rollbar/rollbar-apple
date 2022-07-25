@@ -34,7 +34,7 @@
 
 - (void)tearDown {
     
-    [Rollbar updateConfiguration:[RollbarConfig new]];
+    [Rollbar updateWithConfiguration:[RollbarConfig new]];
     [super tearDown];
 }
 
@@ -72,7 +72,7 @@
     config.destination.accessToken = @"AT_0";
     config.destination.environment = @"ENV_0";
     
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
     
     XCTAssertTrue([[Rollbar configuration].destination.accessToken
                    isEqualToString:config.destination.accessToken]);
@@ -93,7 +93,7 @@
     config = [[Rollbar configuration] mutableCopy];
     config.destination.accessToken = @"AT_N";
     config.destination.environment = @"ENV_N";
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
     XCTAssertTrue([[RollbarInfrastructure sharedInstance].logger.configuration.destination.accessToken
                    isEqualToString:@"AT_N"]);
     XCTAssertTrue([[RollbarInfrastructure sharedInstance].logger.configuration.destination.environment
@@ -119,18 +119,18 @@
     config.developerOptions.transmit = YES;
 
     config.developerOptions.transmit = YES;
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
     [Rollbar criticalMessage:@"Transmission test YES"];
     [NSThread sleepForTimeInterval:2.0f];
 
     config.developerOptions.transmit = NO;
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
     [Rollbar criticalMessage:@"Transmission test NO"];
     [NSThread sleepForTimeInterval:2.0f];
 
     config.developerOptions.transmit = YES;
     //config.enabled = NO;
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
     [Rollbar criticalMessage:@"Transmission test YES2"];
     [NSThread sleepForTimeInterval:2.0f];
     

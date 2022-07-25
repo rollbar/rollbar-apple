@@ -17,11 +17,11 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
             withAccessToken: RollbarTestHelper.getRollbarPayloadsAccessToken(),
             environment: RollbarTestHelper.getRollbarEnvironment()
         );
-        Rollbar.updateConfiguration(config);
+        Rollbar.update(withConfiguration: config);
     }
     
     override func tearDown() {
-        Rollbar.updateConfiguration(RollbarMutableConfig());
+        Rollbar.update(withConfiguration: RollbarMutableConfig());
         super.tearDown();
     }
     
@@ -36,7 +36,7 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
         config.developerOptions.transmit = false;
         config.telemetry.enabled = true;
         config.telemetry.memoryStatsAutocollectionInterval = 0.5;
-        Rollbar.updateConfiguration(config);
+        Rollbar.update(withConfiguration: config);
         
         Thread.sleep(forTimeInterval: 5.0);
         Rollbar.criticalMessage("Must contain memory telemetry!");
@@ -71,7 +71,7 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
         config.telemetry.enabled = true;
         config.telemetry.memoryStatsAutocollectionInterval = 0.5;
 
-        Rollbar.updateConfiguration(config);
+        Rollbar.update(withConfiguration: config);
         
         //let resultingConfig = Rollbar.currentConfiguration();
         Rollbar.criticalMessage("Rollbar will be testing memory telemetry!");
@@ -89,7 +89,7 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
 
         let config = Rollbar.configuration().mutableCopy();
         config.telemetry.enabled = true;
-        Rollbar.updateConfiguration(config);
+        Rollbar.update(withConfiguration: config);
         RollbarLogger.flushRollbarThread();
 
         Rollbar.recordNavigationEvent(
@@ -179,7 +179,7 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
 
         let config = Rollbar.configuration().mutableCopy();
         config.telemetry.enabled = true;
-        Rollbar.updateConfiguration(config);
+        Rollbar.update(withConfiguration: config);
 
         Rollbar.recordNavigationEvent(
             for: .info,
@@ -273,7 +273,7 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
         config.telemetry.viewInputsScrubber.enabled = true;
         config.telemetry.viewInputsScrubber.scrubFields.add("password");
         config.telemetry.viewInputsScrubber.scrubFields.add("pin");        
-        Rollbar.updateConfiguration(config);
+        Rollbar.update(withConfiguration: config);
         
         Rollbar.recordViewEvent(
             for: .debug,

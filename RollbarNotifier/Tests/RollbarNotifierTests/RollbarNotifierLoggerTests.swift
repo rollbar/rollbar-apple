@@ -23,14 +23,14 @@ final class RollbarNotifierLoggerTests: XCTestCase {
         config.developerOptions.logPayload = true;
         config.loggingOptions.maximumReportsPerMinute = 5000;
         config.customData = ["someKey": "someValue", ];
-        Rollbar.updateConfiguration(config);
+        Rollbar.update(withConfiguration: config);
     }
     
     override func tearDown() {
         
         RollbarTestUtil.waitForPesistenceToComplete(waitTimeInSeconds: 2.0);
 
-        Rollbar.updateConfiguration(RollbarMutableConfig());
+        Rollbar.update(withConfiguration: RollbarMutableConfig());
         super.tearDown();
     }
     
@@ -51,7 +51,7 @@ final class RollbarNotifierLoggerTests: XCTestCase {
         config.destination.accessToken = "AT_0";
         config.destination.environment = "ENV_0";
 
-        Rollbar.updateConfiguration(config);
+        Rollbar.update(withConfiguration: config);
         XCTAssertEqual(RollbarInfrastructure.sharedInstance().logger.configuration!.destination.accessToken,
                        config.destination.accessToken);
         XCTAssertEqual(RollbarInfrastructure.sharedInstance().logger.configuration!.destination.environment,
@@ -74,7 +74,7 @@ final class RollbarNotifierLoggerTests: XCTestCase {
         config = Rollbar.configuration().mutableCopy();
         config.destination.accessToken = "AT_N";
         config.destination.environment = "ENV_N";
-        Rollbar.updateConfiguration(config);
+        Rollbar.update(withConfiguration: config);
         XCTAssertTrue(RollbarInfrastructure.sharedInstance().logger.configuration!.destination.accessToken.compare("AT_N") == .orderedSame);
         XCTAssertTrue(RollbarInfrastructure.sharedInstance().logger.configuration!.destination.environment.compare("ENV_N") == .orderedSame);
 
@@ -98,17 +98,17 @@ final class RollbarNotifierLoggerTests: XCTestCase {
         config.developerOptions.transmit = true;
 
         config.developerOptions.transmit = true;
-        Rollbar.updateConfiguration(config);
+        Rollbar.update(withConfiguration: config);
         Rollbar.criticalMessage("Transmission test YES");
         RollbarTestUtil.waitForPesistenceToComplete();
 
         config.developerOptions.transmit = false;
-        Rollbar.updateConfiguration(config);
+        Rollbar.update(withConfiguration: config);
         Rollbar.criticalMessage("Transmission test NO");
         RollbarTestUtil.waitForPesistenceToComplete();
 
         config.developerOptions.transmit = true;
-        Rollbar.updateConfiguration(config);
+        Rollbar.update(withConfiguration: config);
         Rollbar.criticalMessage("Transmission test YES2");
         RollbarTestUtil.waitForPesistenceToComplete();
 

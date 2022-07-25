@@ -101,7 +101,7 @@ static void uncaughtExceptionHandler(NSException * _Nonnull exception) {
     return [RollbarInfrastructure sharedInstance].configuration;
 }
 
-+ (void)updateConfiguration:(RollbarConfig *)configuration {
++ (void)updateWithConfiguration:(RollbarConfig *)configuration {
 
     [[RollbarInfrastructure sharedInstance] configureWith:configuration
                                         andCrashCollector:nil];

@@ -21,11 +21,11 @@
     RollbarMutableConfig *config =
     [RollbarMutableConfig mutableConfigWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
                                            environment:[RollbarTestHelper getRollbarEnvironment]];
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
 }
 
 - (void)tearDown {
-    [Rollbar updateConfiguration:[RollbarConfig new]];
+    [Rollbar updateWithConfiguration:[RollbarConfig new]];
     [super tearDown];
 }
 
@@ -33,7 +33,7 @@
     
     RollbarMutableConfig *config = [[Rollbar configuration] mutableCopy];
     config.telemetry.enabled = YES;
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
     
     [Rollbar recordNavigationEventForLevel:RollbarLevel_Info from:@"from" to:@"to"];
     [Rollbar recordConnectivityEventForLevel:RollbarLevel_Info status:@"status"];
@@ -80,7 +80,7 @@
     
     RollbarMutableConfig *config = [[Rollbar configuration] mutableCopy];
     config.telemetry.enabled = YES;
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
 
     [Rollbar recordNavigationEventForLevel:RollbarLevel_Info from:@"SomeNavigationSource" to:@"SomeNavigationDestination"];
     [Rollbar recordConnectivityEventForLevel:RollbarLevel_Info status:@"SomeConnectivityStatus"];
@@ -137,7 +137,7 @@
     config.telemetry.viewInputsScrubber.enabled = YES;
     [config.telemetry.viewInputsScrubber addScrubField:@"password"];
     [config.telemetry.viewInputsScrubber addScrubField:@"pin"];
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
 
     [Rollbar recordViewEventForLevel:RollbarLevel_Debug
                              element:@"password"
@@ -160,7 +160,7 @@
     RollbarMutableConfig *config = [[Rollbar configuration] mutableCopy];
     config.telemetry.enabled = YES;
     config.telemetry.captureLog = YES;
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
 
     [RollbarTelemetry.sharedInstance clearAllData];
     [NSThread sleepForTimeInterval:2.0f];

@@ -33,7 +33,7 @@
 
 - (void)tearDown {
     
-    [Rollbar updateConfiguration:[RollbarConfig new]];
+    [Rollbar updateWithConfiguration:[RollbarConfig new]];
     [super tearDown];
 }
 
@@ -81,7 +81,7 @@
     for (NSString *key in keys) {
         [config.dataScrubber addScrubField:key];
     }
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
     [Rollbar debugMessage:@"test"];
     
     [RollbarLogger flushRollbarThread];
@@ -104,7 +104,7 @@
     for (NSString *key in keys) {
         [config.dataScrubber addScrubSafeListField:key];
     }
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
     [Rollbar debugMessage:@"test"];
     
     [RollbarLogger flushRollbarThread];
@@ -129,7 +129,7 @@
     BOOL expectedFlag = NO;
     RollbarMutableConfig *config = [[Rollbar configuration] mutableCopy];
     config.telemetry.enabled = expectedFlag;
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
 
     XCTAssertTrue(RollbarTelemetry.sharedInstance.enabled == expectedFlag,
                   @"RollbarTelemetry.sharedInstance.enabled is expected to be NO."
@@ -150,7 +150,7 @@
 
     expectedFlag = YES;
     config.telemetry.enabled = expectedFlag;
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
 
     XCTAssertTrue(RollbarTelemetry.sharedInstance.enabled == expectedFlag,
                   @"RollbarTelemetry.sharedInstance.enabled is expected to be YES."
@@ -174,7 +174,7 @@
     BOOL expectedFlag = NO;
     RollbarMutableConfig *config = [[Rollbar configuration] mutableCopy];
     config.telemetry.viewInputsScrubber.enabled = expectedFlag;
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
 
     XCTAssertTrue(RollbarTelemetry.sharedInstance.scrubViewInputs == expectedFlag,
                   @"RollbarTelemetry.sharedInstance.scrubViewInputs is expected to be NO."
@@ -182,7 +182,7 @@
 
     expectedFlag = YES;
     config.telemetry.viewInputsScrubber.enabled = expectedFlag;
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
 
     XCTAssertTrue(RollbarTelemetry.sharedInstance.scrubViewInputs == expectedFlag,
                   @"RollbarTelemetry.sharedInstance.scrubViewInputs is expected to be YES."
@@ -197,7 +197,7 @@
     RollbarMutableConfig *config = [[Rollbar configuration] mutableCopy];
     [config.telemetry.viewInputsScrubber addScrubField:element1];
     [config.telemetry.viewInputsScrubber addScrubField:element2];
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
 
     XCTAssertTrue(
         RollbarTelemetry.sharedInstance.viewInputsToScrub.count == [RollbarScrubbingOptions new].scrubFields.count + 2,
@@ -216,7 +216,7 @@
     
     [config.telemetry.viewInputsScrubber removeScrubField:element1];
     [config.telemetry.viewInputsScrubber removeScrubField:element2];
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
 
     XCTAssertTrue(
         RollbarTelemetry.sharedInstance.viewInputsToScrub.count == [RollbarScrubbingOptions new].scrubFields.count,
@@ -238,17 +238,17 @@
     RollbarMutableConfig *config = [[Rollbar configuration] mutableCopy];
     config.developerOptions.enabled = NO;
     //Rollbar.currentLogger.configuration.developerOptions.enabled = NO;
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
     [Rollbar debugMessage:@"Test1"];
     XCTAssertTrue(![self rollbarStoreContains:@"Test1"]);
     
     config.developerOptions.enabled = YES;
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
     [Rollbar debugMessage:@"Test2"];
     XCTAssertTrue([self rollbarStoreContains:@"Test2"]);
 
     config.developerOptions.enabled = NO;
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
     [Rollbar debugMessage:@"Test3"];
     XCTAssertTrue(![self rollbarStoreContains:@"Test3"]);
 
@@ -259,7 +259,7 @@
     
     RollbarMutableConfig *config = [[Rollbar configuration] mutableCopy];
     config.telemetry.enabled = YES;
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
 
     int testCount = 10;
     int max = 5;
@@ -268,7 +268,7 @@
     }
 
     config.telemetry.maximumTelemetryData = max;
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
     
     [Rollbar debugMessage:@"Test"];
     [RollbarLogger flushRollbarThread];
@@ -292,7 +292,7 @@
     config.checkIgnoreRollbarData = ^BOOL(RollbarData *payloadData) {
         return true;
     };
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
     [Rollbar debugMessage:@"Must ignore this"];
     XCTAssertTrue(![self rollbarStoreContains:@"Must ignore this"]);
 }
@@ -309,7 +309,7 @@
                                          branch:branch
                                     codeVersion:codeVersion
     ];
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
     [Rollbar debugMessage:@"test"];
 
     [RollbarLogger flushRollbarThread];
@@ -351,7 +351,7 @@
         [payloadData.body.message addKeyed:@"body2" String:newMsg];
         return payloadData;
     };
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
     [Rollbar debugMessage:@"test"];
 
     [RollbarLogger flushRollbarThread];
@@ -381,7 +381,7 @@
     for (NSString *key in keys) {
         [config.dataScrubber addScrubField:key];
     }
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
     [Rollbar debugMessage:@"test"];
 
     [RollbarLogger flushRollbarThread];
@@ -406,7 +406,7 @@
     RollbarMutableConfig *config = [[Rollbar configuration] mutableCopy];
     config.telemetry.enabled = YES;
     config.telemetry.captureLog = YES;
-    [Rollbar updateConfiguration:config];
+    [Rollbar updateWithConfiguration:config];
     [RollbarLogger flushRollbarThread];
     [RollbarLogger clearSdkDataStore];
 

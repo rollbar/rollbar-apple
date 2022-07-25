@@ -18,11 +18,11 @@ final class RollbarNotifierTruncationTests: XCTestCase {
             withAccessToken: RollbarTestHelper.getRollbarPayloadsAccessToken(),
             environment: RollbarTestHelper.getRollbarEnvironment()
         );
-        Rollbar.updateConfiguration(config);
+        Rollbar.update(withConfiguration: config);
     }
     
     override func tearDown() {
-        Rollbar.updateConfiguration(RollbarMutableConfig());
+        Rollbar.update(withConfiguration: RollbarMutableConfig());
         super.tearDown();
     }
     
