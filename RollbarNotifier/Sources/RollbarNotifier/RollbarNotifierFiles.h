@@ -13,6 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - notifier files
 
++ (nonnull NSString * const)payloadsStore;
+
 + (nonnull NSString * const)itemsQueue;
 + (nonnull NSString * const)itemsQueueState;
 

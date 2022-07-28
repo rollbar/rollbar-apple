@@ -1,6 +1,7 @@
 @import Foundation;
 
-@class RollbarConfig;
+#import "RollbarConfig.h"
+#import "RollbarPayload.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -8,6 +9,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Signifies that the thread is active or not.
 @property(atomic) BOOL active;
+
+- (void)persist:(nonnull RollbarPayload *)payload;
 
 - (void)persistPayload:(nonnull NSDictionary *)payload;
 

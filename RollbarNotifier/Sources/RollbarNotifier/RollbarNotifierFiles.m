@@ -2,6 +2,8 @@
 
 static NSString * const PAYLOADS_FILE_NAME = @"rollbar.payloads";
 
+static NSString * const PAYLOADS_STORE_FILE_NAME = @"rollbar.store";
+
 static NSString * const QUEUED_ITEMS_FILE_NAME = @"rollbar.items";
 static NSString * const QUEUED_ITEMS_STATE_FILE_NAME = @"rollbar.state";
 
@@ -13,6 +15,11 @@ static NSString * const APP_QUIT_FILE_NAME = @"rollbar.appquit";
 static NSString * const CONFIG_FILE_NAME = @"rollbar.config";
 
 @implementation RollbarNotifierFiles
+
++ (nonnull NSString * const)payloadsStore {
+    
+    return PAYLOADS_STORE_FILE_NAME;
+}
 
 + (nonnull NSString * const)itemsQueue {
     

@@ -2,21 +2,22 @@
 
 #import "RollbarThread.h"
 #import "RollbarLogger.h"
-#import "RollbarConfig.h"
-#import "RollbarDeveloperOptions.h"
+//#import "RollbarConfig.h"
+//#import "RollbarDeveloperOptions.h"
 #import "RollbarReachability.h"
 #import "RollbarTelemetry.h"
-#import "RollbarTelemetryOptions.h"
+//#import "RollbarTelemetryOptions.h"
 #import "RollbarNotifierFiles.h"
-#import "RollbarPayload.h"
+//#import "RollbarPayload.h"
 #import "RollbarPayloadTruncator.h"
 #import "RollbarData.h"
-#import "RollbarModule.h"
-#import "RollbarDestination.h"
+//#import "RollbarModule.h"
+//#import "RollbarDestination.h"
 #import "RollbarProxy.h"
 #import "RollbarSender.h"
 #import "RollbarPayloadPostReply.h"
 #import "RollbarRegistry.h"
+#import "RollbarPayloadRepository.h"
 
 static NSUInteger MAX_RETRY_COUNT = 5;
 
@@ -53,8 +54,10 @@ static NSUInteger MAX_RETRY_COUNT = 5;
         self->_maxReportsPerMinute = 240;//60;
         self->_registry = [RollbarRegistry new];
         
+#if !TARGET_OS_WATCH
         self->_reachability = nil;
         self->_isNetworkReachable = YES;
+#endif
         self->_nextSendTime = [[NSDate alloc] init];
 
         self.name = [RollbarThread rollbar_objectClassName];//NSStringFromClass([RollbarThread class]);
@@ -142,13 +145,13 @@ static NSUInteger MAX_RETRY_COUNT = 5;
     [data writeToFile:self->_stateFilePath atomically:YES];
 }
 
-- (void)setReportingRate:(NSUInteger)reportsPerMinute {
- 
+//- (void)setReportingRate:(NSUInteger)reportsPerMinute {
+//
 //    NSAssert(reportsPerMinute > 0, @"reportsPerMinute must be greater than zero!");
-//    
+//
 //    BOOL wasExecuting = self.isExecuting;
 //    if (wasExecuting) {
-//        
+//
 //        [self cancel];
 //    }
 //
@@ -157,14 +160,14 @@ static NSUInteger MAX_RETRY_COUNT = 5;
 //    } else {
 //        _maxReportsPerMinute = 60;
 //    }
-//    
+//
 //    self.active = YES;
-//    
+//
 //    if (wasExecuting) {
-//        
+//
 //        [self start];
 //    }
-}
+//}
 
 - (void)run {
     
@@ -187,6 +190,13 @@ static NSUInteger MAX_RETRY_COUNT = 5;
         }
     }
 }
+
+#pragma mark - payload store
+
+- (void)persist:(nonnull RollbarPayload *)payload {
+    
+}
+
 
 #pragma mark - persisting payload items
 
