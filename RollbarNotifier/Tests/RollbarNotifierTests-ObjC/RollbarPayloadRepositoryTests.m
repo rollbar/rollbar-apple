@@ -6,6 +6,9 @@
 //
 
 #import <XCTest/XCTest.h>
+#import "../../Sources/RollbarNotifier/RollbarPayloadRepository.h"
+
+@import UnitTesting;
 
 @interface RollbarPayloadRepositoryTests : XCTestCase
 
@@ -14,14 +17,30 @@
 @implementation RollbarPayloadRepositoryTests
 
 - (void)setUp {
-    // Put setup code here. This method is called before the invocation of each test method in the class.
+
+    [super setUp];
+    
+    [RollbarTestUtil deletePayloadsStoreFile];
+    XCTAssertFalse([RollbarTestUtil checkPayloadsStoreFileExists]);
 }
 
 - (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
+
+    //[RollbarTestUtil deletePayloadsStoreFile];
+
+    [super tearDown];
 }
 
-- (void)testExample {
+- (void)testBasics {
+    
+    XCTAssertFalse([RollbarTestUtil checkPayloadsStoreFileExists]);
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    XCTAssertTrue([RollbarTestUtil checkPayloadsStoreFileExists]);
+    
+    XCTAssertFalse([repo checkIfTableExists_Unknown]);
+    XCTAssertTrue ([repo checkIfTableExists_Destinations]);
+    XCTAssertTrue ([repo checkIfTableExists_Payloads]);
+
     // This is an example of a functional test case.
     // Use XCTAssert and related functions to verify your tests produce the correct results.
 }
