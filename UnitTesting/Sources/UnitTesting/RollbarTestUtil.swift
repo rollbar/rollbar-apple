@@ -10,10 +10,17 @@ import RollbarCommon
 
 @objc public class RollbarTestUtil: NSObject {
     
+    private static let payloadsStore = "rollbar.db";
     private static let queuedItemsFileName = "rollbar.items";
     private static let queuedItemsStateFileName = "rollbar.state";
     private static let telemetryFileName = "rollbar.telemetry";
 
+    private static func getPayloadsStoreFilePath() -> String {
+        let cachesDirectory = RollbarCachesDirectory.directory() ;
+        let filePath = URL(fileURLWithPath: cachesDirectory).appendingPathComponent(payloadsStore);
+        return filePath.path;
+    }
+    
     private static func getQueuedItemsFilePath() -> String {
         let cachesDirectory = RollbarCachesDirectory.directory() ;
         let filePath = URL(fileURLWithPath: cachesDirectory).appendingPathComponent(queuedItemsFileName);
@@ -25,14 +32,26 @@ import RollbarCommon
         let filePath = URL(fileURLWithPath: cachesDirectory).appendingPathComponent(queuedItemsStateFileName);
         return filePath.path;
     }
+    
     private static func getTelemetryFilePath() -> String {
         let cachesDirectory = RollbarCachesDirectory.directory() ;
         let filePath = URL(fileURLWithPath: cachesDirectory).appendingPathComponent(telemetryFileName);
         return filePath.path;
     }
 
-    @objc public static func clearTelemetryFile() {
-        let filePath = RollbarTestUtil.getTelemetryFilePath();
+    @objc public static func checkFileExists(filePath:String!) -> Bool {
+        if ((filePath == nil) || filePath.isEmpty) {
+            return false;
+        }
+        let fileManager = FileManager.default;
+        let fileExists = fileManager.fileExists(atPath: filePath);
+        return fileExists;
+    }
+
+    @objc public static func deleteFile(filePath:String!) {
+        if ((filePath == nil) || filePath.isEmpty) {
+            return;
+        }
         let fileManager = FileManager.default;
         let fileExists = fileManager.fileExists(atPath: filePath);
         if fileExists {
@@ -41,28 +60,47 @@ import RollbarCommon
             } catch {
                 print("Unexpected error: \(error).")
             }
+        }
+    }
+
+    @objc public static func clearFile(filePath:String!) {
+        if ((filePath == nil) || filePath.isEmpty) {
+            return;
+        }
+        let fileManager = FileManager.default;
+        let fileExists = fileManager.fileExists(atPath: filePath);
+        if fileExists {
+            RollbarTestUtil.deleteFile(filePath: filePath);
             fileManager.createFile(atPath: filePath, contents: nil, attributes: nil);
         }
+    }
+
+    @objc public static func checkPayloadsStoreFileExists() -> Bool {
+        let filePath = RollbarTestUtil.getPayloadsStoreFilePath();
+        return RollbarTestUtil.checkFileExists(filePath: filePath);
+    }
+
+    @objc public static func deletePayloadsStoreFile() {
+        let filePath = RollbarTestUtil.getPayloadsStoreFilePath();
+        RollbarTestUtil.deleteFile(filePath: filePath);
+    }
+    
+    @objc public static func clearTelemetryFile() {
+        let filePath = RollbarTestUtil.getTelemetryFilePath();
+        RollbarTestUtil.clearFile(filePath: filePath);
     }
 
     @objc public static func clearLogFile() {
         let itemsStateFilePath = RollbarTestUtil.getQueuedItemsStateFilePath();
         let itemsFilePath = RollbarTestUtil.getQueuedItemsFilePath();
         let fileManager = FileManager.default;
-        do {
-            if fileManager.fileExists(atPath: itemsStateFilePath) {
-                try fileManager.removeItem(atPath: itemsStateFilePath);
-            }
-            if fileManager.fileExists(atPath: itemsFilePath) {
-                try fileManager.removeItem(atPath: itemsFilePath);
-                fileManager.createFile(
-                    atPath: itemsFilePath,
-                    contents: nil,
-                    attributes: nil
-                );
-            }
-        } catch {
-            print("Unexpected error: \(error).")
+        
+        if fileManager.fileExists(atPath: itemsStateFilePath) {
+            RollbarTestUtil.deleteFile(filePath: itemsStateFilePath);
+        }
+        
+        if fileManager.fileExists(atPath: itemsFilePath) {
+            RollbarTestUtil.clearFile(filePath: itemsFilePath);
         }
     }
 
