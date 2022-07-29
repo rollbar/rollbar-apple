@@ -2,7 +2,7 @@
 
 static NSString * const PAYLOADS_FILE_NAME = @"rollbar.payloads";
 
-static NSString * const PAYLOADS_STORE_FILE_NAME = @"rollbar.store";
+static NSString * const PAYLOADS_STORE_FILE_NAME = @"rollbar.db";
 
 static NSString * const QUEUED_ITEMS_FILE_NAME = @"rollbar.items";
 static NSString * const QUEUED_ITEMS_STATE_FILE_NAME = @"rollbar.state";

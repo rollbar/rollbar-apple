@@ -6,6 +6,22 @@
 
 #import "sqlite3.h"
 
+static int checkIfTableExistsCallback(void *info, int columns, char **data, char **column)
+{
+    RollbarSdkLog(@"Columns: %d", columns);
+    for (int i = 0; i < columns; i++) {
+        RollbarSdkLog(@"Column: %s", column[i]);
+        RollbarSdkLog(@"Data: %s", data[i]);
+    }
+    
+    BOOL *answerFlag = (BOOL *)info;
+    if (answerFlag) {
+
+        *answerFlag = (columns > 0) ? YES : NO;
+    }
+    
+    return SQLITE_OK;
+}
 
 @implementation RollbarPayloadRepository {
     
@@ -13,6 +29,10 @@
     NSString *_storePath;
     sqlite3 *_db;
     char *_sqliteErrorMessage;
+    
+    BOOL _tableExists_Destinations;
+    BOOL _tableExists_Payloads;
+    BOOL _tableExists_Unknown;
 }
 
 + (void)initialize {
@@ -115,4 +135,54 @@
         sqlite3_free(sqliteErrorMessage);
     }
 }
+
+- (BOOL)checkIfTableExists_Destinations {
+    
+    BOOL result = [self checkIfTableExists:@"destinations"];
+    return result;
+}
+
+- (BOOL)checkIfTableExists_Payloads {
+    
+    BOOL result = [self checkIfTableExists:@"payloads"];
+    return result;
+}
+
+- (BOOL)checkIfTableExists_Unknown {
+    
+    BOOL result = [self checkIfTableExists:@"unknown"];
+    return result;
+}
+
+
+- (BOOL)checkIfTableExists:(nonnull NSString *)tableName {
+    
+    BOOL *answerFlag = nil;
+    if ([tableName isEqualToString:@"destinations"]) {
+        answerFlag = &(self->_tableExists_Destinations);
+    }
+    else if ([tableName isEqualToString:@"payloads"]) {
+        answerFlag = &(self->_tableExists_Payloads);
+    }
+    else if ([tableName isEqualToString:@"unknown"]) {
+        answerFlag = &(self->_tableExists_Unknown);
+    }
+    else {
+        return NO;
+    }
+    
+    NSString *sql = [NSString stringWithFormat:
+                     @"SELECT name FROM sqlite_master WHERE type='table' AND name='%@'", tableName];
+    char *sqliteErrorMessage;
+    int result = sqlite3_exec(self->_db, [sql UTF8String], checkIfTableExistsCallback, answerFlag, &sqliteErrorMessage);
+    if (result != SQLITE_OK) {
+        
+        RollbarSdkLog(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
+        sqlite3_free(sqliteErrorMessage);
+    }
+    
+    BOOL exists = *answerFlag;
+    return exists;
+}
+
 @end

@@ -24,6 +24,14 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithStore:(nonnull NSString *)storePath
 NS_DESIGNATED_INITIALIZER;
 
+#pragma mark - unit testing helper methods
+
+- (BOOL)checkIfTableExists_Destinations;
+
+- (BOOL)checkIfTableExists_Payloads;
+
+- (BOOL)checkIfTableExists_Unknown;
+
 @end
 
 NS_ASSUME_NONNULL_END
