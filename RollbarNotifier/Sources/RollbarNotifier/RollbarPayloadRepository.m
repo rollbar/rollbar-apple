@@ -23,6 +23,17 @@ static int checkIfTableExistsCallback(void *info, int columns, char **data, char
     return SQLITE_OK;
 }
 
+static int insertDestinationCallback(void *info, int columns, char **data, char **column)
+{
+    RollbarSdkLog(@"Columns: %d", columns);
+    for (int i = 0; i < columns; i++) {
+        RollbarSdkLog(@"Column: %s", column[i]);
+        RollbarSdkLog(@"Data: %s", data[i]);
+    }
+    
+    return SQLITE_OK;
+}
+
 @implementation RollbarPayloadRepository {
     
     @private
@@ -99,16 +110,44 @@ static int checkIfTableExistsCallback(void *info, int columns, char **data, char
 - (void)ensureDestinationsTable {
     
     NSString *sql = [NSString stringWithFormat:
-                     @"CREATE TABLE IF NOT EXISTS destinations (id INTEGER, endpoint TEXT, access_token TEXT)"];
+                     @"CREATE TABLE IF NOT EXISTS destinations (id INTEGER NOT NULL PRIMARY KEY, endpoint TEXT NOT NULL, access_token TEXT NOT NULL, CONSTRAINT unique_destination UNIQUE(endpoint, access_token))"
+    ];
     [self executeSql:sql];
 }
 
 - (void)ensurePayloadsTable {
+
+    
     
     NSString *sql = [NSString stringWithFormat:
-                     @"CREATE TABLE IF NOT EXISTS payloads (id INTEGER, destination_id INTEGER, payload_json TEXT, timestamp TEXT)"];
+                     @"CREATE TABLE IF NOT EXISTS payloads (id INTEGER NOT NULL PRIMARY KEY, config_json TEXT NOT NULL, payload_json TEXT NOT NULL, created_at INTEGER NOT NULL, destination_key INTEGER NOT NULL, FOREIGN KEY(destination_key) REFERENCES destinations(id) ON UPDATE CASCADE ON DELETE CASCADE)"
+    ];
     [self executeSql:sql];
 }
+
+- (void)insertDestinationWithEndpoint:(nonnull NSString *)endpoint
+                        andAccesToken:(nonnull NSString *)accessToken {
+    
+    NSString *sql = [NSString stringWithFormat:
+                     @"INSERT INTO destinations (endpoint, access_token) VALUES ('%@', '%@')",
+                     endpoint,
+                     accessToken
+    ];
+    char *sqliteErrorMessage;
+    int sqlResult = sqlite3_exec(self->_db, [sql UTF8String], insertDestinationCallback, NULL, &sqliteErrorMessage);
+    if (sqlResult != SQLITE_OK) {
+        
+        RollbarSdkLog(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
+        sqlite3_free(sqliteErrorMessage);
+    }
+}
+
+
+
+
+
+
+
 
 - (void)releaseDB {
     
@@ -128,8 +167,8 @@ static int checkIfTableExistsCallback(void *info, int columns, char **data, char
 - (void)executeSql:(nonnull NSString *)sql {
     
     char *sqliteErrorMessage;
-    int result = sqlite3_exec(self->_db, [sql UTF8String], NULL, NULL, &sqliteErrorMessage);
-    if (result != SQLITE_OK) {
+    int sqlResult = sqlite3_exec(self->_db, [sql UTF8String], NULL, NULL, &sqliteErrorMessage);
+    if (sqlResult != SQLITE_OK) {
         
         RollbarSdkLog(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
         sqlite3_free(sqliteErrorMessage);
@@ -174,8 +213,8 @@ static int checkIfTableExistsCallback(void *info, int columns, char **data, char
     NSString *sql = [NSString stringWithFormat:
                      @"SELECT name FROM sqlite_master WHERE type='table' AND name='%@'", tableName];
     char *sqliteErrorMessage;
-    int result = sqlite3_exec(self->_db, [sql UTF8String], checkIfTableExistsCallback, answerFlag, &sqliteErrorMessage);
-    if (result != SQLITE_OK) {
+    int sqlResult = sqlite3_exec(self->_db, [sql UTF8String], checkIfTableExistsCallback, answerFlag, &sqliteErrorMessage);
+    if (sqlResult != SQLITE_OK) {
         
         RollbarSdkLog(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
         sqlite3_free(sqliteErrorMessage);

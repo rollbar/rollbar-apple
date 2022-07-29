@@ -31,7 +31,7 @@
     [super tearDown];
 }
 
-- (void)testBasics {
+- (void)testRepoInitialization {
     
     XCTAssertFalse([RollbarTestUtil checkPayloadsStoreFileExists]);
     RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
@@ -45,10 +45,19 @@
     // Use XCTAssert and related functions to verify your tests produce the correct results.
 }
 
-- (void)testPerformanceExample {
-    // This is an example of a performance test case.
+- (void)testInsertDestination {
+    
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    [repo insertDestinationWithEndpoint:@"EP_0011" andAccesToken:@"AC_001"];
+    
+    // This is an example of a functional test case.
+    // Use XCTAssert and related functions to verify your tests produce the correct results.
+}
+
+- (void)testRepoInitializationPerformance {
+
     [self measureBlock:^{
-        // Put the code you want to measure the time of here.
+        RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
     }];
 }
 

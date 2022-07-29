@@ -32,6 +32,9 @@ NS_DESIGNATED_INITIALIZER;
 
 - (BOOL)checkIfTableExists_Unknown;
 
+- (void)insertDestinationWithEndpoint:(nonnull NSString *)endpoint
+                        andAccesToken:(nonnull NSString *)accessToken;
+
 @end
 
 NS_ASSUME_NONNULL_END
