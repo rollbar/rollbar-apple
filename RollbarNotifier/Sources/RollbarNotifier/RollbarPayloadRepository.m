@@ -6,13 +6,27 @@
 
 #import "sqlite3.h"
 
-static int checkIfTableExistsCallback(void *info, int columns, char **data, char **column)
+//======================================================================================================================
+#pragma mark - Sqlite command execution callbacks
+#pragma mark -
+//======================================================================================================================
+
+typedef int (^SqliteCallback)(void *info, int columns, char **data, char **column);
+
+static int defaultOnSelectCallback(void *info, int columns, char **data, char **column)
 {
     RollbarSdkLog(@"Columns: %d", columns);
     for (int i = 0; i < columns; i++) {
         RollbarSdkLog(@"Column: %s", column[i]);
         RollbarSdkLog(@"Data: %s", data[i]);
     }
+    
+    return SQLITE_OK;
+}
+
+static int checkIfTableExistsCallback(void *info, int columns, char **data, char **column)
+{
+    defaultOnSelectCallback(info, columns, data, column);
     
     BOOL *answerFlag = (BOOL *)info;
     if (answerFlag) {
@@ -25,25 +39,48 @@ static int checkIfTableExistsCallback(void *info, int columns, char **data, char
 
 static int insertDestinationCallback(void *info, int columns, char **data, char **column)
 {
-    RollbarSdkLog(@"Columns: %d", columns);
-    for (int i = 0; i < columns; i++) {
-        RollbarSdkLog(@"Column: %s", column[i]);
-        RollbarSdkLog(@"Data: %s", data[i]);
-    }
-    
+    defaultOnSelectCallback(info, columns, data, column);
+
     return SQLITE_OK;
 }
 
+static int selectDestinationCallback(void *info, int columns, char **data, char **column)
+{
+    defaultOnSelectCallback(info, columns, data, column);
+
+    //NSMutableDictionary<NSString *, NSString *> *row = [NSMutableDictionary<NSString *, NSString *> dictionaryWithCapacity:columns];
+    //info = row;
+    NSMutableDictionary<NSString *, NSString *> *__strong*result = (NSMutableDictionary<NSString *, NSString *> *__strong*)info;
+    *result = [NSMutableDictionary<NSString *, NSString *> dictionaryWithCapacity:columns];
+    
+    NSMutableDictionary<NSString *, NSString *> *row =
+    [NSMutableDictionary<NSString *, NSString *> dictionaryWithCapacity:columns];
+    
+    
+    for (int i = 0; i < columns; i++) {
+        NSString *key = [NSString stringWithFormat:@"%s", column[i]];
+        NSString *value = [NSString stringWithFormat:@"%s", data[i]];
+        row[key] = value;
+    }
+    
+    *result = row;
+
+    return SQLITE_OK;
+}
+
+//======================================================================================================================
+#pragma mark - Peyloads Repository
+#pragma mark -
+//======================================================================================================================
+
+/// Peristent Rollbar  payloads repository
 @implementation RollbarPayloadRepository {
     
     @private
     NSString *_storePath;
     sqlite3 *_db;
     char *_sqliteErrorMessage;
-    
-    BOOL _tableExists_Destinations;
-    BOOL _tableExists_Payloads;
-    BOOL _tableExists_Unknown;
+
 }
 
 + (void)initialize {
@@ -133,15 +170,38 @@ static int insertDestinationCallback(void *info, int columns, char **data, char 
                      endpoint,
                      accessToken
     ];
+
     char *sqliteErrorMessage;
     int sqlResult = sqlite3_exec(self->_db, [sql UTF8String], insertDestinationCallback, NULL, &sqliteErrorMessage);
     if (sqlResult != SQLITE_OK) {
-        
+
         RollbarSdkLog(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
         sqlite3_free(sqliteErrorMessage);
     }
 }
 
+- (nullable NSDictionary<NSString *, NSString *> *)selectDestinationWithEndpoint:(nonnull NSString *)endpoint
+                                                                   andAccesToken:(nonnull NSString *)accessToken {
+    
+    NSString *sql = [NSString stringWithFormat:
+                         @"SELECT * FROM destinations WHERE endpoint = '%@' AND access_token = '%@'",
+                     endpoint,
+                     accessToken
+    ];
+                                               
+    NSMutableDictionary<NSString *, NSString *> *result = nil;
+    
+    char *sqliteErrorMessage;
+    NSDictionary<NSString *, NSString *> *selectedRow = nil;
+    int sqlResult = sqlite3_exec(self->_db, [sql UTF8String], selectDestinationCallback, &result, &sqliteErrorMessage);
+    if (sqlResult != SQLITE_OK) {
+
+        RollbarSdkLog(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
+        sqlite3_free(sqliteErrorMessage);
+    }
+    
+    return result;
+}
 
 
 
@@ -196,32 +256,18 @@ static int insertDestinationCallback(void *info, int columns, char **data, char 
 
 - (BOOL)checkIfTableExists:(nonnull NSString *)tableName {
     
-    BOOL *answerFlag = nil;
-    if ([tableName isEqualToString:@"destinations"]) {
-        answerFlag = &(self->_tableExists_Destinations);
-    }
-    else if ([tableName isEqualToString:@"payloads"]) {
-        answerFlag = &(self->_tableExists_Payloads);
-    }
-    else if ([tableName isEqualToString:@"unknown"]) {
-        answerFlag = &(self->_tableExists_Unknown);
-    }
-    else {
-        return NO;
-    }
-    
     NSString *sql = [NSString stringWithFormat:
                      @"SELECT name FROM sqlite_master WHERE type='table' AND name='%@'", tableName];
     char *sqliteErrorMessage;
-    int sqlResult = sqlite3_exec(self->_db, [sql UTF8String], checkIfTableExistsCallback, answerFlag, &sqliteErrorMessage);
+    BOOL answerFlag = NO;
+    int sqlResult = sqlite3_exec(self->_db, [sql UTF8String], checkIfTableExistsCallback, &answerFlag, &sqliteErrorMessage);
     if (sqlResult != SQLITE_OK) {
         
         RollbarSdkLog(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
         sqlite3_free(sqliteErrorMessage);
     }
     
-    BOOL exists = *answerFlag;
-    return exists;
+    return answerFlag;
 }
 
 @end

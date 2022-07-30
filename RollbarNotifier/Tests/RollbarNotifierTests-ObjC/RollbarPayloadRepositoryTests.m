@@ -48,10 +48,20 @@
 - (void)testInsertDestination {
     
     RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
-    [repo insertDestinationWithEndpoint:@"EP_0011" andAccesToken:@"AC_001"];
+    [repo insertDestinationWithEndpoint:@"EP_001" andAccesToken:@"AC_001"];
     
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
+    NSDictionary<NSString *, NSString *> * destination =
+    [repo selectDestinationWithEndpoint:@"EP_001" andAccesToken:@"AC_001"];
+    
+    XCTAssertTrue([destination.allKeys containsObject:@"id"]);
+    XCTAssertTrue([destination.allKeys containsObject:@"endpoint"]);
+    XCTAssertTrue([destination.allKeys containsObject:@"access_token"]);
+    
+    XCTAssertTrue([destination.allValues containsObject:@"EP_001"]);
+    XCTAssertTrue([destination.allValues containsObject:@"AC_001"]);
+
+    XCTAssertTrue([destination[@"endpoint"] isEqualToString:@"EP_001"]);
+    XCTAssertTrue([destination[@"access_token"] isEqualToString:@"AC_001"]);
 }
 
 - (void)testRepoInitializationPerformance {

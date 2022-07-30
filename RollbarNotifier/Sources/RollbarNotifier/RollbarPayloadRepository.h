@@ -35,6 +35,8 @@ NS_DESIGNATED_INITIALIZER;
 - (void)insertDestinationWithEndpoint:(nonnull NSString *)endpoint
                         andAccesToken:(nonnull NSString *)accessToken;
 
+- (nullable NSDictionary<NSString *, NSString *> *)selectDestinationWithEndpoint:(nonnull NSString *)endpoint
+                                                                   andAccesToken:(nonnull NSString *)accessToken;
 @end
 
 NS_ASSUME_NONNULL_END
