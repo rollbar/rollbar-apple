@@ -40,18 +40,15 @@
     XCTAssertFalse([repo checkIfTableExists_Unknown]);
     XCTAssertTrue ([repo checkIfTableExists_Destinations]);
     XCTAssertTrue ([repo checkIfTableExists_Payloads]);
-
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
 }
 
-- (void)testInsertDestination {
+- (void)testAddDestination {
     
     RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
-    [repo insertDestinationWithEndpoint:@"EP_001" andAccesToken:@"AC_001"];
+    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AC_001"];
     
-    NSDictionary<NSString *, NSString *> * destination =
-    [repo selectDestinationWithEndpoint:@"EP_001" andAccesToken:@"AC_001"];
+    NSDictionary<NSString *, NSString *> *destination =
+    [repo getDestinationWithEndpoint:@"EP_001" andAccesToken:@"AC_001"];
     
     XCTAssertTrue([destination.allKeys containsObject:@"id"]);
     XCTAssertTrue([destination.allKeys containsObject:@"endpoint"]);
@@ -62,6 +59,30 @@
 
     XCTAssertTrue([destination[@"endpoint"] isEqualToString:@"EP_001"]);
     XCTAssertTrue([destination[@"access_token"] isEqualToString:@"AC_001"]);
+}
+
+- (void)testGetAllDestinations {
+    
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AC_001"];
+    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AC_002"];
+
+    NSArray<NSDictionary<NSString *, NSString *> *> *destinations =
+    [repo getAllDestinations];
+    
+    XCTAssertEqual(destinations.count, 2);
+
+    for(NSDictionary<NSString *, NSString *> *destination in destinations) {
+        
+        XCTAssertTrue([destination.allKeys containsObject:@"id"]);
+        XCTAssertTrue([destination.allKeys containsObject:@"endpoint"]);
+        XCTAssertTrue([destination.allKeys containsObject:@"access_token"]);
+
+        XCTAssertTrue([destination.allValues containsObject:@"EP_001"]);
+
+        XCTAssertTrue([destination[@"endpoint"] isEqualToString:@"EP_001"]);
+        XCTAssertTrue([destination[@"access_token"] containsString:@"AC_00"]);
+    }
 }
 
 - (void)testRepoInitializationPerformance {
