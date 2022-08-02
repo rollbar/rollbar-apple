@@ -44,14 +44,11 @@ static int addDestinationCallback(void *info, int columns, char **data, char **c
     return SQLITE_OK;
 }
 
-static int getDestinationCallback(void *info, int columns, char **data, char **column)
+static int selectSingleRowCallback(void *info, int columns, char **data, char **column)
 {
     defaultOnSelectCallback(info, columns, data, column);
 
-    //NSMutableDictionary<NSString *, NSString *> *row = [NSMutableDictionary<NSString *, NSString *> dictionaryWithCapacity:columns];
-    //info = row;
     NSDictionary<NSString *, NSString *> *__strong*result = (NSDictionary<NSString *, NSString *> *__strong*)info;
-    //*result = [NSMutableDictionary<NSString *, NSString *> dictionaryWithCapacity:columns];
     
     NSMutableDictionary<NSString *, NSString *> *row =
     [NSMutableDictionary<NSString *, NSString *> dictionaryWithCapacity:columns];
@@ -67,12 +64,10 @@ static int getDestinationCallback(void *info, int columns, char **data, char **c
     return SQLITE_OK;
 }
 
-static int getAllDestinationsCallback(void *info, int columns, char **data, char **column)
+static int selectMultipleRowsCallback(void *info, int columns, char **data, char **column)
 {
     defaultOnSelectCallback(info, columns, data, column);
 
-    //NSMutableArray<NSDictionary<NSString *, NSString *> *> *result = nil;
-    
     NSMutableArray<NSDictionary<NSString *, NSString *> *> *__strong*result =
     (NSMutableArray<NSDictionary<NSString *, NSString *> *> *__strong*)info;
     if (!*result) {
@@ -224,7 +219,7 @@ static int getAllDestinationsCallback(void *info, int columns, char **data, char
     ];
                                                
     NSDictionary<NSString *, NSString *> *result =
-    [self selectSingleRowWithSql:sql andCallback:getDestinationCallback];
+    [self selectSingleRowWithSql:sql andCallback:selectSingleRowCallback];
     
     return result;
 }
@@ -237,7 +232,7 @@ static int getAllDestinationsCallback(void *info, int columns, char **data, char
     ];
     
     NSDictionary<NSString *, NSString *> *result =
-    [self selectSingleRowWithSql:sql andCallback:getDestinationCallback];
+    [self selectSingleRowWithSql:sql andCallback:selectSingleRowCallback];
     
     return result;
 }
@@ -247,7 +242,7 @@ static int getAllDestinationsCallback(void *info, int columns, char **data, char
     NSString *sql = @"SELECT * FROM destinations";
     
     NSArray<NSDictionary<NSString *, NSString *> *> *result =
-    [self selectMultipleRowsWithSql:sql andCallback:getAllDestinationsCallback];
+    [self selectMultipleRowsWithSql:sql andCallback:selectMultipleRowsCallback];
     return result;
 }
 
