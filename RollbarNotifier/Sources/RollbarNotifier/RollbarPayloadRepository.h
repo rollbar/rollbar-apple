@@ -32,13 +32,23 @@ NS_DESIGNATED_INITIALIZER;
 
 - (BOOL)checkIfTableExists_Unknown;
 
-- (void)addDestinationWithEndpoint:(nonnull NSString *)endpoint
-                     andAccesToken:(nonnull NSString *)accessToken;
+- (nullable NSDictionary<NSString *, NSString *> *)addDestinationWithEndpoint:(nonnull NSString *)endpoint
+                                                                andAccesToken:(nonnull NSString *)accessToken;
 
 - (nullable NSDictionary<NSString *, NSString *> *)getDestinationWithEndpoint:(nonnull NSString *)endpoint
                                                                 andAccesToken:(nonnull NSString *)accessToken;
 
-- (nullable NSArray<NSDictionary<NSString *, NSString *> *> *)getAllDestinations;
+- (nullable NSDictionary<NSString *, NSString *> *)getDestinationByID:(nonnull NSString *)destinationID;
+
+- (nonnull NSArray<NSDictionary<NSString *, NSString *> *> *)getAllDestinations;
+
+- (BOOL)removeDestinationWithEndpoint:(nonnull NSString *)endpoint
+                        andAccesToken:(nonnull NSString *)accessToken;
+
+- (BOOL)removeDestinationByID:(nonnull NSString *)destinationID;
+
+- (BOOL)removeAllDestinations;
+
 @end
 
 NS_ASSUME_NONNULL_END

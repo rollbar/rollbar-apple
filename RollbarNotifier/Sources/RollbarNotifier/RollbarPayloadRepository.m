@@ -187,8 +187,8 @@ static int getAllDestinationsCallback(void *info, int columns, char **data, char
     [self executeSql:sql];
 }
 
-- (void)addDestinationWithEndpoint:(nonnull NSString *)endpoint
-                        andAccesToken:(nonnull NSString *)accessToken {
+- (nullable NSDictionary<NSString *, NSString *> *)addDestinationWithEndpoint:(nonnull NSString *)endpoint
+                                                                andAccesToken:(nonnull NSString *)accessToken {
     
     NSString *sql = [NSString stringWithFormat:
                      @"INSERT INTO destinations (endpoint, access_token) VALUES ('%@', '%@')",
@@ -202,7 +202,16 @@ static int getAllDestinationsCallback(void *info, int columns, char **data, char
 
         RollbarSdkLog(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
         sqlite3_free(sqliteErrorMessage);
+        return nil;
     }
+    
+    sqlite3_int64 destinationID = sqlite3_last_insert_rowid(self->_db);
+
+    return @ {
+        @"id": [NSString stringWithFormat:@"%lli", destinationID], //[NSNumber numberWithLongLong:destinationID],
+        @"endpoint": endpoint,
+        @"access_token": accessToken
+    };
 }
 
 - (nullable NSDictionary<NSString *, NSString *> *)getDestinationWithEndpoint:(nonnull NSString *)endpoint
@@ -228,7 +237,53 @@ static int getAllDestinationsCallback(void *info, int columns, char **data, char
     return result;
 }
 
-- (nullable NSArray<NSDictionary<NSString *, NSString *> *> *)getAllDestinations {
+- (nullable NSDictionary<NSString *, NSString *> *)getDestinationByID:(nonnull NSString *)destinationID {
+    
+    NSString *sql = [NSString stringWithFormat:
+                     @"SELECT * FROM destinations WHERE id = '%@'",
+                     destinationID
+    ];
+    
+    NSDictionary<NSString *, NSString *> *result = nil;
+    
+    char *sqliteErrorMessage;
+    NSDictionary<NSString *, NSString *> *selectedRow = nil;
+    int sqlResult = sqlite3_exec(self->_db, [sql UTF8String], getDestinationCallback, &result, &sqliteErrorMessage);
+    if (sqlResult != SQLITE_OK) {
+        
+        RollbarSdkLog(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
+        sqlite3_free(sqliteErrorMessage);
+    }
+    
+    return result;
+}
+
+
+
+//int (*callback)(void*,int,char**,char**)
+- (NSDictionary<NSString *, NSString *> *)selectSingleRowWithSql:(NSString *)sql
+                                                     andCallback:(int(*)(void*,int,char**,char**))callback {
+    
+    NSDictionary<NSString *, NSString *> *result = nil;
+    char *sqliteErrorMessage;
+    NSDictionary<NSString *, NSString *> *selectedRow = nil;
+    int sqlResult = sqlite3_exec(self->_db, [sql UTF8String], callback, &result, &sqliteErrorMessage);
+    if (sqlResult != SQLITE_OK) {
+        
+        RollbarSdkLog(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
+        sqlite3_free(sqliteErrorMessage);
+    }
+    
+    return result;
+}
+
+
+
+
+
+
+
+- (nonnull NSArray<NSDictionary<NSString *, NSString *> *> *)getAllDestinations {
     
     NSString *sql = @"SELECT * FROM destinations";
     
@@ -243,7 +298,12 @@ static int getAllDestinationsCallback(void *info, int columns, char **data, char
         sqlite3_free(sqliteErrorMessage);
     }
     
-    return [result copy];
+    if (result) {
+        return [result copy];
+    }
+    else {
+        return [NSArray<NSDictionary<NSString *, NSString *> *> array];
+    }
 }
 
 
