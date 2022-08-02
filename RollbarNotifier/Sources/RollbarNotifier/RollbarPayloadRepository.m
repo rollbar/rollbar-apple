@@ -37,13 +37,6 @@ static int checkIfTableExistsCallback(void *info, int columns, char **data, char
     return SQLITE_OK;
 }
 
-static int addDestinationCallback(void *info, int columns, char **data, char **column)
-{
-    defaultOnSelectCallback(info, columns, data, column);
-
-    return SQLITE_OK;
-}
-
 static int selectSingleRowCallback(void *info, int columns, char **data, char **column)
 {
     defaultOnSelectCallback(info, columns, data, column);
@@ -155,31 +148,33 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
     [self ensurePayloadsTable];
 }
 
-- (void)openDB {
+- (BOOL)openDB {
     
     int result = sqlite3_open([self->_storePath UTF8String], &self->_db);
     if (result != SQLITE_OK) {
         
         RollbarSdkLog(@"sqlite3_open: %s", sqlite3_errmsg(self->_db));
+        return NO;
     }
+    return YES;
 }
 
-- (void)ensureDestinationsTable {
+- (BOOL)ensureDestinationsTable {
     
     NSString *sql = [NSString stringWithFormat:
                      @"CREATE TABLE IF NOT EXISTS destinations (id INTEGER NOT NULL PRIMARY KEY, endpoint TEXT NOT NULL, access_token TEXT NOT NULL, CONSTRAINT unique_destination UNIQUE(endpoint, access_token))"
     ];
-    [self executeSql:sql];
+    return [self executeSql:sql];
 }
 
-- (void)ensurePayloadsTable {
+- (BOOL)ensurePayloadsTable {
 
     
     
     NSString *sql = [NSString stringWithFormat:
                      @"CREATE TABLE IF NOT EXISTS payloads (id INTEGER NOT NULL PRIMARY KEY, config_json TEXT NOT NULL, payload_json TEXT NOT NULL, created_at INTEGER NOT NULL, destination_key INTEGER NOT NULL, FOREIGN KEY(destination_key) REFERENCES destinations(id) ON UPDATE CASCADE ON DELETE CASCADE)"
     ];
-    [self executeSql:sql];
+    return [self executeSql:sql];
 }
 
 - (nullable NSDictionary<NSString *, NSString *> *)addDestinationWithEndpoint:(nonnull NSString *)endpoint
@@ -190,13 +185,8 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
                      endpoint,
                      accessToken
     ];
-
-    char *sqliteErrorMessage;
-    int sqlResult = sqlite3_exec(self->_db, [sql UTF8String], addDestinationCallback, NULL, &sqliteErrorMessage);
-    if (sqlResult != SQLITE_OK) {
-
-        RollbarSdkLog(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
-        sqlite3_free(sqliteErrorMessage);
+    
+    if (NO == [self executeSql:sql]) {
         return nil;
     }
     
@@ -245,6 +235,32 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
     [self selectMultipleRowsWithSql:sql andCallback:selectMultipleRowsCallback];
     return result;
 }
+
+
+
+
+- (BOOL)removeDestinationWithEndpoint:(nonnull NSString *)endpoint
+                        andAccesToken:(nonnull NSString *)accessToken {
+    
+    //TODO: implement...
+    NSString *sql = [NSString stringWithFormat:
+                         @"CREATE TABLE IF NOT EXISTS destinations (id INTEGER NOT NULL PRIMARY KEY, endpoint TEXT NOT NULL, access_token TEXT NOT NULL, CONSTRAINT unique_destination UNIQUE(endpoint, access_token))"
+    ];
+    return [self executeSql:sql];
+}
+
+- (BOOL)removeDestinationByID:(nonnull NSString *)destinationID {
+    
+    //TODO: implement...
+    return NO;
+}
+
+- (BOOL)removeAllDestinations {
+    
+    //TODO: implement...
+    return NO;
+}
+
 
 
 
@@ -302,7 +318,7 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
     return answerFlag;
 }
 
-- (void)executeSql:(nonnull NSString *)sql {
+- (BOOL)executeSql:(nonnull NSString *)sql {
     
     char *sqliteErrorMessage;
     int sqlResult = sqlite3_exec(self->_db, [sql UTF8String], NULL, NULL, &sqliteErrorMessage);
@@ -310,7 +326,9 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
         
         RollbarSdkLog(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
         sqlite3_free(sqliteErrorMessage);
+        return NO;
     }
+    return YES;
 }
 
 - (nullable NSDictionary<NSString *, NSString *> *)selectSingleRowWithSql:(NSString *)sql
