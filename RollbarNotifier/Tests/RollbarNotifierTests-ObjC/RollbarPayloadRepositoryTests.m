@@ -140,9 +140,12 @@
 - (void)testAddDestinationPerformance {
     
     RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    XCTAssertTrue(0 == [repo getAllDestinations].count);
 
     [self measureBlock:^{
         [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AC_001"];
+
+        //TODO: clear the destinations table...
     }];
 }
 

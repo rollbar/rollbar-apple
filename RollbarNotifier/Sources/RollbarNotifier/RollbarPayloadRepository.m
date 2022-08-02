@@ -223,16 +223,8 @@ static int getAllDestinationsCallback(void *info, int columns, char **data, char
                      accessToken
     ];
                                                
-    NSDictionary<NSString *, NSString *> *result = nil;
-    
-    char *sqliteErrorMessage;
-    NSDictionary<NSString *, NSString *> *selectedRow = nil;
-    int sqlResult = sqlite3_exec(self->_db, [sql UTF8String], getDestinationCallback, &result, &sqliteErrorMessage);
-    if (sqlResult != SQLITE_OK) {
-
-        RollbarSdkLog(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
-        sqlite3_free(sqliteErrorMessage);
-    }
+    NSDictionary<NSString *, NSString *> *result =
+    [self selectSingleRowWithSql:sql andCallback:getDestinationCallback];
     
     return result;
 }
@@ -244,66 +236,19 @@ static int getAllDestinationsCallback(void *info, int columns, char **data, char
                      destinationID
     ];
     
-    NSDictionary<NSString *, NSString *> *result = nil;
-    
-    char *sqliteErrorMessage;
-    NSDictionary<NSString *, NSString *> *selectedRow = nil;
-    int sqlResult = sqlite3_exec(self->_db, [sql UTF8String], getDestinationCallback, &result, &sqliteErrorMessage);
-    if (sqlResult != SQLITE_OK) {
-        
-        RollbarSdkLog(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
-        sqlite3_free(sqliteErrorMessage);
-    }
+    NSDictionary<NSString *, NSString *> *result =
+    [self selectSingleRowWithSql:sql andCallback:getDestinationCallback];
     
     return result;
 }
-
-
-
-//int (*callback)(void*,int,char**,char**)
-- (NSDictionary<NSString *, NSString *> *)selectSingleRowWithSql:(NSString *)sql
-                                                     andCallback:(int(*)(void*,int,char**,char**))callback {
-    
-    NSDictionary<NSString *, NSString *> *result = nil;
-    char *sqliteErrorMessage;
-    NSDictionary<NSString *, NSString *> *selectedRow = nil;
-    int sqlResult = sqlite3_exec(self->_db, [sql UTF8String], callback, &result, &sqliteErrorMessage);
-    if (sqlResult != SQLITE_OK) {
-        
-        RollbarSdkLog(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
-        sqlite3_free(sqliteErrorMessage);
-    }
-    
-    return result;
-}
-
-
-
-
-
-
 
 - (nonnull NSArray<NSDictionary<NSString *, NSString *> *> *)getAllDestinations {
     
     NSString *sql = @"SELECT * FROM destinations";
     
-    NSMutableArray<NSDictionary<NSString *, NSString *> *> *result = nil;
-    
-    char *sqliteErrorMessage;
-    //NSDictionary<NSString *, NSString *> *selectedRow = nil;
-    int sqlResult = sqlite3_exec(self->_db, [sql UTF8String], getAllDestinationsCallback, &result, &sqliteErrorMessage);
-    if (sqlResult != SQLITE_OK) {
-        
-        RollbarSdkLog(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
-        sqlite3_free(sqliteErrorMessage);
-    }
-    
-    if (result) {
-        return [result copy];
-    }
-    else {
-        return [NSArray<NSDictionary<NSString *, NSString *> *> array];
-    }
+    NSArray<NSDictionary<NSString *, NSString *> *> *result =
+    [self selectMultipleRowsWithSql:sql andCallback:getAllDestinationsCallback];
+    return result;
 }
 
 
@@ -325,17 +270,6 @@ static int getAllDestinationsCallback(void *info, int columns, char **data, char
 }
 
 - (void)clearPayloadsOlderThan:(nonnull NSDate *)cutoffTime {
-}
-
-- (void)executeSql:(nonnull NSString *)sql {
-    
-    char *sqliteErrorMessage;
-    int sqlResult = sqlite3_exec(self->_db, [sql UTF8String], NULL, NULL, &sqliteErrorMessage);
-    if (sqlResult != SQLITE_OK) {
-        
-        RollbarSdkLog(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
-        sqlite3_free(sqliteErrorMessage);
-    }
 }
 
 - (BOOL)checkIfTableExists_Destinations {
@@ -371,6 +305,54 @@ static int getAllDestinationsCallback(void *info, int columns, char **data, char
     }
     
     return answerFlag;
+}
+
+- (void)executeSql:(nonnull NSString *)sql {
+    
+    char *sqliteErrorMessage;
+    int sqlResult = sqlite3_exec(self->_db, [sql UTF8String], NULL, NULL, &sqliteErrorMessage);
+    if (sqlResult != SQLITE_OK) {
+        
+        RollbarSdkLog(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
+        sqlite3_free(sqliteErrorMessage);
+    }
+}
+
+- (nullable NSDictionary<NSString *, NSString *> *)selectSingleRowWithSql:(NSString *)sql
+                                                              andCallback:(int(*)(void*,int,char**,char**))callback {
+    
+    NSDictionary<NSString *, NSString *> *result = nil;
+    char *sqliteErrorMessage;
+    NSDictionary<NSString *, NSString *> *selectedRow = nil;
+    int sqlResult = sqlite3_exec(self->_db, [sql UTF8String], callback, &result, &sqliteErrorMessage);
+    if (sqlResult != SQLITE_OK) {
+        
+        RollbarSdkLog(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
+        sqlite3_free(sqliteErrorMessage);
+    }
+    
+    return result;
+}
+
+- (nonnull NSArray<NSDictionary<NSString *, NSString *> *> *)selectMultipleRowsWithSql:(NSString *)sql
+                                                                           andCallback:(int(*)(void*,int,char**,char**))callback {
+    
+    NSMutableArray<NSDictionary<NSString *, NSString *> *> *result = nil;
+    
+    char *sqliteErrorMessage;
+    int sqlResult = sqlite3_exec(self->_db, [sql UTF8String], callback, &result, &sqliteErrorMessage);
+    if (sqlResult != SQLITE_OK) {
+        
+        RollbarSdkLog(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
+        sqlite3_free(sqliteErrorMessage);
+    }
+    
+    if (result) {
+        return [result copy];
+    }
+    else {
+        return [NSArray<NSDictionary<NSString *, NSString *> *> array];
+    }
 }
 
 @end
