@@ -47,6 +47,8 @@ NS_DESIGNATED_INITIALIZER;
 
 - (BOOL)removeDestinationByID:(nonnull NSString *)destinationID;
 
+- (BOOL)removeUnusedDestinations;
+
 - (BOOL)removeAllDestinations;
 
 @end

@@ -48,18 +48,18 @@
     
     RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
     NSDictionary<NSString *, NSString *> *destination =
-    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AC_001"];
+    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_001"];
         
     XCTAssertTrue([destination.allKeys containsObject:@"id"]);
     XCTAssertTrue([destination.allKeys containsObject:@"endpoint"]);
     XCTAssertTrue([destination.allKeys containsObject:@"access_token"]);
     
     XCTAssertTrue([destination.allValues containsObject:@"EP_001"]);
-    XCTAssertTrue([destination.allValues containsObject:@"AC_001"]);
+    XCTAssertTrue([destination.allValues containsObject:@"AT_001"]);
 
     XCTAssertNotNil(destination[@"id"]);
     XCTAssertTrue([destination[@"endpoint"] isEqualToString:@"EP_001"]);
-    XCTAssertTrue([destination[@"access_token"] isEqualToString:@"AC_001"]);
+    XCTAssertTrue([destination[@"access_token"] isEqualToString:@"AT_001"]);
 }
 
 - (void)testGetDestination {
@@ -68,7 +68,7 @@
     [self insertDestinationMocks:repo];
     
     NSDictionary<NSString *, NSString *> *destination =
-    [repo getDestinationWithEndpoint:@"EP_001" andAccesToken:@"AC_001"];
+    [repo getDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_001"];
     
     XCTAssertNotNil(destination);
     
@@ -77,10 +77,10 @@
     XCTAssertTrue([destination.allKeys containsObject:@"access_token"]);
     
     XCTAssertTrue([destination.allValues containsObject:@"EP_001"]);
-    XCTAssertTrue([destination.allValues containsObject:@"AC_001"]);
+    XCTAssertTrue([destination.allValues containsObject:@"AT_001"]);
     
     XCTAssertTrue([destination[@"endpoint"] isEqualToString:@"EP_001"]);
-    XCTAssertTrue([destination[@"access_token"] isEqualToString:@"AC_001"]);
+    XCTAssertTrue([destination[@"access_token"] isEqualToString:@"AT_001"]);
 }
 
 - (void)testGetDestinationByID {
@@ -99,14 +99,14 @@
     
     XCTAssertTrue([destination[@"id"] isEqualToString:@"1"]);
     XCTAssertTrue([destination[@"endpoint"] isEqualToString:@"EP_001"]);
-    XCTAssertTrue([destination[@"access_token"] isEqualToString:@"AC_001"]);
+    XCTAssertTrue([destination[@"access_token"] isEqualToString:@"AT_001"]);
 }
 
 - (void)testGetAllDestinations {
     
     RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
-    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AC_001"];
-    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AC_002"];
+    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_001"];
+    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_002"];
 
     NSArray<NSDictionary<NSString *, NSString *> *> *destinations =
     [repo getAllDestinations];
@@ -124,8 +124,41 @@
         XCTAssertTrue([destination.allValues containsObject:@"EP_001"]);
 
         XCTAssertTrue([destination[@"endpoint"] isEqualToString:@"EP_001"]);
-        XCTAssertTrue([destination[@"access_token"] containsString:@"AC_00"]);
+        XCTAssertTrue([destination[@"access_token"] containsString:@"AT_00"]);
     }
+}
+
+- (void)testDestinationRemovals {
+    
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    [self insertDestinationMocks:repo];
+    
+    int removedCount = 0;
+    int initialCount = [repo getAllDestinations].count;
+
+    XCTAssertEqual(YES, [repo removeDestinationByID:@"0001"]);
+    removedCount++;
+    XCTAssertEqual(initialCount - removedCount, [repo getAllDestinations].count);
+
+    XCTAssertEqual(YES, [repo removeDestinationByID:@"0001"]);
+    //removedCount++;
+    XCTAssertEqual(initialCount - removedCount, [repo getAllDestinations].count);
+
+    XCTAssertEqual(YES, [repo removeDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_007"]);
+    removedCount++;
+    XCTAssertEqual(initialCount - removedCount, [repo getAllDestinations].count);
+
+    XCTAssertEqual(YES, [repo removeDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_007"]);
+    //removedCount++;
+    XCTAssertEqual(initialCount - removedCount, [repo getAllDestinations].count);
+
+    XCTAssertEqual(YES, [repo removeUnusedDestinations]);
+    removedCount = initialCount;
+    XCTAssertEqual(initialCount - removedCount, [repo getAllDestinations].count);
+
+    XCTAssertEqual(YES, [repo removeAllDestinations]);
+    removedCount = initialCount;
+    XCTAssertEqual(initialCount - removedCount, [repo getAllDestinations].count);
 }
 
 #pragma mark - performance tests
@@ -133,19 +166,34 @@
 - (void)testRepoInitializationPerformance {
 
     [self measureBlock:^{
+        
         RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
     }];
 }
 
-- (void)testAddDestinationPerformance {
+- (void)testAddRemoveDestinationPerformance {
     
     RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
     XCTAssertTrue(0 == [repo getAllDestinations].count);
 
     [self measureBlock:^{
-        [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AC_001"];
+        
+        [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_001"];
 
-        //TODO: clear the destinations table...
+        [repo removeDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_001"];
+    }];
+}
+
+- (void)testAddRemoveDestinationByIDPerformance {
+    
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    XCTAssertTrue(0 == [repo getAllDestinations].count);
+    
+    [self measureBlock:^{
+        
+        NSDictionary *destinationRow = [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_001"];
+        
+        [repo removeDestinationByID:destinationRow[@"id"]];
     }];
 }
 
@@ -158,7 +206,8 @@
     XCTAssertTrue([repo getAllDestinations].count > 0);
     
     [self measureBlock:^{
-        id result = [repo getDestinationWithEndpoint:@"EP_001" andAccesToken:@"AC_009"];
+        
+        id result = [repo getDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_009"];
     }];
 }
 
@@ -170,6 +219,7 @@
     
     NSArray __block *result = nil;
     [self measureBlock:^{
+        
         result = [repo getAllDestinations];
     }];
 
@@ -181,21 +231,21 @@
 
 - (void)insertDestinationMocks:(RollbarPayloadRepository *)repo {
     
-    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AC_001"];
-    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AC_002"];
-    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AC_003"];
-    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AC_004"];
-    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AC_005"];
-    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AC_006"];
-    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AC_007"];
-    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AC_008"];
-    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AC_009"];
-    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AC_010"];
+    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_001"];
+    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_002"];
+    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_003"];
+    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_004"];
+    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_005"];
+    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_006"];
+    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_007"];
+    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_008"];
+    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_009"];
+    [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_010"];
     
-    [repo addDestinationWithEndpoint:@"EP_002" andAccesToken:@"AC_001"];
-    [repo addDestinationWithEndpoint:@"EP_003" andAccesToken:@"AC_001"];
-    [repo addDestinationWithEndpoint:@"EP_004" andAccesToken:@"AC_001"];
-    [repo addDestinationWithEndpoint:@"EP_005" andAccesToken:@"AC_001"];
+    [repo addDestinationWithEndpoint:@"EP_002" andAccesToken:@"AT_001"];
+    [repo addDestinationWithEndpoint:@"EP_003" andAccesToken:@"AT_001"];
+    [repo addDestinationWithEndpoint:@"EP_004" andAccesToken:@"AT_001"];
+    [repo addDestinationWithEndpoint:@"EP_005" andAccesToken:@"AT_001"];
 }
 
 @end

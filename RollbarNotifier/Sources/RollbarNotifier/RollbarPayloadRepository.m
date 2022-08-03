@@ -236,29 +236,35 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
     return result;
 }
 
-
-
-
 - (BOOL)removeDestinationWithEndpoint:(nonnull NSString *)endpoint
                         andAccesToken:(nonnull NSString *)accessToken {
     
-    //TODO: implement...
-    NSString *sql = [NSString stringWithFormat:
-                         @"CREATE TABLE IF NOT EXISTS destinations (id INTEGER NOT NULL PRIMARY KEY, endpoint TEXT NOT NULL, access_token TEXT NOT NULL, CONSTRAINT unique_destination UNIQUE(endpoint, access_token))"
+    NSString *sql =
+    [NSString stringWithFormat: @"DELETE FROM destinations WHERE endpoint = '%@' AND access_token = '%@'",
+     endpoint,
+     accessToken
     ];
     return [self executeSql:sql];
 }
 
 - (BOOL)removeDestinationByID:(nonnull NSString *)destinationID {
     
-    //TODO: implement...
-    return NO;
+    NSString *sql =
+    [NSString stringWithFormat: @"DELETE FROM destinations WHERE id = '%@'", destinationID];
+    return [self executeSql:sql];
+}
+
+- (BOOL)removeUnusedDestinations {
+    
+    NSString *sql =
+    @"DELETE FROM destinations WHERE NOT EXISTS (SELECT 1 FROM payloads WHERE payloads.destination_key = destinations.id)";
+    return [self executeSql:sql];
 }
 
 - (BOOL)removeAllDestinations {
     
-    //TODO: implement...
-    return NO;
+    NSString *sql = @"DELETE FROM destinations";
+    return [self executeSql:sql];
 }
 
 
