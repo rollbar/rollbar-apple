@@ -13,24 +13,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface RollbarPayloadRepository : NSObject
 
-#pragma mark - repository methods
-
-- (void)clear;
-
-- (void)addPayload:(nonnull RollbarPayload *)payload;
-
 #pragma mark - instance initializers
 
 - (instancetype)initWithStore:(nonnull NSString *)storePath
 NS_DESIGNATED_INITIALIZER;
 
-#pragma mark - unit testing helper methods
-
-- (BOOL)checkIfTableExists_Destinations;
-
-- (BOOL)checkIfTableExists_Payloads;
-
-- (BOOL)checkIfTableExists_Unknown;
+#pragma mark - Destinations related methods
 
 - (nullable NSDictionary<NSString *, NSString *> *)addDestinationWithEndpoint:(nonnull NSString *)endpoint
                                                                 andAccesToken:(nonnull NSString *)accessToken;
@@ -50,6 +38,43 @@ NS_DESIGNATED_INITIALIZER;
 - (BOOL)removeUnusedDestinations;
 
 - (BOOL)removeAllDestinations;
+
+#pragma mark - Payloads related methods
+
+- (nullable NSDictionary<NSString *, NSString *> *)addPayload:(nonnull NSString *)payload
+                                                   withConfig:(nonnull NSString *)config
+                                             andDestinationID:(nonnull NSString *)destinationID;
+
+- (nullable NSDictionary<NSString *, NSString *> *)getPayloadByID:(nonnull NSString *)payloadID;
+
+- (nonnull NSArray<NSDictionary<NSString *, NSString *> *> *)getAllPayloadsWithDestinationID:(nonnull NSString *)destinationID;
+
+- (nonnull NSArray<NSDictionary<NSString *, NSString *> *> *)getPayloadsWithLimit:(NSUInteger)limit;
+
+- (nonnull NSArray<NSDictionary<NSString *, NSString *> *> *)getPayloadsWithOffset:(NSUInteger)offset
+                                                                          andLimit:(NSUInteger)limit;
+
+- (nonnull NSArray<NSDictionary<NSString *, NSString *> *> *)getAllPayloads;
+
+- (BOOL)removePayloadByID:(nonnull NSString *)payloadID;
+
+- (BOOL)removePayloadsOlderThan:(nonnull NSDate *)cutoffTime;
+
+- (BOOL)removeAllPayloads;
+
+#pragma mark - unit testing helper methods
+
+- (BOOL)checkIfTableExists_Destinations;
+
+- (BOOL)checkIfTableExists_Payloads;
+
+- (BOOL)checkIfTableExists_Unknown;
+
+- (BOOL)clearDestinations;
+
+- (BOOL)clearPayloads;
+
+- (BOOL)clear;
 
 @end
 

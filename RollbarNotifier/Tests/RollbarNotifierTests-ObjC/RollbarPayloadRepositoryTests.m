@@ -31,7 +31,7 @@
     [super tearDown];
 }
 
-#pragma mark - unit tests
+#pragma mark - Destinations unit tests
 
 - (void)testRepoInitialization {
     
@@ -161,7 +161,7 @@
     XCTAssertEqual(initialCount - removedCount, [repo getAllDestinations].count);
 }
 
-#pragma mark - performance tests
+#pragma mark - Destinations performance tests
 
 - (void)testRepoInitializationPerformance {
 
@@ -226,6 +226,33 @@
     XCTAssertNotNil(result);
     XCTAssertTrue(result.count > 0);
 }
+
+
+
+
+#pragma mark - Payloads unit tests
+
+- (void)testTimestamp {
+    
+    NSDate *cutoffTime = [NSDate date];
+    NSNumber *threshold = [NSNumber numberWithInteger:[cutoffTime timeIntervalSince1970]];
+    
+    RollbarSdkLog(@"*** Removing payloads older than: %@ (%@)",
+                  cutoffTime,
+                  [NSDate dateWithTimeIntervalSince1970:[threshold integerValue]]
+                  );
+
+}
+
+//TODO: implement...
+
+#pragma mark - Payloads performance tests
+//TODO: implement...
+
+
+
+
+
 
 #pragma mark - mocking helpers
 

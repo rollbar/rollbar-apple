@@ -129,53 +129,8 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
     return nil;
 }
 
-#pragma mark - repository methods
+#pragma mark - Destinations related methods
 
-- (void)addPayload:(nonnull RollbarPayload *)payload {
-    
-}
-
-- (void)clear {
-    
-}
-
-#pragma mark - internal methods
-
-- (void)initDB {
-    
-    [self openDB];
-    [self ensureDestinationsTable];
-    [self ensurePayloadsTable];
-}
-
-- (BOOL)openDB {
-    
-    int result = sqlite3_open([self->_storePath UTF8String], &self->_db);
-    if (result != SQLITE_OK) {
-        
-        RollbarSdkLog(@"sqlite3_open: %s", sqlite3_errmsg(self->_db));
-        return NO;
-    }
-    return YES;
-}
-
-- (BOOL)ensureDestinationsTable {
-    
-    NSString *sql = [NSString stringWithFormat:
-                     @"CREATE TABLE IF NOT EXISTS destinations (id INTEGER NOT NULL PRIMARY KEY, endpoint TEXT NOT NULL, access_token TEXT NOT NULL, CONSTRAINT unique_destination UNIQUE(endpoint, access_token))"
-    ];
-    return [self executeSql:sql];
-}
-
-- (BOOL)ensurePayloadsTable {
-
-    
-    
-    NSString *sql = [NSString stringWithFormat:
-                     @"CREATE TABLE IF NOT EXISTS payloads (id INTEGER NOT NULL PRIMARY KEY, config_json TEXT NOT NULL, payload_json TEXT NOT NULL, created_at INTEGER NOT NULL, destination_key INTEGER NOT NULL, FOREIGN KEY(destination_key) REFERENCES destinations(id) ON UPDATE CASCADE ON DELETE CASCADE)"
-    ];
-    return [self executeSql:sql];
-}
 
 - (nullable NSDictionary<NSString *, NSString *> *)addDestinationWithEndpoint:(nonnull NSString *)endpoint
                                                                 andAccesToken:(nonnull NSString *)accessToken {
@@ -233,6 +188,7 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
     
     NSArray<NSDictionary<NSString *, NSString *> *> *result =
     [self selectMultipleRowsWithSql:sql andCallback:selectMultipleRowsCallback];
+    
     return result;
 }
 
@@ -244,6 +200,7 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
      endpoint,
      accessToken
     ];
+    
     return [self executeSql:sql];
 }
 
@@ -251,6 +208,7 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
     
     NSString *sql =
     [NSString stringWithFormat: @"DELETE FROM destinations WHERE id = '%@'", destinationID];
+    
     return [self executeSql:sql];
 }
 
@@ -267,27 +225,115 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
     return [self executeSql:sql];
 }
 
+#pragma mark - Payloads related methods
 
-
-
-
-
-
-
-- (void)releaseDB {
+- (nullable NSDictionary<NSString *, NSString *> *)addPayload:(nonnull NSString *)payload
+                                                   withConfig:(nonnull NSString *)config
+                                             andDestinationID:(nonnull NSString *)destinationID {
     
-    sqlite3_close(self->_db);
-    self->_db = nil;
+    NSNumber *timeStamp = [NSNumber numberWithInteger:[[NSDate date] timeIntervalSince1970]];
+
+    NSString *sql = [NSString stringWithFormat:
+      @"INSERT INTO payloads (config_json, payload_json, destination_key, created_at) VALUES ('%@', '%@', '%@', '%ld')",
+      config,
+      payload,
+      destinationID,
+      [timeStamp integerValue]
+    ];
+    
+    if (NO == [self executeSql:sql]) {
+        return nil;
+    }
+    
+    sqlite3_int64 payloadID = sqlite3_last_insert_rowid(self->_db);
+    
+    return @ {
+        @"id": [NSString stringWithFormat:@"%lli", payloadID], //[NSNumber numberWithLongLong:destinationID],
+        @"config_json": config,
+        @"payload_json": payload,
+        @"destination_id": destinationID
+    };
 }
 
-- (void)clearDestinationsTable {
+- (nullable NSDictionary<NSString *, NSString *> *)getPayloadByID:(nonnull NSString *)payloadID {
+
+    NSString *sql = [NSString stringWithFormat:
+      @"SELECT * FROM payloads WHERE id = '%@'",
+      payloadID
+    ];
+    
+    NSDictionary<NSString *, NSString *> *result =
+    [self selectSingleRowWithSql:sql andCallback:selectSingleRowCallback];
+    
+    return result;
 }
 
-- (void)clearPayloadsTable {
+- (nonnull NSArray<NSDictionary<NSString *, NSString *> *> *)getAllPayloadsWithDestinationID:(nonnull NSString *)destinationID {
+    
+    NSString *sql = [NSString stringWithFormat:
+      @"SELECT * FROM payloads WHERE destination_id = '%@'",
+      destinationID
+    ];
+
+    NSArray<NSDictionary<NSString *, NSString *> *> *result =
+    [self selectMultipleRowsWithSql:sql andCallback:selectMultipleRowsCallback];
+    
+    return result;
 }
 
-- (void)clearPayloadsOlderThan:(nonnull NSDate *)cutoffTime {
+- (nonnull NSArray<NSDictionary<NSString *, NSString *> *> *)getPayloadsWithLimit:(NSUInteger)limit {
+
+    return [self getPayloadsWithOffset:0 andLimit:limit];
 }
+
+- (nonnull NSArray<NSDictionary<NSString *, NSString *> *> *)getPayloadsWithOffset:(NSUInteger)offset
+                                                                          andLimit:(NSUInteger)limit {
+
+    NSString *sql = [NSString stringWithFormat:
+      @"SELECT * FROM payloads OFFSET '%lu' LIMIT '%lu'",
+      offset,
+      limit
+    ];
+    
+    NSArray<NSDictionary<NSString *, NSString *> *> *result =
+    [self selectMultipleRowsWithSql:sql andCallback:selectMultipleRowsCallback];
+    
+    return result;
+}
+
+- (nonnull NSArray<NSDictionary<NSString *, NSString *> *> *)getAllPayloads {
+
+    NSString *sql = @"SELECT * FROM payloads";
+    
+    NSArray<NSDictionary<NSString *, NSString *> *> *result =
+    [self selectMultipleRowsWithSql:sql andCallback:selectMultipleRowsCallback];
+    
+    return result;
+}
+
+- (BOOL)removePayloadByID:(nonnull NSString *)payloadID {
+    
+    NSString *sql =
+    [NSString stringWithFormat: @"DELETE FROM payloads WHERE id = '%@'", payloadID];
+    
+    return [self executeSql:sql];
+}
+
+- (BOOL)removePayloadsOlderThan:(nonnull NSDate *)cutoffTime {
+    
+    NSNumber *threshold = [NSNumber numberWithInteger:[cutoffTime timeIntervalSince1970]];
+    
+    NSString *sql = [NSString stringWithFormat:@"DELETE FROM payloads WHERE created_at <= '%lu'", [threshold integerValue]];
+    return [self executeSql:sql];
+}
+
+- (BOOL)removeAllPayloads {
+
+    NSString *sql = @"DELETE FROM payloads";
+    return [self executeSql:sql];
+}
+
+#pragma mark - unit testing helper methods
 
 - (BOOL)checkIfTableExists_Destinations {
     
@@ -307,6 +353,68 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
     return result;
 }
 
+- (BOOL)clearDestinations; {
+
+    return [self removeAllDestinations];
+}
+
+- (BOOL)clearPayloads {
+
+    return [self removeAllPayloads];
+}
+
+- (BOOL)clear {
+
+    BOOL success = [self clearPayloads];
+    if (success) {
+        success = [self clearDestinations];
+    }
+    return success;
+}
+
+#pragma mark - internal methods
+
+- (void)initDB {
+    
+    [self openDB];
+    [self ensureDestinationsTable];
+    [self ensurePayloadsTable];
+}
+
+- (BOOL)openDB {
+    
+    int result = sqlite3_open([self->_storePath UTF8String], &self->_db);
+    if (result != SQLITE_OK) {
+        
+        RollbarSdkLog(@"sqlite3_open: %s", sqlite3_errmsg(self->_db));
+        return NO;
+    }
+    return YES;
+}
+
+- (BOOL)ensureDestinationsTable {
+    
+    NSString *sql = [NSString stringWithFormat:
+                         @"CREATE TABLE IF NOT EXISTS destinations (id INTEGER NOT NULL PRIMARY KEY, endpoint TEXT NOT NULL, access_token TEXT NOT NULL, CONSTRAINT unique_destination UNIQUE(endpoint, access_token))"
+    ];
+    return [self executeSql:sql];
+}
+
+- (BOOL)ensurePayloadsTable {
+    
+    
+    
+    NSString *sql = [NSString stringWithFormat:
+                         @"CREATE TABLE IF NOT EXISTS payloads (id INTEGER NOT NULL PRIMARY KEY, config_json TEXT NOT NULL, payload_json TEXT NOT NULL, created_at INTEGER NOT NULL, destination_key INTEGER NOT NULL, FOREIGN KEY(destination_key) REFERENCES destinations(id) ON UPDATE CASCADE ON DELETE CASCADE)"
+    ];
+    return [self executeSql:sql];
+}
+
+- (void)releaseDB {
+    
+    sqlite3_close(self->_db);
+    self->_db = nil;
+}
 
 - (BOOL)checkIfTableExists:(nonnull NSString *)tableName {
     
