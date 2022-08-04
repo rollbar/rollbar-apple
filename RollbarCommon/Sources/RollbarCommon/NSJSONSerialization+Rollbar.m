@@ -50,6 +50,8 @@ NS_ASSUME_NONNULL_BEGIN
     }
     
     [obj enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+        // Defensive failsafe to avoid exceptions when trying to create dictionary literal with nil `obj`
+        obj = obj ?: [NSNull null];
         
         if ([obj isKindOfClass:[NSDictionary class]]) {
             
