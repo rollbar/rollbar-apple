@@ -251,7 +251,7 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
         @"id": [NSString stringWithFormat:@"%lli", payloadID], //[NSNumber numberWithLongLong:destinationID],
         @"config_json": config,
         @"payload_json": payload,
-        @"destination_id": destinationID
+        @"destination_key": destinationID
     };
 }
 
@@ -271,7 +271,7 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
 - (nonnull NSArray<NSDictionary<NSString *, NSString *> *> *)getAllPayloadsWithDestinationID:(nonnull NSString *)destinationID {
     
     NSString *sql = [NSString stringWithFormat:
-      @"SELECT * FROM payloads WHERE destination_id = '%@'",
+      @"SELECT * FROM payloads WHERE destination_key = '%@'",
       destinationID
     ];
 
@@ -289,11 +289,8 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
 - (nonnull NSArray<NSDictionary<NSString *, NSString *> *> *)getPayloadsWithOffset:(NSUInteger)offset
                                                                           andLimit:(NSUInteger)limit {
 
-    NSString *sql = [NSString stringWithFormat:
-      @"SELECT * FROM payloads OFFSET '%lu' LIMIT '%lu'",
-      offset,
-      limit
-    ];
+    NSString *sql =
+    [NSString stringWithFormat:@"SELECT * FROM payloads LIMIT %lu OFFSET %lu", limit, offset];
     
     NSArray<NSDictionary<NSString *, NSString *> *> *result =
     [self selectMultipleRowsWithSql:sql andCallback:selectMultipleRowsCallback];
@@ -321,9 +318,12 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
 
 - (BOOL)removePayloadsOlderThan:(nonnull NSDate *)cutoffTime {
     
-    NSNumber *threshold = [NSNumber numberWithInteger:[cutoffTime timeIntervalSince1970]];
+    NSTimeInterval interval = [cutoffTime timeIntervalSince1970];
     
-    NSString *sql = [NSString stringWithFormat:@"DELETE FROM payloads WHERE created_at <= '%lu'", [threshold integerValue]];
+    NSString *sql = [NSString stringWithFormat:
+                     @"DELETE FROM payloads WHERE created_at <= '%li'",
+                     (long int)interval
+    ];
     return [self executeSql:sql];
 }
 

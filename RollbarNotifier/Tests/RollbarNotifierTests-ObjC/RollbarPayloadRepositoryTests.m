@@ -232,19 +232,120 @@
 
 #pragma mark - Payloads unit tests
 
-- (void)testTimestamp {
+- (void)testTimestampCalculations {
     
     NSDate *cutoffTime = [NSDate date];
-    NSNumber *threshold = [NSNumber numberWithInteger:[cutoffTime timeIntervalSince1970]];
+    NSNumber *threshold = [NSNumber numberWithInteger:cutoffTime.timeIntervalSince1970];
     
     RollbarSdkLog(@"*** Removing payloads older than: %@ (%@)",
                   cutoffTime,
                   [NSDate dateWithTimeIntervalSince1970:[threshold integerValue]]
                   );
-
+    XCTAssertTrue((cutoffTime.timeIntervalSince1970 - threshold.doubleValue) < 1.0);
 }
 
-//TODO: implement...
+- (void)testAddGetRemovePayload {
+    
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    XCTAssertTrue(0 == [repo getAllDestinations].count);
+    [self insertDestinationMocks:repo];
+    XCTAssertTrue(0 < [repo getAllDestinations].count);
+
+    XCTAssertEqual(0, [repo getAllPayloads].count);
+    
+    XCTAssertNil([repo getPayloadByID:@"0001"]);
+    NSDictionary<NSString *, NSString *> *dataFields =
+    [repo addPayload:@"PL_001"
+          withConfig:@"C_001"
+    andDestinationID:[repo getDestinationWithEndpoint:@"EP_001"
+                                        andAccesToken:@"AT_005"][@"id"]
+    ];
+    XCTAssertEqual(1, [repo getAllPayloads].count);
+    NSDictionary<NSString *, NSString *> *dataFields1 = [repo getPayloadByID:dataFields[@"id"]];
+    XCTAssertNotNil(dataFields1);
+    XCTAssertEqual(5, dataFields1.count);
+    XCTAssertTrue([dataFields[@"id"] isEqualToString:dataFields1[@"id"]]);
+    XCTAssertTrue([dataFields[@"payload_json"] isEqualToString:dataFields1[@"payload_json"]]);
+    XCTAssertTrue([dataFields[@"config_json"] isEqualToString:dataFields1[@"config_json"]]);
+
+    [repo removePayloadByID:dataFields[@"id"]];
+    XCTAssertNil([repo getPayloadByID:dataFields[@"id"]]);
+    XCTAssertEqual(0, [repo getAllPayloads].count);
+}
+
+- (void)testGetAllPayloads {
+    
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    XCTAssertTrue(0 == [repo getAllDestinations].count);
+    XCTAssertTrue(0 == [repo getAllPayloads].count);
+    [self insertPayloadMocks:repo];
+    XCTAssertTrue(0 < [repo getAllDestinations].count);
+    XCTAssertTrue(0 < [repo getAllPayloads].count);
+}
+
+- (void)testRemoveAllPayloads {
+    
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    XCTAssertTrue(0 == [repo getAllDestinations].count);
+    XCTAssertTrue(0 == [repo getAllPayloads].count);
+    [self insertPayloadMocks:repo];
+    XCTAssertTrue(0 < [repo getAllDestinations].count);
+    XCTAssertTrue(0 < [repo getAllPayloads].count);
+    [repo removeAllPayloads];
+    XCTAssertTrue(0 < [repo getAllDestinations].count);
+    XCTAssertTrue(0 == [repo getAllPayloads].count);
+}
+
+- (void)testRemoveOldPayloads {
+    
+    NSDate *cutoffTime = [NSDate date];
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    XCTAssertTrue(0 == [repo getAllDestinations].count);
+    XCTAssertTrue(0 == [repo getAllPayloads].count);
+    [self insertPayloadMocks:repo];
+    XCTAssertTrue(0 < [repo getAllDestinations].count);
+    XCTAssertTrue(0 < [repo getAllPayloads].count);
+    [repo removePayloadsOlderThan:[NSDate distantPast]];
+    XCTAssertTrue(0 < [repo getAllDestinations].count);
+    XCTAssertEqual(4, [repo getAllPayloads].count);
+    [repo removePayloadsOlderThan:[NSDate distantFuture]];
+    XCTAssertTrue(0 < [repo getAllDestinations].count);
+    XCTAssertEqual(0, [repo getAllPayloads].count);
+}
+
+- (void)testGetPayloadsWithDestinationID {
+    
+    NSDate *cutoffTime = [NSDate date];
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    XCTAssertTrue(0 == [repo getAllDestinations].count);
+    XCTAssertTrue(0 == [repo getAllPayloads].count);
+    [self insertPayloadMocks:repo];
+    NSString *destinationID = [repo getDestinationWithEndpoint:@"EP_001"
+                                                 andAccesToken:@"AT_005"][@"id"];
+    XCTAssertEqual(3, [repo getAllPayloadsWithDestinationID:destinationID].count);
+    destinationID = [repo getDestinationWithEndpoint:@"EP_001"
+                                       andAccesToken:@"AT_006"][@"id"];
+    XCTAssertEqual(1, [repo getAllPayloadsWithDestinationID:destinationID].count);
+    destinationID = [repo getDestinationWithEndpoint:@"EP_001"
+                                       andAccesToken:@"AT_007"][@"id"];
+    XCTAssertEqual(0, [repo getAllPayloadsWithDestinationID:destinationID].count);
+}
+
+- (void)testGetPayloadsWithOffsetAndLimit {
+    
+    NSDate *cutoffTime = [NSDate date];
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    XCTAssertTrue(0 == [repo getAllDestinations].count);
+    XCTAssertTrue(0 == [repo getAllPayloads].count);
+    [self insertPayloadMocks:repo];
+    XCTAssertEqual(4, [repo getAllPayloads].count);
+    XCTAssertEqual(2, [repo getPayloadsWithLimit:2].count);
+    XCTAssertEqual(2, [repo getPayloadsWithOffset:2 andLimit:4].count);
+    XCTAssertEqual(1, [repo getPayloadsWithOffset:3 andLimit:4].count);
+    XCTAssertEqual(0, [repo getPayloadsWithOffset:4 andLimit:4].count);
+    XCTAssertEqual(0, [repo getPayloadsWithOffset:5 andLimit:4].count);
+    XCTAssertEqual(0, [repo getPayloadsWithOffset:2 andLimit:0].count);
+}
 
 #pragma mark - Payloads performance tests
 //TODO: implement...
@@ -273,6 +374,31 @@
     [repo addDestinationWithEndpoint:@"EP_003" andAccesToken:@"AT_001"];
     [repo addDestinationWithEndpoint:@"EP_004" andAccesToken:@"AT_001"];
     [repo addDestinationWithEndpoint:@"EP_005" andAccesToken:@"AT_001"];
+}
+
+- (void)insertPayloadMocks:(RollbarPayloadRepository *)repo {
+    
+    [self insertDestinationMocks:repo];
+    
+    //paylooads for EP_001/AT_005 destination
+    [repo addPayload:@"PL_001"
+          withConfig:@"C_001"
+    andDestinationID:[repo getDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_005"][@"id"]
+    ];
+    [repo addPayload:@"PL_002"
+          withConfig:@"C_002"
+    andDestinationID:[repo getDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_005"][@"id"]
+    ];
+    [repo addPayload:@"PL_003"
+          withConfig:@"C_003"
+    andDestinationID:[repo getDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_005"][@"id"]
+    ];
+
+    //paylooads for EP_001/AT_006 destination
+    [repo addPayload:@"PL_004"
+          withConfig:@"C_004"
+    andDestinationID:[repo getDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_006"][@"id"]
+    ];
 }
 
 @end
