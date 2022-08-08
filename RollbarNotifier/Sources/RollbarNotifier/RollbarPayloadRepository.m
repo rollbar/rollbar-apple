@@ -281,6 +281,30 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
     return result;
 }
 
+- (nonnull NSArray<NSDictionary<NSString *, NSString *> *> *)getPayloadsWithDestinationID:(nonnull NSString *)destinationID
+                                                                                    andLimit:(NSUInteger)limit {
+    
+    return  [self getPayloadsWithDestinationID:destinationID andOffset:0 andLimit:limit];
+}
+
+- (nonnull NSArray<NSDictionary<NSString *, NSString *> *> *)getPayloadsWithDestinationID:(nonnull NSString *)destinationID
+                                                                                andOffset:(NSUInteger)offset
+                                                                                 andLimit:(NSUInteger)limit {
+    
+    
+    NSString *sql = [NSString stringWithFormat:
+                         @"SELECT * FROM payloads WHERE destination_key = '%@' LIMIT %lu OFFSET %lu",
+                     destinationID,
+                     limit,
+                     offset
+    ];
+    
+    NSArray<NSDictionary<NSString *, NSString *> *> *result =
+    [self selectMultipleRowsWithSql:sql andCallback:selectMultipleRowsCallback];
+    
+    return result;
+}
+
 - (nonnull NSArray<NSDictionary<NSString *, NSString *> *> *)getPayloadsWithLimit:(NSUInteger)limit {
 
     return [self getPayloadsWithOffset:0 andLimit:limit];

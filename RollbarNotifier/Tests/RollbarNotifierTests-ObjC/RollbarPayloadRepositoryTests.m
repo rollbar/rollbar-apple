@@ -331,6 +331,31 @@
     XCTAssertEqual(0, [repo getAllPayloadsWithDestinationID:destinationID].count);
 }
 
+
+- (void)testGetPayloadsWithDestinationIDAndOffsetAndLimit {
+    
+    NSDate *cutoffTime = [NSDate date];
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    XCTAssertTrue(0 == [repo getAllDestinations].count);
+    XCTAssertTrue(0 == [repo getAllPayloads].count);
+    [self insertPayloadMocks:repo];
+    XCTAssertEqual(4, [repo getAllPayloads].count);
+    
+    NSString *destinationID = [repo getDestinationWithEndpoint:@"EP_001"
+                                                 andAccesToken:@"AT_005"][@"id"];
+    XCTAssertEqual(3, [repo getAllPayloadsWithDestinationID:destinationID].count);
+
+    
+    XCTAssertEqual(2, [repo getPayloadsWithDestinationID:destinationID andLimit:2].count);
+    XCTAssertEqual(3, [repo getPayloadsWithDestinationID:destinationID andOffset:0 andLimit:3].count);
+    XCTAssertEqual(3, [repo getPayloadsWithDestinationID:destinationID andOffset:0 andLimit:6].count);
+    XCTAssertEqual(2, [repo getPayloadsWithDestinationID:destinationID andOffset:1 andLimit:2].count);
+    XCTAssertEqual(2, [repo getPayloadsWithDestinationID:destinationID andOffset:1 andLimit:4].count);
+    XCTAssertEqual(1, [repo getPayloadsWithDestinationID:destinationID andOffset:2 andLimit:2].count);
+    XCTAssertEqual(1, [repo getPayloadsWithDestinationID:destinationID andOffset:2 andLimit:4].count);
+    XCTAssertEqual(0, [repo getPayloadsWithDestinationID:destinationID andOffset:5 andLimit:2].count);
+}
+
 - (void)testGetPayloadsWithOffsetAndLimit {
     
     NSDate *cutoffTime = [NSDate date];

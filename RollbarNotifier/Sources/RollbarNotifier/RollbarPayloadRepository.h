@@ -49,6 +49,13 @@ NS_DESIGNATED_INITIALIZER;
 
 - (nonnull NSArray<NSDictionary<NSString *, NSString *> *> *)getAllPayloadsWithDestinationID:(nonnull NSString *)destinationID;
 
+- (nonnull NSArray<NSDictionary<NSString *, NSString *> *> *)getPayloadsWithDestinationID:(nonnull NSString *)destinationID
+                                                                                 andLimit:(NSUInteger)limit;
+
+- (nonnull NSArray<NSDictionary<NSString *, NSString *> *> *)getPayloadsWithDestinationID:(nonnull NSString *)destinationID
+                                                                                andOffset:(NSUInteger)offset
+                                                                                 andLimit:(NSUInteger)limit;
+
 - (nonnull NSArray<NSDictionary<NSString *, NSString *> *> *)getPayloadsWithLimit:(NSUInteger)limit;
 
 - (nonnull NSArray<NSDictionary<NSString *, NSString *> *> *)getPayloadsWithOffset:(NSUInteger)offset
