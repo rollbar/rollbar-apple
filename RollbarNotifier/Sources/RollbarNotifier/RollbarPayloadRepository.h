@@ -13,10 +13,20 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface RollbarPayloadRepository : NSObject
 
-#pragma mark - instance initializers
+#pragma mark - factory methods
 
-- (instancetype)initWithStore:(nonnull NSString *)storePath
-NS_DESIGNATED_INITIALIZER;
++ (instancetype)repositoryWithFlag:(BOOL)inMemory;
++ (instancetype)repositoryWithPath:(nonnull NSString *)storePath;
+
++ (instancetype)inMemoryRepository;
++ (instancetype)persistentRepository;
++ (instancetype)persistentRepositoryWithPath:(nonnull NSString *)storePath;
+
+#pragma mark - instantiation blocking
+
++ (instancetype)alloc NS_UNAVAILABLE;
++ (instancetype)new NS_UNAVAILABLE;
+- (instancetype)init NS_UNAVAILABLE;
 
 #pragma mark - Destinations related methods
 

@@ -33,11 +33,11 @@
 
 #pragma mark - Destinations unit tests
 
-- (void)testRepoInitialization {
+- (void)testInMemoryRepoInitialization {
     
     XCTAssertFalse([RollbarTestUtil checkPayloadsStoreFileExists]);
-    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
-    XCTAssertTrue([RollbarTestUtil checkPayloadsStoreFileExists]);
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository inMemoryRepository];
+    XCTAssertFalse([RollbarTestUtil checkPayloadsStoreFileExists]);
     
     XCTAssertFalse([repo checkIfTableExists_Unknown]);
     XCTAssertTrue ([repo checkIfTableExists_Destinations]);
@@ -46,7 +46,7 @@
 
 - (void)testAddDestination {
     
-    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];
     NSDictionary<NSString *, NSString *> *destination =
     [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_001"];
         
@@ -64,7 +64,7 @@
 
 - (void)testGetDestination {
     
-    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];
     [self insertDestinationMocks:repo];
     
     NSDictionary<NSString *, NSString *> *destination =
@@ -85,7 +85,7 @@
 
 - (void)testGetDestinationByID {
     
-    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];
     [self insertDestinationMocks:repo];
     
     NSDictionary<NSString *, NSString *> *destination =
@@ -104,7 +104,7 @@
 
 - (void)testGetAllDestinations {
     
-    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];
     [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_001"];
     [repo addDestinationWithEndpoint:@"EP_001" andAccesToken:@"AT_002"];
 
@@ -130,7 +130,7 @@
 
 - (void)testDestinationRemovals {
     
-    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];
     [self insertDestinationMocks:repo];
     
     int removedCount = 0;
@@ -167,13 +167,13 @@
 
     [self measureBlock:^{
         
-        RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+        RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];
     }];
 }
 
 - (void)testAddRemoveDestinationPerformance {
     
-    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];
     XCTAssertTrue(0 == [repo getAllDestinations].count);
 
     [self measureBlock:^{
@@ -186,7 +186,7 @@
 
 - (void)testAddRemoveDestinationByIDPerformance {
     
-    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];
     XCTAssertTrue(0 == [repo getAllDestinations].count);
     
     [self measureBlock:^{
@@ -199,7 +199,7 @@
 
 - (void)testGetDestinationPerformance {
     
-    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];
     XCTAssertTrue(0 == [repo getAllDestinations].count);
     [self insertDestinationMocks:repo];
     XCTAssertNotNil([repo getAllDestinations]);
@@ -213,7 +213,7 @@
 
 - (void)testGetAllDestinationsPerformance {
     
-    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];
     XCTAssertTrue(0 == [repo getAllDestinations].count);
     [self insertDestinationMocks:repo];
     
@@ -246,7 +246,7 @@
 
 - (void)testAddGetRemovePayload {
     
-    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];
     XCTAssertTrue(0 == [repo getAllDestinations].count);
     [self insertDestinationMocks:repo];
     XCTAssertTrue(0 < [repo getAllDestinations].count);
@@ -275,7 +275,7 @@
 
 - (void)testGetAllPayloads {
     
-    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];
     XCTAssertTrue(0 == [repo getAllDestinations].count);
     XCTAssertTrue(0 == [repo getAllPayloads].count);
     [self insertPayloadMocks:repo];
@@ -285,7 +285,7 @@
 
 - (void)testRemoveAllPayloads {
     
-    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];
     XCTAssertTrue(0 == [repo getAllDestinations].count);
     XCTAssertTrue(0 == [repo getAllPayloads].count);
     [self insertPayloadMocks:repo];
@@ -299,7 +299,7 @@
 - (void)testRemoveOldPayloads {
     
     NSDate *cutoffTime = [NSDate date];
-    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];
     XCTAssertTrue(0 == [repo getAllDestinations].count);
     XCTAssertTrue(0 == [repo getAllPayloads].count);
     [self insertPayloadMocks:repo];
@@ -316,7 +316,7 @@
 - (void)testGetPayloadsWithDestinationID {
     
     NSDate *cutoffTime = [NSDate date];
-    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];
     XCTAssertTrue(0 == [repo getAllDestinations].count);
     XCTAssertTrue(0 == [repo getAllPayloads].count);
     [self insertPayloadMocks:repo];
@@ -335,7 +335,7 @@
 - (void)testGetPayloadsWithDestinationIDAndOffsetAndLimit {
     
     NSDate *cutoffTime = [NSDate date];
-    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];
     XCTAssertTrue(0 == [repo getAllDestinations].count);
     XCTAssertTrue(0 == [repo getAllPayloads].count);
     [self insertPayloadMocks:repo];
@@ -359,7 +359,7 @@
 - (void)testGetPayloadsWithOffsetAndLimit {
     
     NSDate *cutoffTime = [NSDate date];
-    RollbarPayloadRepository *repo = [RollbarPayloadRepository new];
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];
     XCTAssertTrue(0 == [repo getAllDestinations].count);
     XCTAssertTrue(0 == [repo getAllPayloads].count);
     [self insertPayloadMocks:repo];
@@ -374,6 +374,12 @@
 
 #pragma mark - Payloads performance tests
 //TODO: implement...
+- (void)testPerformance {
+    
+    [self measureBlock:^{
+        
+    }];
+}
 
 
 

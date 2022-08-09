@@ -96,18 +96,65 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
 
 }
 
+#pragma mark - factory methods
+
++ (instancetype)repositoryWithFlag:(BOOL)inMemory {
+    
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository alloc];
+    if (inMemory) {
+        return [repo initInMemoryOnly];
+    }
+    else {
+        return [repo init];
+    }
+}
+
++ (instancetype)repositoryWithPath:(nonnull NSString *)storePath {
+    
+    return [[RollbarPayloadRepository alloc] initWithStore:storePath];
+}
+
++ (instancetype)inMemoryRepository {
+    
+    return [RollbarPayloadRepository repositoryWithFlag:YES];
+}
+
++ (instancetype)persistentRepository {
+    
+    return [RollbarPayloadRepository repositoryWithFlag:NO];
+}
+
++ (instancetype)persistentRepositoryWithPath:(nonnull NSString *)storePath {
+    
+    return [RollbarPayloadRepository repositoryWithPath:storePath];
+}
+
+#pragma mark - class initializer
+
 + (void)initialize {
     
 }
 
 #pragma mark - instance initializers
 
+- (instancetype)initInMemoryOnly {
+    
+    if (self = [super init]) {
+        
+        [self initDB:YES];
+        return self;
+    }
+    
+    return nil;
+}
+
+
 - (instancetype)initWithStore:(nonnull NSString *)storePath {
     
     if (self = [super init]) {
         
         self->_storePath = storePath;
-        [self initDB];
+        [self initDB:NO];
         return self;
     }
     
@@ -398,16 +445,20 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
 
 #pragma mark - internal methods
 
-- (void)initDB {
+- (void)initDB:(BOOL)inMemory {
     
-    [self openDB];
+    [self openDB:inMemory];
     [self ensureDestinationsTable];
     [self ensurePayloadsTable];
 }
 
-- (BOOL)openDB {
+- (BOOL)openDB:(BOOL)inMemory {
     
-    int result = sqlite3_open([self->_storePath UTF8String], &self->_db);
+    int sqliteDbFlags = inMemory
+    ? (SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_MEMORY)
+    : (SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE);
+    
+    int result = sqlite3_open_v2([self->_storePath UTF8String], &self->_db, sqliteDbFlags, NULL);
     if (result != SQLITE_OK) {
         
         RollbarSdkLog(@"sqlite3_open: %s", sqlite3_errmsg(self->_db));
