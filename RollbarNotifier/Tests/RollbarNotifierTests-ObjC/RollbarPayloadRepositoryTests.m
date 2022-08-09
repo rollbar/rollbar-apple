@@ -228,8 +228,6 @@
 }
 
 
-
-
 #pragma mark - Payloads unit tests
 
 - (void)testTimestampCalculations {
@@ -373,18 +371,109 @@
 }
 
 #pragma mark - Payloads performance tests
-//TODO: implement...
-- (void)testPerformance {
+
+- (void)testAddGetRemovePayloadPerformance {
     
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];
+    XCTAssertTrue(0 == [repo getAllDestinations].count);
+    [self insertDestinationMocks:repo];
+    XCTAssertTrue(0 < [repo getAllDestinations].count);
+    
+    XCTAssertEqual(0, [repo getAllPayloads].count);
+    
+    XCTAssertNil([repo getPayloadByID:@"0001"]);
+
     [self measureBlock:^{
-        
+        NSDictionary<NSString *, NSString *> *dataFields =
+        [repo addPayload:@"PL_001"
+              withConfig:@"C_001"
+        andDestinationID:[repo getDestinationWithEndpoint:@"EP_001"
+                                            andAccesToken:@"AT_005"][@"id"]
+        ];
+        [repo removePayloadByID:dataFields[@"id"]];
+    }];
+}
+
+- (void)testGetAllPayloadsPerformance {
+    
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];
+    XCTAssertTrue(0 == [repo getAllDestinations].count);
+    XCTAssertTrue(0 == [repo getAllPayloads].count);
+    [self insertPayloadMocks:repo];
+    [self measureBlock:^{
+        id result = [repo getAllPayloads];
+    }];
+}
+
+- (void)testRemoveAllPayloadsPerformance {
+    
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];
+    XCTAssertTrue(0 == [repo getAllDestinations].count);
+    XCTAssertTrue(0 == [repo getAllPayloads].count);
+    [self insertPayloadMocks:repo];
+    XCTAssertTrue(0 < [repo getAllDestinations].count);
+    XCTAssertTrue(0 < [repo getAllPayloads].count);
+    [self measureBlock:^{
+        [repo removeAllPayloads];
+    }];
+}
+
+- (void)testRemoveOldPayloadsPerformance {
+    
+    NSDate *cutoffTime = [NSDate date];
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];
+    XCTAssertTrue(0 == [repo getAllDestinations].count);
+    XCTAssertTrue(0 == [repo getAllPayloads].count);
+    [self insertPayloadMocks:repo];
+    XCTAssertTrue(0 < [repo getAllDestinations].count);
+    XCTAssertTrue(0 < [repo getAllPayloads].count);
+    [self measureBlock:^{
+        [repo removePayloadsOlderThan:[NSDate distantPast]];
+    }];
+}
+
+- (void)testGetPayloadsWithDestinationIDPerformance {
+    
+    NSDate *cutoffTime = [NSDate date];
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];
+    XCTAssertTrue(0 == [repo getAllDestinations].count);
+    XCTAssertTrue(0 == [repo getAllPayloads].count);
+    [self insertPayloadMocks:repo];
+    NSString *destinationID = [repo getDestinationWithEndpoint:@"EP_001"
+                                                 andAccesToken:@"AT_005"][@"id"];
+    [self measureBlock:^{
+        id result = [repo getAllPayloadsWithDestinationID:destinationID];
     }];
 }
 
 
+- (void)testGetPayloadsWithDestinationIDAndOffsetAndLimitPerformance {
+    
+    NSDate *cutoffTime = [NSDate date];
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];
+    XCTAssertTrue(0 == [repo getAllDestinations].count);
+    XCTAssertTrue(0 == [repo getAllPayloads].count);
+    [self insertPayloadMocks:repo];
+    XCTAssertEqual(4, [repo getAllPayloads].count);
+    
+    NSString *destinationID = [repo getDestinationWithEndpoint:@"EP_001"
+                                                 andAccesToken:@"AT_005"][@"id"];
+    [self measureBlock:^{
+        id result = [repo getPayloadsWithDestinationID:destinationID andOffset:1 andLimit:4];
+    }];
+}
 
-
-
+- (void)testGetPayloadsWithOffsetAndLimitPerformance {
+    
+    NSDate *cutoffTime = [NSDate date];
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];
+    XCTAssertTrue(0 == [repo getAllDestinations].count);
+    XCTAssertTrue(0 == [repo getAllPayloads].count);
+    [self insertPayloadMocks:repo];
+    [self measureBlock:^{
+        id result = [repo getPayloadsWithOffset:2 andLimit:4];
+    }];
+}
 
 #pragma mark - mocking helpers
 
