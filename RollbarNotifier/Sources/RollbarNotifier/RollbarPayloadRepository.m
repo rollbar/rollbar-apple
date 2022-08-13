@@ -201,6 +201,35 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
     };
 }
 
+- (nonnull NSString *)getIDofDestinationWithEndpoint:(nonnull NSString *)endpoint
+                                       andAccesToken:(nonnull NSString *)accessToken {
+    
+    NSString *sql = [NSString stringWithFormat:
+                         @"SELECT id FROM destinations WHERE endpoint = '%@' AND access_token = '%@'",
+                     endpoint,
+                     accessToken
+    ];
+    
+    NSDictionary<NSString *, NSString *> *result = [self selectSingleRowWithSql:sql
+                                                                    andCallback:selectSingleRowCallback];
+    
+    if (!result || (0 == result.count)) {
+        result = [self addDestinationWithEndpoint:endpoint
+                                    andAccesToken:accessToken];
+    }
+    
+    NSString *destinationID = nil;
+    if (result) {
+        destinationID = result[@"id"];
+    }
+    
+    if (!destinationID) {
+        destinationID = @"";
+    }
+    
+    return destinationID;
+}
+
 - (nullable NSDictionary<NSString *, NSString *> *)getDestinationWithEndpoint:(nonnull NSString *)endpoint
                                                                 andAccesToken:(nonnull NSString *)accessToken {
     

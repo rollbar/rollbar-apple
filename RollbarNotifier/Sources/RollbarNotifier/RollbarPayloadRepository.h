@@ -33,6 +33,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable NSDictionary<NSString *, NSString *> *)addDestinationWithEndpoint:(nonnull NSString *)endpoint
                                                                 andAccesToken:(nonnull NSString *)accessToken;
 
+- (nonnull NSString *)getIDofDestinationWithEndpoint:(nonnull NSString *)endpoint
+                                       andAccesToken:(nonnull NSString *)accessToken;
+
 - (nullable NSDictionary<NSString *, NSString *> *)getDestinationWithEndpoint:(nonnull NSString *)endpoint
                                                                 andAccesToken:(nonnull NSString *)accessToken;
 
