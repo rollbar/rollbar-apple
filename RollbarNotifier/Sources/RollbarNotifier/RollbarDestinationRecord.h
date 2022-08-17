@@ -29,6 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, nonnull) RollbarRegistry *registry;
 
 - (BOOL)canPost;
+- (BOOL)canPostWithConfig:(nonnull RollbarConfig *)config;
 - (void)recordPostReply:(nullable RollbarPayloadPostReply *)reply;
 
 - (instancetype)initWithConfig:(nonnull RollbarConfig *)config

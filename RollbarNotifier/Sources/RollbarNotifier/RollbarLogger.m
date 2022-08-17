@@ -174,10 +174,14 @@ static NSString *queuedItemsFilePath = nil;
 - (void)report:(RollbarPayload *)payload {
 
     if (payload) {
-        NSDictionary *payloadJsonData = payload.jsonFriendlyData;
-        if (payloadJsonData) {
-            [[RollbarThread sharedInstance] persistPayload:payloadJsonData];
-        }
+        
+        [[RollbarThread sharedInstance] persistPayload:payload
+                                            withConfig:self.configuration];
+        
+//        NSDictionary *payloadJsonData = payload.jsonFriendlyData;
+//        if (payloadJsonData) {
+//            [[RollbarThread sharedInstance] persistPayload:payloadJsonData];
+//        }
     }
 }
 

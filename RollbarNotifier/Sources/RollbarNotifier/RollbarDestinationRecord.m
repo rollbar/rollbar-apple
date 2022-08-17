@@ -62,6 +62,27 @@
     }
 }
 
+- (BOOL)canPostWithConfig:(nonnull RollbarConfig *)config {
+    
+    
+    if (self->_nextLocalWindowStart && (self->_localWindowCount >= config.loggingOptions.maximumReportsPerMinute)) {
+        // we already exceeded local rate limits, let's wait till the next local rate limiting window:
+        //self->_nextEarliestPost = self->_nextLocalWindowStart;
+        return NO;
+    }
+
+    if (!self->_nextEarliestPost) {
+        return NO;
+    }
+    
+    if (NSOrderedDescending == [self->_nextEarliestPost compare:[NSDate date]]) {
+        return NO;
+    }
+    else {
+        return YES;
+    }
+}
+
 - (void)recordPostReply:(nullable RollbarPayloadPostReply *)reply {
     
     if (!reply) {

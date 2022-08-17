@@ -15,9 +15,13 @@ NS_ASSUME_NONNULL_BEGIN
 @interface RollbarRegistry : NSObject
 
 - (nonnull RollbarDestinationRecord *)getRecordForConfig:(nonnull RollbarConfig *)config;
+- (nonnull RollbarDestinationRecord *)getRecordForEndpoint:(nonnull NSString *)endpoint
+                                            andAccessToken:(nonnull NSString *)accessToken;
 - (NSUInteger)totalDestinationRecords;
 
 + (nonnull NSString *)destinationID:(nonnull RollbarDestination *)destination;
++ (nonnull NSString *)destinationIDwithEndpoint:(nonnull NSString *)endpoint
+                                 andAccessToken:(nonnull NSString *)accessToken;
 
 @end
 

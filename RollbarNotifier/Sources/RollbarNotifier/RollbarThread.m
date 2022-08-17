@@ -1,18 +1,12 @@
 @import RollbarCommon;
 
 #import "RollbarThread.h"
-#import "RollbarLogger.h"
-//#import "RollbarConfig.h"
-//#import "RollbarDeveloperOptions.h"
 #import "RollbarReachability.h"
 #import "RollbarTelemetry.h"
-//#import "RollbarTelemetryOptions.h"
 #import "RollbarNotifierFiles.h"
-//#import "RollbarPayload.h"
 #import "RollbarPayloadTruncator.h"
 #import "RollbarData.h"
-//#import "RollbarModule.h"
-//#import "RollbarDestination.h"
+#import "RollbarModule.h"
 #import "RollbarProxy.h"
 #import "RollbarSender.h"
 #import "RollbarPayloadPostReply.h"
@@ -24,15 +18,16 @@ static NSUInteger MAX_RETRY_COUNT = 5;
 @implementation RollbarThread {
 
 @private
-    //RollbarLogger *_logger;
     NSUInteger _maxReportsPerMinute;
-    RollbarRegistry *_registry;
     NSTimer *_timer;
+    NSString *_payloadsRepoFilePath;
+    RollbarRegistry *_registry;
+    RollbarPayloadRepository *_payloadsRepo;
     
-    NSString *_queuedItemsFilePath;
-    NSString *_stateFilePath;
-    NSMutableDictionary *_queueState;
-    NSDate *_nextSendTime;
+//    NSDate *_nextSendTime;
+//    NSString *_queuedItemsFilePath;
+//    NSString *_stateFilePath;
+//    NSMutableDictionary *_queueState;
 
 #if !TARGET_OS_WATCH
     RollbarReachability *_reachability;
@@ -58,7 +53,7 @@ static NSUInteger MAX_RETRY_COUNT = 5;
         self->_reachability = nil;
         self->_isNetworkReachable = YES;
 #endif
-        self->_nextSendTime = [[NSDate alloc] init];
+        //self->_nextSendTime = [[NSDate alloc] init];
 
         self.name = [RollbarThread rollbar_objectClassName];//NSStringFromClass([RollbarThread class]);
         self.active = YES;
@@ -96,78 +91,15 @@ static NSUInteger MAX_RETRY_COUNT = 5;
     [RollbarCachesDirectory ensureCachesDirectoryExists];
     NSString *cachesDirectory = [RollbarCachesDirectory directory];
     
-    // make sure we have all the data files set:
-    self->_queuedItemsFilePath =
-    [cachesDirectory stringByAppendingPathComponent:[RollbarNotifierFiles itemsQueue]];
-    self->_stateFilePath =
-    [cachesDirectory stringByAppendingPathComponent:[RollbarNotifierFiles itemsQueueState]];
-    
-    // create the queued items file if does not exist already:
-    if (![[NSFileManager defaultManager] fileExistsAtPath:self->_queuedItemsFilePath]) {
-        [[NSFileManager defaultManager] createFileAtPath:self->_queuedItemsFilePath
-                                                contents:nil
-                                              attributes:nil];
-    }
-    
-    // create state tracking file if does not exist already:
-    if ([[NSFileManager defaultManager] fileExistsAtPath:self->_stateFilePath]) {
-        NSData *stateData = [NSData dataWithContentsOfFile:self->_stateFilePath];
-        if (stateData) {
-            NSDictionary *state = [NSJSONSerialization JSONObjectWithData:stateData
-                                                                  options:0
-                                                                    error:nil];
-            self->_queueState = [state mutableCopy];
-        } else {
-            RollbarSdkLog(@"There was an error restoring saved queue state");
-        }
-    }
-    
-    // let's make sure we always recover into a good state if applicable:
-    if (!self->_queueState) {
-        self->_queueState = [@{
-            @"offset": [NSNumber numberWithUnsignedInt:0],
-            @"retry_count": [NSNumber numberWithUnsignedInt:0]
-        } mutableCopy];
-        [self saveQueueState];
-    }}
-
-- (void)saveQueueState {
-
-    NSError *error;
-    NSData *data = [NSJSONSerialization rollbar_dataWithJSONObject:self->_queueState
-                                                           options:0
-                                                             error:&error
-                                                              safe:true];
-    if (error) {
-        
-        RollbarSdkLog(@"Error: %@", [error localizedDescription]);
-    }
-    [data writeToFile:self->_stateFilePath atomically:YES];
+    // setup persistent payloads store/repo:
+    self->_payloadsRepoFilePath =
+    [cachesDirectory stringByAppendingPathComponent:[RollbarNotifierFiles payloadsStore]];
+    self->_payloadsRepo =
+    [RollbarPayloadRepository persistentRepositoryWithPath:self->_payloadsRepoFilePath];
+    NSAssert([[NSFileManager defaultManager] fileExistsAtPath:self->_payloadsRepoFilePath],
+             @"Resistent payloads store was not created: %@!!!", self->_payloadsRepoFilePath
+             );
 }
-
-//- (void)setReportingRate:(NSUInteger)reportsPerMinute {
-//
-//    NSAssert(reportsPerMinute > 0, @"reportsPerMinute must be greater than zero!");
-//
-//    BOOL wasExecuting = self.isExecuting;
-//    if (wasExecuting) {
-//
-//        [self cancel];
-//    }
-//
-//    if(reportsPerMinute > 0) {
-//        _maxReportsPerMinute = reportsPerMinute;
-//    } else {
-//        _maxReportsPerMinute = 60;
-//    }
-//
-//    self.active = YES;
-//
-//    if (wasExecuting) {
-//
-//        [self start];
-//    }
-//}
 
 - (void)run {
     
@@ -200,34 +132,55 @@ static NSUInteger MAX_RETRY_COUNT = 5;
 
 #pragma mark - persisting payload items
 
-- (void)persistPayload:(nonnull NSDictionary *)payload {
+- (void)persistPayload:(nonnull RollbarPayload *)payload
+            withConfig:(nonnull RollbarConfig *)config {
     
     [self performSelector:@selector(queuePayload_OnlyCallOnThread:)
                  onThread:[RollbarThread sharedInstance]
-               withObject:payload
+               withObject:@[payload, config]
             waitUntilDone:NO
     ];
 }
 
-
-- (void)queuePayload_OnlyCallOnThread:(NSDictionary *)payload {
+- (void)queuePayload_OnlyCallOnThread:(nonnull NSArray *)data {
     
-    NSError *error = nil;
-    NSData *data = [NSJSONSerialization rollbar_dataWithJSONObject:payload
-                                                           options:0
-                                                             error:&error
-                                                              safe:true];
-    if (nil == data) {
+    NSAssert(data, @"data can not be nil");
+    NSAssert(2 == data.count, @"data expected to have 2 components");
         
-        RollbarSdkLog(@"Couldn't generate and save JSON data from: %@", payload);
-        if (error) {
-            
-            RollbarSdkLog(@"    Error: %@", [error localizedDescription]);
-        }
+    RollbarPayload *payload = (RollbarPayload *)data[0];
+    NSAssert(payload, @"payload can not be nil in data: %@", data);
+    RollbarConfig *config = (RollbarConfig *)data[1];
+    NSAssert(config, @"config can not be nil");
+    if (!(payload && config)) {
+        
+        RollbarSdkLog(@"Couldn't queue payload %@ with config %@", payload, config);
         return;
     }
     
-    [RollbarFileWriter appendSafelyData:data toFile:self->_queuedItemsFilePath];
+    NSString *destinationID = [self->_payloadsRepo getIDofDestinationWithEndpoint:config.destination.endpoint
+                                                                    andAccesToken:config.destination.accessToken];
+    
+    NSString *configJson = [config serializeToJSONString];
+    NSAssert(configJson && configJson.length > 0, @"invalid configJson!");
+    if (!configJson || (0 == configJson.length)) {
+        RollbarSdkLog(@"invalid configJson!");
+        return;
+    }
+    
+    //TODO: consider moving payload modifications (scrubbing and truncation) here...
+    
+    [payload.data.notifier setData:@"configured_options" byKey:configJson];
+    NSString *payloadJson = [payload serializeToJSONString];
+    NSDictionary *payloadDataRow = [self->_payloadsRepo addPayload:payloadJson
+                                                        withConfig:configJson
+                                                  andDestinationID:destinationID];
+    if (!payloadDataRow || !payloadDataRow[@"id"]) {
+        RollbarSdkLog(@"*** Couldn't add a payload to the repo: %@", payloadJson);
+        RollbarSdkLog(@"*** with config: %@", configJson);
+        RollbarSdkLog(@"*** with destinationID: %@", destinationID);
+        RollbarSdkLog(@"*** Resulting payloadDataRow: %@", payloadDataRow);
+    }
+    NSAssert(payloadDataRow && payloadDataRow[@"id"], @"Couldn't add a payload to the repo: %@", payloadJson);
     
     [[RollbarTelemetry sharedInstance] clearAllData];
 }
@@ -255,132 +208,43 @@ static NSUInteger MAX_RETRY_COUNT = 5;
     }
 }
 
-- (void)processSavedItems {
+- (void)processSavedPayload:(nonnull NSDictionary<NSString *, NSString *> *)payloadDataRow {
     
-#if !TARGET_OS_WATCH
-    if (!self->_isNetworkReachable) {
-        RollbarSdkLog(@"Processing saved items: no network!");
-        // Don't attempt sending if the network is known to be not reachable
-        return;
-    }
-#endif
+    NSString *destinationKey = payloadDataRow[@"destination_key"];
+    NSAssert(destinationKey && destinationKey.length > 0, @"destination_key is expected to be defined!");
+    NSDictionary<NSString *, NSString *> *destination = [self->_payloadsRepo getDestinationByID:destinationKey];
+    RollbarDestinationRecord *destinationRecord = [self->_registry getRecordForEndpoint:destination[@"endpoint"]
+                                                                         andAccessToken:destination[@"access_token"]];
+    NSString *configJson = payloadDataRow[@"config_json"];
+    NSAssert(configJson && configJson.length > 0, @"config_json is expected to be defined!");
+    RollbarConfig *config = [[RollbarConfig alloc] initWithJSONString:configJson];
+    NSAssert(config, @"config is expected to be defined!");
     
-    NSUInteger startOffset = [self->_queueState[@"offset"] unsignedIntegerValue];
-    
-    NSFileHandle *fileHandle =
-    [NSFileHandle fileHandleForReadingAtPath:self->_queuedItemsFilePath];
-    [fileHandle seekToEndOfFile];
-    __block unsigned long long fileLength = [fileHandle offsetInFile];
-    [fileHandle closeFile];
-    
-    if (!fileLength) {
-        
-//        if (NO == self.configuration.developerOptions.suppressSdkInfoLogging) {
-//
-//            RollbarSdkLog(@"Processing saved items: no queued items in the file!");
-//        }
+    if (![destinationRecord canPostWithConfig:config]) {
         return;
     }
     
-    // Empty out the queued item file if all items have been processed already
-    if (startOffset == fileLength) {
-        [@"" writeToFile:self->_queuedItemsFilePath
-              atomically:YES
-                encoding:NSUTF8StringEncoding
-                   error:nil];
-        
-        self->_queueState[@"offset"] = [NSNumber numberWithUnsignedInteger:0];
-        self->_queueState[@"retry_count"] = [NSNumber numberWithUnsignedInteger:0];
-        [self saveQueueState];
-//        if (NO == self.configuration.developerOptions.suppressSdkInfoLogging) {
-//
-//            RollbarSdkLog(@"Processing saved items: emptied the queued items file.");
-//        }
-        
-        return;
-    }
+    NSString *payloadJson = payloadDataRow[@"payload_json"];
+    RollbarPayload *payload = [[RollbarPayload alloc] initWithJSONString:payloadJson];
+    NSAssert(payload, @"payload is expected to be defined!");
     
-    // Iterate through the items file and send the items in batches.
-    RollbarFileReader *reader =
-    [[RollbarFileReader alloc] initWithFilePath:self->_queuedItemsFilePath
-                                      andOffset:startOffset];
-    [reader enumerateLinesUsingBlock:^(NSString *line, NSUInteger nextOffset, BOOL *stop) {
-        
-        NSData *lineData = [line dataUsingEncoding:NSUTF8StringEncoding];
-        if (!lineData) {
-            // All we can do is ignore this line
-            RollbarSdkLog(@"Error converting file line to NSData: %@", line);
-            return;
-        }
-        NSError *error;
-        NSJSONReadingOptions serializationOptions = (NSJSONReadingMutableContainers | NSJSONReadingMutableLeaves);
-        NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:lineData
-                                                                options:serializationOptions
-                                                                  error:&error];
-        
-        if (!payload) {
-            // Ignore this line if it isn't valid json and proceed to the next line
-            RollbarSdkLog(@"Error restoring data from file to JSON: %@", error);
-            RollbarSdkLog(@"Raw data from file failed conversion to JSON:");
-            RollbarSdkLog(@"%@", lineData);
-            //            RollbarSdkLog(@"   error code: %@", error.code);
-            //            RollbarSdkLog(@"   error domain: %@", error.domain);
-            //            RollbarSdkLog(@"   error description: %@", error.description);
-            //            RollbarSdkLog(@"   error localized description: %@", error.localizedDescription);
-            //            RollbarSdkLog(@"   error failure reason: %@", error.localizedFailureReason);
-            //            RollbarSdkLog(@"   error recovery option: %@", error.localizedRecoveryOptions);
-            //            RollbarSdkLog(@"   error recovery suggestion: %@", error.localizedRecoverySuggestion);
-            return;
-        }
-        
-        BOOL shouldContinue = [self sendItem:payload nextOffset:nextOffset];
-        
-        if (!shouldContinue) {
-            // Stop processing the file so that the current file offset will be
-            // retried next time the file is processed
-            *stop = YES;
-            return;
-        }
-        
-        // The file has had items added since we started iterating through it,
-        // update the known file length to equal the next offset
-        if (nextOffset > fileLength) {
-            fileLength = nextOffset;
-        }
-        
-    }];
-}
-
-- (BOOL)sendItem:(NSDictionary *)payload
-      nextOffset:(NSUInteger)nextOffset {
     
-    RollbarPayload *rollbarPayload =
-    [[RollbarPayload alloc] initWithDictionary:[payload copy]];
-    if (nil == rollbarPayload) {
-        
-        RollbarSdkLog(
-                      @"Couldn't init and send RollbarPayload with data: %@",
-                      payload
-                      );
-        //        queueState[@"offset"] = [NSNumber numberWithUnsignedInteger:nextOffset];
-        //        queueState[@"retry_count"] = [NSNumber numberWithUnsignedInteger:0];
-        //        [RollbarLogger saveQueueState];
-        return YES; // no retry needed
-    }
-    
+    //TODO: the following payload truncation code should eventually move to the point right before payload persistence
+    //      into the repo:
     NSMutableDictionary *newPayload =
-    [NSMutableDictionary dictionaryWithDictionary:payload];
+    [NSMutableDictionary dictionaryWithDictionary:payload.jsonFriendlyData];
     [RollbarPayloadTruncator truncatePayload:newPayload];
     if (nil == newPayload) {
         
         RollbarSdkLog(
                       @"Couldn't send truncated payload that is nil"
                       );
-        //        queueState[@"offset"] = [NSNumber numberWithUnsignedInteger:nextOffset];
-        //        queueState[@"retry_count"] = [NSNumber numberWithUnsignedInteger:0];
-        //        [RollbarLogger saveQueueState];
-        return YES; // no retry needed
+        //let's use untruncated original:
+        newPayload = [NSMutableDictionary dictionaryWithDictionary:payload.jsonFriendlyData];
     }
+    
+    
+    
     
     NSError *error;
     NSData *jsonPayload = [NSJSONSerialization rollbar_dataWithJSONObject:newPayload
@@ -399,72 +263,61 @@ static NSUInteger MAX_RETRY_COUNT = 5;
                           error
                           );
         }
-        //        queueState[@"offset"] = [NSNumber numberWithUnsignedInteger:nextOffset];
-        //        queueState[@"retry_count"] = [NSNumber numberWithUnsignedInteger:0];
-        //        [RollbarLogger saveQueueState];
-        return YES; // no retry needed
+        // there is nothing we can do with this payload - let's drop it:
+        RollbarSdkLog(@"Dropping unprocessable payload: %@", payloadJson);
+        if (![self->_payloadsRepo removePayloadByID:payloadDataRow[@"id"]]) {
+            RollbarSdkLog(@"Couldn't remove payload data row with ID: %@", payloadDataRow[@"id"]);
+        }
+        return;
     }
     
-    if (NSOrderedDescending != [self->_nextSendTime compare: [[NSDate alloc] init] ]) {
+    if (config.developerOptions.logPayload) {
         
-        NSUInteger retryCount =
-        [self->_queueState[@"retry_count"] unsignedIntegerValue];
-        
-        RollbarConfig *rollbarConfig =
-        [[RollbarConfig alloc] initWithDictionary:rollbarPayload.data.notifier.jsonFriendlyData[@"configured_options"]];
-        
-        if (0 == retryCount && YES == rollbarConfig.developerOptions.logPayload) {
+        if (!config.developerOptions.suppressSdkInfoLogging) {
             
-            if (NO == rollbarConfig.developerOptions.suppressSdkInfoLogging) {
-                
-                RollbarSdkLog(@"About to send payload: %@",
-                              [[NSString alloc] initWithData:jsonPayload
-                                                    encoding:NSUTF8StringEncoding]
-                              );
-            }
-            
-            // - save this payload into a proper payloads log file:
-            //*****************************************************
-            
-            // compose the payloads log file path:
-            NSString *cachesDirectory = [RollbarCachesDirectory directory];
-            NSString *payloadsLogFilePath =
-            [cachesDirectory stringByAppendingPathComponent:rollbarConfig.developerOptions.payloadLogFile];
-            
-            [RollbarFileWriter appendSafelyData:jsonPayload toFile:payloadsLogFilePath];
+            RollbarSdkLog(@"About to send payload: %@",
+                          [[NSString alloc] initWithData:jsonPayload
+                                                encoding:NSUTF8StringEncoding]
+                          );
         }
         
-        BOOL success =
-        rollbarConfig ? [self sendPayload:jsonPayload usingConfig:rollbarConfig]
-        : [self sendPayload:jsonPayload]; // backward compatibility with just upgraded very old SDKs...
+        // - save this payload into a proper payloads log file:
+        //*****************************************************
         
-        if (!success) {
-            
-            if (retryCount < MAX_RETRY_COUNT) {
-                
-                self->_queueState[@"retry_count"] =
-                [NSNumber numberWithUnsignedInteger:retryCount + 1];
-                
-                [self saveQueueState];
-                
-                // Return NO so that the current batch will be retried next time
-                return NO;
-            }
+        // compose the payloads log file path:
+        NSString *cachesDirectory = [RollbarCachesDirectory directory];
+        NSString *payloadsLogFilePath =
+        [cachesDirectory stringByAppendingPathComponent:config.developerOptions.payloadLogFile];
+        [RollbarFileWriter appendSafelyData:jsonPayload toFile:payloadsLogFilePath];
+    }
+
+
+    BOOL success = config ? [self sendPayload:jsonPayload usingConfig:config]
+    : [self sendPayload:jsonPayload]; // backward compatibility with just upgraded very old SDKs...
+    
+    if (success) {
+        // we a successful sending - can remove the repo data row:
+        if (![self->_payloadsRepo removePayloadByID:payloadDataRow[@"id"]]) {
+            RollbarSdkLog(@"Couldn't remove payload data row with ID: %@", payloadDataRow[@"id"]);
         }
+        return;
     }
-    else {
-        
-        RollbarSdkLog(
-                      @"Omitting payload until nextSendTime is reached: %@",
-                      [[NSString alloc] initWithData:jsonPayload encoding:NSUTF8StringEncoding]
-                      );
+}
+
+- (void)processSavedItems {
+    
+#if !TARGET_OS_WATCH
+    if (!self->_isNetworkReachable) {
+        RollbarSdkLog(@"Processing saved items: no network!");
+        // Don't attempt sending if the network is known to be not reachable
+        return;
     }
+#endif
     
-    self->_queueState[@"offset"] = [NSNumber numberWithUnsignedInteger:nextOffset];
-    self->_queueState[@"retry_count"] = [NSNumber numberWithUnsignedInteger:0];
-    [self saveQueueState];
-    
-    return YES;
+    NSArray<NSDictionary<NSString *, NSString *> *> *payloads = [self->_payloadsRepo getPayloadsWithOffset:0 andLimit:5];
+    for(NSDictionary<NSString *, NSString *> *payload in payloads) {
+        [self processSavedPayload:payload];
+    }
 }
 
 - (BOOL)sendPayload:(nonnull NSData *)payload
@@ -495,7 +348,7 @@ static NSUInteger MAX_RETRY_COUNT = 5;
 /// Use/maintain sendPayload:usingConfig: instead!
 - (BOOL)sendPayload:(NSData *)payload {
     
-    return NO;
+    return YES;
 }
 
 #pragma mark - Network telemetry data

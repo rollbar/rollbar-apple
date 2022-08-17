@@ -10,9 +10,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// Signifies that the thread is active or not.
 @property(atomic) BOOL active;
 
-- (void)persist:(nonnull RollbarPayload *)payload;
+//- (void)persist:(nonnull RollbarPayload *)payload;
 
-- (void)persistPayload:(nonnull NSDictionary *)payload;
+- (void)persistPayload:(nonnull RollbarPayload *)payload
+            withConfig:(nonnull RollbarConfig *)config;
 
 - (BOOL)sendPayload:(nonnull NSData *)payload
         usingConfig:(nonnull RollbarConfig  *)config;
