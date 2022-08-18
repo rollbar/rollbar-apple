@@ -169,7 +169,7 @@ static NSUInteger MAX_RETRY_COUNT = 5;
     
     //TODO: consider moving payload modifications (scrubbing and truncation) here...
     
-    [payload.data.notifier setData:@"configured_options" byKey:configJson];
+    //[payload.data.notifier setData:config.jsonFriendlyData byKey:@"configured_options"];
     NSString *payloadJson = [payload serializeToJSONString];
     NSDictionary *payloadDataRow = [self->_payloadsRepo addPayload:payloadJson
                                                         withConfig:configJson
@@ -213,6 +213,9 @@ static NSUInteger MAX_RETRY_COUNT = 5;
     NSString *destinationKey = payloadDataRow[@"destination_key"];
     NSAssert(destinationKey && destinationKey.length > 0, @"destination_key is expected to be defined!");
     NSDictionary<NSString *, NSString *> *destination = [self->_payloadsRepo getDestinationByID:destinationKey];
+    NSAssert(destination, @"destination can not be nil!");
+    NSAssert(destination[@"endpoint"], @"destination endpoint can not be nil!");
+    NSAssert(destination[@"access_token"], @"destination access_token can not be nil!");
     RollbarDestinationRecord *destinationRecord = [self->_registry getRecordForEndpoint:destination[@"endpoint"]
                                                                          andAccessToken:destination[@"access_token"]];
     NSString *configJson = payloadDataRow[@"config_json"];

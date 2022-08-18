@@ -271,6 +271,43 @@
     XCTAssertEqual(0, [repo getAllPayloads].count);
 }
 
+- (void)testAddPayloadWithOddContent {
+    
+    RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];
+    XCTAssertTrue(0 == [repo getAllDestinations].count);
+    [self insertDestinationMocks:repo];
+    XCTAssertTrue(0 < [repo getAllDestinations].count);
+    
+    XCTAssertEqual(0, [repo getAllPayloads].count);
+    
+    XCTAssertNil([repo getPayloadByID:@"0001"]);
+
+    NSDictionary<NSString *, NSString *> *dataFields =
+    [repo addPayload:@"PL_001"
+          withConfig:@"C_001"
+    andDestinationID:[repo getDestinationWithEndpoint:@"EP_001"
+                                        andAccesToken:@"AT_005"][@"id"]
+    ];
+    XCTAssertEqual(1, [repo getAllPayloads].count);
+    NSDictionary<NSString *, NSString *> *dataFields1 = [repo getPayloadByID:dataFields[@"id"]];
+    XCTAssertNotNil(dataFields1);
+    XCTAssertEqual(5, dataFields1.count);
+    
+    [repo removePayloadByID:dataFields[@"id"]];
+    XCTAssertNil([repo getPayloadByID:dataFields[@"id"]]);
+    XCTAssertEqual(0, [repo getAllPayloads].count);
+    
+    
+    dataFields =
+    [repo addPayload:@"Don't"
+          withConfig:@"C_001"
+    andDestinationID:[repo getDestinationWithEndpoint:@"EP_001"
+                                        andAccesToken:@"AT_005"][@"id"]
+    ];
+    XCTAssertEqual(1, [repo getAllPayloads].count);
+    id payloads = [repo getAllPayloads];
+}
+
 - (void)testGetAllPayloads {
     
     RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];

@@ -20,7 +20,9 @@ const NSUInteger DEFAULT_RegistryCapacity = 10;
     
     NSAssert(config, @"Config must not be null!");
     NSAssert(config.destination, @"Destination must not be null!");
-    
+    NSAssert(config.destination.endpoint, @"destination.endpoint must not be null!");
+    NSAssert(config.destination.accessToken, @"destination.accessToken must not be null!");
+
     //NSString *destinationID = [RollbarRegistry destinationID:config.destination];
     RollbarDestinationRecord *destinationRecord = [self getRecordForEndpoint:config.destination.endpoint
                                                               andAccessToken:config.destination.accessToken];

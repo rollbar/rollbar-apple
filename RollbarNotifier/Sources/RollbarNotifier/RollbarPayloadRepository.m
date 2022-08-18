@@ -308,11 +308,14 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
                                              andDestinationID:(nonnull NSString *)destinationID {
     
     NSNumber *timeStamp = [NSNumber numberWithInteger:[[NSDate date] timeIntervalSince1970]];
+    
+    NSString *escapedPayload = [payload stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
+    NSString *escapedConfig = [config stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
 
     NSString *sql = [NSString stringWithFormat:
       @"INSERT INTO payloads (config_json, payload_json, destination_key, created_at) VALUES ('%@', '%@', '%@', '%ld')",
-      config,
-      payload,
+      escapedConfig,
+      escapedPayload,
       destinationID,
       [timeStamp integerValue]
     ];
