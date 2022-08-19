@@ -8,33 +8,33 @@
 
 + (void)clearSdkDataStore {
     
-    [RollbarLogger clearLogItemsStore];
+    [RollbarLogger _clearFile:[RollbarLogger _logPayloadsStorePath]];
     [RollbarLogger _clearFile:[RollbarLogger _telemetryItemsStorePath]];
-    [RollbarLogger _clearFile:[RollbarLogger _payloadsLogStorePath]];
+    [RollbarLogger _clearFile:[RollbarLogger _transmittedPayloadsLogPath]];
+    [RollbarLogger _clearFile:[RollbarLogger _droppedPayloadsLogPath]];
 }
 
-+ (void)clearLogItemsStore {
-    
-    [RollbarLogger _clearFile:[RollbarLogger _logItemsStoreStatePath]];
-    [RollbarLogger _clearFile:[RollbarLogger _logItemsStorePath]];
-}
 
 + (void)clearSdkFile:(nonnull NSString *)sdkFileName {
     
     [RollbarLogger _clearFile:[RollbarLogger _getSDKDataFilePath:sdkFileName]];
 }
 
-+ (nonnull NSArray<NSMutableDictionary *> *)readLogItemsFromStore {
++ (nonnull NSArray<NSMutableDictionary *> *)readPayloadsFromSdkTransmittedLog {
     
-    NSString *filePath = [RollbarLogger _logItemsStorePath];
-    return [RollbarLogger readPayloadsDataFromFile:filePath];
+    [RollbarLogger readPayloadsDataFromFile:[RollbarLogger _transmittedPayloadsLogPath]];
 }
 
-+ (nonnull NSArray<NSMutableDictionary *> *)readPayloadsFromSdkLog {
++ (nonnull NSArray<NSMutableDictionary *> *)readPayloadsFromSdkDroppedLog {
     
-    NSString *filePath = [RollbarLogger _payloadsLogStorePath];
-    return [RollbarLogger readPayloadsDataFromFile:filePath];
+    [RollbarLogger readPayloadsDataFromFile:[RollbarLogger _droppedPayloadsLogPath]];
 }
+
+//+ (nonnull NSArray<NSMutableDictionary *> *)readPayloadsFromSdkLog {
+//
+//    NSString *filePath = [RollbarLogger _payloadsLogPath];
+//    return [RollbarLogger readPayloadsDataFromFile:filePath];
+//}
 
 + (nonnull NSArray<NSMutableDictionary *> *)readPayloadsDataFromFile:(nonnull NSString *)filePath {
     
@@ -92,24 +92,29 @@
     }
 }
 
-+ (nonnull NSString *)_logItemsStorePath {
++ (nonnull NSString *)_logPayloadsStorePath {
     
-    return [RollbarLogger _getSDKDataFilePath:[RollbarNotifierFiles itemsQueue]];
+    return [RollbarLogger _getSDKDataFilePath:[RollbarNotifierFiles payloadsStore]];
 }
 
-+ (nonnull NSString *)_logItemsStoreStatePath {
-    
-    return [RollbarLogger _getSDKDataFilePath:[RollbarNotifierFiles itemsQueueState]];
-}
+//+ (nonnull NSString *)_logItemsStoreStatePath {
+//
+//    return [RollbarLogger _getSDKDataFilePath:[RollbarNotifierFiles itemsQueueState]];
+//}
 
 + (nonnull NSString *)_telemetryItemsStorePath {
     
     return [RollbarLogger _getSDKDataFilePath:[RollbarNotifierFiles telemetryQueue]];
 }
 
-+ (nonnull NSString *)_payloadsLogStorePath {
++ (nonnull NSString *)_transmittedPayloadsLogPath {
     
-    return [RollbarLogger _getSDKDataFilePath:[RollbarNotifierFiles payloadsLog]];
+    return [RollbarLogger _getSDKDataFilePath:[RollbarNotifierFiles transmittedPayloadsLog]];
+}
+
++ (nonnull NSString *)_droppedPayloadsLogPath {
+    
+    return [RollbarLogger _getSDKDataFilePath:[RollbarNotifierFiles droppedPayloadsLog]];
 }
 
 + (nonnull NSString *)_getSDKDataFilePath:(nonnull NSString *)sdkFileName {

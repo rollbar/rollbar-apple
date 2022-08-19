@@ -1,11 +1,9 @@
 #import "RollbarNotifierFiles.h"
 
-static NSString * const PAYLOADS_FILE_NAME = @"rollbar.payloads";
-
 static NSString * const PAYLOADS_STORE_FILE_NAME = @"rollbar.db";
 
-static NSString * const QUEUED_ITEMS_FILE_NAME = @"rollbar.items";
-static NSString * const QUEUED_ITEMS_STATE_FILE_NAME = @"rollbar.state";
+static NSString * const TRANSMITTED_PAYLOADS_FILE_NAME = @"rollbar.transmitted";
+static NSString * const DROPPED_PAYLOADS_FILE_NAME = @"rollbar.dropped";
 
 static NSString * const QUEUED_TELEMETRY_ITEMS_FILE_NAME = @"rollbar.telemetry";
 
@@ -19,16 +17,6 @@ static NSString * const CONFIG_FILE_NAME = @"rollbar.config";
 + (nonnull NSString * const)payloadsStore {
     
     return PAYLOADS_STORE_FILE_NAME;
-}
-
-+ (nonnull NSString * const)itemsQueue {
-    
-    return QUEUED_ITEMS_FILE_NAME;
-}
-
-+ (nonnull NSString * const)itemsQueueState {
-    
-    return QUEUED_ITEMS_STATE_FILE_NAME;
 }
 
 + (nonnull NSString * const)telemetryQueue {
@@ -46,9 +34,14 @@ static NSString * const CONFIG_FILE_NAME = @"rollbar.config";
     return APP_QUIT_FILE_NAME;
 }
 
-+ (nonnull NSString * const)payloadsLog {
++ (nonnull NSString * const)transmittedPayloadsLog {
     
-    return PAYLOADS_FILE_NAME;
+    return TRANSMITTED_PAYLOADS_FILE_NAME;
+}
+
++ (nonnull NSString * const)droppedPayloadsLog {
+    
+    return DROPPED_PAYLOADS_FILE_NAME;
 }
 
 + (nonnull NSString * const)config {

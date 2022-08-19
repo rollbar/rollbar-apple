@@ -210,6 +210,8 @@ static NSUInteger MAX_RETRY_COUNT = 5;
 
 - (void)processSavedPayload:(nonnull NSDictionary<NSString *, NSString *> *)payloadDataRow {
     
+    //TODO: implement detection of stale payload and remove from the repo if it is stale...
+
     NSString *destinationKey = payloadDataRow[@"destination_key"];
     NSAssert(destinationKey && destinationKey.length > 0, @"destination_key is expected to be defined!");
     NSDictionary<NSString *, NSString *> *destination = [self->_payloadsRepo getDestinationByID:destinationKey];
@@ -230,10 +232,10 @@ static NSUInteger MAX_RETRY_COUNT = 5;
     NSString *payloadJson = payloadDataRow[@"payload_json"];
     RollbarPayload *payload = [[RollbarPayload alloc] initWithJSONString:payloadJson];
     NSAssert(payload, @"payload is expected to be defined!");
-    
-    
+        
     //TODO: the following payload truncation code should eventually move to the point right before payload persistence
     //      into the repo:
+    
     NSMutableDictionary *newPayload =
     [NSMutableDictionary dictionaryWithDictionary:payload.jsonFriendlyData];
     [RollbarPayloadTruncator truncatePayload:newPayload];
@@ -246,25 +248,15 @@ static NSUInteger MAX_RETRY_COUNT = 5;
         newPayload = [NSMutableDictionary dictionaryWithDictionary:payload.jsonFriendlyData];
     }
     
-    
-    
-    
-    NSError *error;
+        NSError *error;
     NSData *jsonPayload = [NSJSONSerialization rollbar_dataWithJSONObject:newPayload
                                                                   options:0
                                                                     error:&error
                                                                      safe:true];
     if (nil == jsonPayload) {
-        
-        RollbarSdkLog(
-                      @"Couldn't send jsonPayload that is nil"
-                      );
+        RollbarSdkLog(@"Couldn't send jsonPayload that is nil");
         if (nil != error) {
-            
-            RollbarSdkLog(
-                          @"   DETAILS: an error while generating JSON data: %@",
-                          error
-                          );
+            RollbarSdkLog(@"   DETAILS: an error while generating JSON data: %@", error);
         }
         // there is nothing we can do with this payload - let's drop it:
         RollbarSdkLog(@"Dropping unprocessable payload: %@", payloadJson);
@@ -274,36 +266,65 @@ static NSUInteger MAX_RETRY_COUNT = 5;
         return;
     }
     
-    if (config.developerOptions.logPayload) {
-        
-        if (!config.developerOptions.suppressSdkInfoLogging) {
-            
-            RollbarSdkLog(@"About to send payload: %@",
-                          [[NSString alloc] initWithData:jsonPayload
-                                                encoding:NSUTF8StringEncoding]
-                          );
-        }
-        
-        // - save this payload into a proper payloads log file:
-        //*****************************************************
-        
-        // compose the payloads log file path:
-        NSString *cachesDirectory = [RollbarCachesDirectory directory];
-        NSString *payloadsLogFilePath =
-        [cachesDirectory stringByAppendingPathComponent:config.developerOptions.payloadLogFile];
-        [RollbarFileWriter appendSafelyData:jsonPayload toFile:payloadsLogFilePath];
-    }
-
-
-    BOOL success = config ? [self sendPayload:jsonPayload usingConfig:config]
+    RollbarTriStateFlag success = config ? [self sendPayload:jsonPayload usingConfig:config]
     : [self sendPayload:jsonPayload]; // backward compatibility with just upgraded very old SDKs...
     
-    if (success) {
-        // we a successful sending - can remove the repo data row:
-        if (![self->_payloadsRepo removePayloadByID:payloadDataRow[@"id"]]) {
-            RollbarSdkLog(@"Couldn't remove payload data row with ID: %@", payloadDataRow[@"id"]);
+    NSString *payloadsLogFile = nil;
+    NSString *sdkLogTrace = (RollbarTriStateFlag_None == success) ? nil
+    : [NSString stringWithFormat:@"%@ payload: %@",
+       (RollbarTriStateFlag_On == success) ? @"Transmitted" : @"Dropped",
+       [[NSString alloc] initWithData:jsonPayload encoding:NSUTF8StringEncoding]
+    ];
+    switch(success) {
+        case RollbarTriStateFlag_On:
+            // The payload is fully processed and transmitted.
+            // It can be removed from the repo:
+            if (![self->_payloadsRepo removePayloadByID:payloadDataRow[@"id"]]) {
+                RollbarSdkLog(@"Couldn't remove payload data row with ID: %@", payloadDataRow[@"id"]);
+            }
+            if (config.developerOptions.logTransmittedPayloads) {
+                payloadsLogFile = config.developerOptions.transmittedPayloadLogFile;
+            }
+            break;
+        case RollbarTriStateFlag_Off:
+            // The payload is fully processed but not accepted by the server due to some invalid content.
+            // It must be removed from the repo:
+            if (![self->_payloadsRepo removePayloadByID:payloadDataRow[@"id"]]) {
+                RollbarSdkLog(@"Couldn't remove payload data row with ID: %@", payloadDataRow[@"id"]);
+            }
+            if (config.developerOptions.logDroppedPayloads) {
+                payloadsLogFile = config.developerOptions.droppedPayloadLogFile;
+            }
+            break;
+        case RollbarTriStateFlag_None:
+        default:
+            // Nothing obviously wrong with the payload but it was not actually tranmitted successfully.
+            // Let's try again some other time. Keep it in the repo for now (unless it is already too stale)...
+            //TODO: implement detection of stale payload and remove from the repo if it is stale...
+            break;
+    }
+
+    if (payloadsLogFile) {
+        NSString *cachesDirectory = [RollbarCachesDirectory directory];
+        NSString *payloadsLogFilePath = [cachesDirectory stringByAppendingPathComponent:payloadsLogFile];
+        [RollbarFileWriter appendSafelyData:jsonPayload toFile:payloadsLogFilePath];
+    }
+    if (!config.developerOptions.suppressSdkInfoLogging) {
+        NSString *sdkLogTrace = nil;
+        switch(success) {
+            case RollbarTriStateFlag_On:
+                RollbarSdkLog(@"Transmitted payload: %@",
+                              [[NSString alloc] initWithData:jsonPayload encoding:NSUTF8StringEncoding]);
+                break;
+            case RollbarTriStateFlag_Off:
+                RollbarSdkLog(@"Dropped payload: %@",
+                              [[NSString alloc] initWithData:jsonPayload encoding:NSUTF8StringEncoding]);
+                break;
+            case RollbarTriStateFlag_None:
+                RollbarSdkLog(@"Couldn't transmit (and will try) payload: %@",
+                              [[NSString alloc] initWithData:jsonPayload encoding:NSUTF8StringEncoding]);
+                break;
         }
-        return;
     }
 }
 
@@ -323,35 +344,49 @@ static NSUInteger MAX_RETRY_COUNT = 5;
     }
 }
 
-- (BOOL)sendPayload:(nonnull NSData *)payload
-        usingConfig:(nonnull RollbarConfig  *)config {
+- (RollbarTriStateFlag)sendPayload:(nonnull NSData *)payload
+                       usingConfig:(nonnull RollbarConfig  *)config {
     
     if (!payload || !config) {
         
-        return NO;
+        return RollbarTriStateFlag_Off; //obviously invalid payload to sent or invalid destination...
     }
     
     RollbarDestinationRecord *record = [self->_registry getRecordForConfig:config];
     if (![record canPost]) {
-        return NO;
+        return RollbarTriStateFlag_None; // nothing obviously wrong with the payload - just can not send at the moment
     }
     
     RollbarPayloadPostReply *reply = [[RollbarSender new] sendPayload:payload
                                                           usingConfig:config
     ];
     [record recordPostReply:reply];
-    if (reply && (200 == reply.statusCode)) {
-        return YES;
+    
+    if (!reply) {
+        return RollbarTriStateFlag_None; // nothing obviously wrong with the payload - just there was no deterministic
+                                         // reply from the destination server
     }
     
-    return NO;
+    switch(reply.statusCode) {
+        case 200: // OK
+            return RollbarTriStateFlag_On; // the payload was successfully transmitted
+        case 400: // bad request
+        case 413: // request entity too large
+        case 422: // unprocessable entity
+            return RollbarTriStateFlag_Off; // unecceptable request/payload - should be dropped
+        case 403: // access denied
+        case 404: // not found
+        case 429: // too many requests
+        default:
+            return RollbarTriStateFlag_None; // worth retrying later
+    }
 }
 
 /// This is a DEPRECATED method left for some backward compatibility for very old clients eventually moving to this more recent implementation.
 /// Use/maintain sendPayload:usingConfig: instead!
-- (BOOL)sendPayload:(NSData *)payload {
+- (RollbarTriStateFlag)sendPayload:(NSData *)payload {
     
-    return YES;
+    return RollbarTriStateFlag_Off;
 }
 
 #pragma mark - Network telemetry data

@@ -15,16 +15,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (nonnull NSString * const)payloadsStore;
 
-+ (nonnull NSString * const)itemsQueue;
-+ (nonnull NSString * const)itemsQueueState;
-
 + (nonnull NSString * const)telemetryQueue;
 
 + (nonnull NSString * const)runtimeSession;
 
 + (nonnull NSString * const)appQuit;
 
-+ (nonnull NSString * const)payloadsLog;
++ (nonnull NSString * const)transmittedPayloadsLog ;
+
++ (nonnull NSString * const)droppedPayloadsLog;
 
 + (nonnull NSString * const)config;
 

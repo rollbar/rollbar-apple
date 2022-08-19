@@ -20,7 +20,8 @@
 
 #define MAX_PAYLOAD_SIZE 128 // The maximum payload size in kb
 
-static NSString *payloadsFilePath = nil;
+static NSString *transmittedPayloadsFilePath = nil;
+static NSString *droppedPayloadsFilePath = nil;
 static NSString *queuedItemsFilePath = nil;
 
 @implementation RollbarLogger {
@@ -69,16 +70,29 @@ static NSString *queuedItemsFilePath = nil;
         [self updateConfiguration:configuration];
         
         NSString *cachesDirectory = [RollbarCachesDirectory directory];
-        if (nil != self.configuration.developerOptions.payloadLogFile
-            && self.configuration.developerOptions.payloadLogFile.length > 0) {
+        
+        if (nil != self.configuration.developerOptions.transmittedPayloadLogFile
+            && self.configuration.developerOptions.transmittedPayloadLogFile.length > 0) {
             
-            payloadsFilePath =
-            [cachesDirectory stringByAppendingPathComponent:self.configuration.developerOptions.payloadLogFile];
+            transmittedPayloadsFilePath =
+            [cachesDirectory stringByAppendingPathComponent:self.configuration.developerOptions.transmittedPayloadLogFile];
         }
         else {
             
-            payloadsFilePath =
-            [cachesDirectory stringByAppendingPathComponent:[RollbarNotifierFiles payloadsLog]];
+            transmittedPayloadsFilePath =
+            [cachesDirectory stringByAppendingPathComponent:[RollbarNotifierFiles transmittedPayloadsLog]];
+        }
+
+        if (nil != self.configuration.developerOptions.droppedPayloadLogFile
+            && self.configuration.developerOptions.droppedPayloadLogFile.length > 0) {
+            
+            droppedPayloadsFilePath =
+            [cachesDirectory stringByAppendingPathComponent:self.configuration.developerOptions.droppedPayloadLogFile];
+        }
+        else {
+            
+            droppedPayloadsFilePath =
+            [cachesDirectory stringByAppendingPathComponent:[RollbarNotifierFiles droppedPayloadsLog]];
         }
     }
     

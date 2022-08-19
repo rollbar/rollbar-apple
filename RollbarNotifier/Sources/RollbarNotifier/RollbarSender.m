@@ -51,10 +51,10 @@
     if (reply && (200 == reply.statusCode)) {
         [RollbarSender trace:[NSString stringWithFormat:@"Transmitted payload: %@", payloadString]
                  withOptions:config.developerOptions];
-        if ((YES == config.developerOptions.logPayload) && config.developerOptions.payloadLogFile) {
-            [RollbarFileWriter appendSafelyData:payload toFile:config.developerOptions.payloadLogFile];
-            //TODO: complete implementation (log into payloads log file)...
-        }
+//        if ((YES == config.developerOptions.logTransmittedPayloads) && config.developerOptions.transmittedPayloadLogFile) {
+//            [RollbarFileWriter appendSafelyData:payload toFile:config.developerOptions.transmittedPayloadLogFile];
+//            //TODO: complete implementation (log into payloads log file)...
+//        }
     }
     else if (reply) {
         [RollbarSender trace:[NSString stringWithFormat:@"Failed to transmit payload (%li status code): %@", (long)reply.statusCode, payloadString]
