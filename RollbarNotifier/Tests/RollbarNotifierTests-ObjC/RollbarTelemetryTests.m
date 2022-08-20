@@ -45,7 +45,7 @@
 
     [RollbarLogger flushRollbarThread];
 
-    NSArray *logItems = [RollbarLogger readLogItemsFromStore];
+    NSArray *logItems = [RollbarLogger readPayloadsFromSdkTransmittedLog];
     NSDictionary *item = logItems[logItems.count - 1];
     NSArray *telemetryData = [item valueForKeyPath:@"body.telemetry"];
     XCTAssertTrue(telemetryData.count > 0);
@@ -98,7 +98,7 @@
 
     //[NSThread sleepForTimeInterval:8.0f];
     
-    NSArray *logItems = [RollbarLogger readLogItemsFromStore];
+    NSArray *logItems = [RollbarLogger readPayloadsFromSdkTransmittedLog];
     for (NSDictionary *item in logItems) {
         NSArray *telemetryData = [item valueForKeyPath:@"body.telemetry"];
 

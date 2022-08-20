@@ -26,7 +26,7 @@
     
     [NSThread sleepForTimeInterval:1.0f];
     [RollbarLogger clearSdkDataStore];
-    NSArray *items = [RollbarLogger readLogItemsFromStore];
+    NSArray *items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
     XCTAssertEqual(items.count, 0);
 
 }
@@ -40,7 +40,7 @@
 - (BOOL)rollbarStoreContains:(nonnull NSString *)string {
     
     [RollbarLogger flushRollbarThread];
-    NSArray *logItems = [RollbarLogger readLogItemsFromStore];
+    NSArray *logItems = [RollbarLogger readPayloadsFromSdkTransmittedLog];
     for (NSDictionary *item in logItems) {
         RollbarPayload *payload = [[RollbarPayload alloc] initWithDictionary:item];
         if ([[payload serializeToJSONString] containsString:string]) {
@@ -87,7 +87,7 @@
     [RollbarLogger flushRollbarThread];
     
     // verify the fields were scrubbed:
-    NSArray *logItems = [RollbarLogger readLogItemsFromStore];
+    NSArray *logItems = [RollbarLogger readPayloadsFromSdkTransmittedLog];
     for (NSString *key in keys) {
         NSString *content = [logItems[0] valueForKeyPath:key];
         XCTAssertTrue([content isEqualToString:scrubedContent],
@@ -110,7 +110,7 @@
     [RollbarLogger flushRollbarThread];
     
     // verify the fields were not scrubbed:
-    logItems = [RollbarLogger readLogItemsFromStore];
+    logItems = [RollbarLogger readPayloadsFromSdkTransmittedLog];
     for (NSString *key in keys) {
         NSString *content = [logItems[0] valueForKeyPath:key];
         XCTAssertTrue(![content isEqualToString:scrubedContent],
@@ -228,7 +228,7 @@
     
     [RollbarLogger clearSdkDataStore];
 
-    NSArray *logItems = [RollbarLogger readLogItemsFromStore];
+    NSArray *logItems = [RollbarLogger readPayloadsFromSdkTransmittedLog];
     XCTAssertTrue(logItems.count == 0,
                   @"logItems count is expected to be 0. Actual value is %lu",
                   (unsigned long) logItems.count
@@ -273,7 +273,7 @@
     [Rollbar debugMessage:@"Test"];
     [RollbarLogger flushRollbarThread];
 
-    NSArray *logItems = [RollbarLogger readLogItemsFromStore];
+    NSArray *logItems = [RollbarLogger readPayloadsFromSdkTransmittedLog];
     NSDictionary *item = logItems[logItems.count - 1];
     NSArray *telemetryData = [item valueForKeyPath:@"body.telemetry"];
     XCTAssertTrue(telemetryData.count == max,
@@ -314,7 +314,7 @@
 
     [RollbarLogger flushRollbarThread];
 
-    NSArray *logItems = [RollbarLogger readLogItemsFromStore];
+    NSArray *logItems = [RollbarLogger readPayloadsFromSdkTransmittedLog];
     NSDictionary *item = logItems[0];
     NSDictionary *server = item[@"server"];
 
@@ -356,7 +356,7 @@
 
     [RollbarLogger flushRollbarThread];
 
-    NSArray *logItems = [RollbarLogger readLogItemsFromStore];
+    NSArray *logItems = [RollbarLogger readPayloadsFromSdkTransmittedLog];
     NSString *msg1 = [logItems[0] valueForKeyPath:@"body.message.body"];
     NSString *msg2 = [logItems[0] valueForKeyPath:@"body.message.body2"];
 
@@ -386,7 +386,7 @@
 
     [RollbarLogger flushRollbarThread];
 
-    NSArray *logItems = [RollbarLogger readLogItemsFromStore];
+    NSArray *logItems = [RollbarLogger readPayloadsFromSdkTransmittedLog];
     for (NSString *key in keys) {
         NSString *content = [logItems[0] valueForKeyPath:key];
         XCTAssertTrue([content isEqualToString:scrubedContent],
@@ -417,7 +417,7 @@
     
     [RollbarLogger flushRollbarThread];
 
-    NSArray *logItems = [RollbarLogger readLogItemsFromStore];
+    NSArray *logItems = [RollbarLogger readPayloadsFromSdkTransmittedLog];
     NSArray *telemetryData = [logItems[0] valueForKeyPath:@"body.telemetry"];
     NSString *telemetryMsg = [telemetryData[0] valueForKeyPath:@"body.message"];
     XCTAssertTrue([logMsg isEqualToString:telemetryMsg],

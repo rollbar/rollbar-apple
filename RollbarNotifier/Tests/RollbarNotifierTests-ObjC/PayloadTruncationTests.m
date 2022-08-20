@@ -26,7 +26,7 @@
 
     [RollbarTestUtil waitForPesistenceToCompleteWithWaitTimeInSeconds:3];
     [RollbarLogger clearSdkDataStore];
-    NSArray *items = [RollbarLogger readLogItemsFromStore];
+    NSArray *items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
     XCTAssertEqual(items.count, 0);
 }
 
@@ -188,7 +188,7 @@
 - (void)testPayloadTruncation {
 
     //[NSThread sleepForTimeInterval:5.0f];
-    NSArray *items = [RollbarLogger readLogItemsFromStore];
+    NSArray *items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
     XCTAssertEqual(items.count, 0);
 
     @try {
@@ -205,7 +205,7 @@
     
     [RollbarLogger flushRollbarThread];
 
-    items = [RollbarLogger readLogItemsFromStore];
+    items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
     
     for (id payload in items) {
         NSMutableArray *frames = [payload mutableArrayValueForKeyPath:@"body.trace.frames"];
@@ -249,11 +249,11 @@
         [Rollbar criticalMessage:simulatedLongString
                             data:@{@"extra_truncatable_data": simulatedLongString}
          ];
-        NSArray *items = [RollbarLogger readLogItemsFromStore];
+        NSArray *items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
         XCTAssertTrue(items.count > 0);
 
         [NSThread sleepForTimeInterval:5.0f];
-        items = [RollbarLogger readLogItemsFromStore];
+        items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
         XCTAssertEqual(items.count, 0);
     }
 }

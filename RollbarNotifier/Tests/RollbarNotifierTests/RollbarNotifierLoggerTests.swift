@@ -20,7 +20,8 @@ final class RollbarNotifierLoggerTests: XCTestCase {
             environment: RollbarTestHelper.getRollbarEnvironment()
         );
         config.developerOptions.transmit = true;
-        config.developerOptions.logPayload = true;
+        config.developerOptions.logTransmittedPayloads = true;
+        config.developerOptions.logDroppedPayloads = true;
         config.loggingOptions.maximumReportsPerMinute = 5000;
         config.customData = ["someKey": "someValue", ];
         Rollbar.update(withConfiguration: config);
@@ -45,7 +46,8 @@ final class RollbarNotifierLoggerTests: XCTestCase {
 
         var config = Rollbar.configuration().mutableCopy();
         config.developerOptions.transmit = false;
-        config.developerOptions.logPayload = true;
+        config.developerOptions.logTransmittedPayloads = true;
+        config.developerOptions.logDroppedPayloads = true;
 
         // configure the shared notifier:
         config.destination.accessToken = "AT_0";

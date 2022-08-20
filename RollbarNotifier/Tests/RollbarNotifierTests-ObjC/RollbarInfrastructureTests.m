@@ -49,10 +49,10 @@
 - (void)test2_Basics {
     
     [RollbarLogger clearSdkDataStore];
-    NSArray *items = [RollbarLogger readLogItemsFromStore];
+    NSArray *items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
     XCTAssertNotNil(items);
     XCTAssertEqual(0, items.count);
-    items = [RollbarLogger readPayloadsFromSdkLog];
+    items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
     XCTAssertNotNil(items);
     XCTAssertEqual(0, items.count);
     
@@ -61,12 +61,12 @@
                                            environment:[RollbarTestHelper getRollbarEnvironment]
     ];
     config.developerOptions.transmit = NO;
-    config.developerOptions.logPayload = YES;
+    config.developerOptions.logTransmittedPayloads = YES;
     config.loggingOptions.maximumReportsPerMinute = 180;
     [[RollbarInfrastructure sharedInstance] configureWith:config];
     
     [NSThread sleepForTimeInterval:1.0f];
-    items = [RollbarLogger readPayloadsFromSdkLog];
+    items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
     XCTAssertNotNil(items);
 
     [[RollbarInfrastructure sharedInstance].logger log:RollbarLevel_Critical
@@ -87,10 +87,10 @@
     XCTAssertTrue(YES == wasLogged);
 
     [RollbarLogger clearSdkDataStore];
-    items = [RollbarLogger readLogItemsFromStore];
+    items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
     XCTAssertNotNil(items);
     XCTAssertEqual(0, items.count);
-    items = [RollbarLogger readPayloadsFromSdkLog];
+    items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
     XCTAssertNotNil(items);
     XCTAssertEqual(0, items.count);
 }
@@ -98,10 +98,10 @@
 - (void)test3_Live {
     
     [RollbarLogger clearSdkDataStore];
-    NSArray *items = [RollbarLogger readLogItemsFromStore];
+    NSArray *items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
     XCTAssertNotNil(items);
     XCTAssertEqual(0, items.count);
-    items = [RollbarLogger readPayloadsFromSdkLog];
+    items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
     XCTAssertNotNil(items);
     XCTAssertEqual(0, items.count);
     
@@ -109,7 +109,7 @@
     [RollbarMutableConfig mutableConfigWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
                                            environment:[RollbarTestHelper getRollbarEnvironment]];
     config.developerOptions.transmit = YES;
-    config.developerOptions.logPayload = YES;
+    config.developerOptions.logTransmittedPayloads = YES;
     [[RollbarInfrastructure sharedInstance] configureWith:config];
     
     
@@ -134,10 +134,10 @@
     XCTAssertTrue(YES == wasLogged);
 
     [RollbarLogger clearSdkDataStore];
-    items = [RollbarLogger readLogItemsFromStore];
+    items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
     XCTAssertNotNil(items);
     XCTAssertEqual(0, items.count);
-    items = [RollbarLogger readPayloadsFromSdkLog];
+    items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
     XCTAssertNotNil(items);
     XCTAssertEqual(0, items.count);
 }

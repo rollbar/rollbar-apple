@@ -22,7 +22,7 @@
     config.destination.accessToken = [RollbarTestHelper getRollbarPayloadsAccessToken];
     config.destination.environment = [RollbarTestHelper getRollbarEnvironment];
     config.developerOptions.transmit = YES;
-    config.developerOptions.logPayload = YES;
+    config.developerOptions.logTransmittedPayloads = YES;
     config.loggingOptions.maximumReportsPerMinute = 5000;
     // for the stress test specifically:
     config.telemetry.enabled = YES;
@@ -66,7 +66,7 @@
     RollbarMutableConfig *config = [[RollbarMutableConfig alloc] init];
 
     config.developerOptions.transmit = NO;
-    config.developerOptions.logPayload = YES;
+    config.developerOptions.logTransmittedPayloads = YES;
 
     // configure the root notifier:
     config.destination.accessToken = @"AT_0";
@@ -168,7 +168,7 @@
 
     [NSThread sleepForTimeInterval:3.0f];
 
-    NSArray *items = [RollbarLogger readLogItemsFromStore];
+    NSArray *items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
     for (id item in items) {
         NSString *level = [item valueForKeyPath:@"level"];
         NSString *message = [item valueForKeyPath:@"body.message.body"];
