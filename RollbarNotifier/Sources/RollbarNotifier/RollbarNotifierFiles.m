@@ -2,6 +2,7 @@
 
 static NSString * const PAYLOADS_STORE_FILE_NAME = @"rollbar.db";
 
+static NSString * const INCOMING_PAYLOADS_FILE_NAME = @"rollbar.incoming";
 static NSString * const TRANSMITTED_PAYLOADS_FILE_NAME = @"rollbar.transmitted";
 static NSString * const DROPPED_PAYLOADS_FILE_NAME = @"rollbar.dropped";
 
@@ -32,6 +33,11 @@ static NSString * const CONFIG_FILE_NAME = @"rollbar.config";
 + (nonnull NSString * const)appQuit {
     
     return APP_QUIT_FILE_NAME;
+}
+
++ (nonnull NSString * const)incomingPayloadsLog  {
+    
+    return INCOMING_PAYLOADS_FILE_NAME;
 }
 
 + (nonnull NSString * const)transmittedPayloadsLog {

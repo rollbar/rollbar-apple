@@ -14,6 +14,10 @@ NS_ASSUME_NONNULL_BEGIN
 ///@note THIS METHOD IS TO BE USED FOR TESTING PURPOSES ONLY.
 + (void)flushRollbarThread;
 
+/// Reads all payloads from the default incoming payloads log
+///@note THIS METHOD IS TO BE USED FOR TESTING PURPOSES ONLY.
++ (nonnull NSArray<NSMutableDictionary *> *)readPayloadsFromSdkIncomingLog;
+
 /// Reads all payloads from the default transmitted payloads log
 ///@note THIS METHOD IS TO BE USED FOR TESTING PURPOSES ONLY.
 + (nonnull NSArray<NSMutableDictionary *> *)readPayloadsFromSdkTransmittedLog;

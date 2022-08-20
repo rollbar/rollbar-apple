@@ -21,6 +21,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (nonnull NSString * const)appQuit;
 
++ (nonnull NSString * const)incomingPayloadsLog ;
+
 + (nonnull NSString * const)transmittedPayloadsLog ;
 
 + (nonnull NSString * const)droppedPayloadsLog;

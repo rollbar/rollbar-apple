@@ -19,11 +19,17 @@ NS_ASSUME_NONNULL_BEGIN
 /// A flag to suppress internal SDK's informational logging
 @property (nonatomic, readonly) BOOL suppressSdkInfoLogging;
 
+/// Flags if the incoming payloads to be logged locally
+@property (nonatomic, readonly) BOOL logIncomingPayloads;
+
 /// Flags if the transmitted payloads to be logged locally
 @property (nonatomic, readonly) BOOL logTransmittedPayloads;
 
 /// Flags if the dropped payloads to be logged locally
 @property (nonatomic, readonly) BOOL logDroppedPayloads;
+
+/// Log file to use for  local logged incoming payloads
+@property (nonatomic, readonly, copy) NSString *incomingPayloadLogFile;
 
 /// Log file to use for  local logged transmitted payloads
 @property (nonatomic, readonly, copy) NSString *transmittedPayloadLogFile;
@@ -36,24 +42,30 @@ NS_ASSUME_NONNULL_BEGIN
 /// Initializer
 /// @param enabled enabled flag
 /// @param transmit payloads transmission flag
+/// @param logIncomingPayloads flag to log incoming payloads locally
 /// @param logTransmittedPayloads flag to log transmitted payloads locally
 /// @param logDroppedPayloads flag to log dropped payloads locally
-/// @param transmittedPayloadsLogFile file to log transmitted payloads to
-/// @param droppedPayloadsLogFile file to log dropped payloads to
+/// @param logIncomingPayloadsFile file to log incoming payloads to
+/// @param logTransmittedPayloadsFile file to log transmitted payloads to
+/// @param logDroppedPayloadsFile file to log dropped payloads to
 - (instancetype)initWithEnabled:(BOOL)enabled
                        transmit:(BOOL)transmit
+            logIncomingPayloads:(BOOL)logIncomingPayloads
          logTransmittedPayloads:(BOOL)logTransmittedPayloads
              logDroppedPayloads:(BOOL)logDroppedPayloads
+        incomingPayloadsLogFile:(NSString *)logIncomingPayloadsFile
      transmittedPayloadsLogFile:(NSString *)logTransmittedPayloadsFile
          droppedPayloadsLogFile:(NSString *)logDroppedPayloadsFile;
 
 /// Initializer
 /// @param enabled enabled flag
 /// @param transmit payloads transmission flag
+/// @param logIncomingPayloads flag to log incoming payloads locally
 /// @param logTransmittedPayloads flag to log transmitted payloads locally
 /// @param logDroppedPayloads flag to log dropped payloads locally
 - (instancetype)initWithEnabled:(BOOL)enabled
                        transmit:(BOOL)transmit
+            logIncomingPayloads:(BOOL)logIncomingPayloads
          logTransmittedPayloads:(BOOL)logTransmittedPayloads
              logDroppedPayloads:(BOOL)logDroppedPayloads;
 
@@ -76,11 +88,17 @@ NS_ASSUME_NONNULL_BEGIN
 /// A flag to suppress internal SDK's informational logging
 @property (nonatomic, readwrite) BOOL suppressSdkInfoLogging;
 
+/// Flags if the incoming payloads to be logged locally
+@property (nonatomic, readwrite) BOOL logIncomingPayloads;
+
 /// Flags if the transmitted payloads to be logged locally
 @property (nonatomic, readwrite) BOOL logTransmittedPayloads;
 
 /// Flags if the dropped payloads to be logged locally
 @property (nonatomic, readwrite) BOOL logDroppedPayloads;
+
+/// Log file to use for  local logged incoming payloads
+@property (nonatomic, readwrite, copy) NSString *incomingPayloadLogFile;
 
 /// Log file to use for  local logged transmitted payloads
 @property (nonatomic, readwrite, copy) NSString *transmittedPayloadLogFile;

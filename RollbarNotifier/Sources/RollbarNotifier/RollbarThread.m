@@ -142,6 +142,163 @@ static NSUInteger MAX_RETRY_COUNT = 5;
     ];
 }
 
++ (BOOL)shouldIgnorePayload:(nonnull RollbarPayload *)payload
+                 withConfig:(nonnull RollbarConfig *)config {
+    
+    if (config.checkIgnoreRollbarData) {
+        
+        BOOL shouldIgnore = NO;
+        @try {
+            shouldIgnore = config.checkIgnoreRollbarData(payload.data);
+        }
+        @catch(NSException *e) {
+            RollbarSdkLog(@"checkIgnore error: %@", e.reason);
+            NSAssert(false, @"Provided checkIgnore implementation throws an exception!");
+            shouldIgnore = NO;
+        }
+        
+        if (shouldIgnore) {
+            
+            if (config.developerOptions.logDroppedPayloads
+                && config.developerOptions.incomingPayloadLogFile
+                && (config.developerOptions.incomingPayloadLogFile.length > 0)
+                ) {
+                NSString *cachesDirectory = [RollbarCachesDirectory directory];
+                NSString *payloadsLogFilePath =
+                [cachesDirectory stringByAppendingPathComponent:config.developerOptions.incomingPayloadLogFile];
+                [RollbarFileWriter appendSafelyData:[payload serializeToJSONData] toFile:payloadsLogFilePath];
+            }
+            
+            if (!config.developerOptions.suppressSdkInfoLogging) {
+                RollbarSdkLog(@"Dropped payload (due to checkIgnore): %@",
+                              [[NSString alloc] initWithData:[payload serializeToJSONData]
+                                                    encoding:NSUTF8StringEncoding]
+                              );
+            }
+            
+            return YES; // ignore == nothing to queue...
+        }
+    }
+    
+    return NO;
+}
+
++ (nullable RollbarPayload *)modifyPayload:(nonnull RollbarPayload *)payload
+                                withConfig:(nonnull RollbarConfig *)config {
+    
+    if (config.modifyRollbarData) {
+    
+        @try {
+            payload.data = config.modifyRollbarData(payload.data);
+        }
+        @catch(NSException *e) {
+            RollbarSdkLog(@"modifyRollbarData error: %@", e.reason);
+            NSAssert(false, @"Provided modifyRollbarData implementation throws an exception!");
+            //return null;
+        }
+    }
+    return payload;
+}
+
++ (nullable RollbarPayload *)scrubPayload:(nonnull RollbarPayload *)payload
+                               withConfig:(nonnull RollbarConfig *)config {
+
+    NSSet *scrubFieldsSet = [RollbarThread getScrubFields:config.dataScrubber];
+    if (scrubFieldsSet.count == 0) {
+        return payload;
+    }
+    
+    NSMutableDictionary *mutableJsonFriendlyData = payload.data.jsonFriendlyData.mutableCopy;
+    for (NSString *key in scrubFieldsSet) {
+        if ([mutableJsonFriendlyData valueForKeyPath:key]) {
+            [RollbarThread createMutableDataWithData:mutableJsonFriendlyData
+                                             forPath:key];
+            [mutableJsonFriendlyData setValue:@"*****"
+                                   forKeyPath:key];
+        }
+    }
+    
+    payload.data = [[RollbarData alloc] initWithDictionary:mutableJsonFriendlyData];
+    
+    return payload;
+}
+
++ (nonnull NSSet *)getScrubFields:(nullable RollbarScrubbingOptions *)scrubbingOptions {
+    
+    if (!scrubbingOptions
+        || scrubbingOptions.isEmpty
+        || !scrubbingOptions.enabled
+        || !scrubbingOptions.scrubFields
+        || scrubbingOptions.scrubFields.count == 0) {
+        
+        return [NSSet set];
+    }
+    
+    NSMutableSet *actualFieldsToScrub = scrubbingOptions.scrubFields.mutableCopy;
+    if (scrubbingOptions.safeListFields.count > 0) {
+        // actualFieldsToScrub =
+        // config.dataScrubber.scrubFields - config.dataScrubber.whitelistFields
+        // while using case insensitive field name comparison:
+        actualFieldsToScrub = [NSMutableSet new];
+        for(NSString *key in scrubbingOptions.scrubFields) {
+            BOOL isWhitelisted = false;
+            for (NSString *whiteKey in scrubbingOptions.safeListFields) {
+                if (NSOrderedSame == [key caseInsensitiveCompare:whiteKey]) {
+                    isWhitelisted = true;
+                }
+            }
+            if (!isWhitelisted) {
+                [actualFieldsToScrub addObject:key];
+            }
+        }
+    }
+    
+    return actualFieldsToScrub;
+}
+
++ (void)createMutableDataWithData:(NSMutableDictionary *)data
+                           forPath:(NSString *)path {
+    
+    NSArray *pathComponents = [path componentsSeparatedByString:@"."];
+    NSString *currentPath = @"";
+    
+    for (int i=0; i<pathComponents.count; i++) {
+        NSString *part = pathComponents[i];
+        currentPath = i == 0 ? part
+        : [NSString stringWithFormat:@"%@.%@", currentPath, part];
+        id val = [data valueForKeyPath:currentPath];
+        if (!val) return;
+        if ([val isKindOfClass:[NSArray class]]
+            && ![val isKindOfClass:[NSMutableArray class]]) {
+            
+            NSMutableArray *newVal = [NSMutableArray arrayWithArray:val];
+            [data setValue:newVal forKeyPath:currentPath];
+        } else if ([val isKindOfClass:[NSDictionary class]]
+                   && ![val isKindOfClass:[NSMutableDictionary class]]) {
+            
+            NSMutableDictionary *newVal =
+            [NSMutableDictionary dictionaryWithDictionary:val];
+            [data setValue:newVal forKeyPath:currentPath];
+        }
+    }
+}
+
++ (nonnull RollbarPayload *)truncatePayload:(nonnull RollbarPayload *)payload {
+    
+    NSMutableDictionary *newPayloadData =
+    [NSMutableDictionary dictionaryWithDictionary:payload.jsonFriendlyData];
+    [RollbarPayloadTruncator truncatePayload:newPayloadData];
+    
+    RollbarPayload *newPayload = [[RollbarPayload alloc] initWithDictionary:newPayloadData];
+    if (newPayload) {
+        return newPayload;
+    }
+    else {
+        
+        return payload;
+    }
+}
+
 - (void)queuePayload_OnlyCallOnThread:(nonnull NSArray *)data {
     
     NSAssert(data, @"data can not be nil");
@@ -156,6 +313,23 @@ static NSUInteger MAX_RETRY_COUNT = 5;
         RollbarSdkLog(@"Couldn't queue payload %@ with config %@", payload, config);
         return;
     }
+    
+    if ([RollbarThread shouldIgnorePayload:payload withConfig:config]) {
+        
+        return;
+    }
+    
+    payload = [RollbarThread modifyPayload:payload withConfig:config];
+    if (!payload) {
+        return;
+    }
+    
+    payload = [RollbarThread scrubPayload:payload withConfig:config];
+    if (!payload) {
+        return;
+    }
+    
+    payload = [RollbarThread truncatePayload:payload];
     
     NSString *destinationID = [self->_payloadsRepo getIDofDestinationWithEndpoint:config.destination.endpoint
                                                                     andAccesToken:config.destination.accessToken];
@@ -233,23 +407,28 @@ static NSUInteger MAX_RETRY_COUNT = 5;
     RollbarPayload *payload = [[RollbarPayload alloc] initWithJSONString:payloadJson];
     NSAssert(payload, @"payload is expected to be defined!");
         
-    //TODO: the following payload truncation code should eventually move to the point right before payload persistence
-    //      into the repo:
-    
-    NSMutableDictionary *newPayload =
-    [NSMutableDictionary dictionaryWithDictionary:payload.jsonFriendlyData];
-    [RollbarPayloadTruncator truncatePayload:newPayload];
-    if (nil == newPayload) {
-        
-        RollbarSdkLog(
-                      @"Couldn't send truncated payload that is nil"
-                      );
-        //let's use untruncated original:
-        newPayload = [NSMutableDictionary dictionaryWithDictionary:payload.jsonFriendlyData];
-    }
-    
-        NSError *error;
-    NSData *jsonPayload = [NSJSONSerialization rollbar_dataWithJSONObject:newPayload
+//    //TODO: the following payload truncation code should eventually move to the point right before payload persistence
+//    //      into the repo:
+//    NSMutableDictionary *newPayload =
+//    [NSMutableDictionary dictionaryWithDictionary:payload.jsonFriendlyData];
+//    [RollbarPayloadTruncator truncatePayload:newPayload];
+//    if (nil == newPayload) {
+//
+//        RollbarSdkLog(
+//                      @"Couldn't send truncated payload that is nil"
+//                      );
+//        //let's use untruncated original:
+//        newPayload = [NSMutableDictionary dictionaryWithDictionary:payload.jsonFriendlyData];
+//    }
+//
+//    NSError *error;
+//    NSData *jsonPayload = [NSJSONSerialization rollbar_dataWithJSONObject:newPayload
+//                                                                  options:0
+//                                                                    error:&error
+//                                                                     safe:true];
+
+    NSError *error;
+    NSData *jsonPayload = [NSJSONSerialization rollbar_dataWithJSONObject:payload
                                                                   options:0
                                                                     error:&error
                                                                      safe:true];

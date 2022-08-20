@@ -10,6 +10,8 @@
     
     [RollbarLogger _clearFile:[RollbarLogger _logPayloadsStorePath]];
     [RollbarLogger _clearFile:[RollbarLogger _telemetryItemsStorePath]];
+    
+    [RollbarLogger _clearFile:[RollbarLogger _incomingPayloadsLogPath]];
     [RollbarLogger _clearFile:[RollbarLogger _transmittedPayloadsLogPath]];
     [RollbarLogger _clearFile:[RollbarLogger _droppedPayloadsLogPath]];
 }
@@ -18,6 +20,11 @@
 + (void)clearSdkFile:(nonnull NSString *)sdkFileName {
     
     [RollbarLogger _clearFile:[RollbarLogger _getSDKDataFilePath:sdkFileName]];
+}
+
++ (nonnull NSArray<NSMutableDictionary *> *)readPayloadsFromSdkIncomingLog {
+    
+    [RollbarLogger readPayloadsDataFromFile:[RollbarLogger _incomingPayloadsLogPath]];
 }
 
 + (nonnull NSArray<NSMutableDictionary *> *)readPayloadsFromSdkTransmittedLog {
@@ -105,6 +112,11 @@
 + (nonnull NSString *)_telemetryItemsStorePath {
     
     return [RollbarLogger _getSDKDataFilePath:[RollbarNotifierFiles telemetryQueue]];
+}
+
++ (nonnull NSString *)_incomingPayloadsLogPath {
+    
+    return [RollbarLogger _getSDKDataFilePath:[RollbarNotifierFiles incomingPayloadsLog]];
 }
 
 + (nonnull NSString *)_transmittedPayloadsLogPath {

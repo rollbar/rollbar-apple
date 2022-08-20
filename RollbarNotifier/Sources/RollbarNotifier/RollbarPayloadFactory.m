@@ -114,112 +114,112 @@
 
 #pragma mark - Payload custom modifiers based on the current config
 
--(BOOL)shouldIgnoreRollbarData:(nonnull RollbarData *)incomingData {
-    
-    BOOL shouldIgnore = NO;
-    if (self->_config.checkIgnoreRollbarData) {
-        @try {
-            shouldIgnore = self->_config.checkIgnoreRollbarData(incomingData);
-            return shouldIgnore;
-        } @catch(NSException *e) {
-            RollbarSdkLog(@"checkIgnore error: %@", e.reason);
-            
-            // Remove checkIgnore to prevent future exceptions
-            //self->_config.checkIgnoreRollbarData = nil;
-            NSAssert(false, @"Provided checkIgnore implementation throws an exception!");
-            
-            return NO;
-        }
-    }
-    
-    return shouldIgnore;
-}
+//-(BOOL)shouldIgnoreRollbarData:(nonnull RollbarData *)incomingData {
+//
+//    BOOL shouldIgnore = NO;
+//    if (self->_config.checkIgnoreRollbarData) {
+//        @try {
+//            shouldIgnore = self->_config.checkIgnoreRollbarData(incomingData);
+//            return shouldIgnore;
+//        } @catch(NSException *e) {
+//            RollbarSdkLog(@"checkIgnore error: %@", e.reason);
+//
+//            // Remove checkIgnore to prevent future exceptions
+//            //self->_config.checkIgnoreRollbarData = nil;
+//            NSAssert(false, @"Provided checkIgnore implementation throws an exception!");
+//
+//            return NO;
+//        }
+//    }
+//
+//    return shouldIgnore;
+//}
 
--(RollbarData *)modifyRollbarData:(nonnull RollbarData *)incomingData {
-    
-    if (self->_config.modifyRollbarData) {
-        return self->_config.modifyRollbarData(incomingData);
-    }
-    return incomingData;
-}
+//-(RollbarData *)modifyRollbarData:(nonnull RollbarData *)incomingData {
+//
+//    if (self->_config.modifyRollbarData) {
+//        return self->_config.modifyRollbarData(incomingData);
+//    }
+//    return incomingData;
+//}
 
--(RollbarData *)scrubRollbarData:(nonnull RollbarData *)incomingData {
-    
-    NSSet *scrubFieldsSet = [self getScrubFields];
-    if (!scrubFieldsSet || scrubFieldsSet.count == 0) {
-        return incomingData;
-    }
-    
-    NSMutableDictionary *mutableJsonFriendlyData = incomingData.jsonFriendlyData.mutableCopy;
-    for (NSString *key in scrubFieldsSet) {
-        if ([mutableJsonFriendlyData valueForKeyPath:key]) {
-            [self createMutablePayloadWithData:mutableJsonFriendlyData forPath:key];
-            [mutableJsonFriendlyData setValue:@"*****" forKeyPath:key];
-        }
-    }
-    
-    return [[RollbarData alloc] initWithDictionary:mutableJsonFriendlyData];
-}
+//-(RollbarData *)scrubRollbarData:(nonnull RollbarData *)incomingData {
+//
+//    NSSet *scrubFieldsSet = [self getScrubFields];
+//    if (!scrubFieldsSet || scrubFieldsSet.count == 0) {
+//        return incomingData;
+//    }
+//
+//    NSMutableDictionary *mutableJsonFriendlyData = incomingData.jsonFriendlyData.mutableCopy;
+//    for (NSString *key in scrubFieldsSet) {
+//        if ([mutableJsonFriendlyData valueForKeyPath:key]) {
+//            [self createMutablePayloadWithData:mutableJsonFriendlyData forPath:key];
+//            [mutableJsonFriendlyData setValue:@"*****" forKeyPath:key];
+//        }
+//    }
+//
+//    return [[RollbarData alloc] initWithDictionary:mutableJsonFriendlyData];
+//}
 
--(NSSet *)getScrubFields {
-    
-    if (!self->_config.dataScrubber
-        || self->_config.dataScrubber.isEmpty
-        || !self->_config.dataScrubber.enabled
-        || !self->_config.dataScrubber.scrubFields
-        || self->_config.dataScrubber.scrubFields.count == 0) {
-        
-        return [NSSet set];
-    }
-    
-    NSMutableSet *actualFieldsToScrub = self->_config.dataScrubber.scrubFields.mutableCopy;
-    if (self->_config.dataScrubber.safeListFields.count > 0) {
-        // actualFieldsToScrub =
-        // config.dataScrubber.scrubFields - config.dataScrubber.whitelistFields
-        // while using case insensitive field name comparison:
-        actualFieldsToScrub = [NSMutableSet new];
-        for(NSString *key in self->_config.dataScrubber.scrubFields) {
-            BOOL isWhitelisted = false;
-            for (NSString *whiteKey in self->_config.dataScrubber.safeListFields) {
-                if (NSOrderedSame == [key caseInsensitiveCompare:whiteKey]) {
-                    isWhitelisted = true;
-                }
-            }
-            if (!isWhitelisted) {
-                [actualFieldsToScrub addObject:key];
-            }
-        }
-    }
-    
-    return actualFieldsToScrub;
-}
+//-(NSSet *)getScrubFields {
+//
+//    if (!self->_config.dataScrubber
+//        || self->_config.dataScrubber.isEmpty
+//        || !self->_config.dataScrubber.enabled
+//        || !self->_config.dataScrubber.scrubFields
+//        || self->_config.dataScrubber.scrubFields.count == 0) {
+//
+//        return [NSSet set];
+//    }
+//
+//    NSMutableSet *actualFieldsToScrub = self->_config.dataScrubber.scrubFields.mutableCopy;
+//    if (self->_config.dataScrubber.safeListFields.count > 0) {
+//        // actualFieldsToScrub =
+//        // config.dataScrubber.scrubFields - config.dataScrubber.whitelistFields
+//        // while using case insensitive field name comparison:
+//        actualFieldsToScrub = [NSMutableSet new];
+//        for(NSString *key in self->_config.dataScrubber.scrubFields) {
+//            BOOL isWhitelisted = false;
+//            for (NSString *whiteKey in self->_config.dataScrubber.safeListFields) {
+//                if (NSOrderedSame == [key caseInsensitiveCompare:whiteKey]) {
+//                    isWhitelisted = true;
+//                }
+//            }
+//            if (!isWhitelisted) {
+//                [actualFieldsToScrub addObject:key];
+//            }
+//        }
+//    }
+//
+//    return actualFieldsToScrub;
+//}
 
-- (void)createMutablePayloadWithData:(NSMutableDictionary *)data
-                             forPath:(NSString *)path {
-    
-    NSArray *pathComponents = [path componentsSeparatedByString:@"."];
-    NSString *currentPath = @"";
-    
-    for (int i=0; i<pathComponents.count; i++) {
-        NSString *part = pathComponents[i];
-        currentPath = i == 0 ? part
-        : [NSString stringWithFormat:@"%@.%@", currentPath, part];
-        id val = [data valueForKeyPath:currentPath];
-        if (!val) return;
-        if ([val isKindOfClass:[NSArray class]]
-            && ![val isKindOfClass:[NSMutableArray class]]) {
-            
-            NSMutableArray *newVal = [NSMutableArray arrayWithArray:val];
-            [data setValue:newVal forKeyPath:currentPath];
-        } else if ([val isKindOfClass:[NSDictionary class]]
-                   && ![val isKindOfClass:[NSMutableDictionary class]]) {
-            
-            NSMutableDictionary *newVal =
-            [NSMutableDictionary dictionaryWithDictionary:val];
-            [data setValue:newVal forKeyPath:currentPath];
-        }
-    }
-}
+//- (void)createMutablePayloadWithData:(NSMutableDictionary *)data
+//                             forPath:(NSString *)path {
+//
+//    NSArray *pathComponents = [path componentsSeparatedByString:@"."];
+//    NSString *currentPath = @"";
+//
+//    for (int i=0; i<pathComponents.count; i++) {
+//        NSString *part = pathComponents[i];
+//        currentPath = i == 0 ? part
+//        : [NSString stringWithFormat:@"%@.%@", currentPath, part];
+//        id val = [data valueForKeyPath:currentPath];
+//        if (!val) return;
+//        if ([val isKindOfClass:[NSArray class]]
+//            && ![val isKindOfClass:[NSMutableArray class]]) {
+//
+//            NSMutableArray *newVal = [NSMutableArray arrayWithArray:val];
+//            [data setValue:newVal forKeyPath:currentPath];
+//        } else if ([val isKindOfClass:[NSDictionary class]]
+//                   && ![val isKindOfClass:[NSMutableDictionary class]]) {
+//
+//            NSMutableDictionary *newVal =
+//            [NSMutableDictionary dictionaryWithDictionary:val];
+//            [data setValue:newVal forKeyPath:currentPath];
+//        }
+//    }
+//}
 
 
 #pragma mark - Payload Composition
@@ -310,11 +310,11 @@
     }
     
     // Transform payload data, if necessary
-    if ([self shouldIgnoreRollbarData:data]) {
-        return nil;
-    }
-    data = [self modifyRollbarData:data];
-    data = [self scrubRollbarData:data];
+//    if ([self shouldIgnoreRollbarData:data]) {
+//        return nil;
+//    }
+//    data = [self modifyRollbarData:data];
+//    data = [self scrubRollbarData:data];
     
     RollbarPayload *payload = [[RollbarPayload alloc] initWithAccessToken:self->_config.destination.accessToken
                                                                      data:data];
