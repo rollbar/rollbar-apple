@@ -13,12 +13,14 @@
 #import "RollbarRegistry.h"
 #import "RollbarPayloadRepository.h"
 
-static NSUInteger MAX_RETRY_COUNT = 5;
+static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
+// hours-per day * 60 min-per-hour * 60 sec-per-min = 1 day in sec
 
 @implementation RollbarThread {
 
 @private
     NSUInteger _maxReportsPerMinute;
+    NSTimeInterval _payloadLifetimeInSeconds;
     NSTimer *_timer;
     NSString *_payloadsRepoFilePath;
     RollbarRegistry *_registry;
@@ -47,6 +49,7 @@ static NSUInteger MAX_RETRY_COUNT = 5;
         [self setupDataStorage];
         
         self->_maxReportsPerMinute = 240;//60;
+        self->_payloadLifetimeInSeconds = DEFAULT_PAYLOAD_LIFETIME_SECONDS;
         self->_registry = [RollbarRegistry new];
         
 #if !TARGET_OS_WATCH
@@ -135,8 +138,8 @@ static NSUInteger MAX_RETRY_COUNT = 5;
 - (void)persistPayload:(nonnull RollbarPayload *)payload
             withConfig:(nonnull RollbarConfig *)config {
     
-    [self performSelector:@selector(queuePayload_OnlyCallOnThread:)
-                 onThread:[RollbarThread sharedInstance]
+    [self performSelector:@selector(queuePayload_OnlyCallOnThisThread:)
+                 onThread:self //[RollbarThread sharedInstance]
                withObject:@[payload, config]
             waitUntilDone:NO
     ];
@@ -299,20 +302,30 @@ static NSUInteger MAX_RETRY_COUNT = 5;
     }
 }
 
-- (void)queuePayload_OnlyCallOnThread:(nonnull NSArray *)data {
+- (void)queuePayload_OnlyCallOnThisThread:(nonnull NSArray *)data {
     
     NSAssert(data, @"data can not be nil");
     NSAssert(2 == data.count, @"data expected to have 2 components");
-        
+    
     RollbarPayload *payload = (RollbarPayload *)data[0];
     NSAssert(payload, @"payload can not be nil in data: %@", data);
     RollbarConfig *config = (RollbarConfig *)data[1];
     NSAssert(config, @"config can not be nil");
-    if (!(payload && config)) {
-        
+    if (!(payload && config)) {        
         RollbarSdkLog(@"Couldn't queue payload %@ with config %@", payload, config);
         return;
     }
+    
+    @try {
+        [self savePayload:payload withConfig:config];
+    } @catch (NSException *exception) {
+        RollbarSdkLog(@"Payload queuing EXCEPTION: %@", exception);
+    } @finally {
+        [[RollbarTelemetry sharedInstance] clearAllData];
+    }
+}
+
+- (void)savePayload:(nonnull RollbarPayload *)payload withConfig:(nonnull RollbarConfig *)config {
     
     if ([RollbarThread shouldIgnorePayload:payload withConfig:config]) {
         
@@ -341,8 +354,6 @@ static NSUInteger MAX_RETRY_COUNT = 5;
         return;
     }
     
-    //TODO: consider moving payload modifications (scrubbing and truncation) here...
-    
     //[payload.data.notifier setData:config.jsonFriendlyData byKey:@"configured_options"];
     NSString *payloadJson = [payload serializeToJSONString];
     NSDictionary *payloadDataRow = [self->_payloadsRepo addPayload:payloadJson
@@ -355,8 +366,6 @@ static NSUInteger MAX_RETRY_COUNT = 5;
         RollbarSdkLog(@"*** Resulting payloadDataRow: %@", payloadDataRow);
     }
     NSAssert(payloadDataRow && payloadDataRow[@"id"], @"Couldn't add a payload to the repo: %@", payloadJson);
-    
-    [[RollbarTelemetry sharedInstance] clearAllData];
 }
 
 #pragma mark - processing persisted payload items
@@ -382,9 +391,47 @@ static NSUInteger MAX_RETRY_COUNT = 5;
     }
 }
 
+- (BOOL)checkProcessStalePayload:(nonnull NSDictionary<NSString *, NSString *> *)payloadDataRow {
+    
+    // let's make sure we are not dealng with a stale payload:
+    NSString *timestampValue = payloadDataRow[@"created_at"];
+    NSScanner *scanner = [NSScanner scannerWithString:timestampValue];
+    double payloadTimestamp;
+    BOOL timestampParsingSuccess = [scanner scanDouble:&payloadTimestamp];
+    if (!timestampParsingSuccess
+        || ((payloadTimestamp + self->_payloadLifetimeInSeconds) < [NSDate date].timeIntervalSince1970)
+        ) {
+        // we either have some sort of timestamp corruption or
+        // we are processing a stale payload let's just drop it and call it done:
+        [self->_payloadsRepo removePayloadByID:payloadDataRow[@"id"]];
+        
+        RollbarConfig *config = [[RollbarConfig alloc] initWithJSONString:payloadDataRow[@"config_json"]];
+        
+        if (config && config.developerOptions.logTransmittedPayloads) {
+            NSString *payloadsLogFile = config.developerOptions.droppedPayloadLogFile;
+            if (payloadsLogFile && (payloadsLogFile.length > 0)) {
+                NSString *cachesDirectory = [RollbarCachesDirectory directory];
+                NSString *payloadsLogFilePath = [cachesDirectory stringByAppendingPathComponent:payloadsLogFile];
+                RollbarPayload *payload = [[RollbarPayload alloc] initWithJSONString:payloadDataRow[@"payload_json"]];
+                [RollbarFileWriter appendSafelyData: payload.serializeToJSONData toFile:payloadsLogFilePath];
+            }
+        }
+        
+        if (config && !config.developerOptions.suppressSdkInfoLogging) {
+            RollbarSdkLog(@"Dropped a stale payload: %@", payloadDataRow[@"payload_json"]);
+        }
+        
+        return YES;
+    }
+    
+    return NO;
+}
+
 - (void)processSavedPayload:(nonnull NSDictionary<NSString *, NSString *> *)payloadDataRow {
     
-    //TODO: implement detection of stale payload and remove from the repo if it is stale...
+    if ([self checkProcessStalePayload:payloadDataRow]) {
+        return;
+    }
 
     NSString *destinationKey = payloadDataRow[@"destination_key"];
     NSAssert(destinationKey && destinationKey.length > 0, @"destination_key is expected to be defined!");
@@ -407,26 +454,6 @@ static NSUInteger MAX_RETRY_COUNT = 5;
     RollbarPayload *payload = [[RollbarPayload alloc] initWithJSONString:payloadJson];
     NSAssert(payload, @"payload is expected to be defined!");
         
-//    //TODO: the following payload truncation code should eventually move to the point right before payload persistence
-//    //      into the repo:
-//    NSMutableDictionary *newPayload =
-//    [NSMutableDictionary dictionaryWithDictionary:payload.jsonFriendlyData];
-//    [RollbarPayloadTruncator truncatePayload:newPayload];
-//    if (nil == newPayload) {
-//
-//        RollbarSdkLog(
-//                      @"Couldn't send truncated payload that is nil"
-//                      );
-//        //let's use untruncated original:
-//        newPayload = [NSMutableDictionary dictionaryWithDictionary:payload.jsonFriendlyData];
-//    }
-//
-//    NSError *error;
-//    NSData *jsonPayload = [NSJSONSerialization rollbar_dataWithJSONObject:newPayload
-//                                                                  options:0
-//                                                                    error:&error
-//                                                                     safe:true];
-
     NSError *error;
     NSData *jsonPayload = [NSJSONSerialization rollbar_dataWithJSONObject:payload
                                                                   options:0
@@ -478,8 +505,7 @@ static NSUInteger MAX_RETRY_COUNT = 5;
         case RollbarTriStateFlag_None:
         default:
             // Nothing obviously wrong with the payload but it was not actually tranmitted successfully.
-            // Let's try again some other time. Keep it in the repo for now (unless it is already too stale)...
-            //TODO: implement detection of stale payload and remove from the repo if it is stale...
+            // Let's try again some other time. Keep it in the repo for now...
             break;
     }
 
@@ -519,7 +545,12 @@ static NSUInteger MAX_RETRY_COUNT = 5;
     
     NSArray<NSDictionary<NSString *, NSString *> *> *payloads = [self->_payloadsRepo getPayloadsWithOffset:0 andLimit:5];
     for(NSDictionary<NSString *, NSString *> *payload in payloads) {
-        [self processSavedPayload:payload];
+        @try {
+            [self processSavedPayload:payload];
+        } @catch (NSException *exception) {
+            RollbarSdkLog(@"Payload processing EXCEPTION: %@", exception);
+        } @finally {
+        }
     }
 }
 
