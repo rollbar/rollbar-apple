@@ -11,8 +11,11 @@ import RollbarCommon
 @objc public class RollbarTestUtil: NSObject {
     
     private static let payloadsStore = "rollbar.db";
-    private static let queuedItemsFileName = "rollbar.items";
-    private static let queuedItemsStateFileName = "rollbar.state";
+        
+    private static let incomingPayloadsLog = "rollbar.incoming";
+    private static let transmittedPayloadsLog = "rollbar.transmitted";
+    private static let droppedPayloadsLog = "rollbar.dropped";
+
     private static let telemetryFileName = "rollbar.telemetry";
 
     private static func getPayloadsStoreFilePath() -> String {
@@ -21,15 +24,21 @@ import RollbarCommon
         return filePath.path;
     }
     
-    private static func getQueuedItemsFilePath() -> String {
+    private static func getIncomingPayloadsLogFilePath() -> String {
         let cachesDirectory = RollbarCachesDirectory.directory() ;
-        let filePath = URL(fileURLWithPath: cachesDirectory).appendingPathComponent(queuedItemsFileName);
+        let filePath = URL(fileURLWithPath: cachesDirectory).appendingPathComponent(incomingPayloadsLog);
         return filePath.path;
     }
 
-    private static func getQueuedItemsStateFilePath() -> String {
+    private static func getTransmittedPayloadsLogFilePath() -> String {
         let cachesDirectory = RollbarCachesDirectory.directory() ;
-        let filePath = URL(fileURLWithPath: cachesDirectory).appendingPathComponent(queuedItemsStateFileName);
+        let filePath = URL(fileURLWithPath: cachesDirectory).appendingPathComponent(transmittedPayloadsLog);
+        return filePath.path;
+    }
+    
+    private static func getDroppedPayloadsLogFilePath() -> String {
+        let cachesDirectory = RollbarCachesDirectory.directory() ;
+        let filePath = URL(fileURLWithPath: cachesDirectory).appendingPathComponent(droppedPayloadsLog);
         return filePath.path;
     }
     
@@ -90,31 +99,62 @@ import RollbarCommon
         RollbarTestUtil.clearFile(filePath: filePath);
     }
 
-    @objc public static func clearLogFile() {
-        let itemsStateFilePath = RollbarTestUtil.getQueuedItemsStateFilePath();
-        let itemsFilePath = RollbarTestUtil.getQueuedItemsFilePath();
+    @objc public static func deleteLogFiles() {
+        
+        let logs : [String] = [
+            RollbarTestUtil.getIncomingPayloadsLogFilePath(),
+            RollbarTestUtil.getTransmittedPayloadsLogFilePath(),
+            RollbarTestUtil.getDroppedPayloadsLogFilePath(),
+        ];
+        
         let fileManager = FileManager.default;
         
-        if fileManager.fileExists(atPath: itemsStateFilePath) {
-            RollbarTestUtil.deleteFile(filePath: itemsStateFilePath);
-        }
-        
-        if fileManager.fileExists(atPath: itemsFilePath) {
-            RollbarTestUtil.clearFile(filePath: itemsFilePath);
+        for log in logs {
+            if fileManager.fileExists(atPath: log) {
+                RollbarTestUtil.deleteFile(filePath: log);
+            }
         }
     }
-
-    @objc public static func readFirstItemStringFromLogFile() -> String? {
+    
+    @objc public static func readFirstIncomingPayloadAsString() -> String? {
         
-        let filePath = RollbarTestUtil.getQueuedItemsFilePath();
+        return RollbarTestUtil.readFirstItemStringFromLogFile(filePath: RollbarTestUtil.getIncomingPayloadsLogFilePath());
+    }
+    
+    @objc public static func readFirstTransmittedPayloadAsString() -> String? {
+        
+        return RollbarTestUtil.readFirstItemStringFromLogFile(filePath: RollbarTestUtil.getTransmittedPayloadsLogFilePath());
+    }
+    
+    @objc public static func readFirstDroppedPayloadAsString() -> String? {
+        
+        return RollbarTestUtil.readFirstItemStringFromLogFile(filePath: RollbarTestUtil.getDroppedPayloadsLogFilePath());
+    }
+
+    @objc public static func readFirstItemStringFromLogFile(filePath: String) -> String? {
+        
         let fileReader = RollbarFileReader(filePath: filePath, andOffset: 0);
         let item = fileReader.readLine();
         return item;
     }
 
-    @objc public static func readItemStringsFromLogFile() -> [String] {
+    @objc public static func readIncomingPayloadsAsStrings() -> [String] {
         
-        let filePath = RollbarTestUtil.getQueuedItemsFilePath();
+        return RollbarTestUtil.readItemStringsFromLogFile(filePath: RollbarTestUtil.getIncomingPayloadsLogFilePath());
+    }
+
+    @objc public static func readTransmittedPayloadsAsStrings() -> [String] {
+        
+        return RollbarTestUtil.readItemStringsFromLogFile(filePath: RollbarTestUtil.getTransmittedPayloadsLogFilePath());
+    }
+    
+    @objc public static func readDroppedPayloadsAsStrings() -> [String] {
+        
+        return RollbarTestUtil.readItemStringsFromLogFile(filePath: RollbarTestUtil.getDroppedPayloadsLogFilePath());
+    }
+    
+    @objc public static func readItemStringsFromLogFile(filePath: String) -> [String] {
+        
         let fileReader = RollbarFileReader(filePath: filePath, andOffset: 0);
         var items = [String]();
         fileReader.enumerateLines({ (line, nextOffset, stop) in
@@ -126,8 +166,23 @@ import RollbarCommon
         return items;
     }
 
-    @objc public static func readItemsFromLogFile() -> [NSMutableDictionary] {
-        let filePath = RollbarTestUtil.getQueuedItemsFilePath();
+    @objc public static func readIncomingPayloads() -> [NSMutableDictionary] {
+        
+        return RollbarTestUtil.readItemsFromLogFile(filePath: RollbarTestUtil.getIncomingPayloadsLogFilePath());
+    }
+    
+    @objc public static func readTransmittedPayloads() -> [NSMutableDictionary] {
+        
+        return RollbarTestUtil.readItemsFromLogFile(filePath: RollbarTestUtil.getTransmittedPayloadsLogFilePath());
+    }
+    
+    @objc public static func readDroppedPayloads() -> [NSMutableDictionary] {
+        
+        return RollbarTestUtil.readItemsFromLogFile(filePath: RollbarTestUtil.getDroppedPayloadsLogFilePath());
+    }
+    
+    @objc public static func readItemsFromLogFile(filePath: String) -> [NSMutableDictionary] {
+
         let fileReader = RollbarFileReader(filePath: filePath, andOffset: 0);
         var items = [NSMutableDictionary] ();
         fileReader.enumerateLines({ (line, nextOffset, stop) in

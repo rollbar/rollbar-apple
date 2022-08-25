@@ -37,12 +37,6 @@
     [RollbarLogger readPayloadsDataFromFile:[RollbarLogger _droppedPayloadsLogPath]];
 }
 
-//+ (nonnull NSArray<NSMutableDictionary *> *)readPayloadsFromSdkLog {
-//
-//    NSString *filePath = [RollbarLogger _payloadsLogPath];
-//    return [RollbarLogger readPayloadsDataFromFile:filePath];
-//}
-
 + (nonnull NSArray<NSMutableDictionary *> *)readPayloadsDataFromFile:(nonnull NSString *)filePath {
     
     RollbarFileReader *reader = [[RollbarFileReader alloc] initWithFilePath:filePath
@@ -103,11 +97,6 @@
     
     return [RollbarLogger _getSDKDataFilePath:[RollbarNotifierFiles payloadsStore]];
 }
-
-//+ (nonnull NSString *)_logItemsStoreStatePath {
-//
-//    return [RollbarLogger _getSDKDataFilePath:[RollbarNotifierFiles itemsQueueState]];
-//}
 
 + (nonnull NSString *)_telemetryItemsStorePath {
     

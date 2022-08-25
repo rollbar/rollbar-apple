@@ -10,9 +10,11 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
     override func setUp() {
         
         super.setUp();
-        RollbarTestUtil.clearLogFile();
+
+        RollbarTestUtil.deleteLogFiles();
+        RollbarTestUtil.deletePayloadsStoreFile();
         RollbarTestUtil.clearTelemetryFile();
-        
+
         let config = RollbarConfig.mutableConfig(
             withAccessToken: RollbarTestHelper.getRollbarPayloadsAccessToken(),
             environment: RollbarTestHelper.getRollbarEnvironment()
@@ -27,9 +29,6 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
     
     func testMemoryTelemetryAutocapture() {
         
-        RollbarTestUtil.clearLogFile();
-        RollbarTestUtil.clearTelemetryFile();
-        
         let config = RollbarMutableConfig();
         config.destination.accessToken = RollbarTestHelper.getRollbarPayloadsAccessToken();
         config.destination.environment = RollbarTestHelper.getRollbarEnvironment();
@@ -42,7 +41,7 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
         Rollbar.criticalMessage("Must contain memory telemetry!");
         RollbarLogger.flushRollbarThread();
 
-        let logItems = RollbarTestUtil.readItemStringsFromLogFile();
+        let logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
         let logItem = logItems[logItems.count - 1];
         let payload = RollbarPayload(jsonString: logItem);
         let telemetryEvents = payload.data.body.telemetry!;
@@ -61,9 +60,6 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
     }
 
     func testMemoryTelemetryAutocapture_Live() {
-        
-        RollbarTestUtil.clearLogFile();
-        RollbarTestUtil.clearTelemetryFile();
         
         let config = RollbarMutableConfig();
         config.destination.accessToken = RollbarTestHelper.getRollbarPayloadsAccessToken();
@@ -84,9 +80,6 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
     
     func testTelemetryCapture() {
         
-        RollbarTestUtil.clearLogFile();
-        RollbarTestUtil.clearTelemetryFile();
-
         let config = Rollbar.configuration().mutableCopy();
         config.telemetry.enabled = true;
         Rollbar.update(withConfiguration: config);
@@ -125,7 +118,7 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
         Rollbar.debugMessage("Test");
         RollbarLogger.flushRollbarThread();
 
-        let logItems = RollbarTestUtil.readItemStringsFromLogFile();
+        let logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
         let logItem = logItems[logItems.count - 1];
         let payload = RollbarPayload(jsonString: logItem);
         let telemetryEvents = payload.data.body.telemetry!;
@@ -174,9 +167,6 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
     
     func testErrorReportingWithTelemetry() {
         
-        RollbarTestUtil.clearLogFile();
-        RollbarTestUtil.clearTelemetryFile();
-
         let config = Rollbar.configuration().mutableCopy();
         config.telemetry.enabled = true;
         Rollbar.update(withConfiguration: config);
@@ -222,7 +212,7 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
 
         RollbarTestUtil.waitForPesistenceToComplete();
         
-        let logItems = RollbarTestUtil.readItemStringsFromLogFile();
+        let logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
         for item in logItems {
             let payload = RollbarPayload(jsonString: item);
             let telemetryEvents = payload.data.body.telemetry;

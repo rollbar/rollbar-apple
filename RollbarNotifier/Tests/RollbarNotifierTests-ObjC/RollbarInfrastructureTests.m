@@ -76,7 +76,7 @@
     ];
     
     [RollbarLogger flushRollbarThread];
-    items = [RollbarTestUtil readItemStringsFromLogFile];
+    items = [RollbarTestUtil readTransmittedPayloadsAsStrings];
     BOOL wasLogged = NO;
     for (NSString *item in items) {
         if (YES == [item containsString:@"RollbarInfrastructure basics test 2!"]) {
@@ -114,7 +114,7 @@
     
     
     [RollbarLogger flushRollbarThread];
-    items = [RollbarTestUtil readItemStringsFromLogFile];
+    items = [RollbarTestUtil readTransmittedPayloadsAsStrings];
     XCTAssertNotNil(items);
     
     [[RollbarInfrastructure sharedInstance].logger log:RollbarLevel_Critical
@@ -123,7 +123,7 @@
                                                context:nil
     ];
     [RollbarLogger flushRollbarThread];
-    items = [RollbarTestUtil readItemStringsFromLogFile];
+    items = [RollbarTestUtil readTransmittedPayloadsAsStrings];
     BOOL wasLogged = NO;
     for (NSString *item in items) {
         if (YES == [item containsString:@"RollbarInfrastructure basics test 3!"]) {

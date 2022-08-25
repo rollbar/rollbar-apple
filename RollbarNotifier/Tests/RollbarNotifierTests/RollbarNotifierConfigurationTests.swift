@@ -11,12 +11,19 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         
         super.setUp();
         
-        RollbarTestUtil.clearLogFile();
+        RollbarTestUtil.deleteLogFiles();
+        RollbarTestUtil.deletePayloadsStoreFile();
         RollbarTestUtil.clearTelemetryFile();
         
 //        if Rollbar.currentConfiguration() != nil {
 //            Rollbar.initWithAccessToken("");
 //        }
+        
+        let config = RollbarMutableConfig();
+        config.developerOptions.logIncomingPayloads = true;
+        config.developerOptions.logTransmittedPayloads = true;
+        config.developerOptions.logDroppedPayloads = true;
+        
         Rollbar.initWithAccessToken("");
 
     }
@@ -32,8 +39,6 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
     }
 
     func testTelemetryEnabled() {
-
-        RollbarTestUtil.clearLogFile();
 
         var expectedFlag = false;
         
@@ -81,8 +86,6 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
 
     func testMaximumTelemetryEvents() {
         
-        RollbarTestUtil.clearLogFile();
-        
         let config = Rollbar.configuration().mutableCopy();
         config.telemetry.enabled = true;
         Rollbar.update(withConfiguration: config);
@@ -98,7 +101,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         Rollbar.debugMessage("Test");
         RollbarLogger .flushRollbarThread();
         
-        let logItems = RollbarTestUtil.readItemStringsFromLogFile();
+        let logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
         let logItem = logItems[logItems.count - 1];
         let payload = RollbarPayload(jsonString: logItem);
         let telemetry = payload.data.body.telemetry!;
@@ -126,8 +129,6 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
     }
 
     func testViewInputTelemetrScrubFieldsConfig() {
-
-        RollbarTestUtil.clearLogFile();
 
         let element1 = "password";
         let element2 = "pin";
@@ -164,11 +165,11 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
     
     func testEnabled() {
         
-        RollbarLogger.flushRollbarThread();
-        RollbarTestUtil.clearLogFile();
-        RollbarTestUtil.waitForPesistenceToComplete(waitTimeInSeconds: 5);
+//        RollbarLogger.flushRollbarThread();
+//        RollbarTestUtil.deleteLogFiles();
+//        RollbarTestUtil.waitForPesistenceToComplete(waitTimeInSeconds: 5);
 
-        var logItems = RollbarTestUtil.readItemStringsFromLogFile();
+        var logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
         XCTAssertTrue(logItems.count == 0,
                       "logItems count is expected to be 0. Actual value is \(logItems.count)"
                       );
@@ -178,11 +179,11 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         config.developerOptions.enabled = false;
         Rollbar.update(withConfiguration: config);
         RollbarLogger.flushRollbarThread();
-        RollbarTestUtil.clearLogFile();
+        RollbarTestUtil.deleteLogFiles();
 
         Rollbar.debugMessage("Test1");
         RollbarLogger.flushRollbarThread();
-        logItems = RollbarTestUtil.readItemStringsFromLogFile();
+        logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
         XCTAssertTrue(logItems.count == 0,
                       "logItems count is expected to be 0. Actual value is \(logItems.count)"
                       );
@@ -193,7 +194,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
 
         Rollbar.debugMessage("Test2");
         RollbarLogger.flushRollbarThread();
-        logItems = RollbarTestUtil.readItemStringsFromLogFile();
+        logItems = RollbarTestUtil.readIncomingPayloadsAsStrings();
         XCTAssertTrue(logItems[logItems.count - 1].contains("Test2"));
 
         config.developerOptions.enabled = false;
@@ -202,31 +203,27 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
 
         Rollbar.debugMessage("Test3");
         RollbarLogger.flushRollbarThread();
-        logItems = RollbarTestUtil.readItemStringsFromLogFile();
+        logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
         XCTAssertTrue(!logItems[logItems.count - 1].contains("Test3"));
         
-        RollbarTestUtil.clearLogFile();
+        RollbarTestUtil.deleteLogFiles();
     }
 
     func testCheckIgnore() {
 
-        RollbarTestUtil.clearLogFile();
-
         Rollbar.debugMessage("Don't ignore this");
         RollbarTestUtil.waitForPesistenceToComplete();
-        var logItems = RollbarTestUtil.readItemStringsFromLogFile();
+        var logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
         XCTAssertTrue(logItems.count == 1, "Log item count should be 1");
 
         let config = Rollbar.configuration().mutableCopy();
         config.checkIgnoreRollbarData = { rollbarData in return true; };
         Rollbar.debugMessage("Ignore this");
-        logItems = RollbarTestUtil.readItemStringsFromLogFile();
+        logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
         XCTAssertTrue(logItems.count == 1, "Log item count should be 1");
     }
 
     func testServerData() {
-        
-        RollbarTestUtil.clearLogFile();
         
         let config = Rollbar.configuration().mutableCopy();
 
@@ -241,7 +238,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
 
         RollbarTestUtil.waitForPesistenceToComplete();
 
-        let logItems = RollbarTestUtil.readItemStringsFromLogFile();
+        let logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
         let logItem = logItems[logItems.count - 1];
         let payload = RollbarPayload(jsonString: logItem);
         let server = payload.data.server!;
@@ -262,8 +259,6 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
 
     func testPayloadModification() {
         
-        RollbarTestUtil.clearLogFile();
-
         let config = Rollbar.configuration().mutableCopy();
 
         let newMsg = "Modified message";
@@ -277,7 +272,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
 
         RollbarTestUtil.waitForPesistenceToComplete();
 
-        let logItems = RollbarTestUtil.readItemStringsFromLogFile();
+        let logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
         let logItem = logItems[logItems.count - 1];
         let payload = RollbarPayload(jsonString: logItem);
         let msg1 = payload.data.body.message!.body;
@@ -293,8 +288,6 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
 
     func testScrublistFields() {
         
-        RollbarTestUtil.clearLogFile();
-
         let config = Rollbar.configuration().mutableCopy();
 
         let scrubedContent = "*****";
@@ -311,7 +304,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         RollbarLogger.flushRollbarThread();
 
         // verify the fields were scrubbed:
-        var logItems = RollbarTestUtil.readItemStringsFromLogFile();
+        var logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
         var logItem = logItems[logItems.count - 1];
         var payload = RollbarPayload(jsonString: logItem);
         for key in keys {
@@ -321,7 +314,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
                 "\(key) is \(content), should be \(scrubedContent)"
             );
         }
-        RollbarTestUtil.clearLogFile();
+        RollbarTestUtil.deleteLogFiles();
 
         // define scrub whitelist fields (the same as the scrub fields - to counterbalance them):
         for key in keys {
@@ -334,7 +327,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         RollbarLogger.flushRollbarThread();
 
         // verify the fields were not scrubbed:
-        logItems = RollbarTestUtil.readItemStringsFromLogFile();
+        logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
         logItem = logItems[logItems.count - 1];
         payload = RollbarPayload(jsonString: logItem);
         for key in keys {
@@ -345,12 +338,10 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
             );
         }
         
-        RollbarTestUtil.clearLogFile();
+        RollbarTestUtil.deleteLogFiles();
     }
 
     func testPersonDataAttachment() {
-        
-        RollbarTestUtil.clearLogFile();
         
         XCTAssertNotNil(Rollbar.configuration());
         
@@ -377,7 +368,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         Rollbar.debugMessage("test");
         RollbarLogger.flushRollbarThread();
         // verify the fields were scrubbed:
-        let logItems = RollbarTestUtil.readItemStringsFromLogFile();
+        let logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
         let payload = RollbarPayload(jsonString: logItems[logItems.count - 1]);
         XCTAssertTrue(
             .orderedSame == payload.data.person!.serializeToJSONString()!.compare(expectedPersonJson),
@@ -391,8 +382,6 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
     }
 
     func testRollbarSetPersonDataAttachment() {
-        
-        RollbarTestUtil.clearLogFile();
         
         XCTAssertNotNil(Rollbar.configuration());
         
@@ -420,7 +409,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         Rollbar.debugMessage("test");
         RollbarLogger.flushRollbarThread();
         // verify the fields were scrubbed:
-        let logItems = RollbarTestUtil.readItemStringsFromLogFile();
+        let logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
         let payload = RollbarPayload(jsonString: logItems[logItems.count - 1]);
         XCTAssertTrue(
             .orderedSame == payload.data.person!.serializeToJSONString()!.compare(expectedPersonJson),

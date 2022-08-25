@@ -26,11 +26,6 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
     RollbarRegistry *_registry;
     RollbarPayloadRepository *_payloadsRepo;
     
-//    NSDate *_nextSendTime;
-//    NSString *_queuedItemsFilePath;
-//    NSString *_stateFilePath;
-//    NSMutableDictionary *_queueState;
-
 #if !TARGET_OS_WATCH
     RollbarReachability *_reachability;
     BOOL _isNetworkReachable;
@@ -56,7 +51,6 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
         self->_reachability = nil;
         self->_isNetworkReachable = YES;
 #endif
-        //self->_nextSendTime = [[NSDate alloc] init];
 
         self.name = [RollbarThread rollbar_objectClassName];//NSStringFromClass([RollbarThread class]);
         self.active = YES;
@@ -125,13 +119,6 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
         }
     }
 }
-
-#pragma mark - payload store
-
-- (void)persist:(nonnull RollbarPayload *)payload {
-    
-}
-
 
 #pragma mark - persisting payload items
 
@@ -311,7 +298,7 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
     NSAssert(payload, @"payload can not be nil in data: %@", data);
     RollbarConfig *config = (RollbarConfig *)data[1];
     NSAssert(config, @"config can not be nil");
-    if (!(payload && config)) {        
+    if (!(payload && config)) {
         RollbarSdkLog(@"Couldn't queue payload %@ with config %@", payload, config);
         return;
     }
@@ -455,7 +442,7 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
     NSAssert(payload, @"payload is expected to be defined!");
         
     NSError *error;
-    NSData *jsonPayload = [NSJSONSerialization rollbar_dataWithJSONObject:payload
+    NSData *jsonPayload = [NSJSONSerialization rollbar_dataWithJSONObject:payload.jsonFriendlyData
                                                                   options:0
                                                                     error:&error
                                                                      safe:true];

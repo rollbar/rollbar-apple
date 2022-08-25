@@ -11,9 +11,10 @@ final class RollbarNotifierTruncationTests: XCTestCase {
         
         super.setUp();
         
-        RollbarTestUtil.clearLogFile();
+        RollbarTestUtil.deleteLogFiles();
+        RollbarTestUtil.deletePayloadsStoreFile();
         RollbarTestUtil.clearTelemetryFile();
-        
+
         let config = RollbarConfig.mutableConfig(
             withAccessToken: RollbarTestHelper.getRollbarPayloadsAccessToken(),
             environment: RollbarTestHelper.getRollbarEnvironment()

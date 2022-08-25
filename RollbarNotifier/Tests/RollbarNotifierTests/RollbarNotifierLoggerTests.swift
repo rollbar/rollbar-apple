@@ -11,10 +11,11 @@ final class RollbarNotifierLoggerTests: XCTestCase {
         
         super.setUp();
         
-        RollbarTestUtil.clearLogFile();
-        RollbarTestUtil.clearTelemetryFile();
         RollbarTestUtil.waitForPesistenceToComplete();
-        
+        RollbarTestUtil.deleteLogFiles();
+        RollbarTestUtil.deletePayloadsStoreFile();
+        RollbarTestUtil.clearTelemetryFile();
+
         let config = RollbarMutableConfig.mutableConfig(
             withAccessToken: RollbarTestHelper.getRollbarPayloadsAccessToken(),
             environment: RollbarTestHelper.getRollbarEnvironment()
@@ -152,7 +153,7 @@ final class RollbarNotifierLoggerTests: XCTestCase {
 
         RollbarLogger.flushRollbarThread();
 
-        let items = RollbarTestUtil.readItemStringsFromLogFile();
+        let items = RollbarTestUtil.readTransmittedPayloadsAsStrings();
         XCTAssertTrue(items.count >= notificationText.count);
         var count:Int = 0;
         for item in items {
