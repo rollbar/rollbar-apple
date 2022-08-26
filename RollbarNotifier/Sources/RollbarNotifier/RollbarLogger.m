@@ -71,11 +71,11 @@ static NSString *queuedItemsFilePath = nil;
         
         NSString *cachesDirectory = [RollbarCachesDirectory directory];
         
-        if (nil != self.configuration.developerOptions.transmittedPayloadLogFile
-            && self.configuration.developerOptions.transmittedPayloadLogFile.length > 0) {
+        if (nil != self.configuration.developerOptions.transmittedPayloadsLogFile
+            && self.configuration.developerOptions.transmittedPayloadsLogFile.length > 0) {
             
             transmittedPayloadsFilePath =
-            [cachesDirectory stringByAppendingPathComponent:self.configuration.developerOptions.transmittedPayloadLogFile];
+            [cachesDirectory stringByAppendingPathComponent:self.configuration.developerOptions.transmittedPayloadsLogFile];
         }
         else {
             
@@ -83,11 +83,11 @@ static NSString *queuedItemsFilePath = nil;
             [cachesDirectory stringByAppendingPathComponent:[RollbarNotifierFiles transmittedPayloadsLog]];
         }
 
-        if (nil != self.configuration.developerOptions.droppedPayloadLogFile
-            && self.configuration.developerOptions.droppedPayloadLogFile.length > 0) {
+        if (nil != self.configuration.developerOptions.droppedPayloadsLogFile
+            && self.configuration.developerOptions.droppedPayloadsLogFile.length > 0) {
             
             droppedPayloadsFilePath =
-            [cachesDirectory stringByAppendingPathComponent:self.configuration.developerOptions.droppedPayloadLogFile];
+            [cachesDirectory stringByAppendingPathComponent:self.configuration.developerOptions.droppedPayloadsLogFile];
         }
         else {
             

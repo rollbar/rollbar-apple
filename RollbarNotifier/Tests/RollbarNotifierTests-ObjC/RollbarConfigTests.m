@@ -109,7 +109,7 @@
     XCTAssertTrue(immutable.transmit);
     XCTAssertTrue(immutable.suppressSdkInfoLogging);
     XCTAssertTrue(immutable.logTransmittedPayloads);
-    XCTAssertTrue([immutable.transmittedPayloadLogFile isEqualToString:@"test_PAYLOADS.LOG"]);
+    XCTAssertTrue([immutable.transmittedPayloadsLogFile isEqualToString:@"test_PAYLOADS.LOG"]);
 
     content = [immutable serializeToJSONString];
     XCTAssertNotNil(content);
@@ -620,7 +620,7 @@
     RollbarConfig *immutable = [mutable copy];
 
     XCTAssertTrue([immutable.destination.accessToken isEqualToString:@"test_AT"]);
-    XCTAssertTrue([immutable.developerOptions.transmittedPayloadLogFile isEqualToString:@"test_PL"]);
+    XCTAssertTrue([immutable.developerOptions.transmittedPayloadsLogFile isEqualToString:@"test_PL"]);
     
     content = [immutable serializeToJSONString];
     XCTAssertNotNil(content);

@@ -24,16 +24,19 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         config.developerOptions.logTransmittedPayloads = true;
         config.developerOptions.logDroppedPayloads = true;
         
-        Rollbar.initWithAccessToken("");
+        Rollbar.initWithConfiguration(config);
 
     }
     
     override func tearDown() {
+        
         Rollbar.update(withConfiguration: RollbarMutableConfig());
+        
         super.tearDown();
     }
     
     func testDefaultRollbarConfiguration() {
+        
         let rc = RollbarMutableConfig();
         NSLog("%@", rc);
     }
@@ -101,7 +104,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         Rollbar.debugMessage("Test");
         RollbarLogger .flushRollbarThread();
         
-        let logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
+        let logItems = RollbarTestUtil.readIncomingPayloadsAsStrings();
         let logItem = logItems[logItems.count - 1];
         let payload = RollbarPayload(jsonString: logItem);
         let telemetry = payload.data.body.telemetry!;
@@ -203,10 +206,10 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
 
         Rollbar.debugMessage("Test3");
         RollbarLogger.flushRollbarThread();
-        logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
+        logItems = RollbarTestUtil.readIncomingPayloadsAsStrings();
         XCTAssertTrue(!logItems[logItems.count - 1].contains("Test3"));
         
-        RollbarTestUtil.deleteLogFiles();
+//        RollbarTestUtil.deleteLogFiles();
     }
 
     func testCheckIgnore() {

@@ -150,12 +150,12 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
         if (shouldIgnore) {
             
             if (config.developerOptions.logDroppedPayloads
-                && config.developerOptions.incomingPayloadLogFile
-                && (config.developerOptions.incomingPayloadLogFile.length > 0)
+                && config.developerOptions.incomingPayloadsLogFile
+                && (config.developerOptions.incomingPayloadsLogFile.length > 0)
                 ) {
                 NSString *cachesDirectory = [RollbarCachesDirectory directory];
                 NSString *payloadsLogFilePath =
-                [cachesDirectory stringByAppendingPathComponent:config.developerOptions.incomingPayloadLogFile];
+                [cachesDirectory stringByAppendingPathComponent:config.developerOptions.incomingPayloadsLogFile];
                 [RollbarFileWriter appendSafelyData:[payload serializeToJSONData] toFile:payloadsLogFilePath];
             }
             
@@ -352,6 +352,28 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
         RollbarSdkLog(@"*** with destinationID: %@", destinationID);
         RollbarSdkLog(@"*** Resulting payloadDataRow: %@", payloadDataRow);
     }
+    else if (config.developerOptions.logIncomingPayloads) {
+        NSString *logFile = config.developerOptions.incomingPayloadsLogFile;
+        NSString *cachesDirectory = [RollbarCachesDirectory directory];
+        NSString *logFilePath = [cachesDirectory stringByAppendingPathComponent:logFile];
+        
+        
+        NSError *error;
+        NSData *jsonPayload = [NSJSONSerialization rollbar_dataWithJSONObject:payload.jsonFriendlyData
+                                                                      options:0
+                                                                        error:&error
+                                                                         safe:true];
+        if (nil == jsonPayload) {
+            RollbarSdkLog(@"ERROR: Couldn't log an incoming payload locally!");
+            if (nil != error) {
+                RollbarSdkLog(@"   DETAILS: an error while generating JSON data: %@", error);
+            }
+        }
+        else {
+            [RollbarFileWriter appendSafelyData:jsonPayload toFile:logFilePath];
+        }
+    }
+
     NSAssert(payloadDataRow && payloadDataRow[@"id"], @"Couldn't add a payload to the repo: %@", payloadJson);
 }
 
@@ -395,7 +417,7 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
         RollbarConfig *config = [[RollbarConfig alloc] initWithJSONString:payloadDataRow[@"config_json"]];
         
         if (config && config.developerOptions.logTransmittedPayloads) {
-            NSString *payloadsLogFile = config.developerOptions.droppedPayloadLogFile;
+            NSString *payloadsLogFile = config.developerOptions.droppedPayloadsLogFile;
             if (payloadsLogFile && (payloadsLogFile.length > 0)) {
                 NSString *cachesDirectory = [RollbarCachesDirectory directory];
                 NSString *payloadsLogFilePath = [cachesDirectory stringByAppendingPathComponent:payloadsLogFile];
@@ -476,7 +498,7 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
                 RollbarSdkLog(@"Couldn't remove payload data row with ID: %@", payloadDataRow[@"id"]);
             }
             if (config.developerOptions.logTransmittedPayloads) {
-                payloadsLogFile = config.developerOptions.transmittedPayloadLogFile;
+                payloadsLogFile = config.developerOptions.transmittedPayloadsLogFile;
             }
             break;
         case RollbarTriStateFlag_Off:
@@ -486,7 +508,7 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
                 RollbarSdkLog(@"Couldn't remove payload data row with ID: %@", payloadDataRow[@"id"]);
             }
             if (config.developerOptions.logDroppedPayloads) {
-                payloadsLogFile = config.developerOptions.droppedPayloadLogFile;
+                payloadsLogFile = config.developerOptions.droppedPayloadsLogFile;
             }
             break;
         case RollbarTriStateFlag_None:
