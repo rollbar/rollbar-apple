@@ -146,28 +146,31 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
             NSAssert(false, @"Provided checkIgnore implementation throws an exception!");
             shouldIgnore = NO;
         }
-        
-        if (shouldIgnore) {
-            
-            if (config.developerOptions.logDroppedPayloads
-                && config.developerOptions.incomingPayloadsLogFile
-                && (config.developerOptions.incomingPayloadsLogFile.length > 0)
-                ) {
-                NSString *cachesDirectory = [RollbarCachesDirectory directory];
-                NSString *payloadsLogFilePath =
-                [cachesDirectory stringByAppendingPathComponent:config.developerOptions.incomingPayloadsLogFile];
-                [RollbarFileWriter appendSafelyData:[payload serializeToJSONData] toFile:payloadsLogFilePath];
-            }
-            
-            if (!config.developerOptions.suppressSdkInfoLogging) {
-                RollbarSdkLog(@"Dropped payload (due to checkIgnore): %@",
-                              [[NSString alloc] initWithData:[payload serializeToJSONData]
-                                                    encoding:NSUTF8StringEncoding]
-                              );
-            }
-            
-            return YES; // ignore == nothing to queue...
+        @finally {
+            return shouldIgnore;
         }
+        
+//        if (shouldIgnore) {
+//
+//            if (config.developerOptions.logDroppedPayloads
+//                && config.developerOptions.incomingPayloadsLogFile
+//                && (config.developerOptions.incomingPayloadsLogFile.length > 0)
+//                ) {
+//                NSString *cachesDirectory = [RollbarCachesDirectory directory];
+//                NSString *payloadsLogFilePath =
+//                [cachesDirectory stringByAppendingPathComponent:config.developerOptions.incomingPayloadsLogFile];
+//                [RollbarFileWriter appendSafelyData:[payload serializeToJSONData] toFile:payloadsLogFilePath];
+//            }
+//
+//            if (!config.developerOptions.suppressSdkInfoLogging) {
+//                RollbarSdkLog(@"Dropped payload (due to checkIgnore): %@",
+//                              [[NSString alloc] initWithData:[payload serializeToJSONData]
+//                                                    encoding:NSUTF8StringEncoding]
+//                              );
+//            }
+//
+//            return YES; // ignore == nothing to queue...
+//        }
     }
     
     return NO;
@@ -314,21 +317,78 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
 
 - (void)savePayload:(nonnull RollbarPayload *)payload withConfig:(nonnull RollbarConfig *)config {
     
+
     if ([RollbarThread shouldIgnorePayload:payload withConfig:config]) {
         
+        if (config.developerOptions.logIncomingPayloads) {
+            NSString *logFilePath =
+            [[RollbarCachesDirectory directory] stringByAppendingPathComponent:config.developerOptions.incomingPayloadsLogFile];
+            [RollbarFileWriter appendSafelyData:[payload serializeToJSONData] toFile:logFilePath];
+        }
+        if (config.developerOptions.logDroppedPayloads) {
+            NSString *logFilePath =
+            [[RollbarCachesDirectory directory] stringByAppendingPathComponent:config.developerOptions.droppedPayloadsLogFile];
+            [RollbarFileWriter appendSafelyData:[payload serializeToJSONData] toFile:logFilePath];
+        }
+        if (!config.developerOptions.suppressSdkInfoLogging) {
+            RollbarSdkLog(@"Dropped payload (due to checkIgnore): %@",
+                          [[NSString alloc] initWithData:[payload serializeToJSONData]
+                                                encoding:NSUTF8StringEncoding]
+                          );
+        }
         return;
     }
     
     payload = [RollbarThread modifyPayload:payload withConfig:config];
     if (!payload) {
+
+        if (config.developerOptions.logIncomingPayloads) {
+            NSString *logFilePath =
+            [[RollbarCachesDirectory directory] stringByAppendingPathComponent:config.developerOptions.incomingPayloadsLogFile];
+            [RollbarFileWriter appendSafelyData:[payload serializeToJSONData] toFile:logFilePath];
+        }
+        if (config.developerOptions.logDroppedPayloads) {
+            NSString *logFilePath =
+            [[RollbarCachesDirectory directory] stringByAppendingPathComponent:config.developerOptions.droppedPayloadsLogFile];
+            [RollbarFileWriter appendSafelyData:[payload serializeToJSONData] toFile:logFilePath];
+        }
+        if (!config.developerOptions.suppressSdkInfoLogging) {
+            RollbarSdkLog(@"Dropped payload (due to modifyPayload failure): %@",
+                          [[NSString alloc] initWithData:[payload serializeToJSONData]
+                                                encoding:NSUTF8StringEncoding]
+                          );
+        }
         return;
     }
     
     payload = [RollbarThread scrubPayload:payload withConfig:config];
     if (!payload) {
+
+        if (config.developerOptions.logIncomingPayloads) {
+            NSString *logFilePath =
+            [[RollbarCachesDirectory directory] stringByAppendingPathComponent:config.developerOptions.incomingPayloadsLogFile];
+            [RollbarFileWriter appendSafelyData:[payload serializeToJSONData] toFile:logFilePath];
+        }
+        if (config.developerOptions.logDroppedPayloads) {
+            NSString *logFilePath =
+            [[RollbarCachesDirectory directory] stringByAppendingPathComponent:config.developerOptions.droppedPayloadsLogFile];
+            [RollbarFileWriter appendSafelyData:[payload serializeToJSONData] toFile:logFilePath];
+        }
+        if (!config.developerOptions.suppressSdkInfoLogging) {
+            RollbarSdkLog(@"Dropped payload (due to scrubPayload failure): %@",
+                          [[NSString alloc] initWithData:[payload serializeToJSONData]
+                                                encoding:NSUTF8StringEncoding]
+                          );
+        }
         return;
     }
     
+    if (config.developerOptions.logIncomingPayloads) {
+        NSString *logFilePath =
+        [[RollbarCachesDirectory directory] stringByAppendingPathComponent:config.developerOptions.incomingPayloadsLogFile];
+        [RollbarFileWriter appendSafelyData:[payload serializeToJSONData] toFile:logFilePath];
+    }
+
     payload = [RollbarThread truncatePayload:payload];
     
     NSString *destinationID = [self->_payloadsRepo getIDofDestinationWithEndpoint:config.destination.endpoint
@@ -351,27 +411,6 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
         RollbarSdkLog(@"*** with config: %@", configJson);
         RollbarSdkLog(@"*** with destinationID: %@", destinationID);
         RollbarSdkLog(@"*** Resulting payloadDataRow: %@", payloadDataRow);
-    }
-    else if (config.developerOptions.logIncomingPayloads) {
-        NSString *logFile = config.developerOptions.incomingPayloadsLogFile;
-        NSString *cachesDirectory = [RollbarCachesDirectory directory];
-        NSString *logFilePath = [cachesDirectory stringByAppendingPathComponent:logFile];
-        
-        
-        NSError *error;
-        NSData *jsonPayload = [NSJSONSerialization rollbar_dataWithJSONObject:payload.jsonFriendlyData
-                                                                      options:0
-                                                                        error:&error
-                                                                         safe:true];
-        if (nil == jsonPayload) {
-            RollbarSdkLog(@"ERROR: Couldn't log an incoming payload locally!");
-            if (nil != error) {
-                RollbarSdkLog(@"   DETAILS: an error while generating JSON data: %@", error);
-            }
-        }
-        else {
-            [RollbarFileWriter appendSafelyData:jsonPayload toFile:logFilePath];
-        }
     }
 
     NSAssert(payloadDataRow && payloadDataRow[@"id"], @"Couldn't add a payload to the repo: %@", payloadJson);

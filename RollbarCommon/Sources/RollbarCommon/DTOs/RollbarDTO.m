@@ -150,6 +150,24 @@
     }
     
     NSJSONWritingOptions opt = 0;
+    NSError *error = nil;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self->_data options:opt error:&error];
+    if ((nil == jsonData) && (nil != error)) {
+        
+        RollbarSdkLog(@"Error serializing NSData: %@", [error localizedDescription]);
+    }
+    return jsonData;
+}
+
+- (nullable NSString *)serializeToJSONString {
+    
+    BOOL hasValidData = [NSJSONSerialization isValidJSONObject:self->_data];
+    if (NO == hasValidData) {
+        
+        RollbarSdkLog(@"JSON-invalid internal data.");
+    }
+    
+    NSJSONWritingOptions opt = 0;
 #ifdef DEBUG
     opt |= NSJSONWritingPrettyPrinted;
     if (@available(iOS 11, macOS 10.13, *)) {
@@ -164,18 +182,9 @@
     if ((nil == jsonData) && (nil != error)) {
         
         RollbarSdkLog(@"Error serializing NSData: %@", [error localizedDescription]);
-    }
-    return jsonData;
-}
-
-- (nullable NSString *)serializeToJSONString {
-    
-    NSData *jsonData = [self serializeToJSONData];
-    if (nil == jsonData) {
-        
         return nil;
     }
-    
+
     NSString *result = [[NSString alloc] initWithData:jsonData
                                              encoding:NSUTF8StringEncoding];
     return result;

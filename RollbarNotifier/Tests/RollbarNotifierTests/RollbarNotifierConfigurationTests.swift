@@ -23,7 +23,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         config.developerOptions.logIncomingPayloads = true;
         config.developerOptions.logTransmittedPayloads = true;
         config.developerOptions.logDroppedPayloads = true;
-        
+        config.loggingOptions.enableOomDetection = false;
         Rollbar.initWithConfiguration(config);
 
     }
@@ -168,10 +168,6 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
     
     func testEnabled() {
         
-//        RollbarLogger.flushRollbarThread();
-//        RollbarTestUtil.deleteLogFiles();
-//        RollbarTestUtil.waitForPesistenceToComplete(waitTimeInSeconds: 5);
-
         var logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
         XCTAssertTrue(logItems.count == 0,
                       "logItems count is expected to be 0. Actual value is \(logItems.count)"
@@ -208,22 +204,42 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         RollbarLogger.flushRollbarThread();
         logItems = RollbarTestUtil.readIncomingPayloadsAsStrings();
         XCTAssertTrue(!logItems[logItems.count - 1].contains("Test3"));
-        
-//        RollbarTestUtil.deleteLogFiles();
     }
 
     func testCheckIgnore() {
 
-        Rollbar.debugMessage("Don't ignore this");
+        Rollbar.configuration();
+
         RollbarTestUtil.waitForPesistenceToComplete();
-        var logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
-        XCTAssertTrue(logItems.count == 1, "Log item count should be 1");
+        var expectedIncomingCount = RollbarTestUtil.readIncomingPayloadsAsStrings().count;
+        var expectedDroppedCount = RollbarTestUtil.readDroppedPayloadsAsStrings().count;
+
+        Rollbar.debugMessage("Don't ignore this");
+        expectedIncomingCount+=1;
+        RollbarTestUtil.waitForPesistenceToComplete();
+        var logItems = RollbarTestUtil.readIncomingPayloadsAsStrings();
+        XCTAssertTrue(logItems.count == expectedIncomingCount,
+                      "Log item count should be \(expectedIncomingCount) but actual is \(logItems.count)"
+        );
 
         let config = Rollbar.configuration().mutableCopy();
-        config.checkIgnoreRollbarData = { rollbarData in return true; };
+        config.checkIgnoreRollbarData = {
+            rollbarData in return true;
+            
+        };
+        Rollbar.update(withConfiguration: config);
         Rollbar.debugMessage("Ignore this");
-        logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
-        XCTAssertTrue(logItems.count == 1, "Log item count should be 1");
+        expectedIncomingCount+=1;
+        expectedDroppedCount+=1;
+        RollbarTestUtil.waitForPesistenceToComplete();
+        logItems = RollbarTestUtil.readIncomingPayloadsAsStrings();
+        XCTAssertTrue(logItems.count == expectedIncomingCount,
+                      "Log item count should be \(expectedIncomingCount) but actual is \(logItems.count)"
+        );
+        logItems = RollbarTestUtil.readDroppedPayloadsAsStrings();
+        XCTAssertTrue(logItems.count == expectedDroppedCount,
+                      "Log item count should be \(expectedIncomingCount) but actual is \(logItems.count)"
+        );
     }
 
     func testServerData() {
@@ -241,7 +257,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
 
         RollbarTestUtil.waitForPesistenceToComplete();
 
-        let logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
+        let logItems = RollbarTestUtil.readIncomingPayloadsAsStrings();
         let logItem = logItems[logItems.count - 1];
         let payload = RollbarPayload(jsonString: logItem);
         let server = payload.data.server!;
@@ -274,8 +290,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         Rollbar.debugMessage("test");
 
         RollbarTestUtil.waitForPesistenceToComplete();
-
-        let logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
+        let logItems = RollbarTestUtil.readIncomingPayloadsAsStrings();
         let logItem = logItems[logItems.count - 1];
         let payload = RollbarPayload(jsonString: logItem);
         let msg1 = payload.data.body.message!.body;
@@ -307,7 +322,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         RollbarLogger.flushRollbarThread();
 
         // verify the fields were scrubbed:
-        var logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
+        var logItems = RollbarTestUtil.readIncomingPayloadsAsStrings();
         var logItem = logItems[logItems.count - 1];
         var payload = RollbarPayload(jsonString: logItem);
         for key in keys {
@@ -330,7 +345,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         RollbarLogger.flushRollbarThread();
 
         // verify the fields were not scrubbed:
-        logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
+        logItems = RollbarTestUtil.readIncomingPayloadsAsStrings();
         logItem = logItems[logItems.count - 1];
         payload = RollbarPayload(jsonString: logItem);
         for key in keys {
@@ -340,8 +355,6 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
                 "\(key) is \(content), should not be \(scrubedContent)"
             );
         }
-        
-        RollbarTestUtil.deleteLogFiles();
     }
 
     func testPersonDataAttachment() {
@@ -371,7 +384,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         Rollbar.debugMessage("test");
         RollbarLogger.flushRollbarThread();
         // verify the fields were scrubbed:
-        let logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
+        let logItems = RollbarTestUtil.readIncomingPayloadsAsStrings();
         let payload = RollbarPayload(jsonString: logItems[logItems.count - 1]);
         XCTAssertTrue(
             .orderedSame == payload.data.person!.serializeToJSONString()!.compare(expectedPersonJson),
@@ -412,7 +425,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         Rollbar.debugMessage("test");
         RollbarLogger.flushRollbarThread();
         // verify the fields were scrubbed:
-        let logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
+        let logItems = RollbarTestUtil.readIncomingPayloadsAsStrings();
         let payload = RollbarPayload(jsonString: logItems[logItems.count - 1]);
         XCTAssertTrue(
             .orderedSame == payload.data.person!.serializeToJSONString()!.compare(expectedPersonJson),
