@@ -520,8 +520,13 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
         return;
     }
     
-    RollbarTriStateFlag success = config ? [self sendPayload:jsonPayload usingConfig:config]
-    : [self sendPayload:jsonPayload]; // backward compatibility with just upgraded very old SDKs...
+    RollbarTriStateFlag success = RollbarTriStateFlag_On;
+    if (!config) {
+        success = [self sendPayload:jsonPayload]; // backward compatibility with just upgraded very old SDKs...
+    }
+    else if (config.developerOptions.transmit) {
+        success = [self sendPayload:jsonPayload usingConfig:config];
+    }
     
     NSString *payloadsLogFile = nil;
     NSString *sdkLogTrace = (RollbarTriStateFlag_None == success) ? nil

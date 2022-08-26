@@ -19,6 +19,11 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
             withAccessToken: RollbarTestHelper.getRollbarPayloadsAccessToken(),
             environment: RollbarTestHelper.getRollbarEnvironment()
         );
+        config.developerOptions.transmit = false;
+        config.developerOptions.logIncomingPayloads = true;
+        config.developerOptions.logTransmittedPayloads = true;
+        config.developerOptions.logDroppedPayloads = true;
+        
         Rollbar.update(withConfiguration: config);
     }
     
@@ -29,10 +34,7 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
     
     func testMemoryTelemetryAutocapture() {
         
-        let config = RollbarMutableConfig();
-        config.destination.accessToken = RollbarTestHelper.getRollbarPayloadsAccessToken();
-        config.destination.environment = RollbarTestHelper.getRollbarEnvironment();
-        config.developerOptions.transmit = false;
+        let config = Rollbar.configuration().mutableCopy();
         config.telemetry.enabled = true;
         config.telemetry.memoryStatsAutocollectionInterval = 0.5;
         Rollbar.update(withConfiguration: config);
@@ -41,7 +43,8 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
         Rollbar.criticalMessage("Must contain memory telemetry!");
         RollbarLogger.flushRollbarThread();
 
-        let logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
+        RollbarTestUtil.waitForPesistenceToComplete();
+        let logItems = RollbarTestUtil.readIncomingPayloadsAsStrings();
         let logItem = logItems[logItems.count - 1];
         let payload = RollbarPayload(jsonString: logItem);
         let telemetryEvents = payload.data.body.telemetry!;
@@ -118,7 +121,8 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
         Rollbar.debugMessage("Test");
         RollbarLogger.flushRollbarThread();
 
-        let logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
+        RollbarTestUtil.waitForPesistenceToComplete();
+        let logItems = RollbarTestUtil.readIncomingPayloadsAsStrings();
         let logItem = logItems[logItems.count - 1];
         let payload = RollbarPayload(jsonString: logItem);
         let telemetryEvents = payload.data.body.telemetry!;
