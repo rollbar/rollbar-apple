@@ -35,22 +35,6 @@ static void uncaughtExceptionHandler(NSException * _Nonnull exception) {
 
 @implementation Rollbar
 
-//static RollbarLogger *logger = nil;
-//static RollbarTelemetryOptionsObserver *telemetryOptionsObserver = nil;
-//static id<RollbarCrashCollector> crashCollector = nil;
-//static RollbarCrashProcessor *crashProcessor = nil;
-
-//+ (void)initialize {
-//
-//    if (self == [Rollbar class]) {
-//
-//        telemetryOptionsObserver = [RollbarTelemetryOptionsObserver new];
-//    }
-//
-//    //[[RollbarSession sharedInstance] registerApplicationHooks];
-//
-//}
-
 + (void)initWithAccessToken:(NSString *)accessToken {
     
     [Rollbar initWithAccessToken:accessToken
@@ -105,49 +89,7 @@ static void uncaughtExceptionHandler(NSException * _Nonnull exception) {
 
     [[RollbarInfrastructure sharedInstance] configureWith:configuration
                                         andCrashCollector:nil];
-
-//    NSUInteger oldReportingRate = 0;
-//
-//    if (logger) {
-//        oldReportingRate = logger.configuration.loggingOptions.maximumReportsPerMinute;
-//        [logger updateConfiguration:configuration];
-//    }
-//    else {
-//        logger = [[RollbarLogger alloc] initWithConfiguration:configuration];
-//    }
-//
-////    if (oldReportingRate != configuration.loggingOptions.maximumReportsPerMinute) {
-////        [logger updateReportingRate:configuration.loggingOptions.maximumReportsPerMinute];
-////    }
-//
-//    if (configuration && configuration.telemetry) {
-//
-//        [[RollbarTelemetry sharedInstance] configureWithOptions:configuration.telemetry];
-//    }
 }
-
-#pragma mark - Legacy methods to remove
-
-// TODO: remove this method...
-//+ (RollbarConfig *)currentConfiguration {
-//
-//    return logger.configuration;
-//}
-
-// TODO: remove this method...
-//+ (RollbarLogger *)currentLogger {
-//
-//    return logger;
-//}
-
-// TODO: remove this method...
-//+ (void)reapplyConfiguration {
-//    
-//    RollbarConfig *config = Rollbar.currentConfiguration;
-//    if (nil != config) {
-//        [Rollbar updateConfiguration:config];
-//    }
-//}
 
 #pragma mark - Logging methods
 

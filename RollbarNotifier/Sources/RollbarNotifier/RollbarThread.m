@@ -94,7 +94,7 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
     self->_payloadsRepo =
     [RollbarPayloadRepository persistentRepositoryWithPath:self->_payloadsRepoFilePath];
     NSAssert([[NSFileManager defaultManager] fileExistsAtPath:self->_payloadsRepoFilePath],
-             @"Resistent payloads store was not created: %@!!!", self->_payloadsRepoFilePath
+             @"Persistent payloads store was not created: %@!!!", self->_payloadsRepoFilePath
              );
 }
 
@@ -149,28 +149,6 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
         @finally {
             return shouldIgnore;
         }
-        
-//        if (shouldIgnore) {
-//
-//            if (config.developerOptions.logDroppedPayloads
-//                && config.developerOptions.incomingPayloadsLogFile
-//                && (config.developerOptions.incomingPayloadsLogFile.length > 0)
-//                ) {
-//                NSString *cachesDirectory = [RollbarCachesDirectory directory];
-//                NSString *payloadsLogFilePath =
-//                [cachesDirectory stringByAppendingPathComponent:config.developerOptions.incomingPayloadsLogFile];
-//                [RollbarFileWriter appendSafelyData:[payload serializeToJSONData] toFile:payloadsLogFilePath];
-//            }
-//
-//            if (!config.developerOptions.suppressSdkInfoLogging) {
-//                RollbarSdkLog(@"Dropped payload (due to checkIgnore): %@",
-//                              [[NSString alloc] initWithData:[payload serializeToJSONData]
-//                                                    encoding:NSUTF8StringEncoding]
-//                              );
-//            }
-//
-//            return YES; // ignore == nothing to queue...
-//        }
     }
     
     return NO;
@@ -484,6 +462,12 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
     NSString *destinationKey = payloadDataRow[@"destination_key"];
     NSAssert(destinationKey && destinationKey.length > 0, @"destination_key is expected to be defined!");
     NSDictionary<NSString *, NSString *> *destination = [self->_payloadsRepo getDestinationByID:destinationKey];
+    
+    //TODO: remove this before the upcoming major release:
+    if (!destination) {
+        RollbarSdkLog(@"Aha!");
+    }
+    
     NSAssert(destination, @"destination can not be nil!");
     NSAssert(destination[@"endpoint"], @"destination endpoint can not be nil!");
     NSAssert(destination[@"access_token"], @"destination access_token can not be nil!");

@@ -1,20 +1,17 @@
 #import "RollbarInfrastructure.h"
 #import "RollbarConfig.h"
-//#import "RollbarDestination.h"
 #import "RollbarLoggerProtocol.h"
 #import "RollbarLogger.h"
 #import "RollbarNotifierFiles.h"
 #import "RollbarCrashProcessor.h"
 #import "RollbarSession.h"
 #import "RollbarTelemetry.h"
-//#import "RollbarLoggerRegistry.h"
 
 @implementation RollbarInfrastructure {
     @private
     RollbarConfig *_configuration;
     RollbarLogger *_logger;
     RollbarCrashProcessor *_crashProcessor;
-//    RollbarLoggerRegistry *_loggerRegistry;
 }
 
 #pragma mark - Sigleton pattern
@@ -35,15 +32,6 @@
     
     return singleton;
 }
-
-//- (instancetype)init {
-//
-//    if (self = [super init]) {
-//
-////        self->_loggerRegistry = [RollbarLoggerRegistry new];
-//    }
-//    return self;
-//}
 
 #pragma mark - instance methods
 
@@ -107,7 +95,6 @@
 - (nonnull id<RollbarLogger>)createLoggerWithConfig:(nonnull RollbarConfig *)config {
     
     RollbarLogger *logger = [RollbarLogger loggerWithConfiguration:config];
-    //RollbarLogger *logger = [self->_loggerRegistry loggerWithConfiguration:config];
     return logger;
 }
 
@@ -128,35 +115,6 @@
     id logger = [self createLoggerWithConfig:config];
     return logger;
 }
-
-#pragma mark - class methods
-
-//+ (nonnull id<RollbarLogger>)sharedLogger {
-//
-//    return [RollbarInfrastructure sharedInstance].logger;
-//}
-//
-//+ (nonnull id<RollbarLogger>)newLogger {
-//    
-//    return [[RollbarInfrastructure sharedInstance] createLogger];
-//}
-//
-//+ (nonnull id<RollbarLogger>)newLoggerWithConfig:(nonnull RollbarConfig *)config {
-//
-//    return [[RollbarInfrastructure sharedInstance] createLoggerWithConfig:config];
-//}
-//
-//+ (nonnull id<RollbarLogger>)newLoggerWithAccessToken:(nonnull NSString *)token {
-// 
-//    return [[RollbarInfrastructure sharedInstance] createLoggerWithAccessToken:token];
-//}
-//
-//+ (nonnull id<RollbarLogger>)newLoggerWithAccessToken:(nonnull NSString *)token
-//                                  andEnvironment:(nonnull NSString *)env {
-//    
-//    return [[RollbarInfrastructure sharedInstance] createLoggerWithAccessToken:token
-//                                                                andEnvironment:env];
-//}
 
 #pragma mark - properties
 
@@ -207,12 +165,6 @@
              @"Provide valid configuration via [[RollbarInfrastructure sharedInstance] configureWith:...]!");
     
     //TODO: complete full validation implementation...
-}
-
-
-- (void)configureInfrastructure {
-    
-    //TODO: implement...
 }
 
 @end
