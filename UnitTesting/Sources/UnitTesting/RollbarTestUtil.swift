@@ -207,7 +207,7 @@ import RollbarCommon
         return items;
     }
     
-    @objc public static func waitForPesistenceToComplete(waitTimeInSeconds: TimeInterval = 2.0) {
+    @objc public static func wait(waitTimeInSeconds: TimeInterval = 2.0) {
         Thread.sleep(forTimeInterval: waitTimeInSeconds);
     }
 

@@ -24,7 +24,7 @@
     
     [Rollbar initWithConfiguration:config];
 
-    [RollbarTestUtil waitForPesistenceToCompleteWithWaitTimeInSeconds:3];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:3];
     [RollbarLogger clearSdkDataStore];
     NSArray *items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
     XCTAssertEqual(items.count, 0);
