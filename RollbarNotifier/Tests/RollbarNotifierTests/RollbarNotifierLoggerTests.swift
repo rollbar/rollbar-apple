@@ -11,10 +11,9 @@ final class RollbarNotifierLoggerTests: XCTestCase {
         
         super.setUp();
         
-        RollbarTestUtil.waitForPesistenceToComplete();
-        RollbarTestUtil.deleteLogFiles();
         RollbarTestUtil.deletePayloadsStoreFile();
         RollbarTestUtil.clearTelemetryFile();
+        RollbarTestUtil.deleteLogFiles();
 
         let config = RollbarMutableConfig.mutableConfig(
             withAccessToken: RollbarTestHelper.getRollbarPayloadsAccessToken(),
@@ -25,14 +24,14 @@ final class RollbarNotifierLoggerTests: XCTestCase {
         config.developerOptions.logDroppedPayloads = true;
         config.loggingOptions.maximumReportsPerMinute = 5000;
         config.customData = ["someKey": "someValue", ];
-        Rollbar.update(withConfiguration: config);
+        
+        Rollbar.initWithConfiguration(config);
     }
     
     override func tearDown() {
         
-        RollbarTestUtil.waitForPesistenceToComplete(waitTimeInSeconds: 2.0);
-
-        Rollbar.update(withConfiguration: RollbarMutableConfig());
+        // add custom tear down code...
+        
         super.tearDown();
     }
     
@@ -47,6 +46,7 @@ final class RollbarNotifierLoggerTests: XCTestCase {
 
         var config = Rollbar.configuration().mutableCopy();
         config.developerOptions.transmit = false;
+        config.developerOptions.logIncomingPayloads = true;
         config.developerOptions.logTransmittedPayloads = true;
         config.developerOptions.logDroppedPayloads = true;
 
@@ -92,9 +92,6 @@ final class RollbarNotifierLoggerTests: XCTestCase {
 
     func testRollbarTransmit() {
 
-        //RollbarTestUtil.clearLogFile();
-        //RollbarTestUtil.clearTelemetryFile();
-
         let config = Rollbar.configuration().mutableCopy();
         config.destination.accessToken = RollbarTestHelper.getRollbarPayloadsAccessToken();
         config.destination.environment = RollbarTestHelper.getRollbarEnvironment();
@@ -103,30 +100,27 @@ final class RollbarNotifierLoggerTests: XCTestCase {
         config.developerOptions.transmit = true;
         Rollbar.update(withConfiguration: config);
         Rollbar.criticalMessage("Transmission test YES");
-        RollbarTestUtil.waitForPesistenceToComplete();
+        RollbarTestUtil.wait(waitTimeInSeconds: 1.0);
 
         config.developerOptions.transmit = false;
         Rollbar.update(withConfiguration: config);
         Rollbar.criticalMessage("Transmission test NO");
-        RollbarTestUtil.waitForPesistenceToComplete();
+        RollbarTestUtil.wait(waitTimeInSeconds: 1.0);
 
         config.developerOptions.transmit = true;
         Rollbar.update(withConfiguration: config);
         Rollbar.criticalMessage("Transmission test YES2");
-        RollbarTestUtil.waitForPesistenceToComplete();
+        RollbarTestUtil.wait(waitTimeInSeconds: 1.0);
 
         var count = 50;
         while (count > 0) {
             Rollbar.criticalMessage("Rate Limit Test \(count)");
-            RollbarTestUtil.waitForPesistenceToComplete();
+            RollbarTestUtil.wait(waitTimeInSeconds: 1.0);
             count -= 1;
         }
     }
     
     func testNotification() {
-
-//        RollbarTestUtil.clearLogFile();
-//        RollbarTestUtil.clearTelemetryFile();
 
         let notificationText = [
             "error": ["testing-error"],
@@ -152,6 +146,7 @@ final class RollbarNotifierLoggerTests: XCTestCase {
         }
 
         RollbarLogger.flushRollbarThread();
+        RollbarTestUtil.wait(waitTimeInSeconds: 6.0);
 
         let items = RollbarTestUtil.readTransmittedPayloadsAsStrings();
         XCTAssertTrue(items.count >= notificationText.count);
@@ -170,37 +165,37 @@ final class RollbarNotifierLoggerTests: XCTestCase {
         XCTAssertEqual(count, notificationText.count);
     }
     
-    func testNSErrorReporting() {
-        do {
-            try RollbarTestUtil.makeTroubledCall();
-            //var expectedErrorCallDepth: uint = 5;
-            //try RollbarTestUtil.simulateError(callDepth: &expectedErrorCallDepth);
-        }
-        catch RollbarTestUtilError.simulatedException(let errorDescription, let errorCallStack) {
-            print("Caught an error: \(errorDescription)");
-            print("Caught error's call stack:");
-            errorCallStack.forEach({print($0)});
-        }
-        catch let e as BackTracedErrorProtocol {
-            //print("Caught an error: \(e.localizedDescription)");
-            print("Caught an error: \(e.errorDescription)");
-            print("Caught error's call stack:");
-            e.errorCallStack.forEach({print($0)});
-        }
-        catch {
-            print("Caught an error: \(error)");
-            //print("Caught an error: \(error.localizedDescription)");
-            //print("Corresponding call stack trace at the catch point:");
-            Thread.callStackSymbols.forEach{print($0)}
-        }
-    }
+//    func testNSErrorReporting() {
+//        do {
+//            try RollbarTestUtil.makeTroubledCall();
+//            //var expectedErrorCallDepth: uint = 5;
+//            //try RollbarTestUtil.simulateError(callDepth: &expectedErrorCallDepth);
+//        }
+//        catch RollbarTestUtilError.simulatedException(let errorDescription, let errorCallStack) {
+//            print("Caught an error: \(errorDescription)");
+//            print("Caught error's call stack:");
+//            errorCallStack.forEach({print($0)});
+//        }
+//        catch let e as BackTracedErrorProtocol {
+//            //print("Caught an error: \(e.localizedDescription)");
+//            print("Caught an error: \(e.errorDescription)");
+//            print("Caught error's call stack:");
+//            e.errorCallStack.forEach({print($0)});
+//        }
+//        catch {
+//            print("Caught an error: \(error)");
+//            //print("Caught an error: \(error.localizedDescription)");
+//            //print("Corresponding call stack trace at the catch point:");
+//            Thread.callStackSymbols.forEach{print($0)}
+//        }
+//    }
     
     static var allTests = [
         ("testRollbarConfiguration", testRollbarConfiguration),
         ("testRollbarNotifiersIndependentConfiguration", testRollbarNotifiersIndependentConfiguration),
         ("testRollbarTransmit", testRollbarTransmit),
         ("testNotification", testNotification),
-        ("testNSErrorReporting", testNSErrorReporting),
+        //("testNSErrorReporting", testNSErrorReporting),
     ]
 }
 #endif

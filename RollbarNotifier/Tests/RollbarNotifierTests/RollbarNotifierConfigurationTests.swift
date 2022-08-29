@@ -15,22 +15,16 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         RollbarTestUtil.deletePayloadsStoreFile();
         RollbarTestUtil.clearTelemetryFile();
         
-//        if Rollbar.currentConfiguration() != nil {
-//            Rollbar.initWithAccessToken("");
-//        }
-        
         let config = RollbarMutableConfig();
+        config.developerOptions.transmit = false;
         config.developerOptions.logIncomingPayloads = true;
         config.developerOptions.logTransmittedPayloads = true;
         config.developerOptions.logDroppedPayloads = true;
         config.loggingOptions.enableOomDetection = false;
         Rollbar.initWithConfiguration(config);
-
     }
     
     override func tearDown() {
-        
-        Rollbar.update(withConfiguration: RollbarMutableConfig());
         
         super.tearDown();
     }
@@ -210,13 +204,13 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
 
         Rollbar.configuration();
 
-        RollbarTestUtil.waitForPesistenceToComplete();
+        RollbarTestUtil.wait();
         var expectedIncomingCount = RollbarTestUtil.readIncomingPayloadsAsStrings().count;
         var expectedDroppedCount = RollbarTestUtil.readDroppedPayloadsAsStrings().count;
 
         Rollbar.debugMessage("Don't ignore this");
         expectedIncomingCount+=1;
-        RollbarTestUtil.waitForPesistenceToComplete();
+        RollbarTestUtil.wait();
         var logItems = RollbarTestUtil.readIncomingPayloadsAsStrings();
         XCTAssertTrue(logItems.count == expectedIncomingCount,
                       "Log item count should be \(expectedIncomingCount) but actual is \(logItems.count)"
@@ -231,7 +225,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         Rollbar.debugMessage("Ignore this");
         expectedIncomingCount+=1;
         expectedDroppedCount+=1;
-        RollbarTestUtil.waitForPesistenceToComplete();
+        RollbarTestUtil.wait();
         logItems = RollbarTestUtil.readIncomingPayloadsAsStrings();
         XCTAssertTrue(logItems.count == expectedIncomingCount,
                       "Log item count should be \(expectedIncomingCount) but actual is \(logItems.count)"
@@ -255,7 +249,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         
         Rollbar.debugMessage("test");
 
-        RollbarTestUtil.waitForPesistenceToComplete();
+        RollbarTestUtil.wait();
 
         let logItems = RollbarTestUtil.readIncomingPayloadsAsStrings();
         let logItem = logItems[logItems.count - 1];
@@ -289,7 +283,7 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         Rollbar.update(withConfiguration: config);
         Rollbar.debugMessage("test");
 
-        RollbarTestUtil.waitForPesistenceToComplete();
+        RollbarTestUtil.wait();
         let logItems = RollbarTestUtil.readIncomingPayloadsAsStrings();
         let logItem = logItems[logItems.count - 1];
         let payload = RollbarPayload(jsonString: logItem);

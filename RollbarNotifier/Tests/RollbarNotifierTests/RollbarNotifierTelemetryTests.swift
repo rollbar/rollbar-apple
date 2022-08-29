@@ -28,7 +28,7 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
     }
     
     override func tearDown() {
-        Rollbar.update(withConfiguration: RollbarMutableConfig());
+
         super.tearDown();
     }
     
@@ -39,11 +39,10 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
         config.telemetry.memoryStatsAutocollectionInterval = 0.5;
         Rollbar.update(withConfiguration: config);
         
-        Thread.sleep(forTimeInterval: 5.0);
+        Thread.sleep(forTimeInterval: 2.0);
         Rollbar.criticalMessage("Must contain memory telemetry!");
         RollbarLogger.flushRollbarThread();
 
-        RollbarTestUtil.waitForPesistenceToComplete();
         let logItems = RollbarTestUtil.readIncomingPayloadsAsStrings();
         let logItem = logItems[logItems.count - 1];
         let payload = RollbarPayload(jsonString: logItem);
@@ -67,18 +66,16 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
         let config = RollbarMutableConfig();
         config.destination.accessToken = RollbarTestHelper.getRollbarPayloadsAccessToken();
         config.destination.environment = RollbarTestHelper.getRollbarEnvironment();
+        config.developerOptions.transmit = true;
         config.telemetry.enabled = true;
         config.telemetry.memoryStatsAutocollectionInterval = 0.5;
 
         Rollbar.update(withConfiguration: config);
         
-        //let resultingConfig = Rollbar.currentConfiguration();
         Rollbar.criticalMessage("Rollbar will be testing memory telemetry!");
-        RollbarTestUtil.waitForPesistenceToComplete();
-        Thread.sleep(forTimeInterval: 2.0);
+        RollbarTestUtil.wait(waitTimeInSeconds: 2.0);
         Rollbar.criticalMessage("Must contain memory telemetry!");
-        RollbarTestUtil.waitForPesistenceToComplete();
-        Thread.sleep(forTimeInterval: 3.0);
+        RollbarTestUtil.wait(waitTimeInSeconds: 3.0);
     }
     
     func testTelemetryCapture() {
@@ -117,11 +114,9 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
             withData: ["data" : "content"]
         );
 
-        RollbarLogger.flushRollbarThread();
         Rollbar.debugMessage("Test");
         RollbarLogger.flushRollbarThread();
 
-        RollbarTestUtil.waitForPesistenceToComplete();
         let logItems = RollbarTestUtil.readIncomingPayloadsAsStrings();
         let logItem = logItems[logItems.count - 1];
         let payload = RollbarPayload(jsonString: logItem);
@@ -208,14 +203,11 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
             withData: ["myTelemetryParameter": "itsValue"]
         );
 
-        //RollbarTestUtil.waitForPesistenceToComplete();
-
         Rollbar.debugMessage("Demonstrate Telemetry capture");
         Rollbar.debugMessage("Demonstrate Telemetry capture once more...");
         Rollbar.debugMessage("DO Demonstrate Telemetry capture once more...");
+        RollbarLogger.flushRollbarThread();
 
-        RollbarTestUtil.waitForPesistenceToComplete();
-        
         let logItems = RollbarTestUtil.readTransmittedPayloadsAsStrings();
         for item in logItems {
             let payload = RollbarPayload(jsonString: item);
