@@ -148,7 +148,6 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
     return nil;
 }
 
-
 - (instancetype)initWithStore:(nonnull NSString *)storePath {
     
     if (self = [super init]) {
@@ -167,13 +166,8 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
     [RollbarCachesDirectory ensureCachesDirectoryExists];
     NSString *cachesDirectory = [RollbarCachesDirectory directory];
     NSString *storePath = [cachesDirectory stringByAppendingPathComponent:[RollbarNotifierFiles payloadsStore]];
-
-    if (self = [self initWithStore:storePath]) {
-        
-        return self;
-    }
     
-    return nil;
+    return [self initWithStore:storePath];
 }
 
 #pragma mark - Destinations related methods
@@ -496,6 +490,8 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
         RollbarSdkLog(@"sqlite3_open: %s", sqlite3_errmsg(self->_db));
         return NO;
     }
+    
+    [self checkDbFile];
     return YES;
 }
 
@@ -525,6 +521,8 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
 
 - (BOOL)checkIfTableExists:(nonnull NSString *)tableName {
     
+    [self checkDbFile];
+    
     NSString *sql = [NSString stringWithFormat:
                      @"SELECT name FROM sqlite_master WHERE type='table' AND name='%@'", tableName];
     char *sqliteErrorMessage;
@@ -541,6 +539,8 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
 
 - (BOOL)executeSql:(nonnull NSString *)sql {
     
+    [self checkDbFile];
+    
     char *sqliteErrorMessage;
     int sqlResult = sqlite3_exec(self->_db, [sql UTF8String], NULL, NULL, &sqliteErrorMessage);
     if (sqlResult != SQLITE_OK) {
@@ -555,6 +555,8 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
 - (nullable NSDictionary<NSString *, NSString *> *)selectSingleRowWithSql:(NSString *)sql
                                                               andCallback:(int(*)(void*,int,char**,char**))callback {
     
+    [self checkDbFile];
+
     NSDictionary<NSString *, NSString *> *result = nil;
     char *sqliteErrorMessage;
     NSDictionary<NSString *, NSString *> *selectedRow = nil;
@@ -570,6 +572,8 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
 
 - (nonnull NSArray<NSDictionary<NSString *, NSString *> *> *)selectMultipleRowsWithSql:(NSString *)sql
                                                                            andCallback:(int(*)(void*,int,char**,char**))callback {
+    
+    [self checkDbFile];
     
     NSMutableArray<NSDictionary<NSString *, NSString *> *> *result = nil;
     
@@ -587,6 +591,21 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
     else {
         return [NSArray<NSDictionary<NSString *, NSString *> *> array];
     }
+}
+
+- (void)checkDbFile {
+
+    if (self->_storePath && ![[NSFileManager defaultManager] fileExistsAtPath:self->_storePath]) {
+        RollbarSdkLog(@"Persistent payloads store was not created: %@!!!", self->_storePath);
+        [self openDB:NO];
+        [self ensureDestinationsTable];
+        [self ensurePayloadsTable];
+        return;
+    }
+    NSAssert([[NSFileManager defaultManager] fileExistsAtPath:self->_storePath],
+             @"Persistent payloads store was not created: %@!!!", self->_storePath
+             );
+
 }
 
 @end
