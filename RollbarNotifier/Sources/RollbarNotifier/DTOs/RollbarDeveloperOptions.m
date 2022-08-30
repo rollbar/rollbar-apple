@@ -16,11 +16,11 @@ static NSString * const DFK_ENABLED = @"enabled";
 static NSString * const DFK_TRANSMIT = @"transmit";
 static NSString * const DFK_SUPPRESS_SDK_INFO_LOGGING = @"suppressSdkInfoLogging";
 
-static NSString * const DFK_LOG_INCOMING_PAYLOADS = @"logIncomingPayload";
+static NSString * const DFK_LOG_INCOMING_PAYLOADS = @"logIncomingPayloads";
 static NSString * const DFK_LOG_INCOMING_PAYLOADS_FILE = @"logIncomingPayloadsFile";
-static NSString * const DFK_LOG_TRANSMITTED_PAYLOADS = @"logTransmittedsPayload";
+static NSString * const DFK_LOG_TRANSMITTED_PAYLOADS = @"logTransmittedPayloads";
 static NSString * const DFK_LOG_TRANSMITTED_PAYLOADS_FILE = @"logTransmittedPayloadsFile";
-static NSString * const DFK_LOG_DROPPED_PAYLOADS = @"logDroppedsPayload";
+static NSString * const DFK_LOG_DROPPED_PAYLOADS = @"logDroppedPayloads";
 static NSString * const DFK_LOG_DROPPED_PAYLOADS_FILE = @"logDroppedPayloadsFile";
 
 #pragma mark - class implementation
