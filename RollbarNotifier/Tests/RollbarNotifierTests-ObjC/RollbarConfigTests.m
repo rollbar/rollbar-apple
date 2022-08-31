@@ -81,23 +81,23 @@
     mutable.transmit = NO;
     mutable.suppressSdkInfoLogging = NO;
     mutable.logTransmittedPayloads = NO;
-    mutable.transmittedPayloadLogFile = @"test_PAYLOADS.LOG_old";
+    mutable.transmittedPayloadsLogFile = @"test_PAYLOADS.LOG_old";
     XCTAssertFalse(mutable.enabled);
     XCTAssertFalse(mutable.transmit);
     XCTAssertFalse(mutable.suppressSdkInfoLogging);
     XCTAssertFalse(mutable.logTransmittedPayloads);
-    XCTAssertTrue([mutable.transmittedPayloadLogFile isEqualToString:@"test_PAYLOADS.LOG_old"]);
+    XCTAssertTrue([mutable.transmittedPayloadsLogFile isEqualToString:@"test_PAYLOADS.LOG_old"]);
 
     mutable.enabled = YES;
     mutable.transmit = YES;
     mutable.suppressSdkInfoLogging = YES;
     mutable.logTransmittedPayloads = YES;
-    mutable.transmittedPayloadLogFile = @"test_PAYLOADS.LOG";
+    mutable.transmittedPayloadsLogFile = @"test_PAYLOADS.LOG";
     XCTAssertTrue(mutable.enabled);
     XCTAssertTrue(mutable.transmit);
     XCTAssertTrue(mutable.suppressSdkInfoLogging);
     XCTAssertTrue(mutable.logTransmittedPayloads);
-    XCTAssertTrue([mutable.transmittedPayloadLogFile isEqualToString:@"test_PAYLOADS.LOG"]);
+    XCTAssertTrue([mutable.transmittedPayloadsLogFile isEqualToString:@"test_PAYLOADS.LOG"]);
     
     NSString *content = [mutable serializeToJSONString];
     XCTAssertNotNil(content);
@@ -593,11 +593,11 @@
     RollbarMutableConfig *mutable = [RollbarMutableConfig new];
     mutable.destination.accessToken = @"test_AT_old";
     RollbarMutableDeveloperOptions *devOptions = [RollbarMutableDeveloperOptions new];
-    devOptions.transmittedPayloadLogFile = @"test_PL_old";
+    devOptions.transmittedPayloadsLogFile = @"test_PL_old";
     mutable.developerOptions = devOptions;
     
     XCTAssertTrue([mutable.destination.accessToken isEqualToString:@"test_AT_old"]);
-    XCTAssertTrue([mutable.developerOptions.transmittedPayloadLogFile isEqualToString:@"test_PL_old"]);
+    XCTAssertTrue([mutable.developerOptions.transmittedPayloadsLogFile isEqualToString:@"test_PL_old"]);
     
     NSString *content = [mutable serializeToJSONString];
     XCTAssertNotNil(content);
@@ -605,10 +605,10 @@
     XCTAssertTrue([content containsString:@"test_PL_old"]);
     
     mutable.destination.accessToken = @"test_AT";
-    mutable.developerOptions.transmittedPayloadLogFile = @"test_PL";
+    mutable.developerOptions.transmittedPayloadsLogFile = @"test_PL";
     
     XCTAssertTrue([mutable.destination.accessToken isEqualToString:@"test_AT"]);
-    XCTAssertTrue([mutable.developerOptions.transmittedPayloadLogFile isEqualToString:@"test_PL"]);
+    XCTAssertTrue([mutable.developerOptions.transmittedPayloadsLogFile isEqualToString:@"test_PL"]);
     
     content = [mutable serializeToJSONString];
     XCTAssertNotNil(content);
