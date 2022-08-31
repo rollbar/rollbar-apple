@@ -166,22 +166,22 @@ import RollbarCommon
         return items;
     }
 
-    @objc public static func readIncomingPayloads() -> [NSMutableDictionary] {
+    @objc public static func readIncomingPayloadsAsDictionaries() -> [NSMutableDictionary] {
         
-        return RollbarTestUtil.readItemsFromLogFile(filePath: RollbarTestUtil.getIncomingPayloadsLogFilePath());
+        return RollbarTestUtil.readItemDictionariesFromLogFile(filePath: RollbarTestUtil.getIncomingPayloadsLogFilePath());
     }
     
-    @objc public static func readTransmittedPayloads() -> [NSMutableDictionary] {
+    @objc public static func readTransmittedPayloadsAsDictionaries() -> [NSMutableDictionary] {
         
-        return RollbarTestUtil.readItemsFromLogFile(filePath: RollbarTestUtil.getTransmittedPayloadsLogFilePath());
+        return RollbarTestUtil.readItemDictionariesFromLogFile(filePath: RollbarTestUtil.getTransmittedPayloadsLogFilePath());
     }
     
-    @objc public static func readDroppedPayloads() -> [NSMutableDictionary] {
+    @objc public static func readDroppedPayloadsAsDictionaries() -> [NSMutableDictionary] {
         
-        return RollbarTestUtil.readItemsFromLogFile(filePath: RollbarTestUtil.getDroppedPayloadsLogFilePath());
+        return RollbarTestUtil.readItemDictionariesFromLogFile(filePath: RollbarTestUtil.getDroppedPayloadsLogFilePath());
     }
     
-    @objc public static func readItemsFromLogFile(filePath: String) -> [NSMutableDictionary] {
+    @objc public static func readItemDictionariesFromLogFile(filePath: String) -> [NSMutableDictionary] {
 
         let fileReader = RollbarFileReader(filePath: filePath, andOffset: 0);
         var items = [NSMutableDictionary] ();
