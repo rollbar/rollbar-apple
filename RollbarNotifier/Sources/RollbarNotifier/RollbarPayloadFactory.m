@@ -24,7 +24,7 @@
     
     @private
     RollbarConfig *_config; // expected to be nonnull...
-    NSDictionary *_osData;
+    NSMutableDictionary<NSString *, id> *_osData;
 }
 
 + (instancetype)factoryWithConfig:(nonnull RollbarConfig *)config {
@@ -148,7 +148,7 @@
     // this is done only for backward compatibility for customers that used to rely on this undocumented
     // extra data with a message:
     if (message && extra) {
-        [body.message setData:extra byKey:@"extra"];
+        [body.message setData:extra.mutableCopy byKey:@"extra"];
     }
     
     // compile payload data:
@@ -164,7 +164,7 @@
         // neither crash report no exception payload objects have placeholders for any extra data
         // or an extra message, let's preserve them as the custom data:
         if (extra) {
-            customData[@"error.extra"] = extra;
+            customData[@"error.extra"] = extra.mutableCopy;
         }
         if (message && message.length > 0) {
             customData[@"error.message"] = message;
@@ -262,7 +262,7 @@
     }
 }
 
--(NSDictionary *)buildOSData {
+-(NSDictionary<NSString *, id> *)buildOSData {
     
     //TODO: redo this implementation based on the helper utils used by RollbarSession or on RollbarSession itself...
     
@@ -301,7 +301,7 @@
         @"short_version": shortVersion ? shortVersion : @"",
         @"bundle_identifier": bundleIdentifier ? bundleIdentifier : @"",
         @"app_name": bundleName ? bundleName : @""
-    };
+    }.mutableCopy;
 #else
     NSOperatingSystemVersion osVer = [[NSProcessInfo processInfo] operatingSystemVersion];
     self->_osData = @{
@@ -316,7 +316,7 @@
         @"short_version": shortVersion ? shortVersion : @"",
         @"bundle_identifier": bundleIdentifier ? bundleIdentifier : @"",
         @"app_name": bundleName ? bundleName : [[NSProcessInfo processInfo] processName]
-    };
+    }.mutableCopy;
 #endif
     
     return self->_osData;
