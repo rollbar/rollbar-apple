@@ -473,9 +473,15 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
 
 - (void)initDB:(BOOL)inMemory {
     
-    [self openDB:inMemory];
-    [self ensureDestinationsTable];
-    [self ensurePayloadsTable];
+    if ([self openDB:inMemory]) {
+
+        [self ensureDestinationsTable];
+        [self ensurePayloadsTable];
+    }
+    else {
+        
+        RollbarSdkLog(@"Can not open database: %@!!!", inMemory ? @"in memory" : self->_storePath);
+    }
 }
 
 - (BOOL)openDB:(BOOL)inMemory {
@@ -490,8 +496,9 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
         RollbarSdkLog(@"sqlite3_open: %s", sqlite3_errmsg(self->_db));
         return NO;
     }
-    
+
     [self checkDbFile];
+
     return YES;
 }
 
@@ -602,7 +609,9 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
         [self ensurePayloadsTable];
         return;
     }
-    NSAssert([[NSFileManager defaultManager] fileExistsAtPath:self->_storePath],
+    NSAssert(self->_storePath ?
+             [[NSFileManager defaultManager] fileExistsAtPath:self->_storePath]
+             : YES,
              @"Persistent payloads store was not created: %@!!!", self->_storePath
              );
 
