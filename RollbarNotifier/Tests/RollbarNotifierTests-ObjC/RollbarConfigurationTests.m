@@ -17,33 +17,39 @@
 
     [super setUp];
     
-    [RollbarLogger clearSdkDataStore];
+    [RollbarTestUtil deleteLogFiles];
+    [RollbarTestUtil deletePayloadsStoreFile];
+    [RollbarTestUtil clearTelemetryFile];
     
-    RollbarMutableConfig *config =
-    [RollbarMutableConfig mutableConfigWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
-                                           environment:[RollbarTestHelper getRollbarEnvironment]];
-    [Rollbar initWithConfiguration:config];
-    
-    [NSThread sleepForTimeInterval:1.0f];
-    [RollbarLogger clearSdkDataStore];
-    NSArray *items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
-    XCTAssertEqual(items.count, 0);
+    RollbarMutableConfig *config = [RollbarMutableConfig new];
+    config.developerOptions.transmit = NO;
+    config.developerOptions.logIncomingPayloads = YES;
+    config.developerOptions.logTransmittedPayloads = YES;
+    config.developerOptions.logDroppedPayloads = YES;
+    config.loggingOptions.enableOomDetection = NO;
 
+    [Rollbar initWithConfiguration:config];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+
+    [RollbarTestUtil deleteLogFiles];
+    [RollbarTestUtil deletePayloadsStoreFile];
+    [RollbarTestUtil clearTelemetryFile];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
 }
 
 - (void)tearDown {
     
-    [Rollbar updateWithConfiguration:[RollbarConfig new]];
     [super tearDown];
 }
 
-- (BOOL)rollbarStoreContains:(nonnull NSString *)string {
+- (BOOL)rollbarTransmittedPayloadsLogContains:(nonnull NSString *)string {
     
     [RollbarLogger flushRollbarThread];
-    NSArray *logItems = [RollbarLogger readPayloadsFromSdkTransmittedLog];
-    for (NSDictionary *item in logItems) {
-        RollbarPayload *payload = [[RollbarPayload alloc] initWithDictionary:item];
-        if ([[payload serializeToJSONString] containsString:string]) {
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+    
+    NSArray<NSString *> *logItems = [RollbarTestUtil readTransmittedPayloadsAsStrings];
+    for (NSString *item in logItems) {
+        if ([item containsString:string]) {
             return YES;
         }
     }
@@ -83,11 +89,12 @@
     }
     [Rollbar updateWithConfiguration:config];
     [Rollbar debugMessage:@"test"];
-    
+
     [RollbarLogger flushRollbarThread];
-    
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+        
     // verify the fields were scrubbed:
-    NSArray *logItems = [RollbarLogger readPayloadsFromSdkTransmittedLog];
+    NSArray *logItems = [RollbarTestUtil readIncomingPayloadsAsDictionaries];
     for (NSString *key in keys) {
         NSString *content = [logItems[0] valueForKeyPath:key];
         XCTAssertTrue([content isEqualToString:scrubedContent],
@@ -98,8 +105,10 @@
                       );
     }
     
-    [RollbarLogger clearSdkDataStore];
-    
+    [RollbarTestUtil deletePayloadsStoreFile];
+    [RollbarTestUtil deleteLogFiles];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+
     // define scrub whitelist fields (the same as the scrub fields - to counterbalance them):
     for (NSString *key in keys) {
         [config.dataScrubber addScrubSafeListField:key];
@@ -108,9 +117,10 @@
     [Rollbar debugMessage:@"test"];
     
     [RollbarLogger flushRollbarThread];
-    
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+
     // verify the fields were not scrubbed:
-    logItems = [RollbarLogger readPayloadsFromSdkTransmittedLog];
+    logItems = [RollbarTestUtil readIncomingPayloadsAsDictionaries];
     for (NSString *key in keys) {
         NSString *content = [logItems[0] valueForKeyPath:key];
         XCTAssertTrue(![content isEqualToString:scrubedContent],
@@ -123,8 +133,6 @@
 }
 
 - (void)testTelemetryEnabled {
-    
-    [RollbarLogger clearSdkDataStore];
     
     BOOL expectedFlag = NO;
     RollbarMutableConfig *config = [[Rollbar configuration] mutableCopy];
@@ -226,9 +234,7 @@
 
 - (void)testEnabled {
     
-    [RollbarLogger clearSdkDataStore];
-
-    NSArray *logItems = [RollbarLogger readPayloadsFromSdkTransmittedLog];
+    NSArray *logItems = [RollbarTestUtil readIncomingPayloadsAsDictionaries];
     XCTAssertTrue(logItems.count == 0,
                   @"logItems count is expected to be 0. Actual value is %lu",
                   (unsigned long) logItems.count
@@ -240,19 +246,17 @@
     //Rollbar.currentLogger.configuration.developerOptions.enabled = NO;
     [Rollbar updateWithConfiguration:config];
     [Rollbar debugMessage:@"Test1"];
-    XCTAssertTrue(![self rollbarStoreContains:@"Test1"]);
+    XCTAssertTrue(![self rollbarTransmittedPayloadsLogContains:@"Test1"]);
     
     config.developerOptions.enabled = YES;
     [Rollbar updateWithConfiguration:config];
     [Rollbar debugMessage:@"Test2"];
-    XCTAssertTrue([self rollbarStoreContains:@"Test2"]);
+    XCTAssertTrue([self rollbarTransmittedPayloadsLogContains:@"Test2"]);
 
     config.developerOptions.enabled = NO;
     [Rollbar updateWithConfiguration:config];
     [Rollbar debugMessage:@"Test3"];
-    XCTAssertTrue(![self rollbarStoreContains:@"Test3"]);
-
-    [RollbarLogger clearSdkDataStore];
+    XCTAssertTrue(![self rollbarTransmittedPayloadsLogContains:@"Test3"]);
 }
 
 - (void)testMaximumTelemetryEvents {
@@ -272,8 +276,9 @@
     
     [Rollbar debugMessage:@"Test"];
     [RollbarLogger flushRollbarThread];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
 
-    NSArray *logItems = [RollbarLogger readPayloadsFromSdkTransmittedLog];
+    NSArray *logItems = [RollbarTestUtil readTransmittedPayloadsAsDictionaries];
     NSDictionary *item = logItems[logItems.count - 1];
     NSArray *telemetryData = [item valueForKeyPath:@"body.telemetry"];
     XCTAssertTrue(telemetryData.count == max,
@@ -286,7 +291,7 @@
 - (void)testCheckIgnore {
     
     [Rollbar debugMessage:@"Don't ignore this"];
-    XCTAssertTrue([self rollbarStoreContains:@"Don't ignore this"]);
+    XCTAssertTrue([self rollbarTransmittedPayloadsLogContains:@"Don't ignore this"]);
 
     RollbarMutableConfig *config = [[Rollbar configuration] mutableCopy];
     config.checkIgnoreRollbarData = ^BOOL(RollbarData *payloadData) {
@@ -294,7 +299,7 @@
     };
     [Rollbar updateWithConfiguration:config];
     [Rollbar debugMessage:@"Must ignore this"];
-    XCTAssertTrue(![self rollbarStoreContains:@"Must ignore this"]);
+    XCTAssertTrue(![self rollbarTransmittedPayloadsLogContains:@"Must ignore this"]);
 }
 
 - (void)testServerData {
@@ -313,8 +318,9 @@
     [Rollbar debugMessage:@"test"];
 
     [RollbarLogger flushRollbarThread];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
 
-    NSArray *logItems = [RollbarLogger readPayloadsFromSdkTransmittedLog];
+    NSArray *logItems = [RollbarTestUtil readTransmittedPayloadsAsDictionaries];
     NSDictionary *item = logItems[0];
     NSDictionary *server = item[@"server"];
 
@@ -355,8 +361,9 @@
     [Rollbar debugMessage:@"test"];
 
     [RollbarLogger flushRollbarThread];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
 
-    NSArray *logItems = [RollbarLogger readPayloadsFromSdkTransmittedLog];
+    NSArray *logItems = [RollbarTestUtil readTransmittedPayloadsAsDictionaries];
     NSString *msg1 = [logItems[0] valueForKeyPath:@"body.message.body"];
     NSString *msg2 = [logItems[0] valueForKeyPath:@"body.message.body2"];
 
@@ -385,8 +392,9 @@
     [Rollbar debugMessage:@"test"];
 
     [RollbarLogger flushRollbarThread];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
 
-    NSArray *logItems = [RollbarLogger readPayloadsFromSdkTransmittedLog];
+    NSArray *logItems = [RollbarTestUtil readTransmittedPayloadsAsDictionaries];
     for (NSString *key in keys) {
         NSString *content = [logItems[0] valueForKeyPath:key];
         XCTAssertTrue([content isEqualToString:scrubedContent],
@@ -407,8 +415,6 @@
     config.telemetry.enabled = YES;
     config.telemetry.captureLog = YES;
     [Rollbar updateWithConfiguration:config];
-    [RollbarLogger flushRollbarThread];
-    [RollbarLogger clearSdkDataStore];
 
     // The following line ensures the captureLogAsTelemetryData setting is flushed through the internal queue
     [[RollbarTelemetry sharedInstance] getAllData];
@@ -416,8 +422,9 @@
     [Rollbar debugMessage:@"test"];
     
     [RollbarLogger flushRollbarThread];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
 
-    NSArray *logItems = [RollbarLogger readPayloadsFromSdkTransmittedLog];
+    NSArray *logItems = [RollbarTestUtil readTransmittedPayloadsAsDictionaries];
     NSArray *telemetryData = [logItems[0] valueForKeyPath:@"body.telemetry"];
     NSString *telemetryMsg = [telemetryData[0] valueForKeyPath:@"body.message"];
     XCTAssertTrue([logMsg isEqualToString:telemetryMsg],
