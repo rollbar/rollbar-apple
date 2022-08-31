@@ -56,37 +56,55 @@ static const unsigned long maxTraceFrames = 1;
          ];
     if (continueTruncation) {
         
-        continueTruncation =
+        @try {
+            continueTruncation =
             [RollbarPayloadTruncator truncatePayload:payload
                                         toTotalBytes:limit
                                      byReducingItems:pathToCrashThreads
                                    keepingHeadsCount:payloadHeadCrashThreadsToKeep
                                    keepingTailsCount:payloadTailCrashThreadsToKeep
-             ];
+            ];
+        } @catch (NSException *exception) {
+            RollbarSdkLog(@"Payload truncation EXCEPTION: %@", exception);
+        }
+
     }
 
     unsigned long stringLimit = maxStringBytesLimit;
     while (continueTruncation && (stringLimit >= minStringBytesLimit)) {
         
-        continueTruncation = [RollbarPayloadTruncator truncatePayload:payload
-                                                         toTotalBytes:limit
-                                                byLimitingStringBytes:stringLimit
-                              ];
-        stringLimit /= 2;
+        @try {
+            continueTruncation = [RollbarPayloadTruncator truncatePayload:payload
+                                                             toTotalBytes:limit
+                                                    byLimitingStringBytes:stringLimit
+            ];
+            stringLimit /= 2;
+        } @catch (NSException *exception) {
+            RollbarSdkLog(@"Payload truncation EXCEPTION: %@", exception);
+        }
     }
 
     if (continueTruncation) {
         
-        continueTruncation = [RollbarPayloadTruncator truncatePayload:payload
-                                                         toTotalBytes:limit
-                                            withExceptionMessageLimit:maxExceptionMessageChars
-                                                  andTraceFramesLimit:maxTraceFrames
-                              ];
+        @try {
+            continueTruncation = [RollbarPayloadTruncator truncatePayload:payload
+                                                             toTotalBytes:limit
+                                                withExceptionMessageLimit:maxExceptionMessageChars
+                                                      andTraceFramesLimit:maxTraceFrames
+            ];
+        } @catch (NSException *exception) {
+            RollbarSdkLog(@"Payload truncation EXCEPTION: %@", exception);
+        }
     }
 
     if (continueTruncation) {
-        
-        [RollbarPayloadTruncator limitRawCrashReportInPayload:payload];
+
+        @try {
+            [RollbarPayloadTruncator limitRawCrashReportInPayload:payload];
+        } @catch (NSException *exception) {
+            RollbarSdkLog(@"Payload truncation EXCEPTION: %@", exception);
+        }
+
     }
 }
 
@@ -182,51 +200,60 @@ withExceptionMessageLimit:(unsigned long)exeptionMessageLimit
 
 +(void)itereateObjectStructure:(id)obj whileTuncatingStrings:(unsigned long)stringBytesLimit {
     
-    if ([obj isKindOfClass:[NSMutableString class]] && [RollbarPayloadTruncator isMutable:obj]) {
-        
-        //truncate the string obj:
-        [obj setString:[RollbarPayloadTruncator truncateString:obj
-                                                  toTotalBytes:stringBytesLimit]
-         ];
-    }
-    else if ([obj isKindOfClass:[NSArray class]]) {
-        
-        //recurse the collection obj's items:
-        [obj enumerateObjectsUsingBlock: ^(id item, NSUInteger idx, BOOL *stop) {
-            [RollbarPayloadTruncator itereateObjectStructure:item
-                                       whileTuncatingStrings:stringBytesLimit
-             ];
-        }];
-    }
-    else if ([obj isKindOfClass:[NSDictionary class]]) {
-        
-        //recurse the collection obj's items:
-        [obj enumerateKeysAndObjectsUsingBlock: ^(id key, id item, BOOL *stop) {
-            if (![key isEqualToString:@"raw"]) {
-                if ([item isKindOfClass:[NSMutableString class]] && ![RollbarPayloadTruncator isMutable:item]) {
-                    NSMutableString *mutableItem = [item mutableCopy];
-                    [obj setObject:mutableItem forKey:key];
-                    [RollbarPayloadTruncator itereateObjectStructure:mutableItem
-                                               whileTuncatingStrings:stringBytesLimit];
-                } else {
-                    [RollbarPayloadTruncator itereateObjectStructure:item
-                                               whileTuncatingStrings:stringBytesLimit];
+    @try {
+        if ([obj isKindOfClass:[NSMutableString class]] && [RollbarPayloadTruncator isMutable:obj]) {
+            
+            //truncate the string obj:
+            [obj setString:[RollbarPayloadTruncator truncateString:obj
+                                                      toTotalBytes:stringBytesLimit]
+            ];
+        }
+        else if ([obj isKindOfClass:[NSArray class]]) {
+            
+            //recurse the collection obj's items:
+            [obj enumerateObjectsUsingBlock: ^(id item, NSUInteger idx, BOOL *stop) {
+                [RollbarPayloadTruncator itereateObjectStructure:item
+                                           whileTuncatingStrings:stringBytesLimit
+                ];
+            }];
+        }
+        else if ([obj isKindOfClass:[NSDictionary class]]) {
+            
+            //recurse the collection obj's items:
+            [obj enumerateKeysAndObjectsUsingBlock: ^(id key, id item, BOOL *stop) {
+                if (![key isEqualToString:@"raw"]) {
+                    if ([item isKindOfClass:[NSString class]]) {
+                        NSMutableString *strItem = ((NSString *)item).mutableCopy;
+                        @try {
+                            obj[key] = strItem;
+                        } @catch (NSException *exception) {
+                            RollbarSdkLog(@"Payload truncation EXCEPTION: %@", exception);
+                        }
+                        [RollbarPayloadTruncator itereateObjectStructure:strItem
+                                                   whileTuncatingStrings:stringBytesLimit];
+                    } else {
+                        [RollbarPayloadTruncator itereateObjectStructure:item
+                                                   whileTuncatingStrings:stringBytesLimit];
+                    }
                 }
-            }
-        }];
+            }];
+        }
+        else if ([obj isKindOfClass:[NSSet class]]) {
+            
+            //recurse the collection obj's items:
+            [obj enumerateObjectsUsingBlock: ^(id item, BOOL *stop) {
+                [RollbarPayloadTruncator itereateObjectStructure:item
+                                           whileTuncatingStrings:stringBytesLimit
+                ];
+            }];
+        }
+        else {
+            //nothing really...
+        }
+    } @catch (NSException *exception) {
+        RollbarSdkLog(@"Payload truncation EXCEPTION: %@", exception);
     }
-    else if ([obj isKindOfClass:[NSSet class]]) {
-        
-        //recurse the collection obj's items:
-        [obj enumerateObjectsUsingBlock: ^(id item, BOOL *stop) {
-            [RollbarPayloadTruncator itereateObjectStructure:item
-                                       whileTuncatingStrings:stringBytesLimit
-             ];
-        }];
-    }
-    else {
-        //nothing really...
-    }
+    
 }
 
 +(BOOL)isMutable:(id)str {
@@ -246,16 +273,6 @@ withExceptionMessageLimit:(unsigned long)exeptionMessageLimit
         return FALSE;  //payload is small enough, no need to truncate further...
     }
     
-//    NSMutableArray *items = [payload mutableArrayValueForKeyPath:pathToItems];
-//    if (items.count <= (headsCount + tailsCount)) {
-//        return TRUE;
-//    }
-//
-//    unsigned long totalItemsToRemove = items.count - headsCount - tailsCount;
-//    [items removeObjectsInRange:NSMakeRange(headsCount, totalItemsToRemove)];
-//
-//    return TRUE;
-
     id value = [payload valueForKeyPath:pathToItems];
     if (value == [NSNull null] || [value isKindOfClass:[NSNull class]]) {
         
