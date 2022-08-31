@@ -137,11 +137,11 @@ static NSString * const DFK_LOG_DROPPED_PAYLOADS_FILE = @"logDroppedPayloadsFile
 @dynamic transmit;
 @dynamic suppressSdkInfoLogging;
 @dynamic logIncomingPayloads;
-@dynamic incomingPayloadLogFile;
+@dynamic incomingPayloadsLogFile;
 @dynamic logTransmittedPayloads;
-@dynamic transmittedPayloadLogFile;
+@dynamic transmittedPayloadsLogFile;
 @dynamic logDroppedPayloads;
-@dynamic droppedPayloadLogFile;
+@dynamic droppedPayloadsLogFile;
 
 #pragma mark - property accessors
 

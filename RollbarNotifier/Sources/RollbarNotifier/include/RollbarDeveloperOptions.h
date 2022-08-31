@@ -98,13 +98,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readwrite) BOOL logDroppedPayloads;
 
 /// Log file to use for  local logged incoming payloads
-@property (nonatomic, readwrite, copy) NSString *incomingPayloadLogFile;
+@property (nonatomic, readwrite, copy) NSString *incomingPayloadsLogFile;
 
 /// Log file to use for  local logged transmitted payloads
-@property (nonatomic, readwrite, copy) NSString *transmittedPayloadLogFile;
+@property (nonatomic, readwrite, copy) NSString *transmittedPayloadsLogFile;
 
 /// Log file to use for  local logged dropped payloads
-@property (nonatomic, readwrite, copy) NSString *droppedPayloadLogFile;
+@property (nonatomic, readwrite, copy) NSString *droppedPayloadsLogFile;
 
 @end
 
