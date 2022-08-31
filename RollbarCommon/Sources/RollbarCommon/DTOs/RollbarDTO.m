@@ -359,7 +359,7 @@
     
     if (nil == data) {
         
-        data = [NSMutableDictionary dictionary];
+        data = [NSMutableDictionary<NSString *, id> dictionary];
     }
     
     if (![RollbarDTO isTransferableObject:data]) {
@@ -367,14 +367,19 @@
         return self;
     }
     
-    if ([data isKindOfClass:[NSMutableDictionary class]]) {
+    if ([data isKindOfClass:[NSMutableDictionary<NSString *, id> class]]) {
         
-        self->_data = (NSMutableDictionary *) data;
+        self->_data = (NSMutableDictionary<NSString *, id> *) data;
     }
-    else {
-        
+//    else {
+//
+//        self->_data = data.mutableCopy;
+//    }
+    
+    if (!self->_data) {
         self->_data = data.mutableCopy;
     }
+    
     self->_dataArray = nil;
     self->_dataDictionary = (NSMutableDictionary<NSString *, id> *) self->_data;
     for (NSString *key in self->_dataDictionary.allKeys) {
@@ -400,7 +405,8 @@
     self->_dataDictionary = nil;
 
     if (!data) {
-        return self;
+        //return self;
+        data = [NSMutableArray arrayWithCapacity:5];
     }
     
     if (![RollbarDTO isTransferableObject:data]) {
@@ -410,9 +416,11 @@
     if ([data isKindOfClass:[NSMutableArray class]]) {
         self->_data = (NSMutableArray *) data;
     }
-    else {
+
+    if (!self->_data) {
         self->_data = data.mutableCopy;
     }
+
     self->_dataDictionary = nil;
     self->_dataArray = (NSMutableArray *) self->_data;
     for (id item in self->_dataArray) {
