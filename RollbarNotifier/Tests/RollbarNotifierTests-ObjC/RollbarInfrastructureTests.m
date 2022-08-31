@@ -48,11 +48,15 @@
 
 - (void)test2_Basics {
     
-    [RollbarLogger clearSdkDataStore];
-    NSArray *items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
+    [RollbarTestUtil deleteLogFiles];
+    [RollbarTestUtil deletePayloadsStoreFile];
+    [RollbarTestUtil clearTelemetryFile];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+
+    NSArray *items = [RollbarTestUtil readIncomingPayloadsAsStrings];
     XCTAssertNotNil(items);
     XCTAssertEqual(0, items.count);
-    items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
+    items = [RollbarTestUtil readTransmittedPayloadsAsStrings];
     XCTAssertNotNil(items);
     XCTAssertEqual(0, items.count);
     
@@ -61,12 +65,16 @@
                                            environment:[RollbarTestHelper getRollbarEnvironment]
     ];
     config.developerOptions.transmit = NO;
+    config.developerOptions.logIncomingPayloads = YES;
     config.developerOptions.logTransmittedPayloads = YES;
+    config.developerOptions.logDroppedPayloads = YES;
     config.loggingOptions.maximumReportsPerMinute = 180;
     [[RollbarInfrastructure sharedInstance] configureWith:config];
     
-    [NSThread sleepForTimeInterval:1.0f];
-    items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
+    //[NSThread sleepForTimeInterval:1.0f];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+    
+    items = [RollbarTestUtil readTransmittedPayloadsAsStrings];
     XCTAssertNotNil(items);
 
     [[RollbarInfrastructure sharedInstance].logger log:RollbarLevel_Critical
@@ -76,6 +84,8 @@
     ];
     
     [RollbarLogger flushRollbarThread];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+
     items = [RollbarTestUtil readTransmittedPayloadsAsStrings];
     BOOL wasLogged = NO;
     for (NSString *item in items) {
@@ -86,22 +96,28 @@
     }
     XCTAssertTrue(YES == wasLogged);
 
-    [RollbarLogger clearSdkDataStore];
-    items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
+    [RollbarTestUtil deletePayloadsStoreFile];
+    [RollbarTestUtil deleteLogFiles];
+    
+    items = [RollbarTestUtil readIncomingPayloadsAsStrings];
     XCTAssertNotNil(items);
     XCTAssertEqual(0, items.count);
-    items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
+    items = [RollbarTestUtil readTransmittedPayloadsAsStrings];
     XCTAssertNotNil(items);
     XCTAssertEqual(0, items.count);
 }
 
 - (void)test3_Live {
     
-    [RollbarLogger clearSdkDataStore];
-    NSArray *items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
+    [RollbarTestUtil deleteLogFiles];
+    [RollbarTestUtil deletePayloadsStoreFile];
+    [RollbarTestUtil clearTelemetryFile];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+    
+    NSArray *items = [RollbarTestUtil readIncomingPayloadsAsStrings];
     XCTAssertNotNil(items);
     XCTAssertEqual(0, items.count);
-    items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
+    items = [RollbarTestUtil readTransmittedPayloadsAsStrings];
     XCTAssertNotNil(items);
     XCTAssertEqual(0, items.count);
     
@@ -109,11 +125,16 @@
     [RollbarMutableConfig mutableConfigWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
                                            environment:[RollbarTestHelper getRollbarEnvironment]];
     config.developerOptions.transmit = YES;
+    config.developerOptions.logIncomingPayloads = YES;
     config.developerOptions.logTransmittedPayloads = YES;
+    config.developerOptions.logDroppedPayloads = YES;
     [[RollbarInfrastructure sharedInstance] configureWith:config];
     
     
     [RollbarLogger flushRollbarThread];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+    items = [RollbarTestUtil readIncomingPayloadsAsStrings];
+    XCTAssertNotNil(items);
     items = [RollbarTestUtil readTransmittedPayloadsAsStrings];
     XCTAssertNotNil(items);
     
@@ -123,6 +144,8 @@
                                                context:nil
     ];
     [RollbarLogger flushRollbarThread];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+
     items = [RollbarTestUtil readTransmittedPayloadsAsStrings];
     BOOL wasLogged = NO;
     for (NSString *item in items) {
@@ -133,11 +156,13 @@
     }
     XCTAssertTrue(YES == wasLogged);
 
-    [RollbarLogger clearSdkDataStore];
-    items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
+    [RollbarTestUtil deletePayloadsStoreFile];
+    [RollbarTestUtil deleteLogFiles];
+    
+    items = [RollbarTestUtil readIncomingPayloadsAsStrings];
     XCTAssertNotNil(items);
     XCTAssertEqual(0, items.count);
-    items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
+    items = [RollbarTestUtil readTransmittedPayloadsAsStrings];
     XCTAssertNotNil(items);
     XCTAssertEqual(0, items.count);
 }
