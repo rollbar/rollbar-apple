@@ -39,7 +39,7 @@ final class RollbarNotifierTelemetryTests: XCTestCase {
         config.telemetry.memoryStatsAutocollectionInterval = 0.5;
         Rollbar.update(withConfiguration: config);
         
-        Thread.sleep(forTimeInterval: 2.0);
+        RollbarTestUtil .wait(waitTimeInSeconds: 3);
         Rollbar.criticalMessage("Must contain memory telemetry!");
         RollbarLogger.flushRollbarThread();
 
