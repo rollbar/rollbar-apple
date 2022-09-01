@@ -16,12 +16,23 @@
 
     [super setUp];
 
-    [RollbarLogger clearSdkDataStore];
-    
+    [RollbarTestUtil deletePayloadsStoreFile];
+    [RollbarTestUtil deleteLogFiles];
+    [RollbarTestUtil clearTelemetryFile];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+
     RollbarMutableConfig *config =
     [RollbarMutableConfig mutableConfigWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
                                            environment:[RollbarTestHelper getRollbarEnvironment]];
+    config.developerOptions.transmit = NO;
+    config.developerOptions.logIncomingPayloads = YES;
+    config.developerOptions.logTransmittedPayloads = YES;
+    config.developerOptions.logDroppedPayloads = YES;
+    config.loggingOptions.maximumReportsPerMinute = 180;
     [Rollbar updateWithConfiguration:config];
+
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+    [RollbarTestUtil deleteLogFiles];
 }
 
 - (void)tearDown {
@@ -44,8 +55,9 @@
     [Rollbar debugMessage:@"Test"];
 
     [RollbarLogger flushRollbarThread];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
 
-    NSArray *logItems = [RollbarLogger readPayloadsFromSdkTransmittedLog];
+    NSArray *logItems = [RollbarTestUtil readTransmittedPayloadsAsDictionaries];
     NSDictionary *item = logItems[logItems.count - 1];
     NSArray *telemetryData = [item valueForKeyPath:@"body.telemetry"];
     XCTAssertTrue(telemetryData.count > 0);
@@ -96,9 +108,10 @@
     [Rollbar debugMessage:@"Demonstrate Telemetry capture once more..."];
     [Rollbar debugMessage:@"DO Demonstrate Telemetry capture once more..."];
 
-    //[NSThread sleepForTimeInterval:8.0f];
-    
-    NSArray *logItems = [RollbarLogger readPayloadsFromSdkTransmittedLog];
+    [RollbarLogger flushRollbarThread];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+
+    NSArray *logItems = [RollbarTestUtil readTransmittedPayloadsAsDictionaries];
     for (NSDictionary *item in logItems) {
         NSArray *telemetryData = [item valueForKeyPath:@"body.telemetry"];
 
