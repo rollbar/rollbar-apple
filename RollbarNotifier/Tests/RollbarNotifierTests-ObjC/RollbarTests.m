@@ -16,25 +16,41 @@
     
     [super setUp];
 
-    [RollbarLogger clearSdkDataStore];
+    [RollbarTestUtil deletePayloadsStoreFile];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
 
     RollbarMutableConfig *config = [[RollbarMutableConfig alloc] init];
     config.destination.accessToken = [RollbarTestHelper getRollbarPayloadsAccessToken];
     config.destination.environment = [RollbarTestHelper getRollbarEnvironment];
     config.developerOptions.transmit = YES;
+    config.developerOptions.logIncomingPayloads = YES;
     config.developerOptions.logTransmittedPayloads = YES;
+    config.developerOptions.logDroppedPayloads = YES;
     config.loggingOptions.maximumReportsPerMinute = 5000;
+    config.telemetry.memoryStatsAutocollectionInterval = 0;
     // for the stress test specifically:
     config.telemetry.enabled = YES;
     config.loggingOptions.captureIp = RollbarCaptureIpType_Full;
     NSLog(@"%@", config)
     
     [Rollbar initWithConfiguration:config];
+    
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+    [RollbarLogger flushRollbarThread];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:2];
+    [RollbarTestUtil deleteLogFiles];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+    
+    NSArray *items = [RollbarTestUtil readIncomingPayloadsAsDictionaries];
+    XCTAssertEqual(items.count, 0);
+    items = [RollbarTestUtil readTransmittedPayloadsAsDictionaries];
+    XCTAssertEqual(items.count, 0);
+    items = [RollbarTestUtil readDroppedPayloadsAsDictionaries];
+    XCTAssertEqual(items.count, 0);
 }
 
 - (void)tearDown {
     
-    [Rollbar updateWithConfiguration:[RollbarConfig new]];
     [super tearDown];
 }
 
@@ -142,10 +158,19 @@
         
         count--;
     }
+    
+    //TODO: this test will need asserts added based on content of the local log files...
 }
 
 - (void)testNotification {
     
+//    [RollbarLogger flushRollbarThread];
+//    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+//    [RollbarTestUtil deleteLogFiles];
+//    NSArray *items = [RollbarTestUtil readTransmittedPayloadsAsDictionaries];
+//    XCTAssertEqual(items.count, 0);
+    //[RollbarTestUtil waitWithWaitTimeInSeconds:1];
+
     NSDictionary *notificationText = @{
                                        @"error": @[@"testing-error-with-message"],
                                        @"debug": @[@"testing-debug"],
@@ -166,9 +191,11 @@
         }
     }
 
-    [NSThread sleepForTimeInterval:3.0f];
+    [RollbarLogger flushRollbarThread];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:2];
 
-    NSArray *items = [RollbarLogger readPayloadsFromSdkTransmittedLog];
+    NSArray *items = [RollbarTestUtil readTransmittedPayloadsAsDictionaries];
+    XCTAssertEqual(items.count, notificationText.count);
     for (id item in items) {
         NSString *level = [item valueForKeyPath:@"level"];
         NSString *message = [item valueForKeyPath:@"body.message.body"];
