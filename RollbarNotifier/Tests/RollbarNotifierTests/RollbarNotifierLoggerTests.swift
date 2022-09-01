@@ -26,12 +26,21 @@ final class RollbarNotifierLoggerTests: XCTestCase {
         config.customData = ["someKey": "someValue", ];
         
         Rollbar.initWithConfiguration(config);
+        
+        RollbarTestUtil.wait(waitTimeInSeconds: 1);
+        RollbarLogger.flushRollbarThread();
+        RollbarTestUtil.deleteLogFiles();
+        RollbarTestUtil.wait(waitTimeInSeconds: 1);
+        
+        XCTAssertEqual(0, RollbarTestUtil.readIncomingPayloadsAsStrings().count);
+        XCTAssertEqual(0, RollbarTestUtil.readTransmittedPayloadsAsStrings().count);
+        XCTAssertEqual(0, RollbarTestUtil.readDroppedPayloadsAsStrings().count);
     }
     
     override func tearDown() {
         
-        // add custom tear down code...
-        
+        RollbarTestUtil.wait(waitTimeInSeconds: 1);
+
         super.tearDown();
     }
     
@@ -40,9 +49,6 @@ final class RollbarNotifierLoggerTests: XCTestCase {
     }
 
     func testRollbarNotifiersIndependentConfiguration() {
-
-        //RollbarTestUtil.clearLogFile();
-        //RollbarTestUtil.clearTelemetryFile();
 
         var config = Rollbar.configuration().mutableCopy();
         config.developerOptions.transmit = false;
