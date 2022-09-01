@@ -463,9 +463,11 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
     NSAssert(destinationKey && destinationKey.length > 0, @"destination_key is expected to be defined!");
     NSDictionary<NSString *, NSString *> *destination = [self->_payloadsRepo getDestinationByID:destinationKey];
     
-    //TODO: remove this before the upcoming major release:
+    //TODO: remove this code-block before the upcoming major release:
     if (!destination) {
         RollbarSdkLog(@"Aha!");
+        [self->_payloadsRepo removePayloadByID:payloadDataRow[@"id"]];
+        return;
     }
     
     NSAssert(destination, @"destination can not be nil!");
