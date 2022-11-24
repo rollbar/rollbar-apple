@@ -47,23 +47,38 @@ static NSString * const DFK_PROXY_PORT = @"proxyPort";
     return [result boolValue];
 }
 
-- (void)setEnabled:(BOOL)value {
-    [self setNumber:[[NSNumber alloc] initWithBool:value] forKey:DFK_ENABLED];
-}
-
 - (NSString *)proxyUrl {
     NSString *result = [self safelyGetStringByKey:DFK_PROXY_URL];
     return result;
-}
-
-- (void)setProxyUrl:(NSString *)value {
-    [self setString:value forKey:DFK_PROXY_URL];
 }
 
 - (NSUInteger)proxyPort {
     NSUInteger result = [self safelyGetUIntegerByKey:DFK_PROXY_PORT
                                          withDefault:DEFAULT_PROXY_PORT];
     return result;
+}
+
+@end
+
+@implementation RollbarMutableProxy
+
+@dynamic enabled;
+@dynamic proxyUrl;
+@dynamic proxyPort;
+
+#pragma mark - property accessors
+
+- (void)setEnabled:(BOOL)value {
+    [self setNumber:[[NSNumber alloc] initWithBool:value] forKey:DFK_ENABLED];
+}
+
+//- (NSString *)proxyUrl {
+//    NSString *result = [self safelyGetStringByKey:DFK_PROXY_URL];
+//    return result;
+//}
+
+- (void)setProxyUrl:(NSString *)value {
+    [self setString:value forKey:DFK_PROXY_URL];
 }
 
 - (void)setProxyPort:(NSUInteger)value {

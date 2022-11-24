@@ -2,6 +2,7 @@
 
 #import "RollbarTelemetry.h"
 #import "RollbarCachesDirectory.h"
+#import "RollbarNotifierFiles.h"
 
 #import "RollbarTelemetryOptions.h"
 #import "RollbarScrubbingOptions.h"
@@ -17,7 +18,6 @@
 #import "RollbarTelemetryManualBody.h"
 
 static NSUInteger const DEFAULT_DATA_LIMIT = 10;
-static NSString * const TELEMETRY_FILE_NAME = @"rollbar.telemetry";
 
 static BOOL captureLog = false;
 
@@ -87,7 +87,7 @@ static dispatch_queue_t fileQueue = nil;
         
         // Create cache file
         NSString *cachesDirectory = [RollbarCachesDirectory directory];
-        _dataFilePath = [cachesDirectory stringByAppendingPathComponent:TELEMETRY_FILE_NAME];
+        _dataFilePath = [cachesDirectory stringByAppendingPathComponent:[RollbarNotifierFiles telemetryQueue]];
         
         _viewInputsToScrub = [NSMutableSet new];
         
@@ -114,6 +114,11 @@ static dispatch_queue_t fileQueue = nil;
     }
     
     return self;
+}
+
+- (nonnull RollbarTelemetryOptions *)telemetryOptions {
+    
+    return [RollbarTelemetryThread sharedInstance].telemetryOptions;
 }
 
 - (void)setCaptureLog:(BOOL)shouldCapture {

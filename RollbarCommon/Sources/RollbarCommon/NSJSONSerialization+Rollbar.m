@@ -50,6 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
     }
     
     [obj enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+        
         // Defensive failsafe to avoid exceptions when trying to create dictionary literal with nil `obj`
         obj = obj ?: [NSNull null];
         
@@ -59,7 +60,10 @@ NS_ASSUME_NONNULL_BEGIN
         } else if ([obj isKindOfClass:[NSArray class]]) {
             
             [safeData setObject:((NSArray *)obj).mutableCopy forKey:key];
-        } else if ([NSJSONSerialization isValidJSONObject:@{key:obj}]) {
+        } else if (obj == [NSNull null] || [obj isKindOfClass:[NSNull class]]) {
+            
+            [safeData setObject:obj forKey:key];
+        } else if ([NSJSONSerialization isValidJSONObject:obj]) {
             
             [safeData setObject:obj forKey:key];
         } else if ([obj isKindOfClass:[NSNumber class]]) {

@@ -14,21 +14,21 @@ NS_ASSUME_NONNULL_BEGIN
 ///@note THIS METHOD IS TO BE USED FOR TESTING PURPOSES ONLY.
 + (void)flushRollbarThread;
 
-/// Reads all the payloads queued up in the persistent store
+/// Reads all payloads from the default incoming payloads log
 ///@note THIS METHOD IS TO BE USED FOR TESTING PURPOSES ONLY.
-+ (nonnull NSArray<NSMutableDictionary *> *)readLogItemsFromStore;
++ (nonnull NSArray<NSMutableDictionary *> *)readPayloadsFromSdkIncomingLog;
 
-/// Reads all payloads from the default payloads log
+/// Reads all payloads from the default transmitted payloads log
 ///@note THIS METHOD IS TO BE USED FOR TESTING PURPOSES ONLY.
-+ (nonnull NSArray<NSMutableDictionary *> *)readPayloadsFromSdkLog;
++ (nonnull NSArray<NSMutableDictionary *> *)readPayloadsFromSdkTransmittedLog;
+
+/// Reads all payloads from the default dropped payloads log
+///@note THIS METHOD IS TO BE USED FOR TESTING PURPOSES ONLY.
++ (nonnull NSArray<NSMutableDictionary *> *)readPayloadsFromSdkDroppedLog;
 
 /// Reads all payloads from the provided file path
 ///@note THIS METHOD IS TO BE USED FOR TESTING PURPOSES ONLY.
 + (nonnull NSArray<NSMutableDictionary *> *)readPayloadsDataFromFile:(nonnull NSString *)filePath;
-
-/// Clears all the payloads queued up in the persistent store
-///@note THIS METHOD IS TO BE USED FOR TESTING PURPOSES ONLY.
-+ (void)clearLogItemsStore;
 
 /// Clears all the SDK persisted data
 ///@note THIS METHOD IS TO BE USED FOR TESTING PURPOSES ONLY.

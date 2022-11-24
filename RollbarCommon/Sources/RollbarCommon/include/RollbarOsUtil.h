@@ -21,9 +21,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSTimeInterval)detectOsUptimeInterval;
 
-#pragma mark - utility
+#pragma mark - static utility nature
 
-- (instancetype)init NS_UNAVAILABLE;
++ (instancetype)new NS_UNAVAILABLE;
++ (instancetype)allocWithZone:(struct _NSZone *)zone NS_UNAVAILABLE;
++ (instancetype)alloc NS_UNAVAILABLE;
++ (id)copyWithZone:(struct _NSZone *)zone NS_UNAVAILABLE;
++ (id)mutableCopyWithZone:(struct _NSZone *)zone NS_UNAVAILABLE;
 
 @end
 

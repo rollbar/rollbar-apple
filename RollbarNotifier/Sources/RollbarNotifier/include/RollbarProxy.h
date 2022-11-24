@@ -11,13 +11,13 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - properties
 
 /// Enables/disables usage of these proxy settings
-@property (nonatomic) BOOL enabled;
+@property (nonatomic, readonly) BOOL enabled;
 
 /// Proxy URI to use
-@property (nonatomic, copy) NSString *proxyUrl;
+@property (nonatomic, readonly, copy) NSString *proxyUrl;
 
 /// Proxy port to use
-@property (nonatomic) NSUInteger proxyPort;
+@property (nonatomic, readonly) NSUInteger proxyPort;
 
 #pragma mark - initializers
 
@@ -28,6 +28,21 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithEnabled:(BOOL)enabled
                        proxyUrl:(NSString *)proxyUrl
                       proxyPort:(NSUInteger)proxyPort;
+
+@end
+
+@interface RollbarMutableProxy : RollbarProxy
+
+#pragma mark - properties
+
+/// Enables/disables usage of these proxy settings
+@property (nonatomic, readwrite) BOOL enabled;
+
+/// Proxy URI to use
+@property (nonatomic, readwrite, copy) NSString *proxyUrl;
+
+/// Proxy port to use
+@property (nonatomic, readwrite) NSUInteger proxyPort;
 
 @end
 

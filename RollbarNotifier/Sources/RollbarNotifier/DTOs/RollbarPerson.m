@@ -63,24 +63,45 @@ static NSString * const DFK_EMAIL = @"email";
     return (nil != result) ? result : @"";
 }
 
-- (void)setID:(NSString *)value {
-    
-    [self setData:value byKey:DFK_ID];
-}
-
 - (NSString *)username {
     
     return [self getDataByKey:DFK_USERNAME];
 }
 
-- (void)setUsername:(NSString *)value {
-    
-    [self setData:value byKey:DFK_USERNAME];
-}
-
 - (NSString *)email {
     
     return [self getDataByKey:DFK_EMAIL];
+}
+
+@end
+
+
+@implementation RollbarMutablePerson
+
+#pragma mark - initializers
+
+-(instancetype)init {
+    
+    if (self = [super initWithDictionary:@{}]) {
+        return self;
+    }
+    return nil;
+}
+
+#pragma mark - property accessors
+
+@dynamic ID;
+@dynamic username;
+@dynamic email;
+
+- (void)setID:(NSString *)value {
+    
+    [self setData:value byKey:DFK_ID];
+}
+
+- (void)setUsername:(NSString *)value {
+    
+    [self setData:value byKey:DFK_USERNAME];
 }
 
 - (void)setEmail:(NSString *)value {

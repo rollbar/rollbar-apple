@@ -11,40 +11,100 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - properties
 
 /// Rollbar operation enabled flag
-@property (nonatomic) BOOL enabled;
+@property (nonatomic, readonly) BOOL enabled;
 
 /// Enables/disables actual transmission of the payloads
-@property (nonatomic) BOOL transmit;
+@property (nonatomic, readonly) BOOL transmit;
 
 /// A flag to suppress internal SDK's informational logging
-@property (nonatomic) BOOL suppressSdkInfoLogging;
+@property (nonatomic, readonly) BOOL suppressSdkInfoLogging;
 
-/// Flags if the processed payloads to be logged locally
-@property (nonatomic) BOOL logPayload;
+/// Flags if the incoming payloads to be logged locally
+@property (nonatomic, readonly) BOOL logIncomingPayloads;
 
-/// Log file to use for  local logged payloads
-@property (nonatomic, copy) NSString *payloadLogFile;
+/// Flags if the transmitted payloads to be logged locally
+@property (nonatomic, readonly) BOOL logTransmittedPayloads;
+
+/// Flags if the dropped payloads to be logged locally
+@property (nonatomic, readonly) BOOL logDroppedPayloads;
+
+/// Log file to use for  local logged incoming payloads
+@property (nonatomic, readonly, copy) NSString *incomingPayloadsLogFile;
+
+/// Log file to use for  local logged transmitted payloads
+@property (nonatomic, readonly, copy) NSString *transmittedPayloadsLogFile;
+
+/// Log file to use for  local logged dropped payloads
+@property (nonatomic, readonly, copy) NSString *droppedPayloadsLogFile;
 
 #pragma mark - initializers
 
 /// Initializer
 /// @param enabled enabled flag
 /// @param transmit payloads transmission flag
-/// @param logPayload local payloads logging flag
-/// @param logPayloadFile pocal payloads logging file
+/// @param logIncomingPayloads flag to log incoming payloads locally
+/// @param logTransmittedPayloads flag to log transmitted payloads locally
+/// @param logDroppedPayloads flag to log dropped payloads locally
+/// @param logIncomingPayloadsFile file to log incoming payloads to
+/// @param logTransmittedPayloadsFile file to log transmitted payloads to
+/// @param logDroppedPayloadsFile file to log dropped payloads to
 - (instancetype)initWithEnabled:(BOOL)enabled
                        transmit:(BOOL)transmit
-                     logPayload:(BOOL)logPayload
-                 payloadLogFile:(NSString *)logPayloadFile;
+            logIncomingPayloads:(BOOL)logIncomingPayloads
+         logTransmittedPayloads:(BOOL)logTransmittedPayloads
+             logDroppedPayloads:(BOOL)logDroppedPayloads
+        incomingPayloadsLogFile:(NSString *)logIncomingPayloadsFile
+     transmittedPayloadsLogFile:(NSString *)logTransmittedPayloadsFile
+         droppedPayloadsLogFile:(NSString *)logDroppedPayloadsFile;
 
 /// Initializer
 /// @param enabled enabled flag
 /// @param transmit payloads transmission flag
-/// @param logPayload local payloads logging flag
+/// @param logIncomingPayloads flag to log incoming payloads locally
+/// @param logTransmittedPayloads flag to log transmitted payloads locally
+/// @param logDroppedPayloads flag to log dropped payloads locally
 - (instancetype)initWithEnabled:(BOOL)enabled
                        transmit:(BOOL)transmit
-                     logPayload:(BOOL)logPayload;
+            logIncomingPayloads:(BOOL)logIncomingPayloads
+         logTransmittedPayloads:(BOOL)logTransmittedPayloads
+             logDroppedPayloads:(BOOL)logDroppedPayloads;
+
+/// Initializer
+/// @param enabled flag enabling/suspending the SDK operation
 - (instancetype)initWithEnabled:(BOOL)enabled;
+
+@end
+
+@interface RollbarMutableDeveloperOptions : RollbarDeveloperOptions
+
+#pragma mark - properties
+
+/// Rollbar operation enabled flag
+@property (nonatomic, readwrite) BOOL enabled;
+
+/// Enables/disables actual transmission of the payloads
+@property (nonatomic, readwrite) BOOL transmit;
+
+/// A flag to suppress internal SDK's informational logging
+@property (nonatomic, readwrite) BOOL suppressSdkInfoLogging;
+
+/// Flags if the incoming payloads to be logged locally
+@property (nonatomic, readwrite) BOOL logIncomingPayloads;
+
+/// Flags if the transmitted payloads to be logged locally
+@property (nonatomic, readwrite) BOOL logTransmittedPayloads;
+
+/// Flags if the dropped payloads to be logged locally
+@property (nonatomic, readwrite) BOOL logDroppedPayloads;
+
+/// Log file to use for  local logged incoming payloads
+@property (nonatomic, readwrite, copy) NSString *incomingPayloadsLogFile;
+
+/// Log file to use for  local logged transmitted payloads
+@property (nonatomic, readwrite, copy) NSString *transmittedPayloadsLogFile;
+
+/// Log file to use for  local logged dropped payloads
+@property (nonatomic, readwrite, copy) NSString *droppedPayloadsLogFile;
 
 @end
 

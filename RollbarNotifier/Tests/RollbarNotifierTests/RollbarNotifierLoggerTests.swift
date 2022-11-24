@@ -11,67 +11,81 @@ final class RollbarNotifierLoggerTests: XCTestCase {
         
         super.setUp();
         
-        RollbarTestUtil.clearLogFile();
+        RollbarTestUtil.deletePayloadsStoreFile();
         RollbarTestUtil.clearTelemetryFile();
-        RollbarTestUtil.waitForPesistenceToComplete();
+        RollbarTestUtil.deleteLogFiles();
+
+        let config = RollbarMutableConfig.mutableConfig(
+            withAccessToken: RollbarTestHelper.getRollbarPayloadsAccessToken(),
+            environment: RollbarTestHelper.getRollbarEnvironment()
+        );
+        config.developerOptions.transmit = true;
+        config.developerOptions.logTransmittedPayloads = true;
+        config.developerOptions.logDroppedPayloads = true;
+        config.loggingOptions.maximumReportsPerMinute = 5000;
+        config.customData = ["someKey": "someValue", ];
         
+        Rollbar.initWithConfiguration(config);
         
-        //if Rollbar.currentConfiguration() != nil {
-        Rollbar.initWithAccessToken(RollbarTestHelper.getRollbarPayloadsAccessToken());
-        Rollbar.currentConfiguration()?.destination.accessToken = RollbarTestHelper.getRollbarPayloadsAccessToken();
-        Rollbar.currentConfiguration()?.destination.environment = RollbarTestHelper.getRollbarEnvironment();
-        Rollbar.currentConfiguration()?.developerOptions.transmit = true;
-        Rollbar.currentConfiguration()?.developerOptions.logPayload = true;
-        Rollbar.currentConfiguration()?.loggingOptions.maximumReportsPerMinute = 5000;
-        Rollbar.currentConfiguration()?.customData = ["someKey": "someValue", ];
-        //}
+        RollbarTestUtil.wait(waitTimeInSeconds: 1);
+        RollbarLogger.flushRollbarThread();
+        RollbarTestUtil.deleteLogFiles();
+        RollbarTestUtil.wait(waitTimeInSeconds: 1);
+        
+        XCTAssertEqual(0, RollbarTestUtil.readIncomingPayloadsAsStrings().count);
+        XCTAssertEqual(0, RollbarTestUtil.readTransmittedPayloadsAsStrings().count);
+        XCTAssertEqual(0, RollbarTestUtil.readDroppedPayloadsAsStrings().count);
     }
     
     override func tearDown() {
         
-        RollbarTestUtil.waitForPesistenceToComplete(waitTimeInSeconds: 2.0);
+        RollbarTestUtil.wait(waitTimeInSeconds: 1);
 
-        Rollbar.updateConfiguration(RollbarConfig());
         super.tearDown();
     }
     
     func testRollbarConfiguration() {
-        NSLog("%@", Rollbar.currentConfiguration()!);
+        NSLog("%@", Rollbar.configuration());
     }
 
     func testRollbarNotifiersIndependentConfiguration() {
 
-        //RollbarTestUtil.clearLogFile();
-        //RollbarTestUtil.clearTelemetryFile();
+        var config = Rollbar.configuration().mutableCopy();
+        config.developerOptions.transmit = false;
+        config.developerOptions.logIncomingPayloads = true;
+        config.developerOptions.logTransmittedPayloads = true;
+        config.developerOptions.logDroppedPayloads = true;
 
-        Rollbar.currentConfiguration()?.developerOptions.transmit = false;
-        Rollbar.currentConfiguration()?.developerOptions.logPayload = true;
+        // configure the shared notifier:
+        config.destination.accessToken = "AT_0";
+        config.destination.environment = "ENV_0";
 
-        // configure the root notifier:
-        Rollbar.currentConfiguration()?.destination.accessToken = "AT_0";
-        Rollbar.currentConfiguration()?.destination.environment = "ENV_0";
+        Rollbar.update(withConfiguration: config);
+        XCTAssertEqual(RollbarInfrastructure.sharedInstance().logger.configuration!.destination.accessToken,
+                       config.destination.accessToken);
+        XCTAssertEqual(RollbarInfrastructure.sharedInstance().logger.configuration!.destination.environment,
+                       config.destination.environment);
         
-        XCTAssertEqual(Rollbar.currentLogger().configuration!.destination.accessToken,
-                       Rollbar.currentConfiguration()!.destination.accessToken);
-        XCTAssertEqual(Rollbar.currentLogger().configuration!.destination.environment,
-                       Rollbar.currentConfiguration()?.destination.environment);
-        
-        XCTAssertEqual(Rollbar.currentLogger().configuration!.destination.accessToken,
-                       Rollbar.currentConfiguration()?.destination.accessToken);
-        XCTAssertEqual(Rollbar.currentLogger().configuration?.destination.environment,
-                       Rollbar.currentConfiguration()?.destination.environment);
+        XCTAssertEqual(RollbarInfrastructure.sharedInstance().logger.configuration!.destination.accessToken,
+                       config.destination.accessToken);
+        XCTAssertEqual(RollbarInfrastructure.sharedInstance().logger.configuration?.destination.environment,
+                       config.destination.environment);
         
         // create and configure another notifier:
-        let notifier = RollbarLogger(accessToken: "AT_1");
-        notifier.configuration!.destination.environment = "ENV_1";
+        config = Rollbar.configuration().mutableCopy();
+        config.destination.accessToken = "AT_1";
+        config.destination.environment = "ENV_1";
+        let notifier = RollbarInfrastructure.sharedInstance().createLogger(with: config);
         XCTAssertTrue(notifier.configuration!.destination.accessToken.compare("AT_1") == .orderedSame);
         XCTAssertTrue(notifier.configuration!.destination.environment.compare("ENV_1") == .orderedSame);
 
         // reconfigure the root notifier:
-        Rollbar.currentConfiguration()?.destination.accessToken = "AT_N";
-        Rollbar.currentConfiguration()?.destination.environment = "ENV_N";
-        XCTAssertTrue(Rollbar.currentLogger().configuration!.destination.accessToken.compare("AT_N") == .orderedSame);
-        XCTAssertTrue(Rollbar.currentLogger().configuration!.destination.environment.compare("ENV_N") == .orderedSame);
+        config = Rollbar.configuration().mutableCopy();
+        config.destination.accessToken = "AT_N";
+        config.destination.environment = "ENV_N";
+        Rollbar.update(withConfiguration: config);
+        XCTAssertTrue(RollbarInfrastructure.sharedInstance().logger.configuration!.destination.accessToken.compare("AT_N") == .orderedSame);
+        XCTAssertTrue(RollbarInfrastructure.sharedInstance().logger.configuration!.destination.environment.compare("ENV_N") == .orderedSame);
 
         // make sure the other notifier is still has its original configuration:
         XCTAssertTrue(notifier.configuration!.destination.accessToken.compare("AT_1") == .orderedSame);
@@ -84,38 +98,35 @@ final class RollbarNotifierLoggerTests: XCTestCase {
 
     func testRollbarTransmit() {
 
-        //RollbarTestUtil.clearLogFile();
-        //RollbarTestUtil.clearTelemetryFile();
+        let config = Rollbar.configuration().mutableCopy();
+        config.destination.accessToken = RollbarTestHelper.getRollbarPayloadsAccessToken();
+        config.destination.environment = RollbarTestHelper.getRollbarEnvironment();
+        config.developerOptions.transmit = true;
 
-        Rollbar.currentConfiguration()?.destination.accessToken = RollbarTestHelper.getRollbarPayloadsAccessToken();
-        Rollbar.currentConfiguration()?.destination.environment = RollbarTestHelper.getRollbarEnvironment();
-        Rollbar.currentConfiguration()?.developerOptions.transmit = true;
-
-        Rollbar.currentConfiguration()?.developerOptions.transmit = true;
+        config.developerOptions.transmit = true;
+        Rollbar.update(withConfiguration: config);
         Rollbar.criticalMessage("Transmission test YES");
-        RollbarTestUtil.waitForPesistenceToComplete();
+        RollbarTestUtil.wait(waitTimeInSeconds: 1.0);
 
-        Rollbar.currentConfiguration()?.developerOptions.transmit = false;
+        config.developerOptions.transmit = false;
+        Rollbar.update(withConfiguration: config);
         Rollbar.criticalMessage("Transmission test NO");
-        RollbarTestUtil.waitForPesistenceToComplete();
+        RollbarTestUtil.wait(waitTimeInSeconds: 1.0);
 
-        Rollbar.currentConfiguration()?.developerOptions.transmit = true;
-        //Rollbar.currentConfiguration.enabled = NO;
+        config.developerOptions.transmit = true;
+        Rollbar.update(withConfiguration: config);
         Rollbar.criticalMessage("Transmission test YES2");
-        RollbarTestUtil.waitForPesistenceToComplete();
+        RollbarTestUtil.wait(waitTimeInSeconds: 1.0);
 
         var count = 50;
         while (count > 0) {
             Rollbar.criticalMessage("Rate Limit Test \(count)");
-            RollbarTestUtil.waitForPesistenceToComplete();
+            RollbarTestUtil.wait(waitTimeInSeconds: 1.0);
             count -= 1;
         }
     }
     
     func testNotification() {
-
-//        RollbarTestUtil.clearLogFile();
-//        RollbarTestUtil.clearTelemetryFile();
 
         let notificationText = [
             "error": ["testing-error"],
@@ -140,49 +151,57 @@ final class RollbarNotifierLoggerTests: XCTestCase {
             }
         }
 
-        RollbarTestUtil.waitForPesistenceToComplete();
+        RollbarLogger.flushRollbarThread();
+        RollbarTestUtil.wait(waitTimeInSeconds: 6.0);
 
-        let items = RollbarTestUtil.readItemStringsFromLogFile();
+        let items = RollbarTestUtil.readTransmittedPayloadsAsStrings();
+        XCTAssertTrue(items.count >= notificationText.count);
+        var count:Int = 0;
         for item in items {
+            if (!item.contains("testing-")) {
+                continue;
+            }
             let payload = RollbarPayload(jsonString: item);
             let level = payload.data.level;
             let message: String? = payload.data.body.message?.body;
             let params = notificationText[RollbarLevelUtil.rollbarLevel(toString: level)]!;
             XCTAssertTrue(message!.compare(params[0] as String) == .orderedSame, "Expects '\(params[0])', got '\(message ?? "")'.");
+            count += 1;
         }
+        XCTAssertEqual(count, notificationText.count);
     }
     
-    func testNSErrorReporting() {
-        do {
-            try RollbarTestUtil.makeTroubledCall();
-            //var expectedErrorCallDepth: uint = 5;
-            //try RollbarTestUtil.simulateError(callDepth: &expectedErrorCallDepth);
-        }
-        catch RollbarTestUtilError.simulatedException(let errorDescription, let errorCallStack) {
-            print("Caught an error: \(errorDescription)");
-            print("Caught error's call stack:");
-            errorCallStack.forEach({print($0)});
-        }
-        catch let e as BackTracedErrorProtocol {
-            //print("Caught an error: \(e.localizedDescription)");
-            print("Caught an error: \(e.errorDescription)");
-            print("Caught error's call stack:");
-            e.errorCallStack.forEach({print($0)});
-        }
-        catch {
-            print("Caught an error: \(error)");
-            //print("Caught an error: \(error.localizedDescription)");
-            //print("Corresponding call stack trace at the catch point:");
-            Thread.callStackSymbols.forEach{print($0)}
-        }
-    }
+//    func testNSErrorReporting() {
+//        do {
+//            try RollbarTestUtil.makeTroubledCall();
+//            //var expectedErrorCallDepth: uint = 5;
+//            //try RollbarTestUtil.simulateError(callDepth: &expectedErrorCallDepth);
+//        }
+//        catch RollbarTestUtilError.simulatedException(let errorDescription, let errorCallStack) {
+//            print("Caught an error: \(errorDescription)");
+//            print("Caught error's call stack:");
+//            errorCallStack.forEach({print($0)});
+//        }
+//        catch let e as BackTracedErrorProtocol {
+//            //print("Caught an error: \(e.localizedDescription)");
+//            print("Caught an error: \(e.errorDescription)");
+//            print("Caught error's call stack:");
+//            e.errorCallStack.forEach({print($0)});
+//        }
+//        catch {
+//            print("Caught an error: \(error)");
+//            //print("Caught an error: \(error.localizedDescription)");
+//            //print("Corresponding call stack trace at the catch point:");
+//            Thread.callStackSymbols.forEach{print($0)}
+//        }
+//    }
     
     static var allTests = [
         ("testRollbarConfiguration", testRollbarConfiguration),
         ("testRollbarNotifiersIndependentConfiguration", testRollbarNotifiersIndependentConfiguration),
         ("testRollbarTransmit", testRollbarTransmit),
         ("testNotification", testNotification),
-        ("testNSErrorReporting", testNSErrorReporting),
+        //("testNSErrorReporting", testNSErrorReporting),
     ]
 }
 #endif

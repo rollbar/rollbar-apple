@@ -18,11 +18,14 @@ static NSString * const DFK_VERSION = @"version";
 - (instancetype)initWithName:(nullable NSString *)name
                      version:(nullable NSString *)version {
     
-    self = [super initWithDictionary:@{
+    if (self = [super initWithDictionary:@{
         DFK_NAME:name ? name : [NSNull null],
         DFK_VERSION:version ? version : [NSNull null]
-    }];
-    return self;
+    }]) {
+        return self;
+    }
+    
+    return nil;;
 }
 
 - (instancetype)initWithName:(nullable NSString *)name {
@@ -36,12 +39,32 @@ static NSString * const DFK_VERSION = @"version";
    return [self getDataByKey:DFK_NAME];
 }
 
-- (void)setName:(nullable NSString *)value {
-    [self setData:value byKey:DFK_NAME];
-}
-
 - (nullable NSString *)version {
     return [self getDataByKey:DFK_VERSION];
+}
+
+@end
+
+
+@implementation RollbarMutableModule
+
+#pragma mark - initializers
+
+-(instancetype)init {
+    
+    if (self = [super initWithDictionary:@{}]) {
+        return self;
+    }
+    return nil;
+}
+
+#pragma mark - property accessors
+
+@dynamic name;
+@dynamic version;
+
+- (void)setName:(nullable NSString *)value {
+    [self setData:value byKey:DFK_NAME];
 }
 
 - (void)setVersion:(nullable NSString *)value {

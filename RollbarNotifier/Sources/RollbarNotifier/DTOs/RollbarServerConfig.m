@@ -46,29 +46,57 @@ static NSString * const DFK_CODE_VERSION = @"code_version";
     return [self getDataByKey:DFK_HOST];
 }
 
-- (void)setHost:(nullable NSString *)value {
-    [self setData:value byKey:DFK_HOST];
-}
-
 - (nullable NSString *)root {
     return [self getDataByKey:DFK_ROOT];
-}
-
-- (void)setRoot:(nullable NSString *)value {
-    [self setData:value byKey:DFK_ROOT];
 }
 
 - (nullable NSString *)branch {
     return [self getDataByKey:DFK_BRANCH];
 }
 
+- (nullable NSString *)codeVersion {
+    return [self getDataByKey:DFK_CODE_VERSION];
+}
+
+@end
+
+
+@implementation RollbarMutableServerConfig
+
+@dynamic host;
+@dynamic root;
+@dynamic branch;
+@dynamic codeVersion;
+
+#pragma mark - property accessors
+
+//- (nullable NSString *)host {
+//    return [self getDataByKey:DFK_HOST];
+//}
+
+- (void)setHost:(nullable NSString *)value {
+    [self setData:value byKey:DFK_HOST];
+}
+
+//- (nullable NSString *)root {
+//    return [self getDataByKey:DFK_ROOT];
+//}
+
+- (void)setRoot:(nullable NSString *)value {
+    [self setData:value byKey:DFK_ROOT];
+}
+
+//- (nullable NSString *)branch {
+//    return [self getDataByKey:DFK_BRANCH];
+//}
+
 - (void)setBranch:(nullable NSString *)value {
     [self setData:value byKey:DFK_BRANCH];
 }
 
-- (nullable NSString *)codeVersion {
-    return [self getDataByKey:DFK_CODE_VERSION];
-}
+//- (nullable NSString *)codeVersion {
+//    return [self getDataByKey:DFK_CODE_VERSION];
+//}
 
 - (void)setCodeVersion:(nullable NSString *)value {
     [self setData:value byKey:DFK_CODE_VERSION];

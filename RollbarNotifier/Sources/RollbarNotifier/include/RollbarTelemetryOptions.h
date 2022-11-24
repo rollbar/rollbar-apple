@@ -1,34 +1,15 @@
 #ifndef RollbarTelemetryOptions_h
 #define RollbarTelemetryOptions_h
 
+#import "RollbarScrubbingOptions.h"
+
 @import RollbarCommon;
 
-@class RollbarScrubbingOptions;
 
 NS_ASSUME_NONNULL_BEGIN
 
 /// Telemetry related settings of a configuration
 @interface RollbarTelemetryOptions : RollbarDTO
-
-#pragma mark - properties
-/// Telemetry enabled flag
-@property (nonatomic) BOOL enabled;
-
-/// Capture OS log as Telemetry events flag
-@property (nonatomic) BOOL captureLog;
-
-/// Capture connectivity flag
-@property (nonatomic) BOOL captureConnectivity;
-
-/// Telemtry events buffer limit
-@property (nonatomic) NSUInteger maximumTelemetryData;
-
-/// Telemetry scrubbing options
-@property (nonatomic, strong) RollbarScrubbingOptions *viewInputsScrubber;
-
-/// Time interval for auto-collecting memtory stats
-/// @note 0.0 means no collection!
-@property (atomic) NSTimeInterval memoryStatsAutocollectionInterval; //[sec]
 
 #pragma mark - initializers
 
@@ -53,6 +34,57 @@ NS_ASSUME_NONNULL_BEGIN
 /// Initializer
 /// @param enabled telemetry enabled
 - (instancetype)initWithEnabled:(BOOL)enabled;
+
+#pragma mark - properties
+/// Telemetry enabled flag
+@property (nonatomic, readonly) BOOL enabled;
+
+/// Capture OS log as Telemetry events flag
+@property (nonatomic, readonly) BOOL captureLog;
+
+/// Capture connectivity flag
+@property (nonatomic, readonly) BOOL captureConnectivity;
+
+/// Telemtry events buffer limit
+@property (nonatomic, readonly) NSUInteger maximumTelemetryData;
+
+/// Telemetry scrubbing options
+@property (nonatomic, strong, readonly) RollbarScrubbingOptions *viewInputsScrubber;
+
+/// Time interval for auto-collecting memtory stats
+/// @note 0.0 means no collection!
+@property (nonatomic, readonly) NSTimeInterval memoryStatsAutocollectionInterval; //[sec]
+
+@end
+
+
+/// Mutable Telemetry related settings of a configuration
+@interface RollbarMutableTelemetryOptions : RollbarTelemetryOptions
+
+#pragma mark - initializers
+
+- (instancetype)init
+NS_DESIGNATED_INITIALIZER;
+
+#pragma mark - properties
+/// Telemetry enabled flag
+@property (nonatomic, readwrite) BOOL enabled;
+
+/// Capture OS log as Telemetry events flag
+@property (nonatomic, readwrite) BOOL captureLog;
+
+/// Capture connectivity flag
+@property (nonatomic, readwrite) BOOL captureConnectivity;
+
+/// Telemtry events buffer limit
+@property (nonatomic, readwrite) NSUInteger maximumTelemetryData;
+
+/// Telemetry scrubbing options   
+@property (nonatomic, strong, readwrite) RollbarMutableScrubbingOptions *viewInputsScrubber;
+
+/// Time interval for auto-collecting memtory stats
+/// @note 0.0 means no collection!
+@property (nonatomic, readwrite) NSTimeInterval memoryStatsAutocollectionInterval; //[sec]
 
 @end
 

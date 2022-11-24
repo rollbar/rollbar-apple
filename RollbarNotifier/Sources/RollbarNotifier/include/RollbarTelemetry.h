@@ -52,6 +52,8 @@
 /// @param telemetryOptions desired Telemetry options
 - (nonnull instancetype)configureWithOptions:(nonnull RollbarTelemetryOptions *)telemetryOptions;
 
+@property (readonly, nonnull) RollbarTelemetryOptions *telemetryOptions;
+
 /// Telemetry collection enable/disable switch
 @property (readwrite, atomic) BOOL enabled;
 

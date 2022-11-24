@@ -1,71 +1,152 @@
 #ifndef RollbarConfig_h
 #define RollbarConfig_h
 
+#import "RollbarDestination.h"
+#import "RollbarDeveloperOptions.h"
+#import "RollbarProxy.h"
+#import "RollbarScrubbingOptions.h"
+#import "RollbarServerConfig.h"
+#import "RollbarPerson.h"
+#import "RollbarModule.h"
+#import "RollbarTelemetryOptions.h"
+#import "RollbarLoggingOptions.h"
+#import "RollbarData.h"
 #import "RollbarCaptureIpType.h"
 #import "RollbarLevel.h"
 
 @import RollbarCommon;
 
-@class RollbarDestination;
-@class RollbarDeveloperOptions;
-@class RollbarProxy;
-@class RollbarScrubbingOptions;
-@class RollbarServerConfig;
-@class RollbarPerson;
-@class RollbarModule;
-@class RollbarTelemetryOptions;
-@class RollbarLoggingOptions;
-@class RollbarData;
-
 NS_ASSUME_NONNULL_BEGIN
 
-/// Rollbar configuration structured model
+@class RollbarMutableConfig;
+
+typedef BOOL (^RollbarCheckIgnoreData)(RollbarData *rollbarData);
+typedef RollbarData *_Nonnull(^RollbarModifyData)(RollbarData *rollbarData);
+
+
+/// Immutable Rollbar configuration structured model
 @interface RollbarConfig : RollbarDTO {
+    
+    RollbarCheckIgnoreData _checkIgnoreRollbarData;
+    RollbarModifyData _modifyRollbarData;
+
+    //TODO: to be removed:
     BOOL _isRootConfiguration;
 }
 
+#pragma mark - Factory Methods
+
++ (nonnull RollbarConfig *)configWithAccessToken:(nonnull NSString *)token;
+
++ (nonnull RollbarConfig *)configWithAccessToken:(nonnull NSString *)token
+                                     environment:(nonnull NSString *)env;
+
++ (nonnull RollbarMutableConfig *)mutableConfigWithAccessToken:(nonnull NSString *)token;
+
++ (nonnull RollbarMutableConfig *)mutableConfigWithAccessToken:(nonnull NSString *)token
+                                                   environment:(nonnull NSString *)env;
+
 #pragma mark - properties
 /// Destination related settings
-@property (nonnull, nonatomic, strong) RollbarDestination *destination;
+@property (nonnull, nonatomic, readonly, strong) RollbarDestination *destination;
 
 /// Developer related settings
-@property (nonnull, nonatomic, strong) RollbarDeveloperOptions *developerOptions;
+@property (nonnull, nonatomic,  readonly, strong) RollbarDeveloperOptions *developerOptions;
 
 /// Logging related settings
-@property (nonnull, nonatomic, strong) RollbarLoggingOptions *loggingOptions;
+@property (nonnull, nonatomic, readonly, strong) RollbarLoggingOptions *loggingOptions;
 
 /// HTTP proxy related settings
-@property (nonnull, nonatomic, strong) RollbarProxy *httpProxy;
+@property (nonnull, nonatomic, readonly, strong) RollbarProxy *httpProxy;
 
 /// HTTPS proxy related settings
-@property (nonnull, nonatomic, strong) RollbarProxy *httpsProxy;
+@property (nonnull, nonatomic, readonly, strong) RollbarProxy *httpsProxy;
 
 /// Data scrubbing related settings
-@property (nonnull, nonatomic, strong) RollbarScrubbingOptions *dataScrubber;
+@property (nonnull, nonatomic, readonly, strong) RollbarScrubbingOptions *dataScrubber;
 
 /// Server related settings
-@property (nonnull, nonatomic, strong) RollbarServerConfig *server;
+@property (nonnull, nonatomic, readonly, strong) RollbarServerConfig *server;
 
 /// Person/user related settings
-@property (nonnull, nonatomic, strong) RollbarPerson *person;
+@property (nonnull, nonatomic, readonly, strong) RollbarPerson *person;
 
 /// Notifier related settings
-@property (nonnull, nonatomic, strong) RollbarModule *notifier;
+@property (nonnull, nonatomic, readonly, strong) RollbarModule *notifier;
 
 /// Telemetry related settings
-@property (nonnull, nonatomic, strong) RollbarTelemetryOptions *telemetry;
+@property (nonnull, nonatomic, readonly, strong) RollbarTelemetryOptions *telemetry;
 
 #pragma mark - Custom data
-@property (nonatomic, strong) NSDictionary<NSString *, id> *customData;
 
+@property (nonatomic, readonly, strong) NSDictionary<NSString *, id> *customData;
 
 #pragma mark - Payload Content Related
 
 /// Decides whether or not to send provided payload data. Returns true to ignore, false to send
-@property (nullable, nonatomic, copy) BOOL (^checkIgnoreRollbarData)(RollbarData *rollbarData);
-/// Modifies payload data before sending
-@property (nullable, nonatomic, copy) RollbarData *(^modifyRollbarData)(RollbarData *rollbarData);
+@property (nullable, atomic, readonly, copy) RollbarCheckIgnoreData checkIgnoreRollbarData;
 
+/// Modifies payload data before sending
+@property (nullable, atomic, readonly, copy) RollbarModifyData modifyRollbarData;
+
+#pragma mark - overrides
+
+- (nonnull RollbarMutableConfig *) mutableCopy;
+
+@end
+
+
+/// Mutable Rollbar configuration structured model
+@interface RollbarMutableConfig : RollbarConfig
+
+#pragma mark - initializers
+
+- (instancetype)init
+NS_DESIGNATED_INITIALIZER;
+
+#pragma mark - properties
+
+/// Destination related settings
+@property (nonnull, nonatomic, readwrite, strong) RollbarMutableDestination *destination;
+
+/// Developer related settings
+@property (nonnull, nonatomic,  readwrite, strong) RollbarMutableDeveloperOptions *developerOptions;
+
+/// Logging related settings
+@property (nonnull, nonatomic, readwrite, strong) RollbarMutableLoggingOptions *loggingOptions;
+
+/// HTTP proxy related settings
+@property (nonnull, nonatomic, readwrite, strong) RollbarMutableProxy *httpProxy;
+
+/// HTTPS proxy related settings
+@property (nonnull, nonatomic, readwrite, strong) RollbarMutableProxy *httpsProxy;
+
+/// Data scrubbing related settings
+@property (nonnull, nonatomic, readwrite, strong) RollbarMutableScrubbingOptions *dataScrubber;
+
+/// Server related settings
+@property (nonnull, nonatomic, readwrite, strong) RollbarMutableServerConfig *server;
+
+/// Person/user related settings
+@property (nonnull, nonatomic, readwrite, strong) RollbarMutablePerson *person;
+
+/// Notifier related settings
+@property (nonnull, nonatomic, readwrite, strong) RollbarMutableModule *notifier;
+
+/// Telemetry related settings
+@property (nonnull, nonatomic, readwrite, strong) RollbarMutableTelemetryOptions *telemetry;
+
+#pragma mark - Custom data
+
+@property (nonatomic, readwrite, strong) NSMutableDictionary<NSString *, id> *customData;
+
+#pragma mark - Payload Content Related
+
+/// Decides whether or not to send provided payload data. Returns true to ignore, false to send
+@property (nullable, atomic, readwrite, copy) RollbarCheckIgnoreData checkIgnoreRollbarData;
+
+/// Modifies payload data before sending
+@property (nullable, atomic, readwrite, copy) RollbarModifyData modifyRollbarData;
 
 #pragma mark - Convenience Methods
 
@@ -94,6 +175,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setNotifierName:(nullable NSString *)name
                 version:(nullable NSString *)version;
 
+#pragma mark - overrides
+
+- (nonnull RollbarConfig *) copy;
 
 @end
 

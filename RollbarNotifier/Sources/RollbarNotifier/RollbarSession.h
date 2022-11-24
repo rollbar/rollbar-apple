@@ -31,13 +31,14 @@ NS_ASSUME_NONNULL_BEGIN
 + (id)copyWithZone:(struct _NSZone *)zone NS_UNAVAILABLE;
 + (id)mutableCopyWithZone:(struct _NSZone *)zone NS_UNAVAILABLE;
 
+- (void)dealloc NS_UNAVAILABLE;
+- (id)copy NS_UNAVAILABLE;
+- (id)mutableCopy NS_UNAVAILABLE;
+
 - (instancetype)init NS_UNAVAILABLE;
 - (instancetype)initWithTarget:(id)target selector:(SEL)selector object:(nullable id)argument NS_UNAVAILABLE;
 - (instancetype)initWithBlock:(void (^)(void))block NS_UNAVAILABLE;
 
-- (void)dealloc NS_UNAVAILABLE;
-- (id)copy NS_UNAVAILABLE;
-- (id)mutableCopy NS_UNAVAILABLE;
 
 
 @end

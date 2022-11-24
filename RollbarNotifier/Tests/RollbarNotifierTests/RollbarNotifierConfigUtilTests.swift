@@ -61,7 +61,7 @@ final class RolllbarNotifierConfigUtilTests: XCTestCase {
     }
     
     func testWithConfigFile() {
-        var config : RollbarConfig = RollbarConfig();
+        var config : RollbarConfig = RollbarMutableConfig();
         XCTAssertNotNil(config);
         do {
             _ = try RollbarConfigUtil.save(config);
