@@ -6,7 +6,6 @@
 //
 
 #import "ExtensionDelegate.h"
-#import "RollbarDemoSettings.h"
 
 @import RollbarNotifier;
 
@@ -97,10 +96,11 @@
 - (void)initRollbar {
     
     // configure Rollbar:
-    RollbarConfig *config = [RollbarConfig new];
+    RollbarMutableConfig *config = [
+        // Rollbar post_client_item access token
+        RollbarMutableConfig mutableConfigWithAccessToken:@"YOUR-ROLLBAR-ACCESSTOKEN"
+                                              environment:@"staging"];
     
-    config.destination.accessToken = ROLLBAR_DEMO_PAYLOADS_ACCESS_TOKEN;
-    config.destination.environment = ROLLBAR_DEMO_ENVIRONMENT;
     config.developerOptions.suppressSdkInfoLogging = YES;
     config.telemetry.memoryStatsAutocollectionInterval = 0.5;
     config.telemetry.enabled = YES;

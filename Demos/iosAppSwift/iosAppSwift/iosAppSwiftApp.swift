@@ -22,7 +22,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     ) -> Bool {
         // Dynamically read these settings from your config settings on
         // application startup.
-        let accessToken = "2fa95b91f38448299b5097ff11cffb23"  // Rollbar post_client_item access token
+        let accessToken = "YOUR-ROLLBAR-ACCESSTOKEN"  // Rollbar post_client_item access token
         let environment = "staging"
         let codeVersion = "main"  // Ideally codeVersion is commit SHA https://docs.rollbar.com/docs/versions
 

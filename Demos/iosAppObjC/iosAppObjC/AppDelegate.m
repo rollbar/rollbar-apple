@@ -9,8 +9,11 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-    RollbarMutableConfig *config = [RollbarConfig mutableConfigWithAccessToken:@"dc0d9ce3d93c4ef5a4dbacf2434e508d"
-                                                                   environment:@"staging"];
+    RollbarMutableConfig *config = [
+        // Rollbar post_client_item access token
+        RollbarConfig mutableConfigWithAccessToken:@"YOUR-ROLLBAR-ACCESSTOKEN"
+        environment:@"staging"];
+
     config.loggingOptions.codeVersion = @"main";
     config.developerOptions.suppressSdkInfoLogging = NO;
     config.telemetry.memoryStatsAutocollectionInterval = 0.5;
