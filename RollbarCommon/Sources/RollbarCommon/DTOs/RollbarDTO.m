@@ -363,7 +363,7 @@
     }
     
     if (![RollbarDTO isTransferableObject:data]) {
-        
+        RollbarSdkLog(@"JSON-invalid internal data.");
         return self;
     }
     

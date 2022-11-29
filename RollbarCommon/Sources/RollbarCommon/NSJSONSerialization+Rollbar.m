@@ -1,6 +1,10 @@
 #import "NSJSONSerialization+Rollbar.h"
 #import "RollbarSdkLog.h"
 
+#import <objc/runtime.h>
+// https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html
+#define IS_NSOBJECT(_X_) (strchr("@#", @encode(typeof(_X_))[0]) != NULL)
+
 @implementation NSJSONSerialization (Rollbar)
 
 NS_ASSUME_NONNULL_BEGIN
@@ -42,7 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 + (nonnull NSMutableDictionary *)rollbar_safeDataFromJSONObject:(nullable id)obj {
-    
+
     NSMutableDictionary *safeData = [NSMutableDictionary new];
     if (nil == obj) {
         
@@ -50,10 +54,11 @@ NS_ASSUME_NONNULL_BEGIN
     }
     
     [obj enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-        
-        // Defensive failsafe to avoid exceptions when trying to create dictionary literal with nil `obj`
-        obj = obj ?: [NSNull null];
-        
+
+        if (obj == nil || !IS_NSOBJECT(obj)) {
+            obj = [NSNull null];
+        }
+
         if ([obj isKindOfClass:[NSDictionary class]]) {
             
             [safeData setObject:[[self class] rollbar_safeDataFromJSONObject:obj] forKey:key];
