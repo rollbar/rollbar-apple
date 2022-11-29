@@ -112,6 +112,9 @@
          location = "container:"
          name = "iOS">
          <FileRef
+            location = "group:Demos/iosAppSwift/iosAppSwift.xcodeproj">
+         </FileRef>
+         <FileRef
             location = "group:Demos/iosAppObjC/iosAppObjC.xcodeproj">
          </FileRef>
       </Group>
