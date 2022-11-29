@@ -2,28 +2,24 @@
 
 The change log has moved to this repo's [GitHub Releases Page](https://github.com/rollbar/rollbar-apple/releases).
 
-## Release Notes Tagging Conventions
-
-1. Every entry within the PackageReleaseNotes element is expected to be started with
-    at least one of the tags listed:
-
-    feat:     A new feature
-    fix:      A bug fix
-    docs:     Documentation only changes
-    style:    Changes that do not affect the meaning of the code
-    refactor: A code change that neither a bug fix nor a new feature
-    perf:     A code change that improves performance
-    test:     Adding or modifying unit test code
-    chore:    Changes to the build process or auxiliary tools and libraries such as documentation generation, etc.
-
-2. Every entry within the PackageReleaseNotes element is expected to be tagged with
-    EITHER
-    "resolve #GITHUB_ISSUE_NUMBER:" - meaning completely addresses the GitHub issue
-    OR
-    "ref #GITHUB_ISSUE_NUMBER:" - meaning relevant to the GitHub issue
-    depending on what is more appropriate in each case.
-
 ## Release Notes
+
+### 2.4.0
+- New SDK Demos for iOS Swift and Objective-C.
+- Fixed a rare crash during JSON serialization.
+- More robust and more flexible SDK reconfigurability.
+- Thread safety by design.
+- Fully independent configurability of each individual instance of a logger.
+- Flexible and standardized rate limiting control (both locally configured and server enforced).
+- Structured payload storage based on Sqlite instead of a flat text file.
+- Improved local payload logging based on developer options of a config object. Separately for all the incoming vs transmitted vs dropped payloads.
+- Improved internal diagnostics of the SDK with reach debug build assertions.
+- Ooptimized payload modification implementation.
+- Improved performance of the RollbarThread.
+- Improved internal SDK recovery from any unforeseen internal SDK exceptions/errors (including during processing of totally custom user-specified data within a payload).
+- General codebase code quality and maintainability improvements.
+- A higher level of code reuse.
+- And more...
 
 ### 2.3.4
 
@@ -31,8 +27,8 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 
 ### 2.3.3
 
-- fix: resolve #190 - Fix Cocoapods build warnings in RollbarNotifier 
-- fix: resolve #191 - Fix Cocoapods build warnings in RollbarCommon 
+- fix: resolve #190 - Fix Cocoapods build warnings in RollbarNotifier
+- fix: resolve #191 - Fix Cocoapods build warnings in RollbarCommon
 - fix: resolve #192 - Fix SonarCloud detected bugs
 
 ### 2.3.2
@@ -76,7 +72,7 @@ The change log has moved to this repo's [GitHub Releases Page](https://github.co
 
 ### 2.1.0
 
-- feat:  resolve #141 - Apply developer options of the persisted payload when sending the payload 
+- feat:  resolve #141 - Apply developer options of the persisted payload when sending the payload
 - feat:  resolve #133 - Implement RollbarCocoaLumberjack module
 - test:  resolve #134 - Implement unit tests for RollbarCocoaLumberjack
 - fix:   resolve #136 - RollbarPLCrashReporter.init() no longer available
