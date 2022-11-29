@@ -11,13 +11,13 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - properties
 
 /// Endpoint URI
-@property (nonatomic, copy) NSString *endpoint;
+@property (nonatomic, readonly, copy) NSString *endpoint;
 
 /// Project access token
-@property (nonatomic, copy) NSString *accessToken;
+@property (nonatomic, readonly, copy) NSString *accessToken;
 
 /// Environment name
-@property (nonatomic, copy) NSString *environment;
+@property (nonatomic, readonly, copy) NSString *environment;
 
 #pragma mark - initializers
 
@@ -38,6 +38,46 @@ NS_ASSUME_NONNULL_BEGIN
 /// Initializer
 /// @param accessToken Rollbar project access token
 - (instancetype)initWithAccessToken:(NSString *)accessToken;
+
+@end
+
+@interface RollbarMutableDestination : RollbarDestination
+
+#pragma mark - initializers
+
+- (instancetype)init
+NS_DESIGNATED_INITIALIZER;
+
+#pragma mark - properties
+
+/// Endpoint URI
+@property (nonatomic, readwrite, copy) NSString *endpoint;
+
+/// Project access token
+@property (nonatomic, readwrite, copy) NSString *accessToken;
+
+/// Environment name
+@property (nonatomic, readwrite, copy) NSString *environment;
+
+//#pragma mark - initializers
+//
+///// Initializer
+///// @param endpoint endpoint URI
+///// @param accessToken Rollbar project access token
+///// @param environment environment name
+//- (instancetype)initWithEndpoint:(NSString *)endpoint
+//                     accessToken:(NSString *)accessToken
+//                     environment:(NSString *)environment;
+//
+///// Initializer
+///// @param accessToken Rollbar project access token
+///// @param environment environment name
+//- (instancetype)initWithAccessToken:(NSString *)accessToken
+//                        environment:(NSString *)environment;
+//
+///// Initializer
+///// @param accessToken Rollbar project access token
+//- (instancetype)initWithAccessToken:(NSString *)accessToken;
 
 @end
 

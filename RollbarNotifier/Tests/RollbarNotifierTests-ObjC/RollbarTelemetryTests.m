@@ -16,24 +16,35 @@
 
     [super setUp];
 
-    [RollbarLogger clearSdkDataStore];
+    [RollbarTestUtil deletePayloadsStoreFile];
+    [RollbarTestUtil deleteLogFiles];
+    [RollbarTestUtil clearTelemetryFile];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
 
-    if (!Rollbar.currentConfiguration) {
-        [Rollbar initWithAccessToken: [RollbarTestHelper getRollbarPayloadsAccessToken]];
-        Rollbar.currentConfiguration.destination.environment = [RollbarTestHelper getRollbarEnvironment];
-    }
+    RollbarMutableConfig *config =
+    [RollbarMutableConfig mutableConfigWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
+                                           environment:[RollbarTestHelper getRollbarEnvironment]];
+    config.developerOptions.transmit = NO;
+    config.developerOptions.logIncomingPayloads = YES;
+    config.developerOptions.logTransmittedPayloads = YES;
+    config.developerOptions.logDroppedPayloads = YES;
+    config.loggingOptions.maximumReportsPerMinute = 180;
+    [Rollbar updateWithConfiguration:config];
 
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+    [RollbarTestUtil deleteLogFiles];
 }
 
 - (void)tearDown {
-    [Rollbar updateConfiguration:[RollbarConfig new]];
+    [Rollbar updateWithConfiguration:[RollbarConfig new]];
     [super tearDown];
 }
 
 - (void)testTelemetryCapture {
     
-    Rollbar.currentConfiguration.telemetry.enabled = YES;
-    [Rollbar reapplyConfiguration];
+    RollbarMutableConfig *config = [[Rollbar configuration] mutableCopy];
+    config.telemetry.enabled = YES;
+    [Rollbar updateWithConfiguration:config];
     
     [Rollbar recordNavigationEventForLevel:RollbarLevel_Info from:@"from" to:@"to"];
     [Rollbar recordConnectivityEventForLevel:RollbarLevel_Info status:@"status"];
@@ -44,9 +55,10 @@
     [Rollbar debugMessage:@"Test"];
 
     [RollbarLogger flushRollbarThread];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
 
-    NSArray *logItems = [RollbarLogger readLogItemsFromStore];
-    NSDictionary *item = logItems[0];
+    NSArray *logItems = [RollbarTestUtil readTransmittedPayloadsAsDictionaries];
+    NSDictionary *item = logItems[logItems.count - 1];
     NSArray *telemetryData = [item valueForKeyPath:@"body.telemetry"];
     XCTAssertTrue(telemetryData.count > 0);
 
@@ -78,7 +90,9 @@
 
 - (void)testErrorReportingWithTelemetry {
     
-    Rollbar.currentConfiguration.telemetry.enabled = YES;
+    RollbarMutableConfig *config = [[Rollbar configuration] mutableCopy];
+    config.telemetry.enabled = YES;
+    [Rollbar updateWithConfiguration:config];
 
     [Rollbar recordNavigationEventForLevel:RollbarLevel_Info from:@"SomeNavigationSource" to:@"SomeNavigationDestination"];
     [Rollbar recordConnectivityEventForLevel:RollbarLevel_Info status:@"SomeConnectivityStatus"];
@@ -94,9 +108,10 @@
     [Rollbar debugMessage:@"Demonstrate Telemetry capture once more..."];
     [Rollbar debugMessage:@"DO Demonstrate Telemetry capture once more..."];
 
-    //[NSThread sleepForTimeInterval:8.0f];
-    
-    NSArray *logItems = [RollbarLogger readLogItemsFromStore];
+    [RollbarLogger flushRollbarThread];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+
+    NSArray *logItems = [RollbarTestUtil readTransmittedPayloadsAsDictionaries];
     for (NSDictionary *item in logItems) {
         NSArray *telemetryData = [item valueForKeyPath:@"body.telemetry"];
 
@@ -130,11 +145,12 @@
 
 - (void)testTelemetryViewEventScrubbing {
     
-    Rollbar.currentConfiguration.telemetry.enabled = YES;
-    Rollbar.currentConfiguration.telemetry.viewInputsScrubber.enabled = YES;
-    [Rollbar.currentConfiguration.telemetry.viewInputsScrubber addScrubField:@"password"];
-    [Rollbar.currentConfiguration.telemetry.viewInputsScrubber addScrubField:@"pin"];
-    [Rollbar reapplyConfiguration];
+    RollbarMutableConfig *config = [[Rollbar configuration] mutableCopy];
+    config.telemetry.enabled = YES;
+    config.telemetry.viewInputsScrubber.enabled = YES;
+    [config.telemetry.viewInputsScrubber addScrubField:@"password"];
+    [config.telemetry.viewInputsScrubber addScrubField:@"pin"];
+    [Rollbar updateWithConfiguration:config];
 
     [Rollbar recordViewEventForLevel:RollbarLevel_Debug
                              element:@"password"
@@ -154,9 +170,10 @@
 
 - (void)testRollbarLog {
     
-    Rollbar.currentConfiguration.telemetry.enabled = YES;
-    Rollbar.currentConfiguration.telemetry.captureLog = YES;
-    [Rollbar reapplyConfiguration];
+    RollbarMutableConfig *config = [[Rollbar configuration] mutableCopy];
+    config.telemetry.enabled = YES;
+    config.telemetry.captureLog = YES;
+    [Rollbar updateWithConfiguration:config];
 
     [RollbarTelemetry.sharedInstance clearAllData];
     [NSThread sleepForTimeInterval:2.0f];

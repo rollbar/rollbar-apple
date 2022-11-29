@@ -31,53 +31,41 @@ final class NSJSONSerializationRollbarTests: XCTestCase {
     }
     
     func testNSJSONSerializationRollbar_safeDataFromJSONObject() {
-                
         let goldenStandard =
             "{\"access_token\":\"321\",\"data\":{\"attribute\":\"An attribute\",\"body\":\"Message\",\"date\":\"1970-01-01 00:00:00 +0000\",\"error\":{},\"httpUrlResponse\":{\"header1\":\"Header 1\",\"header2\":\"Header 2\"},\"innerData\":{\"attribute\":\"An attribute\",\"body\":\"Message\",\"date\":\"1970-01-01 00:00:00 +0000\",\"error\":{},\"httpUrlResponse\":{\"header1\":\"Header 1\",\"header2\":\"Header 2\"},\"optionalField\":null,\"scrubFields\":\"secret,CCV,password\",\"url\":\"http:\\/\\/www.apple.com\"},\"optionalField\":null,\"scrubFields\":\"secret,CCV,password\",\"url\":\"http:\\/\\/www.apple.com\"}}";
 
-        let optionalFieldValue: String? = nil
         var data = [
             "body": "Message",
-            "optionalField": optionalFieldValue as Any,
+            "optionalField": (nil as String?) as Any,
             "attribute": "An attribute",
-            "date": NSDate.init(timeIntervalSince1970: TimeInterval.init()),
-            "url": NSURL.init(string: "http://www.apple.com")!,
-            "error": NSError.init(domain: "Error Domain", code: 101, userInfo: nil),
-            "httpUrlResponse": HTTPURLResponse.init(
-                url: URL.init(string: "https://www.rollbar.com")!,
+            "date": Date(timeIntervalSince1970: TimeInterval.init()),
+            "url": URL(string: "http://www.apple.com")!,
+            "error": NSError(domain: "Error Domain", code: 101, userInfo: nil),
+            "httpUrlResponse": HTTPURLResponse(
+                url: URL(string: "https://www.rollbar.com")!,
                 statusCode: 500,
                 httpVersion: "1.2",
                 headerFields: ["header1": "Header 1", "header2": "Header 2"]) as Any,
-            "scrubFields": NSSet.init(array: ["password", "secret", "CCV"]),
-            ] as [String : Any];
-        
-        if #available(OSX 10.13, iOS 11.0, *) {
-            data["innerData"] = JSONSerialization.rollbar_data(
-                withJSONObject: data,
-                options: .sortedKeys,
-                error: nil,
-                safe: true)
-        } else {
-            // Fallback on earlier versions
-            XCTFail("Test it on more recent OS version!");
-        };
+            "scrubFields": NSSet(array: ["password", "secret", "CCV"]),
+        ] as [String: Any];
+
+        data["innerData"] = JSONSerialization.rollbar_data(
+            withJSONObject: data,
+            options: .sortedKeys,
+            error: nil,
+            safe: true)
 
         let payload = [
             "access_token": "321",
             "data": data,
-            ] as [String : Any];
-        
+        ] as [String : Any];
+
         let safeJson = JSONSerialization.rollbar_safeData(fromJSONObject: payload);
 
         do {
-            if #available(OSX 10.13, iOS 11.0, *) {
-                let jsonData = try JSONSerialization.data(withJSONObject: safeJson, options: .sortedKeys)
-                let result = String.init(data: jsonData, encoding: .utf8);
-                XCTAssertEqual(goldenStandard, result);
-            } else {
-                // Fallback on earlier versions
-                XCTFail("Test it on more recent OS version!");
-            };
+            let jsonData = try JSONSerialization.data(withJSONObject: safeJson, options: .sortedKeys)
+            let result = String(data: jsonData, encoding: .utf8);
+            XCTAssertEqual(goldenStandard, result);
         }
         catch {
             XCTFail("Unexpected failure!");

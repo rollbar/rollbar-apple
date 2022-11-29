@@ -11,24 +11,13 @@ final class RollbarNotifierTruncationTests: XCTestCase {
         
         super.setUp();
         
-        RollbarTestUtil.clearLogFile();
-        RollbarTestUtil.clearTelemetryFile();
-        
-        //if Rollbar.currentConfiguration() != nil {
-        Rollbar.initWithAccessToken(RollbarTestHelper.getRollbarPayloadsAccessToken());
-        Rollbar.currentConfiguration()?.destination.environment = RollbarTestHelper.getRollbarEnvironment();
-        //}
     }
     
     override func tearDown() {
-        Rollbar.updateConfiguration(RollbarConfig());
+
         super.tearDown();
     }
     
-    func testDefaultRollbarConfiguration() {
-        NSLog("%@", Rollbar.currentConfiguration()!);
-    }
-
     func testMeasureTotalEncodingBytes() {
         
         let testString1 = "ABCD";
@@ -267,7 +256,6 @@ final class RollbarNotifierTruncationTests: XCTestCase {
 
     
     static var allTests = [
-        ("testDefaultRollbarConfiguration", testDefaultRollbarConfiguration),
         ("testMeasureTotalEncodingBytes", testMeasureTotalEncodingBytes),
         ("testTruncateStringToTotalBytes", testTruncateStringToTotalBytes),
         ("testTruncateStringToTotalBytesUnicode", testTruncateStringToTotalBytesUnicode),

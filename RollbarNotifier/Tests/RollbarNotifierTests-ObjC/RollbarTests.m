@@ -16,28 +16,41 @@
     
     [super setUp];
 
-    [RollbarLogger clearSdkDataStore];
+    [RollbarTestUtil deletePayloadsStoreFile];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
 
-    if (!Rollbar.currentConfiguration) {
-
-        RollbarConfig *config = [[RollbarConfig alloc] init];
-        config.destination.accessToken = [RollbarTestHelper getRollbarPayloadsAccessToken];
-        config.destination.environment = [RollbarTestHelper getRollbarEnvironment];
-        config.developerOptions.transmit = YES;
-        config.developerOptions.logPayload = YES;
-        config.loggingOptions.maximumReportsPerMinute = 5000;
-        // for the stress test specifically:
-        config.telemetry.enabled = YES;
-        config.loggingOptions.captureIp = RollbarCaptureIpType_Full;
-        NSLog(@"%@", config)
-
-        [Rollbar initWithConfiguration:config];
-    }
+    RollbarMutableConfig *config = [[RollbarMutableConfig alloc] init];
+    config.destination.accessToken = [RollbarTestHelper getRollbarPayloadsAccessToken];
+    config.destination.environment = [RollbarTestHelper getRollbarEnvironment];
+    config.developerOptions.transmit = YES;
+    config.developerOptions.logIncomingPayloads = YES;
+    config.developerOptions.logTransmittedPayloads = YES;
+    config.developerOptions.logDroppedPayloads = YES;
+    config.loggingOptions.maximumReportsPerMinute = 5000;
+    config.telemetry.memoryStatsAutocollectionInterval = 0;
+    // for the stress test specifically:
+    config.telemetry.enabled = YES;
+    config.loggingOptions.captureIp = RollbarCaptureIpType_Full;
+    NSLog(@"%@", config)
+    
+    [Rollbar initWithConfiguration:config];
+    
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+    [RollbarLogger flushRollbarThread];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:2];
+    [RollbarTestUtil deleteLogFiles];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+    
+    NSArray *items = [RollbarTestUtil readIncomingPayloadsAsDictionaries];
+    XCTAssertEqual(items.count, 0);
+    items = [RollbarTestUtil readTransmittedPayloadsAsDictionaries];
+    XCTAssertEqual(items.count, 0);
+    items = [RollbarTestUtil readDroppedPayloadsAsDictionaries];
+    XCTAssertEqual(items.count, 0);
 }
 
 - (void)tearDown {
     
-    [Rollbar updateConfiguration:[RollbarConfig new]];
     [super tearDown];
 }
 
@@ -45,8 +58,9 @@
     
     for( int i = 0; i < 20; i++) {
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY,0), ^(){
-            RollbarLogger *logger = [[RollbarLogger alloc] initWithAccessToken:Rollbar.currentConfiguration.destination.accessToken];
-            logger.configuration.destination.environment = [RollbarTestHelper getRollbarEnvironment];
+            RollbarMutableConfig *config = [Rollbar.configuration mutableCopy];
+            config.destination.environment = [RollbarTestHelper getRollbarEnvironment];
+            RollbarLogger *logger = [[RollbarLogger alloc] initWithConfiguration:config];
             for (int j = 0; j < 20; j++) {
                 [logger log:RollbarLevel_Error
                     message:@"error"
@@ -65,38 +79,47 @@
 
 - (void)testRollbarNotifiersIndependentConfiguration {
 
-    Rollbar.currentConfiguration.developerOptions.transmit = NO;
-    Rollbar.currentConfiguration.developerOptions.logPayload = YES;
+    RollbarMutableConfig *config = [[RollbarMutableConfig alloc] init];
+
+    config.developerOptions.transmit = NO;
+    config.developerOptions.logTransmittedPayloads = YES;
 
     // configure the root notifier:
-    Rollbar.currentConfiguration.destination.accessToken = @"AT_0";
-    Rollbar.currentConfiguration.destination.environment = @"ENV_0";
+    config.destination.accessToken = @"AT_0";
+    config.destination.environment = @"ENV_0";
     
-    XCTAssertEqual(Rollbar.currentLogger.configuration.destination.accessToken,
-                   Rollbar.currentConfiguration.destination.accessToken);
-    XCTAssertEqual(Rollbar.currentLogger.configuration.destination.environment,
-                   Rollbar.currentConfiguration.destination.environment);
+    [Rollbar updateWithConfiguration:config];
     
-    XCTAssertEqual(Rollbar.currentLogger.configuration.destination.accessToken,
-                   Rollbar.currentConfiguration.destination.accessToken);
-    XCTAssertEqual(Rollbar.currentLogger.configuration.destination.environment,
-                   Rollbar.currentConfiguration.destination.environment);
+    XCTAssertTrue([[Rollbar configuration].destination.accessToken
+                   isEqualToString:config.destination.accessToken]);
+    XCTAssertTrue([[Rollbar configuration].destination.environment
+                   isEqualToString:config.destination.environment]);
     
     // create and configure another notifier:
-    RollbarLogger *notifier = [[RollbarLogger alloc] initWithAccessToken:@"AT_1"];
-    notifier.configuration.destination.environment = @"ENV_1";
-    XCTAssertTrue([notifier.configuration.destination.accessToken compare:@"AT_1"] == NSOrderedSame);
-    XCTAssertTrue([notifier.configuration.destination.environment compare:@"ENV_1"] == NSOrderedSame);
+    config = [RollbarMutableConfig new];
+    config.destination.accessToken = @"AT_1";
+    config.destination.environment = @"ENV_1";
+    RollbarLogger *notifier = [[RollbarLogger alloc] initWithConfiguration:config];
+    XCTAssertTrue([notifier.configuration.destination.accessToken
+                   isEqualToString:@"AT_1"]);
+    XCTAssertTrue([notifier.configuration.destination.environment
+                   isEqualToString:@"ENV_1"]);
 
     // reconfigure the root notifier:
-    Rollbar.currentConfiguration.destination.accessToken = @"AT_N";
-    Rollbar.currentConfiguration.destination.environment = @"ENV_N";
-    XCTAssertTrue([Rollbar.currentLogger.configuration.destination.accessToken compare:@"AT_N"] == NSOrderedSame);
-    XCTAssertTrue([Rollbar.currentLogger.configuration.destination.environment compare:@"ENV_N"] == NSOrderedSame);
+    config = [[Rollbar configuration] mutableCopy];
+    config.destination.accessToken = @"AT_N";
+    config.destination.environment = @"ENV_N";
+    [Rollbar updateWithConfiguration:config];
+    XCTAssertTrue([[RollbarInfrastructure sharedInstance].logger.configuration.destination.accessToken
+                   isEqualToString:@"AT_N"]);
+    XCTAssertTrue([[RollbarInfrastructure sharedInstance].logger.configuration.destination.environment
+                   isEqualToString:@"ENV_N"]);
 
     // make sure the other notifier is still has its original configuration:
-    XCTAssertTrue([notifier.configuration.destination.accessToken compare:@"AT_1"] == NSOrderedSame);
-    XCTAssertTrue([notifier.configuration.destination.environment compare:@"ENV_1"] == NSOrderedSame);
+    XCTAssertTrue([notifier.configuration.destination.accessToken
+                   isEqualToString:@"AT_1"]);
+    XCTAssertTrue([notifier.configuration.destination.environment
+                   isEqualToString:@"ENV_1"]);
 
     //TODO: to make this test even more valuable we need to make sure the other notifier's payloads
     //      are actually sent to its intended destination. But that is something we will be able to do
@@ -105,20 +128,25 @@
 
 - (void)testRollbarTransmit {
 
-    Rollbar.currentConfiguration.destination.accessToken = @"09da180aba21479e9ed3d91e0b8d58d6";
-    Rollbar.currentConfiguration.destination.environment = [RollbarTestHelper getRollbarEnvironment];
-    Rollbar.currentConfiguration.developerOptions.transmit = YES;
+    RollbarMutableConfig *config = [[Rollbar configuration] mutableCopy];
+    
+    config.destination.accessToken = @"09da180aba21479e9ed3d91e0b8d58d6";
+    config.destination.environment = [RollbarTestHelper getRollbarEnvironment];
+    config.developerOptions.transmit = YES;
 
-    Rollbar.currentConfiguration.developerOptions.transmit = YES;
+    config.developerOptions.transmit = YES;
+    [Rollbar updateWithConfiguration:config];
     [Rollbar criticalMessage:@"Transmission test YES"];
     [NSThread sleepForTimeInterval:2.0f];
 
-    Rollbar.currentConfiguration.developerOptions.transmit = NO;
+    config.developerOptions.transmit = NO;
+    [Rollbar updateWithConfiguration:config];
     [Rollbar criticalMessage:@"Transmission test NO"];
     [NSThread sleepForTimeInterval:2.0f];
 
-    Rollbar.currentConfiguration.developerOptions.transmit = YES;
-    //Rollbar.currentConfiguration.enabled = NO;
+    config.developerOptions.transmit = YES;
+    //config.enabled = NO;
+    [Rollbar updateWithConfiguration:config];
     [Rollbar criticalMessage:@"Transmission test YES2"];
     [NSThread sleepForTimeInterval:2.0f];
     
@@ -130,10 +158,19 @@
         
         count--;
     }
+    
+    //TODO: this test will need asserts added based on content of the local log files...
 }
 
 - (void)testNotification {
     
+//    [RollbarLogger flushRollbarThread];
+//    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+//    [RollbarTestUtil deleteLogFiles];
+//    NSArray *items = [RollbarTestUtil readTransmittedPayloadsAsDictionaries];
+//    XCTAssertEqual(items.count, 0);
+    //[RollbarTestUtil waitWithWaitTimeInSeconds:1];
+
     NSDictionary *notificationText = @{
                                        @"error": @[@"testing-error-with-message"],
                                        @"debug": @[@"testing-debug"],
@@ -154,9 +191,11 @@
         }
     }
 
-    [NSThread sleepForTimeInterval:3.0f];
+    [RollbarLogger flushRollbarThread];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:2];
 
-    NSArray *items = [RollbarLogger readLogItemsFromStore];
+    NSArray *items = [RollbarTestUtil readTransmittedPayloadsAsDictionaries];
+    XCTAssertEqual(items.count, notificationText.count);
     for (id item in items) {
         NSString *level = [item valueForKeyPath:@"level"];
         NSString *message = [item valueForKeyPath:@"body.message.body"];

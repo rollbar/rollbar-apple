@@ -8,7 +8,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /// The foundation for defining Rollbar Data Transfer Objects (DTOs).
-@interface RollbarDTO : NSObject <RollbarJSONSupport> {
+@interface RollbarDTO : NSObject <RollbarJSONSupport, NSCopying, NSMutableCopying> {
     @private
     id _data;
         //...

@@ -2,10 +2,10 @@
 
 #import "RollbarConfigUtil.h"
 #import "RollbarConfig.h"
+#import "RollbarNotifierFiles.h"
 
 #pragma mark - constants
 
-static NSString * const CONFIGURATION_FILENAME = @"rollbar.config";
 static NSString *configurationDirectory = nil;
 static NSString *configurationFilePath = nil;
 
@@ -18,13 +18,13 @@ static NSString *configurationFilePath = nil;
     if (self == [RollbarConfigUtil class]) {
         
         configurationDirectory = [RollbarCachesDirectory directory];
-        configurationFilePath = [configurationDirectory stringByAppendingPathComponent:CONFIGURATION_FILENAME];
+        configurationFilePath = [configurationDirectory stringByAppendingPathComponent:[RollbarNotifierFiles config]];
     }
 }
 
 + (nonnull NSString *)getDefaultConfigFileName {
     
-    return CONFIGURATION_FILENAME;
+    return [RollbarNotifierFiles config];
 }
 
 + (nonnull NSString *)getDefaultConfigDirectory {

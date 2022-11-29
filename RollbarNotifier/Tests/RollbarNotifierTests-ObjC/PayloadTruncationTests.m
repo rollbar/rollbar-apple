@@ -15,18 +15,10 @@
 - (void)setUp {
     
     [super setUp];
-    
-    [RollbarLogger clearSdkDataStore];
-    
-    if (!Rollbar.currentConfiguration) {
-        [Rollbar initWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]];
-        Rollbar.currentConfiguration.destination.environment = [RollbarTestHelper getRollbarEnvironment];
-    }
 }
 
 - (void)tearDown {
     
-    [Rollbar updateConfiguration:[RollbarConfig new]];
     [super tearDown];
 }
 
@@ -181,6 +173,23 @@
 
 - (void)testPayloadTruncation {
 
+    RollbarMutableConfig *config =
+    [RollbarMutableConfig mutableConfigWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
+                                           environment:[RollbarTestHelper getRollbarEnvironment]];
+    config.developerOptions.logIncomingPayloads = YES;
+    config.developerOptions.logTransmittedPayloads = YES;
+    config.developerOptions.logDroppedPayloads = YES;
+    config.developerOptions.transmit = NO;
+
+    [Rollbar initWithConfiguration:config];
+
+    [RollbarTestUtil waitWithWaitTimeInSeconds:2];
+    [RollbarTestUtil deleteLogFiles];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+    
+    NSArray *items = [RollbarTestUtil readTransmittedPayloadsAsDictionaries];
+    XCTAssertEqual(items.count, 0);
+
     @try {
         NSArray *crew = [NSArray arrayWithObjects:
                          @"Dave",
@@ -193,9 +202,11 @@
         [Rollbar errorException:exception];
     }
     
-    [RollbarLogger flushRollbarThread];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:3];
 
-    NSArray *items = [RollbarLogger readLogItemsFromStore];
+    items = [RollbarTestUtil readTransmittedPayloadsAsDictionaries];
+    XCTAssertNotNil(items);
+    XCTAssertEqual(items.count, 1);
     
     for (id payload in items) {
         NSMutableArray *frames = [payload mutableArrayValueForKeyPath:@"body.trace.frames"];
@@ -216,6 +227,23 @@
 
 - (void)testErrorReportingWithTruncation {
     
+    RollbarMutableConfig *config =
+    [RollbarMutableConfig mutableConfigWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
+                                           environment:[RollbarTestHelper getRollbarEnvironment]];
+    config.developerOptions.logIncomingPayloads = YES;
+    config.developerOptions.logTransmittedPayloads = YES;
+    config.developerOptions.logDroppedPayloads = YES;
+    config.developerOptions.transmit = YES;
+    
+    [Rollbar initWithConfiguration:config];
+    
+    [RollbarTestUtil waitWithWaitTimeInSeconds:5];
+    [RollbarTestUtil deleteLogFiles];
+    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+    
+    NSArray *items = [RollbarTestUtil readTransmittedPayloadsAsDictionaries];
+    XCTAssertEqual(items.count, 0);
+
     NSMutableString *simulatedLongString =
         [[NSMutableString alloc] initWithCapacity:(512 + 1)*1024];
     while (simulatedLongString.length < (512 * 1024)) {
@@ -225,6 +253,14 @@
     [Rollbar criticalMessage:@"Message with long extra data"
                         data:@{@"extra_truncatable_data": simulatedLongString}
      ];
+
+    [RollbarTestUtil waitWithWaitTimeInSeconds:2];
+    items = [RollbarTestUtil readIncomingPayloadsAsDictionaries];
+    XCTAssertEqual(items.count, 1);
+    XCTAssertTrue([@"Message with long extra data" isEqualToString:[items[0] valueForKeyPath:@"body.message.body"]]);
+    [RollbarTestUtil waitWithWaitTimeInSeconds:3];
+    items = [RollbarTestUtil readTransmittedPayloadsAsDictionaries];
+    XCTAssertEqual(items.count, 1);
 
     @try {
         NSArray *crew = [NSArray arrayWithObjects:
@@ -240,13 +276,12 @@
                             data:@{@"extra_truncatable_data": simulatedLongString}
          ];
 
-        [NSThread sleepForTimeInterval:1.0f];
-
-        // What is this doing?
-//        [Rollbar.currentNotifier updateReportingRate:10];
-//        [Rollbar.currentNotifier updateReportingRate:60];
-//        [Rollbar.currentNotifier updateReportingRate:20];
-//        [Rollbar.currentNotifier updateReportingRate:60];
+        [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+        items = [RollbarTestUtil readIncomingPayloadsAsDictionaries];
+        XCTAssertEqual(items.count, 2);
+        [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+        items = [RollbarTestUtil readTransmittedPayloadsAsDictionaries];
+        XCTAssertEqual(items.count, 2);
     }
 }
 

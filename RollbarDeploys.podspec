@@ -7,7 +7,7 @@
 
 Pod::Spec.new do |s|
 
-    s.version      = "2.3.4"
+    s.version      = "2.4.0"
     s.name         = "RollbarDeploys"
     s.summary      = "Application or client side SDK for interacting with the Rollbar API Server."
     s.description  = <<-DESC
@@ -53,7 +53,7 @@ Pod::Spec.new do |s|
     # s.library   = "iconv"
     # s.libraries = "iconv", "xml2"
     # s.dependency "JSONKit", "~> 1.4"
-    
+
     s.requires_arc = true
     # s.xcconfig = {
     #   "USE_HEADERMAP" => "NO",

@@ -73,33 +73,14 @@ static NSString *const DFK_AUTOCOLLECTION_INTERVAL_MEM_STATS = @"memoryStatsAuto
     return result.boolValue;
 }
 
-- (void)setEnabled:(BOOL)value {
-    
-    [self setNumber:[NSNumber numberWithBool:value]
-             forKey:DFK_ENABLED_FLAG
-    ];
-}
-
 - (BOOL)captureLog {
     NSNumber *result = [self safelyGetNumberByKey:DFK_CAPTURE_LOG_FLAG];
     return result.boolValue;
 }
 
-- (void)setCaptureLog:(BOOL)value {
-    [self setNumber:[NSNumber numberWithBool:value]
-             forKey:DFK_CAPTURE_LOG_FLAG
-    ];
-}
-
 - (BOOL)captureConnectivity {
     NSNumber *result = [self safelyGetNumberByKey:DFK_CAPTURE_CONNECTIVITY_FLAG];
     return result.boolValue;
-}
-
-- (void)setCaptureConnectivity:(BOOL)value {
-    [self setNumber:[NSNumber numberWithBool:value]
-             forKey:DFK_CAPTURE_CONNECTIVITY_FLAG
-    ];
 }
 
 - (NSUInteger)maximumTelemetryData {
@@ -108,18 +89,10 @@ static NSString *const DFK_AUTOCOLLECTION_INTERVAL_MEM_STATS = @"memoryStatsAuto
     return result;
 }
 
-- (void)setMaximumTelemetryData:(NSUInteger)value {
-    [self setUInteger:value forKey:DFK_MAX_TELEMETRY_DATA];
-}
-
 - (RollbarScrubbingOptions *)viewInputsScrubber {
     id data = [self safelyGetDictionaryByKey:DFK_VIEW_INPUTS_SCRUBBER];
     id dto = [[RollbarScrubbingOptions alloc] initWithDictionary:data];
     return dto;
-}
-
-- (void)setViewInputsScrubber:(RollbarScrubbingOptions *)scrubber {
-    [self setDataTransferObject:scrubber forKey:DFK_VIEW_INPUTS_SCRUBBER];
 }
 
 - (NSTimeInterval)memoryStatsAutocollectionInterval {
@@ -128,8 +101,69 @@ static NSString *const DFK_AUTOCOLLECTION_INTERVAL_MEM_STATS = @"memoryStatsAuto
     return result;
 }
 
+@end
+
+
+@implementation RollbarMutableTelemetryOptions
+
+#pragma mark - initializers
+
+-(instancetype)init {
+
+    if (self = [super initWithEnabled:DEFAULT_ENABLED_FLAG
+                      captureLog:DEFAULT_CAPTURE_LOG_FLAG
+             captureConnectivity:DEFAULT_CAPTURE_CONNECTIVITY_FLAG
+              viewInputsScrubber:[RollbarMutableScrubbingOptions new]
+               ]) {
+        return self;
+    }
+    
+    return nil;
+}
+
+#pragma mark - property accessors
+
+@dynamic enabled;
+@dynamic captureLog;
+@dynamic captureConnectivity;
+@dynamic maximumTelemetryData;
+@dynamic memoryStatsAutocollectionInterval;
+
+- (void)setEnabled:(BOOL)value {
+    
+    [self setNumber:[NSNumber numberWithBool:value]
+             forKey:DFK_ENABLED_FLAG
+    ];
+}
+
+- (void)setCaptureLog:(BOOL)value {
+    [self setNumber:[NSNumber numberWithBool:value]
+             forKey:DFK_CAPTURE_LOG_FLAG
+    ];
+}
+
+- (void)setCaptureConnectivity:(BOOL)value {
+    [self setNumber:[NSNumber numberWithBool:value]
+             forKey:DFK_CAPTURE_CONNECTIVITY_FLAG
+    ];
+}
+
+- (void)setMaximumTelemetryData:(NSUInteger)value {
+    [self setUInteger:value forKey:DFK_MAX_TELEMETRY_DATA];
+}
+
 - (void)setMemoryStatsAutocollectionInterval:(NSTimeInterval)value {
     [self setTimeInterval:value forKey:DFK_AUTOCOLLECTION_INTERVAL_MEM_STATS];
+}
+
+- (RollbarMutableScrubbingOptions *)viewInputsScrubber {
+    id data = [self safelyGetDictionaryByKey:DFK_VIEW_INPUTS_SCRUBBER];
+    id dto = [[RollbarMutableScrubbingOptions alloc] initWithDictionary:data];
+    return dto;
+}
+
+- (void)setViewInputsScrubber:(RollbarScrubbingOptions *)scrubber {
+    [self setDataTransferObject:[scrubber mutableCopy] forKey:DFK_VIEW_INPUTS_SCRUBBER];
 }
 
 @end

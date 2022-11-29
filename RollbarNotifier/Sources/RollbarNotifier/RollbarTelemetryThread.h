@@ -17,6 +17,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param telemetryOptions desired Telemetry options
 - (instancetype)configureWithOptions:(nonnull RollbarTelemetryOptions *)telemetryOptions;
 
+@property (readonly, nonnull) RollbarTelemetryOptions *telemetryOptions;
+
 /// Signifies that the thread is active or not.
 @property(atomic) BOOL active;
 
