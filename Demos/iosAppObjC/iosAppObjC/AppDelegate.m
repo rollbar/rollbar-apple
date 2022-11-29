@@ -1,12 +1,4 @@
-//
-//  AppDelegate.m
-//  iosAppObjC
-//
-//  Created by Andrey Kornich on 2020-11-04.
-//
-
 #import "AppDelegate.h"
-#import "RollbarDemoSettings.h"
 
 @import RollbarNotifier;
 @import RollbarKSCrash;
@@ -14,98 +6,36 @@
 
 @implementation AppDelegate
 
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-    [self initRollbar];
-    
-    NSData *data = [[NSData alloc] init];
-    NSError *error;
-    NSJSONReadingOptions serializationOptions = (NSJSONReadingMutableContainers | NSJSONReadingMutableLeaves);
-    NSDictionary *payload = [NSJSONSerialization JSONObjectWithData:data
-                                                            options:serializationOptions
-                                                              error:&error];
-    if (!payload && error) {
-        [Rollbar log:RollbarLevel_Error
-               error:error
-                data:nil
-             context:nil
-         ];
-    }
+    RollbarMutableConfig *config = [RollbarConfig mutableConfigWithAccessToken:@"dc0d9ce3d93c4ef5a4dbacf2434e508d"
+                                                                   environment:@"staging"];
+    config.loggingOptions.codeVersion = @"main";
+    config.developerOptions.suppressSdkInfoLogging = NO;
+    config.telemetry.memoryStatsAutocollectionInterval = 0.5;
+    config.telemetry.enabled = YES;
 
-    @try {
-        [self callTroublemaker];
-    } @catch (NSException *exception) {
-        [Rollbar errorException:exception data:nil context:@"from @try-@catch"];
-    } @finally {
-        [Rollbar infoMessage:@"Post-trouble notification!"  data:nil context:@"from @try-@finally"];
-    }
-    
+    //id<RollbarCrashCollector> crashCollector = [[RollbarKSCrashCollector alloc] init];
+    id<RollbarCrashCollector> crashCollector = [[RollbarPLCrashCollector alloc] init];
 
-    // now, cause a crash:
-    //    [self callTroublemaker];
-    
-    //@throw NSInternalInconsistencyException;
-    
-    //    [self performSelector:@selector(die_die)];
-    //    [self performSelector:NSSelectorFromString(@"crashme:") withObject:nil afterDelay:10];
+    [Rollbar initWithConfiguration:config
+                    crashCollector:crashCollector];
+
+    [Rollbar infoMessage:@"Rollbar is up and running! Enjoy your remote error and log monitoring..."];
 
     return YES;
 }
 
-
 #pragma mark - UISceneSession lifecycle
-
 
 - (UISceneConfiguration *) application:(UIApplication *)application
 configurationForConnectingSceneSession:(UISceneSession *)connectingSceneSession
                                options:(UISceneConnectionOptions *)options {
     // Called when a new scene session is being created.
     // Use this method to select a configuration to create the new scene with.
-    return [[UISceneConfiguration alloc] initWithName:@"Default Configuration" sessionRole:connectingSceneSession.role];
+    return [[UISceneConfiguration alloc] initWithName:@"Default Configuration"
+                                          sessionRole:connectingSceneSession.role];
 }
-
-
-- (void)    application:(UIApplication *)application
-didDiscardSceneSessions:(NSSet<UISceneSession *> *)sceneSessions {
-    // Called when the user discards a scene session.
-    // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
-    // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
-}
-
-- (void)initRollbar {
-    
-    // configure Rollbar:
-    RollbarConfig *config = [RollbarConfig new];
-    
-    config.destination.accessToken = ROLLBAR_DEMO_PAYLOADS_ACCESS_TOKEN;
-    config.destination.environment = ROLLBAR_DEMO_ENVIRONMENT;
-    config.developerOptions.suppressSdkInfoLogging = YES;
-    config.telemetry.memoryStatsAutocollectionInterval = 0.5;
-    config.telemetry.enabled = YES;
-
-    // init Rollbar shared instance:
-    //id<RollbarCrashCollector> crashCollector = [[RollbarKSCrashCollector alloc] init];
-    id<RollbarCrashCollector> crashCollector = [[RollbarPLCrashCollector alloc] init];
-
-    [Rollbar initWithConfiguration:config crashCollector:crashCollector];
-    
-    [Rollbar infoMessage:@"Rollbar is up and running! Enjoy your remote error and log monitoring..."];
-}
-
-- (void)callTroublemaker {
-    NSArray *items = @[@"one", @"two", @"three"];
-    NSLog(@"Here is the trouble-item: %@", items[10]);
-}
-
-    //- (void)demonstrateDeployApiUsage {
-    //
-    //    RollbarDeploysDemoClient * rollbarDeploysIntro = [[RollbarDeploysDemoClient new] init];
-    //    [rollbarDeploysIntro demoDeploymentRegistration];
-    //    [rollbarDeploysIntro demoGetDeploymentDetailsById];
-    //    [rollbarDeploysIntro demoGetDeploymentsPage];
-    //}
-
 
 @end
