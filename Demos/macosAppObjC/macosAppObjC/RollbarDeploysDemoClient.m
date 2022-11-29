@@ -7,8 +7,11 @@
 //
 
 #import "RollbarDeploysDemoClient.h"
-#import "RollbarDemoSettings.h"
 @import RollbarDeploys;
+
+static NSString * const ROLLBAR_DEMO_PAYLOADS_ACCESS_TOKEN = @"09da180aba21479e9ed3d91e0b8d58d6";
+static NSString * const ROLLBAR_DEMO_DEPLOYS_WRITE_ACCESS_TOKEN = @"efdc4b85d66045f293a7f9e99c732f61";
+static NSString * const ROLLBAR_DEMO_DEPLOYS_READ_ACCESS_TOKEN = @"595cbf76b05b45f2b3ef661a2e0078d4";
 
 @interface RollbarDeploysObserver
     : NSObject<
@@ -58,7 +61,7 @@
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     
-    NSString * const environment = ROLLBAR_DEMO_ENVIRONMENT;
+    NSString * const environment = @"staging";
     NSString * const comment =
         [NSString stringWithFormat:@"a new deploy at %@", [dateFormatter stringFromDate:[NSDate date]]];
     NSString * const revision = @"a_revision";

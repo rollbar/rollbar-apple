@@ -19,7 +19,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		554E6728282B448E00908A64 /* RollbarDemoSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RollbarDemoSettings.h; path = ../../RollbarDemoSettings.h; sourceTree = "<group>"; };
 		55889E242818B83B002E0228 /* tvosAppObjC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tvosAppObjC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55889E272818B83B002E0228 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		55889E282818B83B002E0228 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -65,7 +64,6 @@
 		55889E262818B83B002E0228 /* tvosAppObjC */ = {
 			isa = PBXGroup;
 			children = (
-				554E6728282B448E00908A64 /* RollbarDemoSettings.h */,
 				55889E272818B83B002E0228 /* AppDelegate.h */,
 				55889E282818B83B002E0228 /* AppDelegate.m */,
 				55889E2A2818B83B002E0228 /* ViewController.h */,

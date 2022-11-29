@@ -7,14 +7,16 @@
 //
 
 #import "AppDelegate.h"
-
 #import "RollbarDeploysDemoClient.h"
-#import "RollbarDemoSettings.h"
 
 @import RollbarNotifier;
 @import RollbarAUL;
 @import RollbarKSCrash;
 @import RollbarPLCrashReporter;
+
+static NSString * const ROLLBAR_DEMO_PAYLOADS_ACCESS_TOKEN = @"09da180aba21479e9ed3d91e0b8d58d6";
+static NSString * const ROLLBAR_DEMO_DEPLOYS_WRITE_ACCESS_TOKEN = @"efdc4b85d66045f293a7f9e99c732f61";
+static NSString * const ROLLBAR_DEMO_DEPLOYS_READ_ACCESS_TOKEN = @"595cbf76b05b45f2b3ef661a2e0078d4";
 
 __attribute__((noinline)) static void crashIt (void) {
     /* Trigger a crash */
@@ -22,6 +24,7 @@ __attribute__((noinline)) static void crashIt (void) {
 }
 
 @interface AppDelegate ()
+@property (nonatomic, readonly) RollbarLogger *logger;
 
 @end
 
@@ -77,16 +80,15 @@ __attribute__((noinline)) static void crashIt (void) {
 - (void)initRollbar {
 
     // configure Rollbar:
-    RollbarConfig *config = [RollbarConfig new];
-    config.destination.accessToken = ROLLBAR_DEMO_PAYLOADS_ACCESS_TOKEN;
-    config.destination.environment = ROLLBAR_DEMO_ENVIRONMENT;
+    RollbarMutableConfig *config = [RollbarConfig mutableConfigWithAccessToken:ROLLBAR_DEMO_PAYLOADS_ACCESS_TOKEN
+                                                                   environment:@"staging"];
     //config.developerOptions.suppressSdkInfoLogging = YES;
-    config.customData = @{ @"someKey": @"someValue", };
+    config.customData = [NSMutableDictionary dictionaryWithDictionary: @{ @"someKey": @"someValue", }];
     config.telemetry.enabled = YES;
     config.telemetry.memoryStatsAutocollectionInterval = 0.5;
     config.telemetry.maximumTelemetryData = 30;
 
-    [RollbarAulStoreMonitor.sharedInstance configureRollbarLogger:Rollbar.currentLogger];
+    //[RollbarAulStoreMonitor.sharedInstance configureRollbarLogger:Rollbar.currentLogger];
     [RollbarAulStoreMonitor.sharedInstance start];
 
     // optional crash reporter:

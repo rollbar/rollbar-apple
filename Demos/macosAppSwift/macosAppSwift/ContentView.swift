@@ -59,14 +59,7 @@ func handleSwiftError() {
     
     func handleObjCException() {
         
-        do {
-            
-            self.generateObjCException();
-        }
-        catch {
-            
-            print("Unexpected error: \(error).")
-        }
+        self.generateObjCException();
     }
         
     func generateObjCException() {
@@ -90,13 +83,9 @@ func handleSwiftError() {
     
     func createGuard() -> RollbarExceptionGuard {
         
-        let config = RollbarConfig();
-        
-        config.destination.accessToken =
-        RollbarDemoSettings.payloadsPostAccessToken;
-        
-        config.destination.environment =
-        RollbarDemoSettings.environment;
+        let config = RollbarConfig.mutableConfig(
+            withAccessToken: RollbarDemoSettings.payloadsPostAccessToken,
+            environment: RollbarDemoSettings.environment)
         
         // AUL capture setup:
 //        config.developerOptions.transmit = true;
