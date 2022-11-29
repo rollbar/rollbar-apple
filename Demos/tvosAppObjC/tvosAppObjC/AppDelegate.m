@@ -6,7 +6,6 @@
 //
 
 #import "AppDelegate.h"
-#import "RollbarDemoSettings.h"
 
 @import RollbarNotifier;
 @import RollbarKSCrash;
@@ -82,10 +81,9 @@
 - (void)initRollbar {
     
     // configure Rollbar:
-    RollbarConfig *config = [RollbarConfig new];
+    RollbarMutableConfig *config = [RollbarConfig mutableConfigWithAccessToken:@"09da180aba21479e9ed3d91e0b8d58d6"
+                                                                   environment:@"staging"];
     
-    config.destination.accessToken = ROLLBAR_DEMO_PAYLOADS_ACCESS_TOKEN;
-    config.destination.environment = ROLLBAR_DEMO_ENVIRONMENT;
     config.developerOptions.suppressSdkInfoLogging = YES;
     config.telemetry.memoryStatsAutocollectionInterval = 0.5;
     config.telemetry.enabled = YES;
