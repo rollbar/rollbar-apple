@@ -1,15 +1,32 @@
-![Rollbar Logo](https://github.com/rollbar/rollbar-apple/blob/master/rollbar-logo.png)
+<p align="center">
+  <img alt="rollbar-logo" src="https://user-images.githubusercontent.com/3300063/207964480-54eda665-d6fe-4527-ba51-b0ab3f41f10b.png" />
+</p>
 
-# Rollbar SDK for any Apple *OS
+<h1 align="center">Rollbar Apple MonoRepo</h1>
 
-Objective-C & Swift SDK for remote crash, exception, error reporting, and logging with [Rollbar](https://rollbar.com). 
+<p align="center">
+  <strong>Proactively discover, predict, and resolve errors in real-time with <a href="https://rollbar.com">Rollbar’s</a> error monitoring platform. <a href="https://rollbar.com/signup/">Start tracking errors today</a>!</strong>
+</p>
 
-It works on all Apple *OS platforms (macOS, iOS, tvOS, watchOS, etc).
+---
+
+Objective-C & Swift SDK for remote crash, exception, error reporting, and logging with [Rollbar](https://rollbar.com).
+
+It works on all Apple *OS platforms (**macOS**, **iOS**, **tvOS**, **watchOS**, etc).
 
 NOTE:
-This SDK is essentially a reincarnation of our [Rollbar-iOS SDK](https://github.com/rollbar/rollbar-ios) that will be available for awhile in its current v1 version 
+This SDK is essentially a reincarnation of our [Rollbar-iOS SDK](https://github.com/rollbar/rollbar-ios) that will be available for awhile in its current v1 version
 and will only maintained with fixes to bug or security issues if any.
 All the active development will be done within this SDK repository.
+
+## Key benefits of using Rollbar for Apple software platforms are:
+
+- **Platforms:** Rollbar supports all <a href="https://docs.rollbar.com/docs/apple">Apple OS platforms</a> such as IOS, macOS, tvOS, watchOS, etc.
+- **Automatic error grouping:** Rollbar aggregates Occurrences caused by the same error into Items that represent application issues. <a href="https://docs.rollbar.com/docs/grouping-occurrences">Learn more about reducing log noise</a>.
+- **Advanced search:** Filter items by many different properties. <a href="https://docs.rollbar.com/docs/search-items">Learn more about search</a>.
+- **Customizable notifications:** Rollbar supports several messaging and incident management tools where your team can get notified about errors and important events by real-time alerts. <a href="https://docs.rollbar.com/docs/notifications">Learn more about Rollbar notifications</a>.
+
+
 
 # The Apple SDK is GA. Learn more: https://docs.rollbar.com/docs/apple
 
@@ -70,7 +87,7 @@ All the active development will be done within this SDK repository.
 ## Usage and Reference
 
 For complete usage instructions and configuration reference, see our [Rollbar-Apple SDK docs](https://docs.rollbar.com/docs/apple).
-  
+
 ## Release History & Changelog
 
 See our [Releases](https://github.com/rollbar/rollbar-apple/releases) page for a list of all releases, including changes.
