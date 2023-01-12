@@ -157,7 +157,7 @@ config.destination.environment = "ENVIRONMENT"
 
 id<RollbarCrashCollector> crashCollector =
   [[RollbarPLCrashCollector alloc] init];
-  //OR [[RollbarKSCrashCollector alloc] init];
+  //OR [[RollbarCrashCollector alloc] init];
   //OR nil;
 ```
 
@@ -166,7 +166,7 @@ id<RollbarCrashCollector> crashCollector =
 ```Swift
 
 let crashCollector = RollbarPLCrashCollector()
-//OR let crashCollector = RollbarKSCrashCollector()
+//OR let crashCollector = RollbarCrashCollector()
 ```
 
 ### Initialize the Shared Notifier

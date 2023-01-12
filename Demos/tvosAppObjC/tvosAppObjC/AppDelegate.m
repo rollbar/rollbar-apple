@@ -8,8 +8,6 @@
 #import "AppDelegate.h"
 
 @import RollbarNotifier;
-@import RollbarKSCrash;
-@import RollbarPLCrashReporter;
 
 @interface AppDelegate ()
 
@@ -90,10 +88,7 @@
     //config.customData = @{ @"someKey": @"someValue", };
     
     // init Rollbar shared instance:
-    //id<RollbarCrashCollector> crashCollector = [[RollbarKSCrashCollector alloc] init];
-    id<RollbarCrashCollector> crashCollector = [[RollbarPLCrashCollector alloc] init];
-    
-    [Rollbar initWithConfiguration:config crashCollector:crashCollector];
+    [Rollbar initWithConfiguration:config];
     
     [Rollbar infoMessage:@"Rollbar is up and running! Enjoy your remote error and log monitoring..."];
 }

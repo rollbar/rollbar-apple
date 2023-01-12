@@ -1,14 +1,14 @@
-#import "RollbarKSCrashInstallation.h"
-#import "RollbarKSCrashReportSink.h"
+#import "RollbarCrashInstallation.h"
+#import "RollbarCrashReportSink.h"
 
-@implementation RollbarKSCrashInstallation
+@implementation RollbarCrashInstallation
 
 + (instancetype)sharedInstance {
-    static RollbarKSCrashInstallation *sharedInstance = nil;
+    static RollbarCrashInstallation *sharedInstance = nil;
     static dispatch_once_t onceToken;
     
     dispatch_once(&onceToken, ^{
-        sharedInstance = [[RollbarKSCrashInstallation alloc] init];
+        sharedInstance = [[RollbarCrashInstallation alloc] init];
     });
 
     return sharedInstance;
@@ -19,7 +19,7 @@
 }
 
 - (id<KSCrashReportFilter>)sink {
-    return [[[RollbarKSCrashReportSink alloc] init] defaultFilterSet];
+    return [[[RollbarCrashReportSink alloc] init] defaultFilterSet];
 }
 
 - (void)sendAllReportsWithCompletion:(KSCrashReportFilterCompletion)onCompletion {

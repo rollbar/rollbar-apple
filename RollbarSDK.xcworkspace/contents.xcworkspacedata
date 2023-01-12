@@ -29,9 +29,6 @@
          location = "group:Package.swift">
       </FileRef>
       <FileRef
-         location = "group:/Users/andrey/Dev/GitHub/WSC/rollbar-apple/RollbarSDK.experimental_podspec">
-      </FileRef>
-      <FileRef
          location = "group:RollbarCommon.podspec">
       </FileRef>
       <FileRef
@@ -39,12 +36,6 @@
       </FileRef>
       <FileRef
          location = "group:RollbarNotifier.podspec">
-      </FileRef>
-      <FileRef
-         location = "group:RollbarKSCrash.podspec">
-      </FileRef>
-      <FileRef
-         location = "group:RollbarPLCrashReporter.podspec">
       </FileRef>
       <FileRef
          location = "group:RollbarAUL.podspec">
@@ -67,9 +58,6 @@
    </FileRef>
    <FileRef
       location = "group:RollbarNotifier">
-   </FileRef>
-   <FileRef
-      location = "group:RollbarKSCrash">
    </FileRef>
    <FileRef
       location = "group:RollbarAUL">

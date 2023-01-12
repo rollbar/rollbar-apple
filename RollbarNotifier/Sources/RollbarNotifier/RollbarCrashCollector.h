@@ -1,5 +1,5 @@
-#ifndef RollbarKSCrashCollector_h
-#define RollbarKSCrashCollector_h
+#ifndef RollbarCrashCollector_h
+#define RollbarCrashCollector_h
 
 @import Foundation;
 @import RollbarCommon;
@@ -7,12 +7,14 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /// Rollbar KSCrash reports collector
-@interface RollbarKSCrashCollector: NSObject
+@interface RollbarCrashCollector: NSObject
 
 @property (nonatomic, readonly) NSUInteger totalProcessedReports;
+
+- (void)collectCrashReports;
 
 @end
 
 NS_ASSUME_NONNULL_END
 
-#endif //RollbarKSCrashCollector_h
+#endif //RollbarCrashCollector_h

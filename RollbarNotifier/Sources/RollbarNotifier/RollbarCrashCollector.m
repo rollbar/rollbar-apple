@@ -1,22 +1,21 @@
-#import "RollbarKSCrashCollector.h"
+#import "Rollbar.h"
+#import "RollbarCrashCollector.h"
+#import "RollbarCrashInstallation.h"
 #import "RollbarCrashReportData.h"
-#import "RollbarKSCrashInstallation.h"
-#import "RollbarKSCrashReportSink.h"
+#import "RollbarCrashReportSink.h"
 
-@import RollbarNotifier;
-
-@implementation RollbarKSCrashCollector
+@implementation RollbarCrashCollector
 
 + (void)initialize {
-    if (self == [RollbarKSCrashCollector class]) {
-        [[RollbarKSCrashInstallation sharedInstance] install];
+    if (self == [RollbarCrashCollector class]) {
+        [[RollbarCrashInstallation sharedInstance] install];
     }
 }
 
 - (void)collectCrashReports {
     NSMutableArray<RollbarCrashReportData *> *crashReports = [[NSMutableArray alloc] init];
 
-    [[RollbarKSCrashInstallation sharedInstance] sendAllReportsWithCompletion:^(NSArray *filteredReports, BOOL completed, NSError *error) {
+    [[RollbarCrashInstallation sharedInstance] sendAllReportsWithCompletion:^(NSArray *filteredReports, BOOL completed, NSError *error) {
         if (error) {
             RollbarSdkLog(@"Could not enable crash reporter: %@", [error localizedDescription]);
         } else if (completed) {

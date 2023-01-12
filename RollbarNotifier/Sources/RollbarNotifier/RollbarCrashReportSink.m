@@ -1,6 +1,6 @@
-#import "RollbarKSCrashReportSink.h"
+#import "RollbarCrashReportSink.h"
 
-@implementation RollbarKSCrashReportSink
+@implementation RollbarCrashReportSink
 
 - (id<KSCrashReportFilter>)defaultFilterSet {
     KSCrashReportFilterAppleFmt *format = [KSCrashReportFilterAppleFmt filterWithReportStyle:KSAppleReportStyleSymbolicated];
