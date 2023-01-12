@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3B3C439029704BDD0026266C /* RollbarKSCrash in Frameworks */ = {isa = PBXBuildFile; productRef = 3B3C438F29704BDD0026266C /* RollbarKSCrash */; };
 		3BDB8240292D2DCE0093AC9D /* iosAppSwiftApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BDB823F292D2DCE0093AC9D /* iosAppSwiftApp.swift */; };
 		3BDB8242292D2DCE0093AC9D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BDB8241292D2DCE0093AC9D /* ContentView.swift */; };
 		3BDB8244292D2DCF0093AC9D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BDB8243292D2DCF0093AC9D /* Assets.xcassets */; };
@@ -14,7 +15,6 @@
 		3BDB824F292D2E4B0093AC9D /* RollbarAUL in Frameworks */ = {isa = PBXBuildFile; productRef = 3BDB824E292D2E4B0093AC9D /* RollbarAUL */; };
 		3BDB8251292D2E4B0093AC9D /* RollbarCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 3BDB8250292D2E4B0093AC9D /* RollbarCommon */; };
 		3BDB8253292D2E4B0093AC9D /* RollbarNotifier in Frameworks */ = {isa = PBXBuildFile; productRef = 3BDB8252292D2E4B0093AC9D /* RollbarNotifier */; };
-		3BDB8255292D2E4B0093AC9D /* RollbarPLCrashReporter in Frameworks */ = {isa = PBXBuildFile; productRef = 3BDB8254292D2E4B0093AC9D /* RollbarPLCrashReporter */; };
 		3BDB8257292D2E4B0093AC9D /* RollbarSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3BDB8256292D2E4B0093AC9D /* RollbarSwift */; };
 /* End PBXBuildFile section */
 
@@ -31,9 +31,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3BDB8255292D2E4B0093AC9D /* RollbarPLCrashReporter in Frameworks */,
 				3BDB8253292D2E4B0093AC9D /* RollbarNotifier in Frameworks */,
 				3BDB8257292D2E4B0093AC9D /* RollbarSwift in Frameworks */,
+				3B3C439029704BDD0026266C /* RollbarKSCrash in Frameworks */,
 				3BDB8251292D2E4B0093AC9D /* RollbarCommon in Frameworks */,
 				3BDB824F292D2E4B0093AC9D /* RollbarAUL in Frameworks */,
 			);
@@ -105,8 +105,8 @@
 				3BDB824E292D2E4B0093AC9D /* RollbarAUL */,
 				3BDB8250292D2E4B0093AC9D /* RollbarCommon */,
 				3BDB8252292D2E4B0093AC9D /* RollbarNotifier */,
-				3BDB8254292D2E4B0093AC9D /* RollbarPLCrashReporter */,
 				3BDB8256292D2E4B0093AC9D /* RollbarSwift */,
+				3B3C438F29704BDD0026266C /* RollbarKSCrash */,
 			);
 			productName = iosAppSwift;
 			productReference = 3BDB823C292D2DCE0093AC9D /* iosAppSwift.app */;
@@ -202,7 +202,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
+				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -262,7 +262,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
+				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -294,6 +294,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"iosAppSwift/Preview Content\"";
 				DEVELOPMENT_TEAM = 6B5NER795L;
 				ENABLE_PREVIEWS = YES;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Rollbar Demo";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -324,7 +325,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"iosAppSwift/Preview Content\"";
 				DEVELOPMENT_TEAM = 6B5NER795L;
 				ENABLE_PREVIEWS = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Rollbar Demo";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -369,6 +370,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		3B3C438F29704BDD0026266C /* RollbarKSCrash */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RollbarKSCrash;
+		};
 		3BDB824E292D2E4B0093AC9D /* RollbarAUL */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RollbarAUL;
@@ -380,10 +385,6 @@
 		3BDB8252292D2E4B0093AC9D /* RollbarNotifier */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RollbarNotifier;
-		};
-		3BDB8254292D2E4B0093AC9D /* RollbarPLCrashReporter */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = RollbarPLCrashReporter;
 		};
 		3BDB8256292D2E4B0093AC9D /* RollbarSwift */ = {
 			isa = XCSwiftPackageProductDependency;

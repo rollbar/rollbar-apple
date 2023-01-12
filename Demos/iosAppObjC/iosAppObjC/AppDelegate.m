@@ -19,8 +19,8 @@
     config.telemetry.memoryStatsAutocollectionInterval = 0.5;
     config.telemetry.enabled = YES;
 
-    //id<RollbarCrashCollector> crashCollector = [[RollbarKSCrashCollector alloc] init];
-    id<RollbarCrashCollector> crashCollector = [[RollbarPLCrashCollector alloc] init];
+    id<RollbarCrashCollector> crashCollector = [[RollbarKSCrashCollector alloc] init];
+    //id<RollbarCrashCollector> crashCollector = [[RollbarPLCrashCollector alloc] init];
 
     [Rollbar initWithConfiguration:config
                     crashCollector:crashCollector];

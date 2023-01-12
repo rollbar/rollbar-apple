@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		3BDB825A292D67900093AC9D /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDB8258292D67900093AC9D /* SceneDelegate.m */; };
-		5533980A2627F4670031D02C /* RollbarPLCrashReporter in Frameworks */ = {isa = PBXBuildFile; productRef = 553398092627F4670031D02C /* RollbarPLCrashReporter */; };
 		55684F702553B4C400F82F34 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 55684F6F2553B4C400F82F34 /* AppDelegate.m */; };
 		55684F762553B4C400F82F34 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55684F752553B4C400F82F34 /* ViewController.m */; };
 		55684F792553B4C400F82F34 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 55684F772553B4C400F82F34 /* Main.storyboard */; };
@@ -45,7 +44,6 @@
 			files = (
 				55684F912553B7EE00F82F34 /* RollbarNotifier in Frameworks */,
 				55684F9D2553BD1C00F82F34 /* NetworkExtension.framework in Frameworks */,
-				5533980A2627F4670031D02C /* RollbarPLCrashReporter in Frameworks */,
 				55684F8D2553B7E100F82F34 /* RollbarDeploys in Frameworks */,
 				55684F8F2553B7E800F82F34 /* RollbarKSCrash in Frameworks */,
 			);
@@ -118,7 +116,6 @@
 				55684F8C2553B7E100F82F34 /* RollbarDeploys */,
 				55684F8E2553B7E800F82F34 /* RollbarKSCrash */,
 				55684F902553B7EE00F82F34 /* RollbarNotifier */,
-				553398092627F4670031D02C /* RollbarPLCrashReporter */,
 			);
 			productName = iosAppObjC;
 			productReference = 55684F6B2553B4C400F82F34 /* iosAppObjC.app */;
@@ -400,10 +397,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		553398092627F4670031D02C /* RollbarPLCrashReporter */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = RollbarPLCrashReporter;
-		};
 		55684F8C2553B7E100F82F34 /* RollbarDeploys */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RollbarDeploys;
