@@ -7,7 +7,9 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /// Rollbar KSCrash reports collector
-@interface RollbarKSCrashCollector : RollbarCrashCollectorBase
+@interface RollbarKSCrashCollector: NSObject
+
+@property (nonatomic, readonly) NSUInteger totalProcessedReports;
 
 @end
 

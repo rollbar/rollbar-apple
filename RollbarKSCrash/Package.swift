@@ -15,6 +15,7 @@ let package = Package(
     ],
     dependencies: [
         .package(name:"RollbarCommon", path: "../RollbarCommon"),
+        .package(name:"RollbarNotifier", path: "../RollbarNotifier"),
         .package(name: "UnitTesting", path: "../UnitTesting"),
         .package(url: "https://github.com/kstenerud/KSCrash.git", from: "1.15.26"),
     ],
@@ -23,6 +24,7 @@ let package = Package(
             name: "RollbarKSCrash",
             dependencies: [
                 "RollbarCommon",
+                "RollbarNotifier",
                 "KSCrash"
             ],
             publicHeadersPath: "include",
