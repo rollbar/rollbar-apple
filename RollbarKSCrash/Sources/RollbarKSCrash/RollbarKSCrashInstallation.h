@@ -18,9 +18,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// The shared instance of this helper.
 + (instancetype)sharedInstance;
 
-/// Sends all the discovered KSCrash reports.
-- (void)sendAllReports;
-
 @end
 
 NS_ASSUME_NONNULL_END

@@ -1,7 +1,7 @@
 import SwiftUI
 import RollbarSwift
 import RollbarNotifier
-import RollbarPLCrashReporter
+import RollbarKSCrash
 
 @main
 struct iosAppSwiftApp: App {
@@ -22,7 +22,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     ) -> Bool {
         // Dynamically read these settings from your config settings on
         // application startup.
-        let accessToken = "YOUR-ROLLBAR-ACCESSTOKEN"  // Rollbar post_client_item access token
+        let accessToken = "YOUR-ROLLBAR-TOKEN"  // Rollbar post_client_item access token
         let environment = "staging"
         let codeVersion = "main"  // Ideally codeVersion is commit SHA https://docs.rollbar.com/docs/versions
 
@@ -63,7 +63,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         // Initialize a Rollbar shared instance with a crash collector
         Rollbar.initWithConfiguration(
             config,
-            crashCollector: RollbarPLCrashCollector())
+            crashCollector: RollbarKSCrashCollector())
 
         // Note the ability to add aditional key/value pairs to the occurrence data for extra context
         Rollbar.infoMessage(

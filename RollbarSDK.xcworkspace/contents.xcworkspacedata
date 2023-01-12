@@ -72,9 +72,6 @@
       location = "group:RollbarKSCrash">
    </FileRef>
    <FileRef
-      location = "group:RollbarPLCrashReporter">
-   </FileRef>
-   <FileRef
       location = "group:RollbarAUL">
    </FileRef>
    <FileRef

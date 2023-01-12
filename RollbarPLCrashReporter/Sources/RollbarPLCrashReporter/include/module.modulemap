@@ -1,8 +1,0 @@
-module RollbarPLCrashReporter {
-	umbrella "."
-	
-	export *
-	module * { export * }
-
-    requires objc
-}

@@ -6,28 +6,20 @@
 @implementation RollbarKSCrashCollector
 
 + (void)initialize {
-    
     if (self == [RollbarKSCrashCollector class]) {
-        RollbarKSCrashInstallation *installation = [RollbarKSCrashInstallation sharedInstance];
-        [installation install];
+        [[RollbarKSCrashInstallation sharedInstance] install];
     }
 }
 
 - (void)collectCrashReportsWithObserver:(NSObject<RollbarCrashCollectorObserver> *)observer {
-    
     NSMutableArray<RollbarCrashReportData *> *crashReports = [[NSMutableArray alloc] init];
 
-    RollbarKSCrashInstallation *installation = [RollbarKSCrashInstallation sharedInstance];
-    [installation sendAllReportsWithCompletion:^(NSArray *filteredReports, BOOL completed, NSError *error) {
+    [[RollbarKSCrashInstallation sharedInstance] sendAllReportsWithCompletion:^(NSArray *filteredReports, BOOL completed, NSError *error) {
         if (error) {
             RollbarSdkLog(@"Could not enable crash reporter: %@", [error localizedDescription]);
         } else if (completed) {
-            //[notifier processSavedItems];
             for (NSString *crashReport in filteredReports) {
-                
-                RollbarCrashReportData *crashReportData =
-                [[RollbarCrashReportData alloc] initWithCrashReport:crashReport];
-                
+                RollbarCrashReportData *crashReportData = [[RollbarCrashReportData alloc] initWithCrashReport:crashReport];
                 [crashReports addObject:crashReportData];
             }
         }
