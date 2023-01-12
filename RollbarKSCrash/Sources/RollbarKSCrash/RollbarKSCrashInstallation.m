@@ -10,20 +10,16 @@
     dispatch_once(&onceToken, ^{
         sharedInstance = [[RollbarKSCrashInstallation alloc] init];
     });
+
     return sharedInstance;
 }
 
 - (id)init {
-    return [super initWithRequiredProperties:[NSArray new]];
+    return [super initWithRequiredProperties:@[]];
 }
 
 - (id<KSCrashReportFilter>)sink {
-    RollbarKSCrashReportSink *sink = [[RollbarKSCrashReportSink alloc] init];
-    return [sink defaultFilterSet];
-}
-
-- (void)sendAllReports {
-    [self sendAllReportsWithCompletion:NULL];
+    return [[[RollbarKSCrashReportSink alloc] init] defaultFilterSet];
 }
 
 - (void)sendAllReportsWithCompletion:(KSCrashReportFilterCompletion)onCompletion {

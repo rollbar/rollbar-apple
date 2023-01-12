@@ -3,25 +3,12 @@
 @implementation RollbarKSCrashReportSink
 
 - (id<KSCrashReportFilter>)defaultFilterSet {
-    /*
-     TODO: We can switch to the SideBySide type of Apple format:
-     KSAppleReportStyleSymbolicatedSideBySide
-     once the backend gets updated handle that type of crash report
-     */
-    
-    KSCrashReportFilterAppleFmt *format =
-    [KSCrashReportFilterAppleFmt filterWithReportStyle:KSAppleReportStylePartiallySymbolicated];
-    // other style alternatives:
-    // - KSAppleReportStyleSymbolicatedSideBySide
-    // - KSAppleReportStyleSymbolicated
-    
-    KSCrashReportFilterPipeline *pipeline =
-    [KSCrashReportFilterPipeline filterWithFilters:format, self, nil];
-    
+    KSCrashReportFilterAppleFmt *format = [KSCrashReportFilterAppleFmt filterWithReportStyle:KSAppleReportStyleSymbolicated];
+    KSCrashReportFilterPipeline *pipeline = [KSCrashReportFilterPipeline filterWithFilters:format, self, nil];
     return pipeline;
 }
 
-- (void)filterReports:(NSArray*) reports onCompletion:(KSCrashReportFilterCompletion)onCompletion {
+- (void)filterReports:(NSArray *)reports onCompletion:(KSCrashReportFilterCompletion)onCompletion {
     for (NSString *report in reports) {
         //[Rollbar logCrashReport:report];
     }
