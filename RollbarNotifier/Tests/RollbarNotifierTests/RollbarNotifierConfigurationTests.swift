@@ -20,7 +20,6 @@ final class RollbarNotifierConfigurationTests: XCTestCase {
         config.developerOptions.logIncomingPayloads = true;
         config.developerOptions.logTransmittedPayloads = true;
         config.developerOptions.logDroppedPayloads = true;
-        config.loggingOptions.enableOomDetection = false;
         Rollbar.initWithConfiguration(config);
     }
     

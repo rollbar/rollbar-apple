@@ -26,7 +26,6 @@
     config.developerOptions.logIncomingPayloads = YES;
     config.developerOptions.logTransmittedPayloads = YES;
     config.developerOptions.logDroppedPayloads = YES;
-    config.loggingOptions.enableOomDetection = NO;
 
     [Rollbar initWithConfiguration:config];
     [RollbarTestUtil waitWithWaitTimeInSeconds:1];

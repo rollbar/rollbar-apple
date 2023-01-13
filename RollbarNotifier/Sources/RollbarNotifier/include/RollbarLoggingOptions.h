@@ -33,10 +33,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// A request ID to mark payloads with
 @property (nonatomic, copy, nullable, readonly) NSString *requestId;
 
-/// A flag enabling potential OOM (Out-of-Memory) detection
-@property (nonatomic, readonly) BOOL enableOomDetection;
-
-
 #pragma mark - Initializers
 
 /// Initializer
@@ -47,15 +43,13 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param codeVersion a code version to mark payloads with
 /// @param framework A framework tag to mark payloads with
 /// @param requestId A request ID to mark payloads with
-/// @param enableOomDetection A flag enabling potential OOM (Out-of-Memory) detection
 - (instancetype)initWithLogLevel:(RollbarLevel)logLevel
                       crashLevel:(RollbarLevel)crashLevel
          maximumReportsPerMinute:(NSUInteger)maximumReportsPerMinute
                        captureIp:(RollbarCaptureIpType)captureIp
                      codeVersion:(nullable NSString *)codeVersion
                        framework:(nullable NSString *)framework
-                       requestId:(nullable NSString *)requestId
-              enableOomDetection:(BOOL)enableOomDetection;
+                       requestId:(nullable NSString *)requestId;
 
 /// Initializer
 /// @param logLevel minimum log level to start logging from
@@ -158,9 +152,6 @@ NS_DESIGNATED_INITIALIZER;
 
 /// A request ID to mark payloads with
 @property (nonatomic, copy, nullable, readwrite) NSString *requestId;
-
-/// A flag enabling potential OOM (Out-of-Memory) detection
-@property (nonatomic, readwrite) BOOL enableOomDetection;
 
 @end
 
