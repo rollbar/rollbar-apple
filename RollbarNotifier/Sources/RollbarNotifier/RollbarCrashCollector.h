@@ -3,15 +3,14 @@
 
 @import Foundation;
 @import RollbarCommon;
+@import KSCrash_Installations;
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// Rollbar KSCrash reports collector
-@interface RollbarCrashCollector: NSObject
+/// Rollbar crash report collector
+@interface RollbarCrashCollector: KSCrashInstallation
 
-@property (nonatomic, readonly) NSUInteger totalProcessedReports;
-
-- (void)collectCrashReports;
+- (void)sendAllReports;
 
 @end
 

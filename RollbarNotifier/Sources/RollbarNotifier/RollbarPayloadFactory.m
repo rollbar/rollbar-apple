@@ -11,7 +11,6 @@
 #import "RollbarData.h"
 #import "RollbarPerson.h"
 #import "RollbarServer.h"
-#import "RollbarClient.h"
 #import "RollbarModule.h"
 
 #import <sys/utsname.h>
@@ -211,20 +210,20 @@
     return nil;
 }
 
--(RollbarClient *)buildRollbarClient {
+-(RollbarDTO *)buildRollbarClient {
     
     NSNumber *timestamp = [NSNumber numberWithInteger:[[NSDate date] timeIntervalSince1970]];
     
     if (self->_config.loggingOptions) {
-        switch(self->_config.loggingOptions.captureIp) {
+        switch (self->_config.loggingOptions.captureIp) {
             case RollbarCaptureIpType_Full:
-                return [[RollbarClient alloc] initWithDictionary:@{
+                return [[RollbarDTO alloc] initWithDictionary:@{
                     @"timestamp": timestamp,
                     @"ios": [self buildOSData],
                     @"user_ip": @"$remote_ip"
                 }];
             case RollbarCaptureIpType_Anonymize:
-                return [[RollbarClient alloc] initWithDictionary:@{
+                return [[RollbarDTO alloc] initWithDictionary:@{
                     @"timestamp": timestamp,
                     @"ios": [self buildOSData],
                     @"user_ip": @"$remote_ip_anonymize"
@@ -235,7 +234,7 @@
         }
     }
     
-    return [[RollbarClient alloc] initWithDictionary:@{
+    return [[RollbarDTO alloc] initWithDictionary:@{
         @"timestamp": timestamp,
         @"ios": [self buildOSData],
     }];

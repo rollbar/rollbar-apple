@@ -15,11 +15,11 @@ typedef int (^SqliteCallback)(void *info, int columns, char **data, char **colum
 
 static int defaultOnSelectCallback(void *info, int columns, char **data, char **column)
 {
-    RollbarSdkLog(@"Columns: %d", columns);
-    for (int i = 0; i < columns; i++) {
-        RollbarSdkLog(@"Column: %s", column[i]);
-        RollbarSdkLog(@"Data: %s", data[i]);
-    }
+//    RollbarSdkLog(@"Columns: %d", columns);
+//    for (int i = 0; i < columns; i++) {
+//        RollbarSdkLog(@"Column: %s", column[i]);
+//        RollbarSdkLog(@"Data: %s", data[i]);
+//    }
     
     return SQLITE_OK;
 }

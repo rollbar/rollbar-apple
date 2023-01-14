@@ -30,39 +30,30 @@
 }
 
 - (nullable RollbarPayloadPostReply *)sendPayload:(nonnull NSData *)payload
-                                      usingConfig:(nonnull RollbarConfig  *)config {
+                                      usingConfig:(nonnull RollbarConfig *)config
+{
+    RollbarPayloadPostReply *reply;
     
-    RollbarPayloadPostReply *reply = nil;
-    
-    if (YES == config.developerOptions.transmit) {
+    if (config.developerOptions.transmit) {
         reply = [self transmitPayload:payload
                         toDestination:config.destination
                 usingDeveloperOptions:config.developerOptions
                  andHttpProxySettings:config.httpProxy
-                andHttpsProxySettings:config.httpsProxy
-        ];
-    }
-    else {
+                andHttpsProxySettings:config.httpsProxy];
+    } else {
         reply = [RollbarPayloadPostReply greenReply]; // we just successfully short-circuit here...
     }
     
-    NSString *payloadString = [[NSString alloc] initWithData:payload
-                                                    encoding:NSUTF8StringEncoding];
-    if (reply && (200 == reply.statusCode)) {
-        [RollbarSender trace:[NSString stringWithFormat:@"Transmitted payload: %@", payloadString]
-                 withOptions:config.developerOptions];
-//        if ((YES == config.developerOptions.logTransmittedPayloads) && config.developerOptions.transmittedPayloadLogFile) {
-//            [RollbarFileWriter appendSafelyData:payload toFile:config.developerOptions.transmittedPayloadLogFile];
-//            //TODO: complete implementation (log into payloads log file)...
-//        }
-    }
-    else if (reply) {
-        [RollbarSender trace:[NSString stringWithFormat:@"Failed to transmit payload (%li status code): %@", (long)reply.statusCode, payloadString]
-                 withOptions:config.developerOptions];
-    }
-    else {
-        [RollbarSender trace:[NSString stringWithFormat:@"Failed to transmit payload (no reply): %@", payloadString]
-                 withOptions:config.developerOptions];
+    NSString *payloadString = [[NSString alloc] initWithData:payload encoding:NSUTF8StringEncoding];
+
+    if (reply && reply.statusCode == 200) {
+        NSUInteger truncateIndex = MIN(payloadString.length, 256);
+        NSString *truncatedString = [payloadString substringToIndex:truncateIndex];
+        [RollbarSender trace:[NSString stringWithFormat:@"Transmitted payload: %@...", truncatedString] withOptions:config.developerOptions];
+    } else if (reply) {
+        [RollbarSender trace:[NSString stringWithFormat:@"Failed to transmit payload (%li status code): %@", (long)reply.statusCode, payloadString] withOptions:config.developerOptions];
+    } else {
+        [RollbarSender trace:[NSString stringWithFormat:@"Failed to transmit payload (no reply): %@", payloadString] withOptions:config.developerOptions];
     }
 
     return reply;
@@ -177,35 +168,23 @@
 - (nullable NSHTTPURLResponse *)checkPayloadResponse:(NSURLResponse *)response
                                                error:(NSError *)error
                                                 data:(NSData *)data
-                               usingDeveloperOptions:(nonnull RollbarDeveloperOptions *)developerOptions {
-    
+                               usingDeveloperOptions:(nonnull RollbarDeveloperOptions *)developerOptions
+{
     if (error) {
-        [RollbarSender trace:@"There was an error reporting to Rollbar:"
-                 withOptions:developerOptions];
-        [RollbarSender trace:[NSString stringWithFormat:@"   Error: %@", [error localizedDescription]]
-                 withOptions:developerOptions];
+        [RollbarSender trace:@"There was an error reporting to Rollbar:" withOptions:developerOptions];
+        [RollbarSender trace:[NSString stringWithFormat:@"   Error: %@", [error localizedDescription]] withOptions:developerOptions];
         return nil;
     }
     
-    NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
-    if (httpResponse && (200 == [httpResponse statusCode])) {
-        [RollbarSender trace:[NSString stringWithFormat:@"OK response from Rollar: %@", httpResponse]
-                 withOptions:developerOptions];
+    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+    if (httpResponse && [httpResponse statusCode] == 200) {
+        [RollbarSender trace:[NSString stringWithFormat:@"OK response from Rollar: %ld", [httpResponse statusCode]] withOptions:developerOptions];
         return httpResponse;
     }
 
-    [RollbarSender trace:@"There was a problem reporting to Rollbar:"
-             withOptions:developerOptions];
-    [RollbarSender trace:[NSString stringWithFormat:@"   Response: %@", response]
-             withOptions:developerOptions];
-    [RollbarSender trace:[NSString stringWithFormat:@"   Response data: %@", data]
-             withOptions:developerOptions];
-    //            [RollbarSender trace:[NSString stringWithFormat:@"   Response data: %@",
-    //                                  [NSJSONSerialization JSONObjectWithData:data
-    //                                                                  options:0
-    //                                                                    error:nil]
-    //                                 ]
-    //                     withOptions:developerOptions];
+    [RollbarSender trace:@"There was a problem reporting to Rollbar:" withOptions:developerOptions];
+    [RollbarSender trace:[NSString stringWithFormat:@"   Response: %@", response] withOptions:developerOptions];
+    [RollbarSender trace:[NSString stringWithFormat:@"   Response data: %@", data] withOptions:developerOptions];
 
     return nil;
 }

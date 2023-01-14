@@ -1,41 +1,89 @@
 #import "Rollbar.h"
 #import "RollbarCrashCollector.h"
-#import "RollbarCrashInstallation.h"
-#import "RollbarCrashReportData.h"
-#import "RollbarCrashReportSink.h"
 
-@implementation RollbarCrashCollector
+@import KSCrash_Reporting_Sinks;
 
-+ (void)initialize {
-    if (self == [RollbarCrashCollector class]) {
-        [[RollbarCrashInstallation sharedInstance] install];
+NS_ASSUME_NONNULL_BEGIN
+
+static bool isDebuggerAttached();
+
+@interface RollbarCrashReporter : NSObject <KSCrashReportFilter>
+@end
+
+@implementation RollbarCrashReporter
+
+- (void)filterReports:(NSArray *)reports
+         onCompletion:(KSCrashReportFilterCompletion)completion
+{
+    for (NSString *report in reports) {
+        [Rollbar logCrashReport:report];
     }
-}
 
-- (void)collectCrashReports {
-    NSMutableArray<RollbarCrashReportData *> *crashReports = [[NSMutableArray alloc] init];
-
-    [[RollbarCrashInstallation sharedInstance] sendAllReportsWithCompletion:^(NSArray *filteredReports, BOOL completed, NSError *error) {
-        if (error) {
-            RollbarSdkLog(@"Could not enable crash reporter: %@", [error localizedDescription]);
-        } else if (completed) {
-            for (NSString *crashReport in filteredReports) {
-                RollbarCrashReportData *crashReportData = [[RollbarCrashReportData alloc] initWithCrashReport:crashReport];
-                [crashReports addObject:crashReportData];
-            }
-        }
-    }];
-
-    self->_totalProcessedReports += crashReports.count;
-
-    for (RollbarCrashReportData *crashRecord in crashReports) {
-        [Rollbar logCrashReport:crashRecord.crashReport];
-
-        // Let's sleep this thread for a few seconds to give the items processing thread a chance
-        // to send the payload logged above so that we can handle cases when the SDK is initialized
-        // right/shortly before a persistent application crash (that we have no control over) if any:
-        [NSThread sleepForTimeInterval:5.0f]; // [sec]
-    }
+    kscrash_callCompletion(completion, reports, YES, nil);
 }
 
 @end
+
+#pragma mark -
+
+@implementation RollbarCrashCollector
+
+- (instancetype)init {
+    return [super initWithRequiredProperties:@[]];
+}
+
+- (void)install {
+    [super install];
+
+    KSCrashMonitorType monitoring = isDebuggerAttached()
+        ? KSCrashMonitorTypeDebuggerSafe & ~(KSCrashMonitorTypeOptional | KSCrashMonitorTypeExperimental)
+        : KSCrashMonitorTypeProductionSafe & ~KSCrashMonitorTypeOptional;
+
+    [KSCrash.sharedInstance setDeleteBehaviorAfterSendAll:KSCDeleteOnSucess];
+    [KSCrash.sharedInstance setDemangleLanguages:KSCrashDemangleLanguageAll];
+    [KSCrash.sharedInstance setMonitoring:monitoring];
+    [KSCrash.sharedInstance setAddConsoleLogToReport:NO];
+    [KSCrash.sharedInstance setCatchZombies:NO];
+    [KSCrash.sharedInstance setIntrospectMemory:YES];
+    [KSCrash.sharedInstance setSearchQueueNames:NO];
+}
+
+- (void)sendAllReports {
+    [self sendAllReportsWithCompletion:^(NSArray *_, BOOL completed, NSError *error) {
+        if (error || !completed) {
+            RollbarSdkLog(@"Error reporting crash: %@", error);
+        }
+    }];
+}
+
+- (id<KSCrashReportFilter>)sink {
+    id filter = [KSCrashReportFilterAppleFmt filterWithReportStyle:KSAppleReportStyleSymbolicated];
+    id report = [[RollbarCrashReporter alloc] init];
+    return [KSCrashReportFilterPipeline filterWithFilters:filter, report, nil];
+}
+
+@end
+
+#pragma mark -
+
+static bool isDebuggerAttached() {
+  static bool attached = false;
+
+  static dispatch_once_t token;
+  dispatch_once(&token, ^{
+      struct kinfo_proc info;
+      size_t info_size = sizeof(info);
+      int name[4] = { CTL_KERN, KERN_PROC, KERN_PROC_PID, getpid() };
+
+      if (sysctl(name, 4, &info, &info_size, NULL, 0) == -1) {
+          RollbarSdkLog(@"Error checking for debugger via sysctl(): %s", strerror(errno));
+      } else if (info.kp_proc.p_flag & P_TRACED) {
+          RollbarSdkLog(@"Found a debugger attached");
+          attached = true;
+      }
+  });
+
+  return attached;
+}
+
+NS_ASSUME_NONNULL_END

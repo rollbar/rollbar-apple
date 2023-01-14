@@ -94,7 +94,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// Data about the client device this event occurred on.
 /// As there can be multiple client environments for a given event (i.e. Flash running inside
 /// an HTML page), data should be namespaced by platform.
-@property (nonatomic, nullable) RollbarClient *client;
+@property (nonatomic, nullable) RollbarDTO *client;
 
 /// Optional: custom
 /// Any arbitrary metadata you want to send. "custom" itself should be an object.
