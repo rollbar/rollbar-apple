@@ -19,11 +19,15 @@
 @import UIKit;
 #endif
 
+@interface RollbarPayloadFactory ()
+
+@property (strong) NSMutableDictionary<NSString *, id> *osData;
+
+@end
+
 @implementation RollbarPayloadFactory {
-    
-    @private
+@private
     RollbarConfig *_config; // expected to be nonnull...
-    NSMutableDictionary<NSString *, id> *_osData;
 }
 
 + (instancetype)factoryWithConfig:(nonnull RollbarConfig *)config {
@@ -157,14 +161,12 @@
         return nil;
     }
     
-    NSMutableDictionary *customData =
-    [NSMutableDictionary dictionaryWithDictionary:self->_config.customData];
-    if (crashReport || exception) {
-        // neither crash report no exception payload objects have placeholders for any extra data
-        // or an extra message, let's preserve them as the custom data:
+    NSMutableDictionary *customData = [NSMutableDictionary dictionaryWithDictionary:self->_config.customData];
+    if (exception) {
         if (extra) {
             customData[@"error.extra"] = extra.mutableCopy;
         }
+
         if (message && message.length > 0) {
             customData[@"error.message"] = message;
         }
@@ -261,64 +263,45 @@
     }
 }
 
--(NSDictionary<NSString *, id> *)buildOSData {
-    
-    //TODO: redo this implementation based on the helper utils used by RollbarSession or on RollbarSession itself...
-    
-    if (self->_osData) {
-        return self->_osData;
+- (NSDictionary<NSString *, id> *)buildOSData {
+    if (self.osData) {
+        return self.osData;
     }
-    
+
     NSBundle *mainBundle = [NSBundle mainBundle];
-    
-    NSString *version = nil;
-    if (self->_config.loggingOptions
-        && self->_config.loggingOptions.codeVersion
-        && self->_config.loggingOptions.codeVersion.length > 0) {
-        
-        version = self->_config.loggingOptions.codeVersion;
-    }
-    else {
-        version = [mainBundle objectForInfoDictionaryKey:(NSString*)kCFBundleVersionKey];
-    }
-    
+    NSString *codeVersion = [mainBundle objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
     NSString *shortVersion = [mainBundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
     NSString *bundleName = [mainBundle objectForInfoDictionaryKey:(NSString *)kCFBundleNameKey];
     NSString *bundleIdentifier = [mainBundle objectForInfoDictionaryKey:(NSString *)kCFBundleIdentifierKey];
-    
+
     struct utsname systemInfo;
     uname(&systemInfo);
-    NSString *deviceCode = [NSString stringWithCString:systemInfo.machine
-                                              encoding:NSUTF8StringEncoding];
-    
+    NSString *deviceCode = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
+
 #if TARGET_OS_IOS | TARGET_OS_TV | TARGET_OS_MACCATALYST
-    self->_osData = @{
+    self.osData = @{
         @"os": @"iOS",
         @"os_version": [[UIDevice currentDevice] systemVersion],
         @"device_code": deviceCode,
-        @"code_version": version ? version : @"",
-        @"short_version": shortVersion ? shortVersion : @"",
-        @"bundle_identifier": bundleIdentifier ? bundleIdentifier : @"",
-        @"app_name": bundleName ? bundleName : @""
+        @"code_version": codeVersion ?: @"",
+        @"short_version": shortVersion ?: @"",
+        @"bundle_identifier": bundleIdentifier ?: @"",
+        @"app_name": bundleName ?: @""
     }.mutableCopy;
 #else
-    NSOperatingSystemVersion osVer = [[NSProcessInfo processInfo] operatingSystemVersion];
-    self->_osData = @{
+    NSOperatingSystemVersion v = [[NSProcessInfo processInfo] operatingSystemVersion];
+    self.osData = @{
         @"os": @"macOS",
-        @"os_version": [NSString stringWithFormat:@" %tu.%tu.%tu",
-                        osVer.majorVersion,
-                        osVer.minorVersion,
-                        osVer.patchVersion
-        ],
+        @"os_version": [NSString stringWithFormat:@" %tu.%tu.%tu", v.majorVersion, v.minorVersion, v.patchVersion],
         @"device_code": deviceCode,
-        @"code_version": version ? version : @"",
-        @"short_version": shortVersion ? shortVersion : @"",
-        @"bundle_identifier": bundleIdentifier ? bundleIdentifier : @"",
-        @"app_name": bundleName ? bundleName : [[NSProcessInfo processInfo] processName]
+        @"code_version": version ?: @"",
+        @"short_version": shortVersion ?: @"",
+        @"bundle_identifier": bundleIdentifier ?: @"",
+        @"app_name": bundleName ?: [[NSProcessInfo processInfo] processName]
     }.mutableCopy;
 #endif
     
-    return self->_osData;
+    return self.osData;
 }
 
 @end
