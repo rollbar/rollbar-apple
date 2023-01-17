@@ -320,9 +320,10 @@
 				CODE_SIGN_ENTITLEMENTS = iosAppObjC/iosAppObjC.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 6B5NER795L;
 				INFOPLIST_FILE = iosAppObjC/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Rollbar ObjC Demo";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -349,9 +350,10 @@
 				CODE_SIGN_ENTITLEMENTS = iosAppObjC/iosAppObjC.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 6B5NER795L;
 				INFOPLIST_FILE = iosAppObjC/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Rollbar ObjC Demo";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;

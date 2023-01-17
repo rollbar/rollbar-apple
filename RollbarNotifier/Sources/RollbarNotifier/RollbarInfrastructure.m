@@ -42,14 +42,13 @@ NS_ASSUME_NONNULL_BEGIN
     self.configuration = [config copy];
     self.logger = [RollbarLogger loggerWithConfiguration:self.configuration];
 
-    self.collector = [[RollbarCrashCollector alloc] init];
-    [self.collector collectCrashReports];
-
     [[RollbarTelemetry sharedInstance] configureWithOptions:config.telemetry];
 
-    RollbarSdkLog(@"%@ is configured with this RollbarConfig instance: \n%@",
-                  [RollbarInfrastructure rollbar_objectClassName],
-                  config);
+    self.collector = [[RollbarCrashCollector alloc] init];
+    [self.collector install];
+    [self.collector sendAllReports];
+
+    RollbarSdkLog(@"%@ started", [RollbarInfrastructure rollbar_objectClassName]);
     
     return self;
 }
