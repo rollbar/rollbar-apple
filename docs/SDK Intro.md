@@ -107,7 +107,7 @@ where `n.n.n` is the desired pod version of the SDK to use. As the general rule,
 
 You do not have to worry about explicitly including other internal dependencies of the modules, like *RollbarCommon* module pod. The SDK modules' *podspec*s already specify these as needed.
 
-## Using SDK in Your Code
+## Using the SDK in Your Code
 
 ### Import Necessary SDK Modules
 
@@ -117,16 +117,12 @@ Before using any of the types provided by the SDK modules, you need to make sure
 
 ```Obj-C
 @import RollbarNotifier;
-@import RollbarKSCrash;          // optional
-@import RollbarPLCrashReporter;  // optional alternative to RollbarKSCrash
 ```
 
 #### Swift
 
 ```Swift
 import RollbarNotifier
-import RollbarKSCrash          // optional
-import RollbarPLCrashReporter  // optional alternative to RollbarKSCrash
 ```
 
 ### Define the Shared Notifier's Configuration Instance
@@ -147,26 +143,6 @@ config.destination.environment = @"YOUR_ENVIRONMENT";
 let config = RollbarConfig()
 config.destination.accessToken = "YOUR_PROJECT_ACCESS_TOKEN"
 config.destination.environment = "ENVIRONMENT"
-```
-
-### Optionally, Define A Crash Report Collector Instance
-
-#### Objective-C
-
-```Obj-C
-
-id<RollbarCrashCollector> crashCollector =
-  [[RollbarPLCrashCollector alloc] init];
-  //OR [[RollbarCrashCollector alloc] init];
-  //OR nil;
-```
-
-#### Swift
-
-```Swift
-
-let crashCollector = RollbarPLCrashCollector()
-//OR let crashCollector = RollbarCrashCollector()
 ```
 
 ### Initialize the Shared Notifier
