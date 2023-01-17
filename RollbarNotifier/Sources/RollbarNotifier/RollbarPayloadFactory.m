@@ -160,18 +160,15 @@
     if (!data) {
         return nil;
     }
-    
+
     NSMutableDictionary *customData = [NSMutableDictionary dictionaryWithDictionary:self->_config.customData];
     if (exception) {
-        if (extra) {
-            customData[@"error.extra"] = extra.mutableCopy;
-        }
-
-        if (message && message.length > 0) {
-            customData[@"error.message"] = message;
-        }
+        customData[@"error.extra"] = extra.mutableCopy;
+        customData[@"error.message"] = message;
+    } else if (crashReport) {
+        data.title = [self messageFromCrashReport:crashReport];
     }
-    
+
     data.level = level;
     data.language = RollbarAppLanguage_ObjectiveC;
     data.platform = @"client";
@@ -187,7 +184,7 @@
     if (self->_config.loggingOptions) {
         data.framework = self->_config.loggingOptions.framework;
         if (self->_config.loggingOptions.requestId
-            && (self->_config.loggingOptions.requestId.length > 0)) {
+            && self->_config.loggingOptions.requestId.length > 0) {
             
             [data setData:self->_config.loggingOptions.requestId byKey:@"requestId"];
         }
@@ -199,8 +196,7 @@
     return payload;
 }
 
--(RollbarModule *)buildRollbarNotifierModule {
-    
+- (RollbarModule *)buildRollbarNotifierModule {
     if (self->_config.notifier && !self->_config.notifier.isEmpty) {
         
         RollbarModule *notifierModule =
@@ -212,8 +208,7 @@
     return nil;
 }
 
--(RollbarDTO *)buildRollbarClient {
-    
+- (RollbarDTO *)buildRollbarClient {
     NSNumber *timestamp = [NSNumber numberWithInteger:[[NSDate date] timeIntervalSince1970]];
     
     if (self->_config.loggingOptions) {
@@ -242,8 +237,7 @@
     }];
 }
 
--(RollbarPerson *)buildRollbarPerson {
-    
+- (RollbarPerson *)buildRollbarPerson {
     if (self->_config.person && self->_config.person.ID) {
         return self->_config.person;
     }
@@ -252,8 +246,7 @@
     }
 }
 
--(RollbarServer *)buildRollbarServer {
-    
+- (RollbarServer *)buildRollbarServer {
     if (self->_config.server && !self->_config.server.isEmpty) {
         return [[RollbarServer alloc] initWithCpu:nil
                                      serverConfig:self->_config.server];
@@ -302,6 +295,16 @@
 #endif
     
     return self.osData;
+}
+
+- (nonnull NSString *)messageFromCrashReport:(nonnull NSString *)crashReport {
+    NSRange range = [crashReport rangeOfString:@"CrashDoctor Diagnosis: " options:NSBackwardsSearch];
+    NSUInteger start = range.location + range.length;
+    range = NSMakeRange(start, crashReport.length - start);
+    NSString *diagnosis = [crashReport substringWithRange:range];
+    diagnosis = [diagnosis stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
+    RollbarSdkLog(@"%@", diagnosis);
+    return diagnosis;
 }
 
 @end
