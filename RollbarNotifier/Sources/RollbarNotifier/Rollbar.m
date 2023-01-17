@@ -9,7 +9,6 @@
 #import "RollbarTelemetryOptions.h"
 #import "RollbarTelemetryOptionsObserver.h"
 #import "RollbarScrubbingOptions.h"
-#import "RollbarSession.h"
 #import "RollbarThread.h"
 #import "RollbarLoggingOptions.h"
 

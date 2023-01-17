@@ -3,7 +3,6 @@
 #import "RollbarLoggerProtocol.h"
 #import "RollbarLogger.h"
 #import "RollbarNotifierFiles.h"
-#import "RollbarSession.h"
 #import "RollbarTelemetry.h"
 #import "RollbarCrashCollector.h"
 
@@ -45,10 +44,6 @@ NS_ASSUME_NONNULL_BEGIN
 
     self.collector = [[RollbarCrashCollector alloc] init];
     [self.collector collectCrashReports];
-
-    [[RollbarSession sharedInstance] enableOomMonitoring:config.loggingOptions.enableOomDetection withCrashCheck:^() {
-        return (BOOL)(self.collector.totalProcessedReports > 0);
-    }];
 
     [[RollbarTelemetry sharedInstance] configureWithOptions:config.telemetry];
 

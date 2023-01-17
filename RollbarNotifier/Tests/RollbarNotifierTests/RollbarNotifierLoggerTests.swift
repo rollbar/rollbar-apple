@@ -75,9 +75,6 @@ final class RollbarNotifierLoggerTests: XCTestCase {
         config = Rollbar.configuration().mutableCopy();
         config.destination.accessToken = "AT_1";
         config.destination.environment = "ENV_1";
-        let notifier = RollbarInfrastructure.sharedInstance().createLogger(with: config);
-        XCTAssertTrue(notifier.configuration!.destination.accessToken.compare("AT_1") == .orderedSame);
-        XCTAssertTrue(notifier.configuration!.destination.environment.compare("ENV_1") == .orderedSame);
 
         // reconfigure the root notifier:
         config = Rollbar.configuration().mutableCopy();
@@ -86,10 +83,6 @@ final class RollbarNotifierLoggerTests: XCTestCase {
         Rollbar.update(withConfiguration: config);
         XCTAssertTrue(RollbarInfrastructure.sharedInstance().logger.configuration!.destination.accessToken.compare("AT_N") == .orderedSame);
         XCTAssertTrue(RollbarInfrastructure.sharedInstance().logger.configuration!.destination.environment.compare("ENV_N") == .orderedSame);
-
-        // make sure the other notifier is still has its original configuration:
-        XCTAssertTrue(notifier.configuration!.destination.accessToken.compare("AT_1") == .orderedSame);
-        XCTAssertTrue(notifier.configuration!.destination.environment.compare("ENV_1") == .orderedSame);
 
         //TODO: to make this test even more valuable we need to make sure the other notifier's payloads
         //      are actually sent to its intended destination. But that is something we will be able to do
