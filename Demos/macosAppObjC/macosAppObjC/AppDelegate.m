@@ -11,8 +11,6 @@
 
 @import RollbarNotifier;
 @import RollbarAUL;
-@import RollbarKSCrash;
-@import RollbarPLCrashReporter;
 
 static NSString * const ROLLBAR_DEMO_PAYLOADS_ACCESS_TOKEN = @"09da180aba21479e9ed3d91e0b8d58d6";
 static NSString * const ROLLBAR_DEMO_DEPLOYS_WRITE_ACCESS_TOKEN = @"efdc4b85d66045f293a7f9e99c732f61";
@@ -91,14 +89,8 @@ __attribute__((noinline)) static void crashIt (void) {
     //[RollbarAulStoreMonitor.sharedInstance configureRollbarLogger:Rollbar.currentLogger];
     [RollbarAulStoreMonitor.sharedInstance start];
 
-    // optional crash reporter:
-    id<RollbarCrashCollector> crashCollector =
-      //nil;
-      //[[RollbarKSCrashCollector alloc] init];
-      [[RollbarPLCrashCollector alloc] init];
-    
     // init Rollbar shared instance:
-    [Rollbar initWithConfiguration:config crashCollector:crashCollector];
+    [Rollbar initWithConfiguration:config];
     
     [Rollbar infoMessage:@"Rollbar is up and running! Enjoy your remote error and log monitoring..."];
 }

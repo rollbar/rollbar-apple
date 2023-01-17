@@ -1,7 +1,6 @@
 import SwiftUI
 import RollbarSwift
 import RollbarNotifier
-import RollbarKSCrash
 
 @main
 struct iosAppSwiftApp: App {
@@ -61,9 +60,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         config.customData = ["customer_type": "enterprise"]
 
         // Initialize a Rollbar shared instance with a crash collector
-        Rollbar.initWithConfiguration(
-            config,
-            crashCollector: RollbarKSCrashCollector())
+        Rollbar.initWithConfiguration(config)
 
         // Note the ability to add aditional key/value pairs to the occurrence data for extra context
         Rollbar.infoMessage(

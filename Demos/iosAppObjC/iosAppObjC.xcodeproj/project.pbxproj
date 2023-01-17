@@ -15,7 +15,6 @@
 		55684F7E2553B4C700F82F34 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 55684F7C2553B4C700F82F34 /* LaunchScreen.storyboard */; };
 		55684F812553B4C700F82F34 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 55684F802553B4C700F82F34 /* main.m */; };
 		55684F8D2553B7E100F82F34 /* RollbarDeploys in Frameworks */ = {isa = PBXBuildFile; productRef = 55684F8C2553B7E100F82F34 /* RollbarDeploys */; };
-		55684F8F2553B7E800F82F34 /* RollbarKSCrash in Frameworks */ = {isa = PBXBuildFile; productRef = 55684F8E2553B7E800F82F34 /* RollbarKSCrash */; };
 		55684F912553B7EE00F82F34 /* RollbarNotifier in Frameworks */ = {isa = PBXBuildFile; productRef = 55684F902553B7EE00F82F34 /* RollbarNotifier */; };
 		55684F9D2553BD1C00F82F34 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55684F9C2553BD1C00F82F34 /* NetworkExtension.framework */; };
 /* End PBXBuildFile section */
@@ -45,7 +44,6 @@
 				55684F912553B7EE00F82F34 /* RollbarNotifier in Frameworks */,
 				55684F9D2553BD1C00F82F34 /* NetworkExtension.framework in Frameworks */,
 				55684F8D2553B7E100F82F34 /* RollbarDeploys in Frameworks */,
-				55684F8F2553B7E800F82F34 /* RollbarKSCrash in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -114,7 +112,6 @@
 			name = iosAppObjC;
 			packageProductDependencies = (
 				55684F8C2553B7E100F82F34 /* RollbarDeploys */,
-				55684F8E2553B7E800F82F34 /* RollbarKSCrash */,
 				55684F902553B7EE00F82F34 /* RollbarNotifier */,
 			);
 			productName = iosAppObjC;
@@ -400,10 +397,6 @@
 		55684F8C2553B7E100F82F34 /* RollbarDeploys */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RollbarDeploys;
-		};
-		55684F8E2553B7E800F82F34 /* RollbarKSCrash */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = RollbarKSCrash;
 		};
 		55684F902553B7EE00F82F34 /* RollbarNotifier */ = {
 			isa = XCSwiftPackageProductDependency;

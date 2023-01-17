@@ -8,10 +8,7 @@
 #import "RollbarTelemetry.h"
 #import "RollbarTelemetryType.h"
 
-#import "RollbarCrashCollectorProtocol.h"
 #import "RollbarConfig.h"
-//#import "RollbarLogger.h"
-
 
 #pragma mark - Initialization Facade Protocol
 
@@ -21,33 +18,16 @@
 @required
 
 /// Class initializer.
-/// @param accessToken Rollbar project access token
-+ (void)initWithAccessToken:(nonnull NSString *)accessToken;
-
-@optional
-
-/// Class initializer.
 /// @param configuration a Rollbar configuration
 + (void)initWithConfiguration:(nonnull RollbarConfig *)configuration;
 
-/// Class initializer.
-/// @param accessToken a Rollbar project access token
-/// @param crashCollector a crash collector
-+ (void)initWithAccessToken:(nonnull NSString *)accessToken
-             crashCollector:(nullable id<RollbarCrashCollector>)crashCollector;
-
-/// Class initializer.
-/// @param configuration a Rollbar configuration
-/// @param crashCollector a crash collector
-+ (void)initWithConfiguration:(nonnull RollbarConfig *)configuration
-               crashCollector:(nullable id<RollbarCrashCollector>)crashCollector;
  @end
 
 
 #pragma mark - Configuration Facade Protocol
 
 /// Rollbar facade configuration protocol
-@protocol RollbarFacadeConfiguration //<NSObject>
+@protocol RollbarFacadeConfiguration
 
 @required
 
@@ -64,7 +44,7 @@
 #pragma mark - Logging Facade Protocol
 
 /// Rollbar facade logging protocol
-@protocol RollbarFacadeLogging //<NSObject>
+@protocol RollbarFacadeLogging
 
 @required
 
@@ -423,7 +403,7 @@
 #pragma mark - Telemetry Facade Protocol
 
 /// Rollbar facade telemetry protocol
-@protocol RollbarFacadeTelemetry //<NSObject>
+@protocol RollbarFacadeTelemetry
 
 @required
 
@@ -527,8 +507,7 @@
 #pragma mark - Rollbar Facade Utility Class
 
 /// Rollbar facade utility class
-@interface Rollbar
-: NSObject<RollbarFacadeInitialization, RollbarFacadeConfiguration, RollbarFacadeLogging, RollbarFacadeTelemetry>
+@interface Rollbar : NSObject<RollbarFacadeInitialization, RollbarFacadeConfiguration, RollbarFacadeLogging, RollbarFacadeTelemetry>
 
 #pragma mark - Send manually constructed JSON payload
 
@@ -568,7 +547,5 @@
 // Make sure that the [RollbarInfrastructure sharedInstance] was already configured as early as possible within the:
 // -(BOOL)application:didFinishLaunchingWithOptions: method in AppDelegate.
 static void uncaughtExceptionHandler(NSException * _Nonnull exception);
-
-
 
 #endif //Rollbar_h

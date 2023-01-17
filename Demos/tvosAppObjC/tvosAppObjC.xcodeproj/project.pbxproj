@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		554E672A282B44F600908A64 /* RollbarKSCrash in Frameworks */ = {isa = PBXBuildFile; productRef = 554E6729282B44F600908A64 /* RollbarKSCrash */; };
-		554E672C282B44F600908A64 /* RollbarPLCrashReporter in Frameworks */ = {isa = PBXBuildFile; productRef = 554E672B282B44F600908A64 /* RollbarPLCrashReporter */; };
 		55889E292818B83B002E0228 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 55889E282818B83B002E0228 /* AppDelegate.m */; };
 		55889E2C2818B83B002E0228 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55889E2B2818B83B002E0228 /* ViewController.m */; };
 		55889E2F2818B83B002E0228 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 55889E2D2818B83B002E0228 /* Main.storyboard */; };
@@ -36,8 +34,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				55DD35832818C3150061AC50 /* RollbarNotifier in Frameworks */,
-				554E672A282B44F600908A64 /* RollbarKSCrash in Frameworks */,
-				554E672C282B44F600908A64 /* RollbarPLCrashReporter in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -101,8 +97,6 @@
 			name = tvosAppObjC;
 			packageProductDependencies = (
 				55DD35822818C3150061AC50 /* RollbarNotifier */,
-				554E6729282B44F600908A64 /* RollbarKSCrash */,
-				554E672B282B44F600908A64 /* RollbarPLCrashReporter */,
 			);
 			productName = tvosAppObjC;
 			productReference = 55889E242818B83B002E0228 /* tvosAppObjC.app */;
@@ -368,14 +362,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		554E6729282B44F600908A64 /* RollbarKSCrash */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = RollbarKSCrash;
-		};
-		554E672B282B44F600908A64 /* RollbarPLCrashReporter */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = RollbarPLCrashReporter;
-		};
 		55DD35822818C3150061AC50 /* RollbarNotifier */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RollbarNotifier;
