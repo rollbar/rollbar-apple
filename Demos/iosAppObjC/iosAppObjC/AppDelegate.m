@@ -8,7 +8,7 @@
     // Rollbar Configuration object.
     RollbarMutableConfig *config = [
         // Rollbar post_client_item access token
-        RollbarConfig mutableConfigWithAccessToken:@"YOUR-ROLLBAR-ACCESSTOKEN"
+        RollbarConfig mutableConfigWithAccessToken:@"dc0d9ce3d93c4ef5a4dbacf2434e508d"
                                        environment:@"staging"];
 
     config.loggingOptions.codeVersion = @"main";

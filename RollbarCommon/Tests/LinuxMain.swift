@@ -1,7 +1,8 @@
 import XCTest
-
 import RollbarCommonTests
+import RollbarCrashReportTests
 
-var tests = [XCTestCaseEntry]()
-tests += RollbarCommonTests.allTests()
-XCTMain(tests)
+XCTMain([XCTestCaseEntry]()
+    + RollbarCommonTests.allTests()
+    + ParserTests.allTests()
+    + CrashReportTests.allTests())

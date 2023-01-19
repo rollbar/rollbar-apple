@@ -11,7 +11,9 @@ let package = Package(
         .watchOS(.v7),
     ],
     products: [
-        .library(name: "RollbarCommon", targets: ["RollbarCommon"]),
+        .library(
+            name: "RollbarCommon",
+            targets: ["RollbarCommon", "RollbarCrashReport"]),
     ],
     targets: [
         .target(
@@ -20,6 +22,9 @@ let package = Package(
             cSettings: [
                 .headerSearchPath("Sources/RollbarCommon/**"),
             ]),
+        .target(
+            name: "RollbarCrashReport",
+            path: "Sources/RollbarCrashReport"),
         .testTarget(
             name: "RollbarCommonTests",
             dependencies: ["RollbarCommon"]),
@@ -30,6 +35,9 @@ let package = Package(
             cSettings: [
                 .headerSearchPath("Tests/RollbarCommonTests-ObjC/**"),
             ]),
+        .testTarget(
+            name: "RollbarCrashReportTests",
+            dependencies: ["RollbarCrashReport"]),
     ],
     swiftLanguageVersions: [
         SwiftVersion.v5,

@@ -12,6 +12,8 @@
 #import "RollbarThread.h"
 #import "RollbarLoggingOptions.h"
 
+@import RollbarCrashReport;
+
 static void uncaughtExceptionHandler(NSException * _Nonnull exception) {
     NSArray *backtrace = [exception callStackSymbols];
     //    NSString *platform = [[UIDevice currentDevice] platform];
