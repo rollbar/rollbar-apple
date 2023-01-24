@@ -93,6 +93,8 @@ typedef RollbarData *_Nonnull(^RollbarModifyData)(RollbarData *rollbarData);
 
 - (nonnull RollbarMutableConfig *) mutableCopy;
 
+- (BOOL)hasValidDestination;
+
 @end
 
 

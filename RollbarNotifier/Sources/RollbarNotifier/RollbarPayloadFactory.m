@@ -22,13 +22,11 @@
 @interface RollbarPayloadFactory ()
 
 @property (strong) NSMutableDictionary<NSString *, id> *osData;
+@property (strong) RollbarConfig *config;
 
 @end
 
-@implementation RollbarPayloadFactory {
-@private
-    RollbarConfig *_config; // expected to be nonnull...
-}
+@implementation RollbarPayloadFactory
 
 + (instancetype)factoryWithConfig:(nonnull RollbarConfig *)config {
     
@@ -111,57 +109,36 @@
 #pragma mark - Payload Composition
 
 -(nullable RollbarPayload *)buildRollbarPayloadWithLevel:(RollbarLevel)level
-                                        message:(NSString *)message
-                                      exception:(NSException *)exception
-                                          error:(NSError *)error
-                                          extra:(NSDictionary *)extra
-                                    crashReport:(NSString *)crashReport
-                                        context:(NSString *)context {
-    
-    // check critical config settings:
-    if (!self->_config.destination
-        || !self->_config.destination.environment
-        || self->_config.destination.environment.length == 0) {
-        
+                                                 message:(NSString *)message
+                                               exception:(NSException *)exception
+                                                   error:(NSError *)error
+                                                   extra:(NSDictionary *)extra
+                                             crashReport:(NSString *)crashReport
+                                                 context:(NSString *)context
+{
+    if (!self.config.hasValidDestination) {
         return nil;
     }
-    
+
     // compile payload data proper body:
     RollbarBody *body = [RollbarBody alloc];
     if (crashReport) {
         body = [body initWithCrashReport:crashReport];
-    }
-    else if (error) {
+    } else if (error) {
         body = [body initWithError:error];
-    }
-    else if (exception) {
+    } else if (exception) {
         body = [body initWithException:exception];
-    }
-    else if (message) {
-        body = [body initWithMessage:message];
-    }
-    else {
-        return nil;
-    }
-    
-    if (!body) {
-        return nil;
-    }
-    
-    // this is done only for backward compatibility for customers that used to rely on this undocumented
-    // extra data with a message:
-    if (message && extra) {
-        [body.message setData:extra.mutableCopy byKey:@"extra"];
-    }
-    
-    // compile payload data:
-    RollbarData *data = [[RollbarData alloc] initWithEnvironment:self->_config.destination.environment
-                                                            body:body];
-    if (!data) {
+    } else if (message) {
+        body = [body initWithMessage:message extra:extra];
+    } else {
         return nil;
     }
 
-    NSMutableDictionary *customData = [NSMutableDictionary dictionaryWithDictionary:self->_config.customData];
+    // compile payload data:
+    RollbarData *data = [[RollbarData alloc] initWithEnvironment:self.config.destination.environment
+                                                            body:body];
+
+    NSMutableDictionary *customData = [NSMutableDictionary dictionaryWithDictionary:self.config.customData];
     if (exception) {
         customData[@"error.extra"] = extra.mutableCopy;
         customData[@"error.message"] = message;
@@ -178,22 +155,20 @@
     data.person = [self buildRollbarPerson];
     data.server = [self buildRollbarServer];
     data.client = [self buildRollbarClient];
+
     if (context && context.length > 0) {
         data.context = context;
     }
-    if (self->_config.loggingOptions) {
-        data.framework = self->_config.loggingOptions.framework;
-        if (self->_config.loggingOptions.requestId
-            && self->_config.loggingOptions.requestId.length > 0) {
-            
-            [data setData:self->_config.loggingOptions.requestId byKey:@"requestId"];
+
+    if (self.config.loggingOptions) {
+        data.framework = self.config.loggingOptions.framework;
+        if (self.config.loggingOptions.hasValidRequestId) {
+            [data setData:self.config.loggingOptions.requestId byKey:@"requestId"];
         }
     }
     
-    RollbarPayload *payload = [[RollbarPayload alloc] initWithAccessToken:self->_config.destination.accessToken
-                                                                     data:data];
-    
-    return payload;
+    return [[RollbarPayload alloc] initWithAccessToken:self.config.destination.accessToken
+                                                  data:data];
 }
 
 - (RollbarModule *)buildRollbarNotifierModule {

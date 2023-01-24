@@ -13,88 +13,22 @@ static NSString * const DFK_MESSAGE = @"message";
 static NSString * const DFK_CRASH_REPORT = @"crash_report";
 
 @implementation RollbarBody
-#pragma mark - Properties
 
-- (nullable RollbarMessage *)message {
-    id data = [self getDataByKey:DFK_MESSAGE];
-    if (data != nil) {
-        return [[RollbarMessage alloc] initWithDictionary:data];
+- (instancetype)initWithMessage:(nonnull NSString *)message {
+    return [self initWithMessage:message extra:nil];
+}
+
+- (instancetype)initWithMessage:(nonnull NSString *)string
+                          extra:(nullable NSDictionary *)extra
+{
+    RollbarMessage *message = [[RollbarMessage alloc] initWithBody:string];
+
+    if (extra) {
+        [message setData:extra.mutableCopy byKey:@"extra"];
     }
-    return nil;
-}
 
-- (void)setMessage:(RollbarMessage *)message {
-    [self setDictionary:message.jsonFriendlyData forKey:DFK_MESSAGE];
-}
-
-- (nullable RollbarCrashReport *)crashReport {
-    id data = [self getDataByKey:DFK_CRASH_REPORT];
-    if (data != nil) {
-        return [[RollbarCrashReport alloc] initWithDictionary:data];
-    }
-    return nil;
-}
-
-- (void)setCrashReport:(RollbarCrashReport *)crashReport {
-    [self setDictionary:crashReport.jsonFriendlyData forKey:DFK_CRASH_REPORT];
-}
-
-- (nullable RollbarTrace *)trace {
-    id data = [self getDataByKey:DFK_TRACE];
-    if (data != nil) {
-        return [[RollbarTrace alloc] initWithDictionary:data];
-    }
-    return nil;
-}
-
-- (void)setTrace:(nullable RollbarTrace *)trace {
-    [self setDictionary:trace.jsonFriendlyData forKey:DFK_TRACE];
-}
-
-- (nullable NSArray<RollbarTrace *> *)traceChain {
-    NSArray *dataArray = [self getDataByKey:DFK_TRACE_CHAIN];
-    if (dataArray) {
-        NSMutableArray<RollbarTrace *> *result = [NSMutableArray arrayWithCapacity:dataArray.count];
-        for(NSDictionary *data in dataArray) {
-            if (data) {
-                [result addObject:[[RollbarTrace alloc] initWithDictionary:data]];
-            }
-        }
-        return result;
-    }
-    return nil; //[NSMutableArray array];
-}
-
-- (void)setTraceChain:(nullable NSArray<RollbarTrace *> *)traceChain {
-
-    [self setData:[self getJsonFriendlyDataFromTraceChain:traceChain] byKey:DFK_TRACE_CHAIN];
-}
-
-- (nullable NSArray<RollbarTelemetryEvent *> *)telemetry {
-    NSArray *dataArray = [self getDataByKey:DFK_TELEMETRY];
-    if (dataArray) {
-        NSMutableArray<RollbarTelemetryEvent *> *result = [NSMutableArray arrayWithCapacity:dataArray.count];
-        for(NSDictionary *data in dataArray) {
-            if (data) {
-                [result addObject:[[RollbarTelemetryEvent alloc] initWithDictionary:data]];
-            }
-        }
-        return result;
-    }
-    return [NSMutableArray array];
-}
-
-- (void)setTelemetry:(nullable NSArray<RollbarTelemetryEvent *> *)telemetry {
-
-    [self setData:[self getJsonFriendlyDataFromTelemetry:telemetry] byKey:DFK_TELEMETRY];
-}
-
-#pragma mark - Initializers
-
--(instancetype)initWithMessage:(nonnull NSString *)message {
-    
     self = [super initWithDictionary:@{
-        DFK_MESSAGE: [[RollbarMessage alloc] initWithBody:message].jsonFriendlyData,
+        DFK_MESSAGE: message.jsonFriendlyData,
         DFK_CRASH_REPORT: [NSNull null],
         DFK_TRACE: [NSNull null],
         DFK_TRACE_CHAIN: [NSNull null],
@@ -103,7 +37,7 @@ static NSString * const DFK_CRASH_REPORT = @"crash_report";
     return self;
 }
 
--(instancetype)initWithException:(nonnull NSException *)exception {
+- (instancetype)initWithException:(nonnull NSException *)exception {
     
     RollbarTrace *trace = [[RollbarTrace alloc] initWithException:exception];
     self = [super initWithDictionary:@{
@@ -116,7 +50,7 @@ static NSString * const DFK_CRASH_REPORT = @"crash_report";
     return self;
 }
 
--(instancetype)initWithError:(nonnull NSError *)error {
+- (instancetype)initWithError:(nonnull NSError *)error {
     
     self = [super initWithDictionary:@{
         DFK_MESSAGE: [[RollbarMessage alloc] initWithNSError:error].jsonFriendlyData,
@@ -128,17 +62,21 @@ static NSString * const DFK_CRASH_REPORT = @"crash_report";
     return self;
 }
 
--(instancetype)initWithCrashReport:(nonnull NSString *)crashReport {
-    
+- (instancetype)initWithCrashReport:(nonnull NSString *)crashReport {
+    RollbarCrashReport *report = [[RollbarCrashReport alloc] initWithRawCrashReport:crashReport];
+    NSException *exception = [[NSException alloc] initWithName:report.title
+                                                        reason:report.diagnostic
+                                                      userInfo:report.jsonFriendlyData];
+    RollbarTrace *trace = [[RollbarTrace alloc] initWithException:exception];
+
     self = [super initWithDictionary:@{
         DFK_MESSAGE: [NSNull null],
-        DFK_CRASH_REPORT: [[RollbarCrashReport alloc] initWithRawCrashReport:crashReport].jsonFriendlyData,
-        DFK_TRACE: [NSNull null],
-        // if/when we do allow a trace side-by-side with the crash report use the following line instead of code line above:
-        //DFK_TRACE: [[RollbarTrace alloc] initWithCrashReport:crashReport].jsonFriendlyData,
+        DFK_CRASH_REPORT: report.jsonFriendlyData,
+        DFK_TRACE: trace.jsonFriendlyData,
         DFK_TRACE_CHAIN: [NSNull null],
         DFK_TELEMETRY: [self snapTelemetryData],
     }];
+
     return self;
 }
 
@@ -177,7 +115,7 @@ static NSString * const DFK_CRASH_REPORT = @"crash_report";
 -(id)snapTelemetryData {
     
     if (![RollbarTelemetry sharedInstance].enabled) {
-        return [NSNull null];;
+        return [NSNull null];
     }
     
     NSArray *telemetryData = [[RollbarTelemetry sharedInstance] getAllData];

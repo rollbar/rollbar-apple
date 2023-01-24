@@ -21,37 +21,16 @@ NS_ASSUME_NONNULL_BEGIN
 /// If an application crash report, use "crash_report"
 @interface RollbarBody : RollbarDTO
 
-#pragma mark - Required but mutually exclusive properties
-
-/// Payload Option 1: "trace"
-@property (nonatomic, strong, nullable) RollbarTrace *trace;
-
-/// Payload Option 2: "trace_chain"
-/// Used for exceptions with inner exceptions or causes
-/// Each element in the list should be a "trace" object, as shown above.
-/// Must contain at least one element.
-@property (nonatomic,strong, nullable) NSArray<RollbarTrace *> *traceChain;
-
-/// Payload Option 3: "message"
-/// Only one of "trace", "trace_chain", "message", or "crash_report" should be present.
-/// Presence of a "message" key means that this payload is a log message.
-@property (nonatomic, strong, nullable) RollbarMessage *message;
-
-// Payload Option 4: "crash_report"
-// Only one of "trace", "trace_chain", "message", or "crash_report" should be present.
-@property (nonatomic, strong, nullable) RollbarCrashReport *crashReport;
-
-#pragma mark - Optional properties
-
-/// Optional: "telemetry".
-/// Only applicable if you are sending telemetry data.
-@property (readonly, nonatomic, strong, nullable) NSArray<RollbarTelemetryEvent *> *telemetry;
-
-#pragma mark - Initializers
-
 /// Initializer
 /// @param message a message
 -(instancetype)initWithMessage:(nonnull NSString *)message;
+
+/// Initializer
+/// @param message a message
+/// @param extra Optional parameter for backwards compatibility for customers
+///              that still rely on an undocumented feature.
+- (instancetype)initWithMessage:(nonnull NSString *)string
+                          extra:(nullable NSDictionary *)extra;
 
 /// Initializer
 /// @param exception an exception

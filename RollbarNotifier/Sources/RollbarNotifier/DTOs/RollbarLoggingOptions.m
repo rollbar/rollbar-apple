@@ -127,6 +127,10 @@ static NSString * const DFK_REQUEST_ID = @"requestId";
                        crashLevel:DEFAULT_CRASH_LEVEL];
 }
 
+- (BOOL)hasValidRequestId {
+    return self.requestId && self.requestId.length > 0;
+}
+
 #pragma mark - property accessors
 
 - (RollbarLevel)logLevel {

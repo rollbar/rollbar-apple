@@ -249,14 +249,11 @@ static NSString * const DFK_CUSTOM = @"custom";
     return [self mutableCopyWithZone:nil];
 }
 
-//#pragma mark - RollbarPersistent protocol
-//
-//- (BOOL)loadFromFile:(nonnull NSString *)filePath {
-//}
-//
-//- (BOOL)saveToFile:(nonnull NSString *)filePath {
-//}
-
+- (BOOL)hasValidDestination {
+    return self.destination
+        && self.destination.environment
+        && self.destination.environment.length > 0;
+}
 
 #pragma mark - NSCopying protocol
 

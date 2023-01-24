@@ -8,7 +8,8 @@ NS_ASSUME_NONNULL_BEGIN
 typedef NS_ENUM(NSUInteger, RollbarExceptionInfo) {
     RollbarExceptionInfo_Type,
     RollbarExceptionInfo_Codes,
-    RollbarExceptionInfo_Backtraces
+    RollbarExceptionInfo_Backtraces,
+    RollbarExceptionInfo_Diagnostic
 };
 
 typedef NS_ENUM(NSUInteger, RollbarBacktraceComponent) {

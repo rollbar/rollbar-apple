@@ -105,6 +105,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithLogLevel:(RollbarLevel)logLevel
                       crashLevel:(RollbarLevel)crashLevel;
 
+- (BOOL)hasValidRequestId;
+
 @end
 
 @interface RollbarMutableLoggingOptions : RollbarLoggingOptions
