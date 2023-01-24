@@ -297,12 +297,30 @@
     return self.osData;
 }
 
-- (nonnull NSString *)messageFromCrashReport:(nonnull NSString *)crashReport {
-    NSRange range = [crashReport rangeOfString:@"CrashDoctor Diagnosis: " options:NSBackwardsSearch];
-    NSUInteger start = range.location + range.length;
-    range = NSMakeRange(start, crashReport.length - start);
+- (nonnull NSString *)messageFromCrashReport:(nonnull NSString *)report {
+    NSRange range = [report rangeOfString:@"CrashDoctor Diagnosis: "
+                                       options:NSBackwardsSearch];
+    if (range.length != 0) {
+        NSUInteger start = range.location + range.length;
+        range = NSMakeRange(start, report.length - start);
+        return [self diagnosticFromFromCrashReport:report range:range];
+    }
+
+    range = [report rangeOfString:@"Exception Type:"];
+    if (range.length != 0) {
+        NSRange lineRange = [report lineRangeForRange:range];
+        lineRange.location += range.length;
+        lineRange.length -= range.length;
+        return [self diagnosticFromFromCrashReport:report range:lineRange];
+    }
+}
+
+- (nonnull NSString *)diagnosticFromFromCrashReport:(nonnull NSString *)crashReport
+                                              range:(NSRange)range
+{
     NSString *diagnosis = [crashReport substringWithRange:range];
     diagnosis = [diagnosis stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
+    diagnosis = [diagnosis stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     RollbarSdkLog(@"%@", diagnosis);
     return diagnosis;
 }
