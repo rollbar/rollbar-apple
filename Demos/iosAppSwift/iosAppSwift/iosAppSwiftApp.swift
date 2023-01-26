@@ -67,6 +67,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             "Rollbar is up and running! Enjoy your remote error and log monitoring...",
             data: ["key_x": "value_x", "key_y": "value_y"])
 
+        if #available(iOS 15, macOS 12.0, macCatalyst 15.0, *) {
+            DiagnosticSubscriber.start()
+        }
+
         return true
     }
 }
