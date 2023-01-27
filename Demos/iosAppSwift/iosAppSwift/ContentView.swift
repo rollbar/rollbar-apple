@@ -12,6 +12,12 @@ enum ExampleError: Error {
 struct ContentView: View {
     let example = Example();
 
+    func button(_ title: String, action: @escaping () -> ()) -> some View {
+        Button(title, action: action)
+            .buttonStyle(.bordered)
+            .tint(.blue)
+    }
+
     var body: some View {
         VStack {
             Text("Rollbar Apple SDK Example")
@@ -19,39 +25,18 @@ struct ContentView: View {
                 .padding(.bottom)
 
             VStack {
-                Button("Manual Logging Example", action: example.manualLogging)
-                    .tint(.blue)
-                    .buttonStyle(.bordered)
-
-                Button("Divide by zero") { _ = example.divide(by: 0) }
-                    .tint(.blue)
-                    .buttonStyle(.bordered)
-
-                Button("Log invalid JSON", action: example.logInvalidJson)
-                    .tint(.blue)
-                    .buttonStyle(.bordered)
+                button("Manual Logging Example", action: example.manualLogging)
                     .padding(.bottom)
-
-                Button("Throw an ExampleError") { try! example.throwError() }
-                    .tint(.blue)
-                    .buttonStyle(.bordered)
-
-                Button("Throw an NSException", action: example.throwNSException)
-                    .tint(.blue)
-                    .buttonStyle(.bordered)
+                button("Force unwrap nil", action: example.forceUnwrapNil)
+                button("Force invalid cast") { example.forceInvalidCast(to: Int.self) }
+                button("Force try and fail") { try! example.throwError() }
+                button("Out of bounds access", action: example.outOfBounds)
+                button("Divide by zero") { _ = example.divide(by: 0) }
+                button("Throw an NSException", action: example.throwNSException)
                     .padding(.bottom)
-
-                Button("Assertion Failure", action: example.forceAssertionFailure)
-                    .tint(.blue)
-                    .buttonStyle(.bordered)
-
-                Button("Precondition Failure", action: example.forcePreconditionFailure)
-                    .tint(.blue)
-                    .buttonStyle(.bordered)
-
-                Button("Fatal Error", action: example.forceFatalError)
-                    .tint(.blue)
-                    .buttonStyle(.bordered)
+                button("Assertion Failure", action: example.forceAssertFailure)
+                button("Precondition Failure", action: example.forcePrecondFailure)
+                button("Fatal Error", action: example.forceFatalError)
             }
         }
         .padding()
@@ -96,12 +81,26 @@ struct Example {
         fatalError("Force a crash")
     }
 
-    func forcePreconditionFailure() {
+    func forcePrecondFailure() {
         preconditionFailure("Precondition failed")
     }
 
-    func forceAssertionFailure() {
+    func forceAssertFailure() {
         assertionFailure("Assertion failed")
+    }
+
+    func forceUnwrapNil() {
+        let x = Optional<String>.none
+        let _ = x!
+    }
+
+    func forceInvalidCast<T>(to type: T.Type) {
+        let x = ""
+        let _ = x as! T
+    }
+
+    func outOfBounds() {
+        let _ = [][Int.max]
     }
 
     func divide(by y: Int) -> Int {
@@ -116,19 +115,5 @@ struct Example {
         RollbarExceptionGuard(logger: logger).tryExecute {
             RollbarTryCatch.throw("NSException from ObjC")
         }
-    }
-
-    func logInvalidJson() {
-        Rollbar.log(
-            .warning,
-            message: "Logging with extras and context",
-            data: [
-                "fingerprint": "targeted-mistake-recycling-incorrect-range",
-                "bestSolutionTokens": [51241, 42421, 32142],
-                "guessTokens": [22414, 89389],
-                // This is a (Int, Int), which can't be turned into Json
-                "detectedRangeStart": (1, 10),
-            ],
-            context: "Rollbar Example Logging Invalid Json")
     }
 }
