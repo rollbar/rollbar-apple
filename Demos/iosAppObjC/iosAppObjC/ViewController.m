@@ -4,14 +4,6 @@
 
 @implementation ViewController
 
-- (IBAction)interrupt:(UIButton *)sender {
-    raise(SIGINT);
-}
-
-- (IBAction)trap:(UIButton *)sender {
-    raise(SIGTRAP);
-}
-
 - (IBAction)abort:(UIButton *)sender {
     abort(); // SIGABRT
 }
@@ -32,9 +24,17 @@
     @throw NSInternalInconsistencyException;
 }
 
+- (IBAction)dispatch:(UIButton *)sender {
+    dispatch_sync(dispatch_get_main_queue(), ^{});
+}
+
 - (IBAction)divideByZero:(UIButton *)sender {
-    //int i = 1 / 0;
-    __unused div_t i = div(1, 0);
+    __unused int i = 1 / 0;
+    //div_t i = div(1, 0);
+}
+
+- (IBAction)outOfBounds:(UIButton *)sender {
+    __unused id n = @[@0][INT_MAX];
 }
 
 - (IBAction)null:(UIButton *)sender {

@@ -2,15 +2,16 @@
 #import "RollbarCrashCollector.h"
 
 @import KSCrash_Reporting_Sinks;
+@import RollbarCrashReport;
 
 NS_ASSUME_NONNULL_BEGIN
 
 static bool isDebuggerAttached();
 
-@interface RollbarCrashReporter : NSObject <KSCrashReportFilter>
+@interface RollbarCrashLoggingFilter : NSObject <KSCrashReportFilter>
 @end
 
-@implementation RollbarCrashReporter
+@implementation RollbarCrashLoggingFilter
 
 - (void)filterReports:(NSArray *)reports
          onCompletion:(KSCrashReportFilterCompletion)completion
@@ -36,8 +37,13 @@ static bool isDebuggerAttached();
     [super install];
 
     KSCrashMonitorType monitoring = isDebuggerAttached()
-        ? KSCrashMonitorTypeDebuggerSafe & ~(KSCrashMonitorTypeOptional | KSCrashMonitorTypeExperimental)
-        : KSCrashMonitorTypeProductionSafe & ~KSCrashMonitorTypeOptional;
+    ? KSCrashMonitorTypeDebuggerSafe
+    & ~(KSCrashMonitorTypeOptional
+        | KSCrashMonitorTypeExperimental
+        | KSCrashMonitorTypeUserReported)
+    : KSCrashMonitorTypeProductionSafe
+    & ~(KSCrashMonitorTypeOptional
+        | KSCrashMonitorTypeUserReported);
 
     [KSCrash.sharedInstance setDeleteBehaviorAfterSendAll:KSCDeleteOnSucess];
     [KSCrash.sharedInstance setDemangleLanguages:KSCrashDemangleLanguageAll];
@@ -57,9 +63,10 @@ static bool isDebuggerAttached();
 }
 
 - (id<KSCrashReportFilter>)sink {
-    id filter = [KSCrashReportFilterAppleFmt filterWithReportStyle:KSAppleReportStyleSymbolicated];
-    id report = [[RollbarCrashReporter alloc] init];
-    return [KSCrashReportFilterPipeline filterWithFilters:filter, report, nil];
+    id diagnose = [[RollbarCrashDiagnosticFilter alloc] init];
+    id format = [[KSCrashReportFilterAppleFmt alloc] init];
+    id log = [[RollbarCrashLoggingFilter alloc] init];
+    return [KSCrashReportFilterPipeline filterWithFilters:diagnose, format, log, nil];
 }
 
 @end
@@ -67,23 +74,23 @@ static bool isDebuggerAttached();
 #pragma mark -
 
 static bool isDebuggerAttached() {
-  static bool attached = false;
+    static bool attached = false;
 
-  static dispatch_once_t token;
-  dispatch_once(&token, ^{
-      struct kinfo_proc info;
-      size_t info_size = sizeof(info);
-      int name[4] = { CTL_KERN, KERN_PROC, KERN_PROC_PID, getpid() };
+    static dispatch_once_t token;
+    dispatch_once(&token, ^{
+        struct kinfo_proc info;
+        size_t info_size = sizeof(info);
+        int name[4] = { CTL_KERN, KERN_PROC, KERN_PROC_PID, getpid() };
 
-      if (sysctl(name, 4, &info, &info_size, NULL, 0) == -1) {
-          RollbarSdkLog(@"Error checking for debugger via sysctl(): %s", strerror(errno));
-      } else if (info.kp_proc.p_flag & P_TRACED) {
-          RollbarSdkLog(@"Found a debugger attached");
-          attached = true;
-      }
-  });
+        if (sysctl(name, 4, &info, &info_size, NULL, 0) == -1) {
+            RollbarSdkLog(@"Error checking for debugger via sysctl(): %s", strerror(errno));
+        } else if (info.kp_proc.p_flag & P_TRACED) {
+            RollbarSdkLog(@"Found a debugger attached");
+            attached = true;
+        }
+    });
 
-  return attached;
+    return attached;
 }
 
 NS_ASSUME_NONNULL_END
