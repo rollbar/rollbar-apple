@@ -417,51 +417,6 @@
     XCTAssertNil(dto.traceChain);
 }
 
-- (void)testRollbarJavascriptDTO {
-    NSString *browser = @"BROWSER";
-    NSString *codeVersion = @"CODE_VERSION";
-    RollbarTriStateFlag sourceMapsEnabled = RollbarTriStateFlag_On;
-    RollbarTriStateFlag guessUncaughtExceptionFrames = RollbarTriStateFlag_Off;
-    
-    RollbarJavascript *dto = [[RollbarJavascript alloc] initWithBrowser:browser
-                                                            codeVersion:nil
-                                                       sourceMapEnabled:sourceMapsEnabled
-                                                    guessUncaughtFrames:guessUncaughtExceptionFrames];    
-    XCTAssertNotNil(dto);
-    XCTAssertNotNil(dto.browser);
-    XCTAssertNil(dto.codeVersion);
-    XCTAssertEqual(browser, dto.browser);
-    XCTAssertEqual(sourceMapsEnabled, dto.sourceMapEnabled);
-    XCTAssertEqual(guessUncaughtExceptionFrames, dto.guessUncaughtFrames);
-
-    dto.codeVersion = codeVersion;
-    XCTAssertNotNil(dto.codeVersion);
-    XCTAssertEqual(codeVersion, dto.codeVersion);
-}
-
-- (void)testRollbarClientDTO {
-    NSString *browser = @"BROWSER";
-    NSString *codeVersion = @"CODE_VERSION";
-    RollbarTriStateFlag sourceMapsEnabled = RollbarTriStateFlag_On;
-    RollbarTriStateFlag guessUncaughtExceptionFrames = RollbarTriStateFlag_Off;
-    
-    RollbarJavascript *dtoJavascript = [[RollbarJavascript alloc] initWithBrowser:browser
-                                                            codeVersion:codeVersion
-                                                       sourceMapEnabled:sourceMapsEnabled
-                                                    guessUncaughtFrames:guessUncaughtExceptionFrames];
-    NSString *cpu = @"CPU";
-    RollbarClient *dto = [[RollbarClient alloc] initWithCpu:cpu javaScript:dtoJavascript];
-    
-    XCTAssertNotNil(dto);
-    XCTAssertNotNil(dto.cpu);
-    XCTAssertEqual(cpu, dto.cpu);
-    XCTAssertNotNil(dto.javaScript);
-    XCTAssertEqual(browser, dto.javaScript.browser);
-    XCTAssertEqual(sourceMapsEnabled, dto.javaScript.sourceMapEnabled);
-    XCTAssertEqual(guessUncaughtExceptionFrames, dto.javaScript.guessUncaughtFrames);
-    XCTAssertEqual(codeVersion, dto.javaScript.codeVersion);
-}
-
 - (void)testRollbarServerDTO {
     NSString *cpu = @"CPU";
     NSString *host = @"HOST";

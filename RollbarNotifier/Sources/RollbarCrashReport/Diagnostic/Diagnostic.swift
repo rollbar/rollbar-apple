@@ -19,6 +19,12 @@ struct Diagnostic: RawRepresentable {
         self.source = source
     }
 
+    /// Initializes a new `Diagnostic` with the given `diagnosis` and `source`.
+    init<S>(_ diagnosis: S, source: Report.CrashType) where S: StringProtocol {
+        self.diagnosis = String(diagnosis)
+        self.source = source.rawValue
+    }
+
     /// Initializes a new `Diagnostic` from the given dictionary.
     ///
     /// The given dictionary must contain a `diagnosis` _and_ a `source`
@@ -38,5 +44,13 @@ struct Diagnostic: RawRepresentable {
     func formatted(with formatter: Formatter) -> Self {
         let formatted = formatter.string(for: self.diagnosis) ?? self.diagnosis
         return .init(formatted, source: self.source)
+    }
+}
+
+extension Diagnostic: CustomStringConvertible {
+
+    @usableFromInline
+    var description: String {
+        "\(source): \(diagnosis)"
     }
 }

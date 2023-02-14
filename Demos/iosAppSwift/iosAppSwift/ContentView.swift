@@ -1,4 +1,5 @@
 import SwiftUI
+import Foundation
 import RollbarSwift
 import RollbarNotifier
 
@@ -160,8 +161,6 @@ struct Example {
     }
 
     func throwNSException() {
-        RollbarExceptionGuard(logger: logger).tryExecute {
-            RollbarTryCatch.throw("NSException from ObjC")
-        }
+        _ = try? JSONSerialization.data(withJSONObject: (1, 2))
     }
 }
