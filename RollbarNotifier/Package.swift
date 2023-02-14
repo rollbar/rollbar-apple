@@ -11,7 +11,7 @@ let package = Package(
         .watchOS(.v7),
     ],
     products: [
-        .library(name: "RollbarNotifier", targets: ["RollbarNotifier"]),
+        .library(name: "RollbarNotifier", targets: ["RollbarNotifier", "RollbarCrashReport"]),
     ],
     dependencies: [
         .package(path: "../RollbarCommon"),
@@ -20,15 +20,28 @@ let package = Package(
     ],
     targets: [
         .target(
+            name: "RollbarCrashReport",
+            dependencies: [
+                "KSCrash",
+            ],
+            path: "Sources/RollbarCrashReport"
+        ),
+        .target(
             name: "RollbarNotifier",
             dependencies: [
                 "RollbarCommon",
                 "KSCrash",
+                "RollbarCrashReport"
             ],
             publicHeadersPath: "include",
             cSettings: [
                 .headerSearchPath("Sources/RollbarNotifier/**"),
             ]
+        ),
+        .testTarget(
+            name: "RollbarCrashReportTests",
+            dependencies: ["RollbarCrashReport"],
+            resources: [.process("Assets")]
         ),
         .testTarget(
             name: "RollbarNotifierTests",

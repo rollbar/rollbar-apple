@@ -10,7 +10,7 @@ enum ExampleError: Error {
 }
 
 struct ContentView: View {
-    let example = Example();
+    let example = Example()
 
     func button(_ title: String, action: @escaping () -> ()) -> some View {
         Button(title, action: action)
@@ -27,16 +27,40 @@ struct ContentView: View {
             VStack {
                 button("Manual Logging Example", action: example.manualLogging)
                     .padding(.bottom)
-                button("Force unwrap nil", action: example.forceUnwrapNil)
-                button("Force invalid cast") { example.forceInvalidCast(to: Int.self) }
-                button("Force try and fail") { try! example.throwError() }
-                button("Out of bounds access", action: example.outOfBounds)
-                button("Divide by zero") { _ = example.divide(by: 0) }
-                button("Throw an NSException", action: example.throwNSException)
-                    .padding(.bottom)
-                button("Assertion Failure", action: example.forceAssertFailure)
-                button("Precondition Failure", action: example.forcePrecondFailure)
-                button("Fatal Error", action: example.forceFatalError)
+
+                Group {
+                    button("Force unwrap nil", action: example.forceUnwrapNil)
+                    button("Implicitly unwrapped nil argument") { example.implicitlyUnwrappedArgument(nil) }
+                    button("Implicitly unwrapped nil value", action: example.implicitlyUnwrappedValue)
+                        .padding(.bottom)
+                }
+
+                Group {
+                    button("Force as! invalid cast") { example.forceInvalidCast(to: Int.self) }
+                    button("Unsafe bit cast", action: example.unsafeBitCast)
+                        .padding(.bottom)
+                }
+
+                Group {
+                    button("Out of bounds access", action: example.outOfBounds)
+                    //button("Increment past endIndex", action: example.incrementPastEndIndex)
+                    //button("Neg Double outside UInt range") { example.outsideRepresentableRange(-21.5) }
+                    button("Duplicate Dictionary keys", action: example.duplicateKeys)
+                    button("Divide by zero") { example.divide(by: 0) }
+                        .padding(.bottom)
+                }
+
+                Group {
+                    button("Force try! and fail") { try! example.throwError() }
+                    button("Throw an NSException", action: example.throwNSException)
+                        .padding(.bottom)
+                }
+
+                Group {
+                    button("Assertion Failure", action: example.forceAssertFailure)
+                    button("Precondition Failure", action: example.forcePrecondFailure)
+                    button("Fatal Error", action: example.forceFatalError)
+                }
             }
         }
         .padding()
@@ -66,7 +90,7 @@ struct Example {
 
         Rollbar.errorMessage("My error message", data: extraInfo)
 
-        Rollbar.errorError(ExampleError.invalidResult, data: extraInfo)
+        Rollbar.criticalError(ExampleError.invalidResult, data: extraInfo)
 
         do {
             throw ExampleError.outOfBounds
@@ -78,33 +102,57 @@ struct Example {
     /// A hard crash is captured by the crash reporter. The next time
     /// the application is started, the data is sent to Rollbar.
     func forceFatalError() {
-        fatalError("Force a crash")
+        fatalError("This is the description of a fatal error.")
     }
 
     func forcePrecondFailure() {
-        preconditionFailure("Precondition failed")
+        preconditionFailure("The description of a precondition failure")
     }
 
     func forceAssertFailure() {
-        assertionFailure("Assertion failed")
+        assertionFailure("The description of an assertion failure")
     }
 
     func forceUnwrapNil() {
-        let x = Optional<String>.none
-        let _ = x!
+        _ = String?.none!
+    }
+
+    func implicitlyUnwrappedArgument(_ x: Int!) {
+        _ = x + 1
+    }
+
+    func implicitlyUnwrappedValue() {
+        let x: Int! = nil
+        _ = x + 1
     }
 
     func forceInvalidCast<T>(to type: T.Type) {
-        let x = ""
-        let _ = x as! T
+        _ = "" as! T
+    }
+
+    func outsideRepresentableRange(_ d: Double) {
+        _ = UInt(d)
     }
 
     func outOfBounds() {
-        let _ = [][Int.max]
+        _ = [][Int.max]
     }
 
-    func divide(by y: Int) -> Int {
-        1 / y
+    func duplicateKeys() {
+        _ = ["one": 1, "one": 1]
+    }
+
+    func incrementPastEndIndex() {
+        let r = 0...3
+        _ = r.index(after: r.endIndex)
+    }
+
+    func unsafeBitCast() {
+        _ = Swift.unsafeBitCast(Int.min, to: String.self)
+    }
+
+    func divide(by y: Int) {
+        _ = 1 / y
     }
 
     func throwError() throws {

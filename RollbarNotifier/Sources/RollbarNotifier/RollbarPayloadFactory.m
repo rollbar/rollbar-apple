@@ -170,7 +170,7 @@
     }
 
     data.level = level;
-    data.language = RollbarAppLanguage_ObjectiveC;
+    data.language = RollbarAppLanguage_Swift;
     data.platform = @"client";
     data.uuid = [NSUUID UUID];
     data.custom = [[RollbarDTO alloc] initWithDictionary:customData];
@@ -287,7 +287,7 @@
         @"os": @"macOS",
         @"os_version": [NSString stringWithFormat:@" %tu.%tu.%tu", v.majorVersion, v.minorVersion, v.patchVersion],
         @"device_code": deviceCode,
-        @"code_version": version ?: @"",
+        @"code_version": codeVersion ?: @"",
         @"short_version": shortVersion ?: @"",
         @"bundle_identifier": bundleIdentifier ?: @"",
         @"app_name": bundleName ?: [[NSProcessInfo processInfo] processName]
@@ -298,31 +298,18 @@
 }
 
 - (nonnull NSString *)messageFromCrashReport:(nonnull NSString *)report {
-    NSRange range = [report rangeOfString:@"CrashDoctor Diagnosis: "
-                                       options:NSBackwardsSearch];
-    if (range.length != 0) {
-        NSUInteger start = range.location + range.length;
-        range = NSMakeRange(start, report.length - start);
-        return [self diagnosticFromFromCrashReport:report range:range];
-    }
-
-    range = [report rangeOfString:@"Exception Type:"];
+    NSRange range = [report rangeOfString:@"Rollbar Diagnosis: "];
     if (range.length != 0) {
         NSRange lineRange = [report lineRangeForRange:range];
-        lineRange.location += range.length;
-        lineRange.length -= range.length;
-        return [self diagnosticFromFromCrashReport:report range:lineRange];
+        NSUInteger start = range.location + range.length;
+        NSRange diagnosisRange = NSMakeRange(start, lineRange.length - range.length);
+        NSString *diagnosis = [report substringWithRange:diagnosisRange];
+        diagnosis = [diagnosis stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
+        RollbarSdkLog(@"%@", diagnosis);
+        return diagnosis;
     }
-}
 
-- (nonnull NSString *)diagnosticFromFromCrashReport:(nonnull NSString *)crashReport
-                                              range:(NSRange)range
-{
-    NSString *diagnosis = [crashReport substringWithRange:range];
-    diagnosis = [diagnosis stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
-    diagnosis = [diagnosis stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    RollbarSdkLog(@"%@", diagnosis);
-    return diagnosis;
+    return @"Undiagnosed crash";
 }
 
 @end

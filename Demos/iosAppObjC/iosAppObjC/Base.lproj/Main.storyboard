@@ -26,24 +26,8 @@
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="8ps-39-Qq9">
                                 <rect key="frame" x="16" y="182" width="361" height="570"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FOX-hx-Nmh">
-                                        <rect key="frame" x="135.66666666666666" y="0.0" width="90" height="36.666666666666664"/>
-                                        <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="tinted" title="Interrupt"/>
-                                        <connections>
-                                            <action selector="interrupt:" destination="BYZ-38-t0r" eventType="touchUpInside" id="kOF-Kv-Inj"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dyK-TU-Vkw">
-                                        <rect key="frame" x="151.33333333333334" y="48.666666666666657" width="58.333333333333343" height="36.333333333333343"/>
-                                        <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="tinted" title="Trap"/>
-                                        <connections>
-                                            <action selector="trap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Ol1-Ye-zZ5"/>
-                                        </connections>
-                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qt2-r8-x0G">
-                                        <rect key="frame" x="147.33333333333334" y="97" width="66.666666666666657" height="36.666666666666657"/>
+                                        <rect key="frame" x="147.33333333333334" y="0.0" width="66.666666666666657" height="36.666666666666664"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="tinted" title="Abort"/>
                                         <connections>
@@ -51,7 +35,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WxP-c4-EVC">
-                                        <rect key="frame" x="154.66666666666666" y="145.66666666666669" width="52" height="36.333333333333343"/>
+                                        <rect key="frame" x="154.66666666666666" y="48.666666666666657" width="52" height="36.333333333333343"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="tinted" title="Exit"/>
                                         <connections>
@@ -59,7 +43,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KeF-aK-hMH">
-                                        <rect key="frame" x="144" y="194" width="73" height="36.666666666666657"/>
+                                        <rect key="frame" x="144" y="97" width="73" height="36.666666666666657"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="tinted" title="Assert"/>
                                         <connections>
@@ -67,7 +51,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="V2c-9O-x4T">
-                                        <rect key="frame" x="132.66666666666666" y="242.66666666666671" width="95.666666666666657" height="36.333333333333343"/>
+                                        <rect key="frame" x="132.66666666666666" y="145.66666666666669" width="95.666666666666657" height="36.333333333333343"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="tinted" title="NSAssert"/>
                                         <connections>
@@ -75,7 +59,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="K4u-Gs-acJ">
-                                        <rect key="frame" x="93.666666666666671" y="291" width="173.66666666666663" height="36.666666666666686"/>
+                                        <rect key="frame" x="93.666666666666671" y="194" width="173.66666666666663" height="36.666666666666657"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="tinted" title="Throw NSException"/>
                                         <connections>
@@ -83,11 +67,27 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eLs-6G-QS0">
-                                        <rect key="frame" x="113.66666666666666" y="339.66666666666663" width="134" height="36.333333333333314"/>
+                                        <rect key="frame" x="113.66666666666666" y="242.66666666666671" width="134" height="36.333333333333343"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="tinted" title="Divide by Zero"/>
                                         <connections>
                                             <action selector="divideByZero:" destination="BYZ-38-t0r" eventType="touchUpInside" id="IcE-Se-RW6"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hMv-bb-WD3" userLabel="Out of Bounds">
+                                        <rect key="frame" x="113.66666666666666" y="291" width="134" height="36.666666666666686"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="tinted" title="Out of Bounds"/>
+                                        <connections>
+                                            <action selector="outOfBounds:" destination="BYZ-38-t0r" eventType="touchUpInside" id="fTJ-My-8yM"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ytX-Wt-xAO" userLabel="Dispatch Sync Fail">
+                                        <rect key="frame" x="99.000000000000014" y="339.66666666666663" width="163.33333333333337" height="36.333333333333314"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="tinted" title="Dispatch Sync Fail"/>
+                                        <connections>
+                                            <action selector="dispatch:" destination="BYZ-38-t0r" eventType="touchUpInside" id="O1n-AP-xL6"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OHd-dR-HEp">
