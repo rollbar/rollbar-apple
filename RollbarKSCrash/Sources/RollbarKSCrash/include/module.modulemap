@@ -1,8 +1,0 @@
-module RollbarKSCrash {
-	umbrella "."
-	
-	export *
-	module * { export * }
-
-    requires objc
-}

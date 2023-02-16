@@ -8,14 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		5547273924903EB7005018BD /* RollbarNotifier in Frameworks */ = {isa = PBXBuildFile; productRef = 5547273824903EB7005018BD /* RollbarNotifier */; };
-		55684F5A2553981600F82F34 /* RollbarKSCrash in Frameworks */ = {isa = PBXBuildFile; productRef = 55684F592553981600F82F34 /* RollbarKSCrash */; };
 		55759A6E2477560D00ED3F04 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 55759A6D2477560D00ED3F04 /* AppDelegate.m */; };
 		55759A712477560D00ED3F04 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55759A702477560D00ED3F04 /* ViewController.m */; };
 		55759A732477561100ED3F04 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55759A722477561100ED3F04 /* Assets.xcassets */; };
 		55759A762477561100ED3F04 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 55759A742477561100ED3F04 /* Main.storyboard */; };
 		55759A792477561100ED3F04 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 55759A782477561100ED3F04 /* main.m */; };
 		55847E682655C2990062C242 /* RollbarAUL in Frameworks */ = {isa = PBXBuildFile; productRef = 55847E672655C2990062C242 /* RollbarAUL */; };
-		55A02A60259AAAE40071D60D /* RollbarPLCrashReporter in Frameworks */ = {isa = PBXBuildFile; productRef = 55A02A5F259AAAE40071D60D /* RollbarPLCrashReporter */; };
 		55FD0711247860F1000BBC22 /* RollbarDeploys in Frameworks */ = {isa = PBXBuildFile; productRef = 55FD0710247860F1000BBC22 /* RollbarDeploys */; };
 		55FD07142478614B000BBC22 /* RollbarDeploysDemoClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 55FD07132478614B000BBC22 /* RollbarDeploysDemoClient.m */; };
 /* End PBXBuildFile section */
@@ -40,8 +38,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				55A02A60259AAAE40071D60D /* RollbarPLCrashReporter in Frameworks */,
-				55684F5A2553981600F82F34 /* RollbarKSCrash in Frameworks */,
 				55FD0711247860F1000BBC22 /* RollbarDeploys in Frameworks */,
 				5547273924903EB7005018BD /* RollbarNotifier in Frameworks */,
 				55847E682655C2990062C242 /* RollbarAUL in Frameworks */,
@@ -112,8 +108,6 @@
 			packageProductDependencies = (
 				55FD0710247860F1000BBC22 /* RollbarDeploys */,
 				5547273824903EB7005018BD /* RollbarNotifier */,
-				55684F592553981600F82F34 /* RollbarKSCrash */,
-				55A02A5F259AAAE40071D60D /* RollbarPLCrashReporter */,
 				55847E672655C2990062C242 /* RollbarAUL */,
 			);
 			productName = macosAppObjC;
@@ -126,7 +120,7 @@
 		55759A612477560D00ED3F04 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1200;
+				LastUpgradeCheck = 1420;
 				ORGANIZATIONNAME = "Andrey Kornich (Wide Spectrum Computing LLC)";
 				TargetAttributes = {
 					55759A682477560D00ED3F04 = {
@@ -224,6 +218,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -283,6 +278,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -309,6 +305,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = LDX6L68VZJ;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = macosAppObjC/Info.plist;
@@ -329,6 +326,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = LDX6L68VZJ;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = macosAppObjC/Info.plist;
@@ -369,17 +367,9 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = RollbarNotifier;
 		};
-		55684F592553981600F82F34 /* RollbarKSCrash */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = RollbarKSCrash;
-		};
 		55847E672655C2990062C242 /* RollbarAUL */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RollbarAUL;
-		};
-		55A02A5F259AAAE40071D60D /* RollbarPLCrashReporter */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = RollbarPLCrashReporter;
 		};
 		55FD0710247860F1000BBC22 /* RollbarDeploys */ = {
 			isa = XCSwiftPackageProductDependency;

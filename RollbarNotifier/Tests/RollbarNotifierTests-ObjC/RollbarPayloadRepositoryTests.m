@@ -133,8 +133,8 @@
     RollbarPayloadRepository *repo = [RollbarPayloadRepository persistentRepository];
     [self insertDestinationMocks:repo];
     
-    int removedCount = 0;
-    int initialCount = [repo getAllDestinations].count;
+    NSUInteger removedCount = 0;
+    NSUInteger initialCount = [repo getAllDestinations].count;
 
     XCTAssertEqual(YES, [repo removeDestinationByID:@"0001"]);
     removedCount++;

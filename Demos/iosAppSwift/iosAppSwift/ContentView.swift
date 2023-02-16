@@ -1,4 +1,5 @@
 import SwiftUI
+import Foundation
 import RollbarSwift
 import RollbarNotifier
 
@@ -10,7 +11,13 @@ enum ExampleError: Error {
 }
 
 struct ContentView: View {
-    let example = Example();
+    let example = Example()
+
+    func button(_ title: String, action: @escaping () -> ()) -> some View {
+        Button(title, action: action)
+            .buttonStyle(.bordered)
+            .tint(.blue)
+    }
 
     var body: some View {
         VStack {
@@ -19,39 +26,42 @@ struct ContentView: View {
                 .padding(.bottom)
 
             VStack {
-                Button("Manual Logging Example", action: example.manualLogging)
-                    .tint(.blue)
-                    .buttonStyle(.bordered)
-
-                Button("Divide by zero") { _ = example.divide(by: 0) }
-                    .tint(.blue)
-                    .buttonStyle(.bordered)
-
-                Button("Log invalid JSON", action: example.logInvalidJson)
-                    .tint(.blue)
-                    .buttonStyle(.bordered)
+                button("Manual Logging Example", action: example.manualLogging)
                     .padding(.bottom)
 
-                Button("Throw an ExampleError") { try! example.throwError() }
-                    .tint(.blue)
-                    .buttonStyle(.bordered)
+                Group {
+                    button("Force unwrap nil", action: example.forceUnwrapNil)
+                    button("Implicitly unwrapped nil argument") { example.implicitlyUnwrappedArgument(nil) }
+                    button("Implicitly unwrapped nil value", action: example.implicitlyUnwrappedValue)
+                        .padding(.bottom)
+                }
 
-                Button("Throw an NSException", action: example.throwNSException)
-                    .tint(.blue)
-                    .buttonStyle(.bordered)
-                    .padding(.bottom)
+                Group {
+                    button("Force as! invalid cast") { example.forceInvalidCast(to: Int.self) }
+                    button("Unsafe bit cast", action: example.unsafeBitCast)
+                        .padding(.bottom)
+                }
 
-                Button("Assertion Failure", action: example.forceAssertionFailure)
-                    .tint(.blue)
-                    .buttonStyle(.bordered)
+                Group {
+                    button("Out of bounds access", action: example.outOfBounds)
+                    //button("Increment past endIndex", action: example.incrementPastEndIndex)
+                    //button("Neg Double outside UInt range") { example.outsideRepresentableRange(-21.5) }
+                    button("Duplicate Dictionary keys", action: example.duplicateKeys)
+                    button("Divide by zero") { example.divide(by: 0) }
+                        .padding(.bottom)
+                }
 
-                Button("Precondition Failure", action: example.forcePreconditionFailure)
-                    .tint(.blue)
-                    .buttonStyle(.bordered)
+                Group {
+                    button("Force try! and fail") { try! example.throwError() }
+                    button("Throw an NSException", action: example.throwNSException)
+                        .padding(.bottom)
+                }
 
-                Button("Fatal Error", action: example.forceFatalError)
-                    .tint(.blue)
-                    .buttonStyle(.bordered)
+                Group {
+                    button("Assertion Failure", action: example.forceAssertFailure)
+                    button("Precondition Failure", action: example.forcePrecondFailure)
+                    button("Fatal Error", action: example.forceFatalError)
+                }
             }
         }
         .padding()
@@ -81,7 +91,7 @@ struct Example {
 
         Rollbar.errorMessage("My error message", data: extraInfo)
 
-        Rollbar.errorError(ExampleError.invalidResult, data: extraInfo)
+        Rollbar.criticalError(ExampleError.invalidResult, data: extraInfo)
 
         do {
             throw ExampleError.outOfBounds
@@ -93,19 +103,57 @@ struct Example {
     /// A hard crash is captured by the crash reporter. The next time
     /// the application is started, the data is sent to Rollbar.
     func forceFatalError() {
-        fatalError("Force a crash")
+        fatalError("This is the description of a fatal error.")
     }
 
-    func forcePreconditionFailure() {
-        preconditionFailure("Precondition failed")
+    func forcePrecondFailure() {
+        preconditionFailure("The description of a precondition failure")
     }
 
-    func forceAssertionFailure() {
-        assertionFailure("Assertion failed")
+    func forceAssertFailure() {
+        assertionFailure("The description of an assertion failure")
     }
 
-    func divide(by y: Int) -> Int {
-        1 / y
+    func forceUnwrapNil() {
+        _ = String?.none!
+    }
+
+    func implicitlyUnwrappedArgument(_ x: Int!) {
+        _ = x + 1
+    }
+
+    func implicitlyUnwrappedValue() {
+        let x: Int! = nil
+        _ = x + 1
+    }
+
+    func forceInvalidCast<T>(to type: T.Type) {
+        _ = "" as! T
+    }
+
+    func outsideRepresentableRange(_ d: Double) {
+        _ = UInt(d)
+    }
+
+    func outOfBounds() {
+        _ = [][Int.max]
+    }
+
+    func duplicateKeys() {
+        _ = ["one": 1, "one": 1]
+    }
+
+    func incrementPastEndIndex() {
+        let r = 0...3
+        _ = r.index(after: r.endIndex)
+    }
+
+    func unsafeBitCast() {
+        _ = Swift.unsafeBitCast(Int.min, to: String.self)
+    }
+
+    func divide(by y: Int) {
+        _ = 1 / y
     }
 
     func throwError() throws {
@@ -113,22 +161,6 @@ struct Example {
     }
 
     func throwNSException() {
-        RollbarExceptionGuard(logger: logger).tryExecute {
-            RollbarTryCatch.throw("NSException from ObjC")
-        }
-    }
-
-    func logInvalidJson() {
-        Rollbar.log(
-            .warning,
-            message: "Logging with extras and context",
-            data: [
-                "fingerprint": "targeted-mistake-recycling-incorrect-range",
-                "bestSolutionTokens": [51241, 42421, 32142],
-                "guessTokens": [22414, 89389],
-                // This is a (Int, Int), which can't be turned into Json
-                "detectedRangeStart": (1, 10),
-            ],
-            context: "Rollbar Example Logging Invalid Json")
+        _ = try? JSONSerialization.data(withJSONObject: (1, 2))
     }
 }

@@ -143,7 +143,6 @@
     mutable.codeVersion = @"test_CV_old";
     mutable.framework = @"test_FW_old";
     mutable.requestId = @"test_RID_old";
-    mutable.enableOomDetection = NO;
     XCTAssertEqual(mutable.logLevel, RollbarLevel_Info);
     XCTAssertEqual(mutable.crashLevel, RollbarLevel_Error);
     XCTAssertEqual(mutable.maximumReportsPerMinute, 10);
@@ -151,8 +150,7 @@
     XCTAssertTrue([mutable.codeVersion isEqualToString:@"test_CV_old"]);
     XCTAssertTrue([mutable.framework isEqualToString:@"test_FW_old"]);
     XCTAssertTrue([mutable.requestId isEqualToString:@"test_RID_old"]);
-    XCTAssertFalse(mutable.enableOomDetection);
-        
+
     mutable.logLevel = RollbarLevel_Debug;
     mutable.crashLevel = RollbarLevel_Critical;
     mutable.maximumReportsPerMinute = 25;
@@ -160,7 +158,6 @@
     mutable.codeVersion = @"test_CV";
     mutable.framework = @"test_FW";
     mutable.requestId = @"test_RID";
-    mutable.enableOomDetection = YES;
     XCTAssertEqual(mutable.logLevel, RollbarLevel_Debug);
     XCTAssertEqual(mutable.crashLevel, RollbarLevel_Critical);
     XCTAssertEqual(mutable.maximumReportsPerMinute, 25);
@@ -168,7 +165,6 @@
     XCTAssertTrue([mutable.codeVersion isEqualToString:@"test_CV"]);
     XCTAssertTrue([mutable.framework isEqualToString:@"test_FW"]);
     XCTAssertTrue([mutable.requestId isEqualToString:@"test_RID"]);
-    XCTAssertTrue(mutable.enableOomDetection);
 
     NSString *content = [mutable serializeToJSONString];
     XCTAssertNotNil(content);
@@ -189,7 +185,6 @@
     XCTAssertTrue([immutable.codeVersion isEqualToString:@"test_CV"]);
     XCTAssertTrue([immutable.framework isEqualToString:@"test_FW"]);
     XCTAssertTrue([immutable.requestId isEqualToString:@"test_RID"]);
-    XCTAssertTrue(immutable.enableOomDetection);
 
     content = [immutable serializeToJSONString];
     XCTAssertNotNil(content);

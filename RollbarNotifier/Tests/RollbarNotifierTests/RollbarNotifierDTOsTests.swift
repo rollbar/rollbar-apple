@@ -434,60 +434,6 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         XCTAssertNil(dto.traceChain);
     }
 
-    func testRollbarJavascriptDTO() {
-        
-        let browser = "BROWSER";
-        let codeVersion = "CODE_VERSION";
-        let sourceMapsEnabled = RollbarTriStateFlag.on;
-        let guessUncaughtExceptionFrames = RollbarTriStateFlag.off;
-        
-        let dto = RollbarJavascript(
-            browser: browser,
-            codeVersion: nil,
-            sourceMapEnabled: sourceMapsEnabled,
-            guessUncaughtFrames: guessUncaughtExceptionFrames
-        );
-        XCTAssertNotNil(dto);
-        XCTAssertNotNil(dto.browser);
-        XCTAssertNil(dto.codeVersion);
-        XCTAssertEqual(browser, dto.browser);
-        XCTAssertEqual(sourceMapsEnabled, dto.sourceMapEnabled);
-        XCTAssertEqual(guessUncaughtExceptionFrames, dto.guessUncaughtFrames);
-
-        dto.codeVersion = codeVersion;
-        XCTAssertNotNil(dto.codeVersion);
-        XCTAssertEqual(codeVersion, dto.codeVersion);
-    }
-
-    func testRollbarClientDTO() {
-        
-        let browser = "BROWSER";
-        let codeVersion = "CODE_VERSION";
-        let sourceMapsEnabled = RollbarTriStateFlag.on;
-        let guessUncaughtExceptionFrames = RollbarTriStateFlag.off;
-        
-        let dtoJavascript = RollbarJavascript(
-            browser: browser,
-            codeVersion: codeVersion,
-            sourceMapEnabled: sourceMapsEnabled,
-            guessUncaughtFrames: guessUncaughtExceptionFrames
-        );
-        let cpu = "CPU";
-        let dto = RollbarClient(
-            cpu: cpu,
-            javaScript: dtoJavascript
-        );
-        
-        XCTAssertNotNil(dto);
-        XCTAssertNotNil(dto.cpu);
-        XCTAssertEqual(cpu, dto.cpu);
-        XCTAssertNotNil(dto.javaScript);
-        XCTAssertEqual(browser, dto.javaScript!.browser);
-        XCTAssertEqual(sourceMapsEnabled, dto.javaScript!.sourceMapEnabled);
-        XCTAssertEqual(guessUncaughtExceptionFrames, dto.javaScript!.guessUncaughtFrames);
-        XCTAssertEqual(codeVersion, dto.javaScript!.codeVersion);
-    }
-
     func testRollbarServerDTO() {
         
         let cpu = "CPU";
@@ -1079,13 +1025,6 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         }
     }
 
-//    func testExample() {
-//        // This is an example of a functional test case.
-//        // Use XCTAssert and related functions to verify your tests produce the correct
-//        // results.
-//        XCTAssertEqual(RollbarNotifier().text, "Hello, World!")
-//    }
-
     static var allTests = [
         ("testBasicDTOInitializationWithJSONString", testBasicDTOInitializationWithJSONString),
         ("testRollbarProxyDTO", testRollbarProxyDTO),
@@ -1099,8 +1038,6 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         ("testRollbarMessageDTO", testRollbarMessageDTO),
         ("testMessageRollbarBodyDTO", testMessageRollbarBodyDTO),
         ("testCrashReportRollbarBodyDTO", testCrashReportRollbarBodyDTO),
-        ("testRollbarJavascriptDTO", testRollbarJavascriptDTO),
-        ("testRollbarClientDTO", testRollbarClientDTO),
         ("testRollbarServerDTO", testRollbarServerDTO),
         ("testRollbarRequestDTO", testRollbarRequestDTO),
         ("testRollbarExceptionDTO", testRollbarExceptionDTO),

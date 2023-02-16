@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		3BDB825A292D67900093AC9D /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDB8258292D67900093AC9D /* SceneDelegate.m */; };
-		5533980A2627F4670031D02C /* RollbarPLCrashReporter in Frameworks */ = {isa = PBXBuildFile; productRef = 553398092627F4670031D02C /* RollbarPLCrashReporter */; };
 		55684F702553B4C400F82F34 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 55684F6F2553B4C400F82F34 /* AppDelegate.m */; };
 		55684F762553B4C400F82F34 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55684F752553B4C400F82F34 /* ViewController.m */; };
 		55684F792553B4C400F82F34 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 55684F772553B4C400F82F34 /* Main.storyboard */; };
@@ -16,7 +15,6 @@
 		55684F7E2553B4C700F82F34 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 55684F7C2553B4C700F82F34 /* LaunchScreen.storyboard */; };
 		55684F812553B4C700F82F34 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 55684F802553B4C700F82F34 /* main.m */; };
 		55684F8D2553B7E100F82F34 /* RollbarDeploys in Frameworks */ = {isa = PBXBuildFile; productRef = 55684F8C2553B7E100F82F34 /* RollbarDeploys */; };
-		55684F8F2553B7E800F82F34 /* RollbarKSCrash in Frameworks */ = {isa = PBXBuildFile; productRef = 55684F8E2553B7E800F82F34 /* RollbarKSCrash */; };
 		55684F912553B7EE00F82F34 /* RollbarNotifier in Frameworks */ = {isa = PBXBuildFile; productRef = 55684F902553B7EE00F82F34 /* RollbarNotifier */; };
 		55684F9D2553BD1C00F82F34 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55684F9C2553BD1C00F82F34 /* NetworkExtension.framework */; };
 /* End PBXBuildFile section */
@@ -45,9 +43,7 @@
 			files = (
 				55684F912553B7EE00F82F34 /* RollbarNotifier in Frameworks */,
 				55684F9D2553BD1C00F82F34 /* NetworkExtension.framework in Frameworks */,
-				5533980A2627F4670031D02C /* RollbarPLCrashReporter in Frameworks */,
 				55684F8D2553B7E100F82F34 /* RollbarDeploys in Frameworks */,
-				55684F8F2553B7E800F82F34 /* RollbarKSCrash in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -116,9 +112,7 @@
 			name = iosAppObjC;
 			packageProductDependencies = (
 				55684F8C2553B7E100F82F34 /* RollbarDeploys */,
-				55684F8E2553B7E800F82F34 /* RollbarKSCrash */,
 				55684F902553B7EE00F82F34 /* RollbarNotifier */,
-				553398092627F4670031D02C /* RollbarPLCrashReporter */,
 			);
 			productName = iosAppObjC;
 			productReference = 55684F6B2553B4C400F82F34 /* iosAppObjC.app */;
@@ -326,9 +320,10 @@
 				CODE_SIGN_ENTITLEMENTS = iosAppObjC/iosAppObjC.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 6B5NER795L;
 				INFOPLIST_FILE = iosAppObjC/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Rollbar ObjC Demo";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -355,9 +350,10 @@
 				CODE_SIGN_ENTITLEMENTS = iosAppObjC/iosAppObjC.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 6B5NER795L;
 				INFOPLIST_FILE = iosAppObjC/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Rollbar ObjC Demo";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -400,17 +396,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		553398092627F4670031D02C /* RollbarPLCrashReporter */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = RollbarPLCrashReporter;
-		};
 		55684F8C2553B7E100F82F34 /* RollbarDeploys */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RollbarDeploys;
-		};
-		55684F8E2553B7E800F82F34 /* RollbarKSCrash */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = RollbarKSCrash;
 		};
 		55684F902553B7EE00F82F34 /* RollbarNotifier */ = {
 			isa = XCSwiftPackageProductDependency;

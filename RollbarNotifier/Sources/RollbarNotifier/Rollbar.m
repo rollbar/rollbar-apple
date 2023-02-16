@@ -9,8 +9,6 @@
 #import "RollbarTelemetryOptions.h"
 #import "RollbarTelemetryOptionsObserver.h"
 #import "RollbarScrubbingOptions.h"
-#import "RollbarCrashProcessor.h"
-#import "RollbarSession.h"
 #import "RollbarThread.h"
 #import "RollbarLoggingOptions.h"
 
@@ -22,80 +20,37 @@ static void uncaughtExceptionHandler(NSException * _Nonnull exception) {
     //                         platform,
     //                         version,
     //                         backtrace];
-    NSString *message = [NSString stringWithFormat:@"Backtrace:\n%@",
-                         backtrace];
+    NSString *message = [NSString stringWithFormat:@"Backtrace:\n%@", backtrace];
     
-    //TODO: complete implementation by calling RollbarInfrastructure logging method to capture the exception...
-    [[RollbarInfrastructure sharedInstance].logger log:RollbarLevel_Critical
-                                             exception:exception
-                                                  data:nil
-                                               context:message
-    ];
+    // TODO: complete implementation by calling RollbarInfrastructure logging method to capture the exception...
+    [[[RollbarInfrastructure sharedInstance] logger] log:RollbarLevel_Critical
+                                               exception:exception
+                                                    data:nil
+                                                 context:message];
 }
 
 @implementation Rollbar
 
-+ (void)initWithAccessToken:(NSString *)accessToken {
-    
-    [Rollbar initWithAccessToken:accessToken
-                   configuration:nil
-                  crashCollector:nil];
-}
++ (void)initWithConfiguration:(nonnull RollbarConfig *)configuration {
 
-+ (void)initWithConfiguration:(RollbarConfig *)configuration {
-    
-    [Rollbar initWithAccessToken:nil
-                   configuration:configuration
-                  crashCollector:nil];
-}
-
-
-+ (void)initWithAccessToken:(NSString *)accessToken
-             crashCollector:(nullable id<RollbarCrashCollector>)crashCollector {
-
-    [Rollbar initWithAccessToken:accessToken
-                   configuration:nil
-                  crashCollector:crashCollector];
-}
-
-+ (void)initWithConfiguration:(RollbarConfig *)configuration
-               crashCollector:(nullable id<RollbarCrashCollector>)crashCollector {
-
-    [Rollbar initWithAccessToken:nil
-                   configuration:configuration
-                  crashCollector:crashCollector];
-}
-
-+ (void)initWithAccessToken:(nullable NSString *)accessToken
-              configuration:(nullable RollbarConfig *)configuration
-             crashCollector:(nullable id<RollbarCrashCollector>)crashCollector {
-
-    RollbarMutableConfig *config = configuration ? [configuration mutableCopy] : [RollbarMutableConfig new];
-    if (accessToken && accessToken.length > 0) {
-        
-        config.destination.accessToken = accessToken;
-    }
-
-    [[RollbarInfrastructure sharedInstance] configureWith:config
-                                        andCrashCollector:crashCollector];
+    [[RollbarInfrastructure sharedInstance] configureWith:[configuration mutableCopy]];
 }
 
 + (RollbarConfig *)configuration {
     
-    return [RollbarInfrastructure sharedInstance].configuration;
+    return [[RollbarInfrastructure sharedInstance] configuration];
 }
 
 + (void)updateWithConfiguration:(RollbarConfig *)configuration {
 
-    [[RollbarInfrastructure sharedInstance] configureWith:configuration
-                                        andCrashCollector:nil];
+    [[RollbarInfrastructure sharedInstance] configureWith:configuration];
 }
 
 #pragma mark - Logging methods
 
 + (void)logCrashReport:(NSString *)crashReport {
     
-    [[RollbarInfrastructure sharedInstance].logger logCrashReport:crashReport];
+    [[[RollbarInfrastructure sharedInstance] logger] logCrashReport:crashReport];
 }
 
 + (void)log:(RollbarLevel)level

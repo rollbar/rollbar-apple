@@ -108,7 +108,7 @@
     
     // init Rollbar shared instance:
     
-    [Rollbar initWithConfiguration:config crashCollector:nil];
+    [Rollbar initWithConfiguration:config];
     
     [Rollbar infoMessage:@"Rollbar is up and running! Enjoy your remote error and log monitoring..."];
 }

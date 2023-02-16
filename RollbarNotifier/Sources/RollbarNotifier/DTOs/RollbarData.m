@@ -3,7 +3,6 @@
 #import "RollbarRequest.h"
 #import "RollbarPerson.h"
 #import "RollbarServer.h"
-#import "RollbarClient.h"
 #import "RollbarModule.h"
 
 #pragma mark - data field keys
@@ -185,15 +184,15 @@ static NSString * const DFK_NOTIFIER = @"notifier";
     [self setData:value.jsonFriendlyData byKey:DFK_SERVER];
 }
 
--(nullable RollbarClient *)client {
+-(nullable RollbarDTO *)client {
     NSDictionary *data = [self getDataByKey:DFK_CLIENT];
     if (data) {
-        return [[RollbarClient alloc] initWithDictionary:data];
+        return [[RollbarDTO alloc] initWithDictionary:data];
     }
     return nil;
 }
 
--(void)setClient:(nullable RollbarClient *)value {
+-(void)setClient:(nullable RollbarDTO *)value {
     [self setData:value.jsonFriendlyData byKey:DFK_CLIENT];
 }
 

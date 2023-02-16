@@ -29,8 +29,6 @@
 #import "RollbarTelemetryOptions.h"
 #import "RollbarLoggingOptions.h"
 #import "RollbarServer.h"
-#import "RollbarClient.h"
-#import "RollbarJavascript.h"
 
 #import "RollbarTelemetryType.h"
 #import "RollbarTelemetryEvent.h"

@@ -1,126 +1,134 @@
-//
-//  ContentView.swift
-//  macosAppSwift
-//
-//  Created by Andrey Kornich on 2021-03-11.
-//
-
 import SwiftUI
-import RollbarNotifier
 import RollbarSwift
-import RollbarAUL
+import RollbarNotifier
+
+enum ExampleError: Error {
+    case
+        invalidResult,
+        outOfBounds,
+        invalidInput
+}
 
 struct ContentView: View {
-    
+    let example = Example();
+
     var body: some View {
-        
-        VStack(content: {
-            
-            Text("Hello, world!")
-                .multilineTextAlignment(.center)
-                .padding()
-            
-            Button("Handle Swift Error") {
-                self.handleSwiftError()
-            }
-            
-            Button("Handle Obj-C Exception") {
-                self.handleObjCException()
-            }
-            
-            Button("Handle Obj-C Exception with Rollbar") {
-                self.handleObjCExceptionWithRollbar()
-            }
-        })
-    }
-    
-func handleSwiftError() {
-    
-        do {
-            
-            try self.generateSwiftError();
-        }
-        catch AppError.problem1 {
-            
-        }
-        catch AppError.problem2 {
-            
-        }
-        catch {
-            
-            print("Unexpected error: \(error).")
-        }
-    }
-    
-    func generateSwiftError() throws {
-        
-        throw AppError.limitExceeded(limit: 5)
-    }
-    
-    func handleObjCException() {
-        
-        self.generateObjCException();
-    }
-        
-    func generateObjCException() {
-        
-        RollbarTryCatch.throw("NSException from Obj-C...")
-    }
+        VStack {
+            Text("Rollbar Apple SDK Example")
+                .font(.title)
+                .padding(.bottom)
 
-    func handleObjCExceptionWithRollbar() {
-        
-        let exceptionGuard = createGuard();
-        
-        var success = true;
-        
-        success = exceptionGuard.tryExecute {
-            
-            self.generateObjCException();
+            VStack {
+                Button("Manual Logging Example", action: example.manualLogging)
+                    .tint(.blue)
+                    .buttonStyle(.bordered)
+
+                Button("Divide by zero") { _ = example.divide(by: 0) }
+                    .tint(.blue)
+                    .buttonStyle(.bordered)
+
+                Button("Log invalid JSON", action: example.logInvalidJson)
+                    .tint(.blue)
+                    .buttonStyle(.bordered)
+                    .padding(.bottom)
+
+                Button("Throw an ExampleError") { try! example.throwError() }
+                    .tint(.blue)
+                    .buttonStyle(.bordered)
+
+                Button("Throw an NSException", action: example.throwNSException)
+                    .tint(.blue)
+                    .buttonStyle(.bordered)
+                    .padding(.bottom)
+
+                Button("Assertion Failure", action: example.forceAssertionFailure)
+                    .tint(.blue)
+                    .buttonStyle(.bordered)
+
+                Button("Precondition Failure", action: example.forcePreconditionFailure)
+                    .tint(.blue)
+                    .buttonStyle(.bordered)
+
+                Button("Fatal Error", action: example.forceFatalError)
+                    .tint(.blue)
+                    .buttonStyle(.bordered)
+            }
         }
-
-        print("Guarded execution succeeded: \(success).")
-    }
-    
-    func createGuard() -> RollbarExceptionGuard {
-        
-        let config = RollbarConfig.mutableConfig(
-            withAccessToken: RollbarDemoSettings.payloadsPostAccessToken,
-            environment: RollbarDemoSettings.environment)
-        
-        // AUL capture setup:
-//        config.developerOptions.transmit = true;
-//        config.telemetry.enabled = true;
-//        config.telemetry.captureLog = true;
-//
-//        Rollbar.initWithConfiguration(config);
-//        RollbarAulStoreMonitor.sharedInstance().configureRollbarLogger(Rollbar.currentLogger());
-//        let aulOptions = RollbarAulStoreMonitorOptions();
-//        aulOptions.addAulSubsystem("DataAccessLayer");
-//        aulOptions.addAulSubsystem("Model");
-//        aulOptions.addAulCategory("CompanyOrg");
-//        RollbarAulStoreMonitor.sharedInstance().configure(with: aulOptions);
-//
-//        RollbarAulStoreMonitor.sharedInstance().start();
-        
-        let logger = RollbarLogger(configuration: config);
-        
-        let exceptionGuard = RollbarExceptionGuard(logger: logger);
-
-        return exceptionGuard;
+        .padding()
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
-    
     static var previews: some View {
-        
         ContentView()
     }
 }
 
-// Declare our error type
-enum AppError: Error {
-    case problem1
-    case problem2
-    case limitExceeded(limit: Int)
+struct Example {
+    let logger = RollbarLogger(configuration: Rollbar.configuration())
+
+    /// Some different ways to explicitly log an error to Rollbar.
+    func manualLogging() {
+        let extraInfo =  ["item_1": "value_1", "item_2": "value_2"]
+
+        Rollbar.log(.error, message: "My log message")
+
+        Rollbar.log(
+            .error,
+            error: ExampleError.invalidInput,
+            data: extraInfo,
+            context: "Some additional information.")
+
+        Rollbar.errorMessage("My error message", data: extraInfo)
+
+        Rollbar.errorError(ExampleError.invalidResult, data: extraInfo)
+
+        do {
+            throw ExampleError.outOfBounds
+        } catch {
+            Rollbar.errorError(error, data: extraInfo)
+        }
+    }
+
+    /// A hard crash is captured by the crash reporter. The next time
+    /// the application is started, the data is sent to Rollbar.
+    func forceFatalError() {
+        fatalError("Force a crash")
+    }
+
+    func forcePreconditionFailure() {
+        preconditionFailure("Precondition failed")
+    }
+
+    func forceAssertionFailure() {
+        assertionFailure("Assertion failed")
+    }
+
+    func divide(by y: Int) -> Int {
+        1 / y
+    }
+
+    func throwError() throws {
+        throw ExampleError.outOfBounds
+    }
+
+    func throwNSException() {
+        RollbarExceptionGuard(logger: logger).tryExecute {
+            RollbarTryCatch.throw("NSException from ObjC")
+        }
+    }
+
+    func logInvalidJson() {
+        Rollbar.log(
+            .warning,
+            message: "Logging with extras and context",
+            data: [
+                "fingerprint": "targeted-mistake-recycling-incorrect-range",
+                "bestSolutionTokens": [51241, 42421, 32142],
+                "guessTokens": [22414, 89389],
+                // This is a (Int, Int), which can't be turned into Json
+                "detectedRangeStart": (1, 10),
+            ],
+            context: "Rollbar Example Logging Invalid Json")
+    }
 }

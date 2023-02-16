@@ -294,7 +294,7 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
 }
 
 - (void)savePayload:(nonnull RollbarPayload *)payload withConfig:(nonnull RollbarConfig *)config {
-    
+    //RollbarSdkLog(@"RollbarThread::savePayload: %@", payload.data.body);
 
     if ([RollbarThread shouldIgnorePayload:payload withConfig:config]) {
         
@@ -311,8 +311,7 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
         if (!config.developerOptions.suppressSdkInfoLogging) {
             RollbarSdkLog(@"Dropped payload (due to checkIgnore): %@",
                           [[NSString alloc] initWithData:[payload serializeToJSONData]
-                                                encoding:NSUTF8StringEncoding]
-                          );
+                                                encoding:NSUTF8StringEncoding]);
         }
         return;
     }
@@ -333,8 +332,7 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
         if (!config.developerOptions.suppressSdkInfoLogging) {
             RollbarSdkLog(@"Dropped payload (due to modifyPayload failure): %@",
                           [[NSString alloc] initWithData:[payload serializeToJSONData]
-                                                encoding:NSUTF8StringEncoding]
-                          );
+                                                encoding:NSUTF8StringEncoding]);
         }
         return;
     }
@@ -355,8 +353,7 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
         if (!config.developerOptions.suppressSdkInfoLogging) {
             RollbarSdkLog(@"Dropped payload (due to scrubPayload failure): %@",
                           [[NSString alloc] initWithData:[payload serializeToJSONData]
-                                                encoding:NSUTF8StringEncoding]
-                          );
+                                                encoding:NSUTF8StringEncoding]);
         }
         return;
     }
@@ -553,20 +550,18 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
         NSString *payloadsLogFilePath = [cachesDirectory stringByAppendingPathComponent:payloadsLogFile];
         [RollbarFileWriter appendSafelyData:jsonPayload toFile:payloadsLogFilePath];
     }
+
     if (!config.developerOptions.suppressSdkInfoLogging) {
         NSString *sdkLogTrace = nil;
         switch(success) {
             case RollbarTriStateFlag_On:
-                RollbarSdkLog(@"Transmitted payload: %@",
-                              [[NSString alloc] initWithData:jsonPayload encoding:NSUTF8StringEncoding]);
+                //RollbarSdkLog(@"Transmitted payload: %@", [[NSString alloc] initWithData:jsonPayload encoding:NSUTF8StringEncoding]);
                 break;
             case RollbarTriStateFlag_Off:
-                RollbarSdkLog(@"Dropped payload: %@",
-                              [[NSString alloc] initWithData:jsonPayload encoding:NSUTF8StringEncoding]);
+                RollbarSdkLog(@"Dropped payload: %@", [[NSString alloc] initWithData:jsonPayload encoding:NSUTF8StringEncoding]);
                 break;
             case RollbarTriStateFlag_None:
-                RollbarSdkLog(@"Couldn't transmit (and will try) payload: %@",
-                              [[NSString alloc] initWithData:jsonPayload encoding:NSUTF8StringEncoding]);
+                RollbarSdkLog(@"Couldn't transmit (and will try) payload: %@", [[NSString alloc] initWithData:jsonPayload encoding:NSUTF8StringEncoding]);
                 break;
         }
     }
