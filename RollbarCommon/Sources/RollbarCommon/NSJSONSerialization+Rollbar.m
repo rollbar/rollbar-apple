@@ -1,5 +1,5 @@
 #import "NSJSONSerialization+Rollbar.h"
-#import "RollbarSdkLog.h"
+#import "RollbarInternalLogging.h"
 
 #import <objc/runtime.h>
 // https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html
@@ -120,12 +120,11 @@ NS_ASSUME_NONNULL_BEGIN
                 }
             } else {
                 
-                RollbarSdkLog(@"Error serializing NSData: %@", [error localizedDescription]);
+                RBCErr(@"Error serializing NSData: %@", [error localizedDescription]);
             }
         } else {
             
-            RollbarSdkLog(@"Error serializing class '%@' using NSJSONSerialization",
-                       NSStringFromClass([obj class]));
+            RBCErr(@"Error serializing class '%@' using NSJSONSerialization", NSStringFromClass([obj class]));
         }
     }];
     

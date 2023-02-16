@@ -19,14 +19,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
     ) -> Bool {
-        // Dynamically read these settings from your config settings on
-        // application startup.
+        // Dynamically read these settings from your config settings on application startup.
         let accessToken = "YOUR-ROLLBAR-TOKEN"  // Rollbar post_client_item access token
         let environment = "staging"
         let codeVersion = "main"  // Ideally codeVersion is commit SHA https://docs.rollbar.com/docs/versions
 
-        // Initialize a configuration object and add configuration settings as
-        // needed.
+        // Initialize a configuration object and add configuration settings as needed.
         let config = RollbarConfig.mutableConfig(
             withAccessToken: accessToken,
             environment: environment)
@@ -37,7 +35,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         //config.loggingOptions.captureIp = RollbarCaptureIpType.anonymize
 
         // Suppress Rollbar event being logged (e.g. in XCode debug logs)
-        //config.developerOptions.suppressSdkInfoLogging = true
+        config.developerOptions.suppressSdkInfoLogging = true
 
         config.telemetry.enabled = true
         config.telemetry.captureLog = true

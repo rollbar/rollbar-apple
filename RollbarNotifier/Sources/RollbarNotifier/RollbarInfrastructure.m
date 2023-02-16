@@ -5,6 +5,7 @@
 #import "RollbarNotifierFiles.h"
 #import "RollbarTelemetry.h"
 #import "RollbarCrashCollector.h"
+#import "RollbarInternalLogging.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -48,7 +49,7 @@ NS_ASSUME_NONNULL_BEGIN
     [self.collector install];
     [self.collector sendAllReports];
 
-    RollbarSdkLog(@"%@ started", [RollbarInfrastructure rollbar_objectClassName]);
+    NSLog(@"Rollbar is running")
     
     return self;
 }

@@ -6,7 +6,7 @@
 //
 
 #import "RollbarFileIOUtil.h"
-#import "RollbarSdkLog.h"
+#import "RollbarInternalLogging.h"
 
 @implementation RollbarFileIOUtil
 
@@ -30,7 +30,7 @@
                                                            error:&error];
     if (!url && error) {
         
-        RollbarSdkLog(@"Error while locating system directory %@: %@", directory, [error localizedDescription]);
+        RBCErr(@"Error while locating system directory %@: %@", directory, [error localizedDescription]);
     }
         
     return url;

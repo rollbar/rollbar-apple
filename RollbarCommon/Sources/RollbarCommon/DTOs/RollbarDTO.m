@@ -1,5 +1,5 @@
 #import "RollbarDTO.h"
-#import "RollbarSdkLog.h"
+#import "../RollbarInternalLogging.h"
 #import "NSJSONSerialization+Rollbar.h"
 #import "NSObject+Rollbar.h"
 
@@ -116,12 +116,12 @@
 //            if (error == nil) {
 //                [safeData setObject:[[self class] safeDataFromJSONObject:json] forKey:key];
 //            } else {
-//                RollbarSdkLog(@"Error serializing NSData: %@", [error localizedDescription]);
+//                RBErr(@"Error serializing NSData: %@", [error localizedDescription]);
 //            }
 //        } else if ([NSJSONSerialization isValidJSONObject:@{key:obj}]) {
 //                [safeData setObject:obj forKey:key];
 //        } else {
-//            RollbarSdkLog(@"Error serializing class '%@' using NSJSONSerialization",
+//            RBErr(@"Error serializing class '%@' using NSJSONSerialization",
 //                       NSStringFromClass([obj class]));
 //        }
 //    }];
@@ -146,7 +146,7 @@
     BOOL hasValidData = [NSJSONSerialization isValidJSONObject:self->_data];
     if (NO == hasValidData) {
         
-        RollbarSdkLog(@"JSON-invalid internal data.");
+        RBCErr(@"JSON-invalid internal data.");
     }
     
     NSJSONWritingOptions opt = 0;
@@ -154,7 +154,7 @@
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self->_data options:opt error:&error];
     if ((nil == jsonData) && (nil != error)) {
         
-        RollbarSdkLog(@"Error serializing NSData: %@", [error localizedDescription]);
+        RBCErr(@"Error serializing NSData: %@", [error localizedDescription]);
     }
     return jsonData;
 }
@@ -164,7 +164,7 @@
     BOOL hasValidData = [NSJSONSerialization isValidJSONObject:self->_data];
     if (NO == hasValidData) {
         
-        RollbarSdkLog(@"JSON-invalid internal data.");
+        RBCErr(@"JSON-invalid internal data.");
     }
     
     NSJSONWritingOptions opt = 0;
@@ -181,7 +181,7 @@
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self->_data options:opt error:&error];
     if ((nil == jsonData) && (nil != error)) {
         
-        RollbarSdkLog(@"Error serializing NSData: %@", [error localizedDescription]);
+        RBCErr(@"Error serializing NSData: %@", [error localizedDescription]);
         return nil;
     }
 
@@ -206,7 +206,7 @@
                                     options:(NSJSONReadingMutableContainers | NSJSONReadingMutableLeaves)
                                       error:&error];
     if (error) {
-        RollbarSdkLog(@"Error deserializing JSON NSData as a DTO: %@", [error localizedDescription]);
+        RBCErr(@"Error deserializing JSON NSData as a DTO: %@", [error localizedDescription]);
         return NO;
     }
     if (self->_data) {
@@ -228,7 +228,7 @@
     
     NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
     if (!jsonData) {
-        RollbarSdkLog(@"Error converting an NSString instance to NSData: %@", jsonString);
+        RBCErr(@"Error converting an NSString instance to NSData: %@", jsonString);
         return NO;
     }
     return [self deserializeFromJSONData:jsonData];
@@ -363,7 +363,7 @@
     }
     
     if (![RollbarDTO isTransferableObject:data]) {
-        RollbarSdkLog(@"JSON-invalid internal data.");
+        RBCErr(@"JSON-invalid internal data.");
         return self;
     }
     

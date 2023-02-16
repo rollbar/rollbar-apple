@@ -5,6 +5,7 @@
 #import "RollbarDeveloperOptions.h"
 #import "RollbarPayloadPostReply.h"
 #import "RollbarNotifierFiles.h"
+#import "RollbarInternalLogging.h"
 
 @implementation RollbarSender
 
@@ -17,7 +18,7 @@
     }
     
     if (NO == developerOptions.suppressSdkInfoLogging) {
-        RollbarSdkLog(message);
+        RBLog(message);
     }
 }
 

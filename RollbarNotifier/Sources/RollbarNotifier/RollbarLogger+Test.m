@@ -1,5 +1,6 @@
 #import "RollbarLogger+Test.h"
 #import "RollbarNotifierFiles.h"
+#import "RollbarInternalLogging.h"
 #import "RollbarThread.h"
 
 @import RollbarCommon;
@@ -51,11 +52,11 @@
                                           error:&error
         ];
         if ((nil == payload) && (nil != error)) {
-            RollbarSdkLog(@"Error serializing log item from the store: %@", [error localizedDescription]);
+            RBErr(@"Error serializing log item from the store: %@", [error localizedDescription]);
             return;
         }
         else if (nil == payload) {
-            RollbarSdkLog(@"Error serializing log item from the store!");
+            RBErr(@"Error serializing log item from the store!");
             return;
         }
         
@@ -85,7 +86,7 @@
         BOOL success = [fileManager removeItemAtPath:filePath
                                                error:&error];
         if (!success) {
-            NSLog(@"Error: %@", [error localizedDescription]);
+            RBErr(@"Error: %@", [error localizedDescription]);
         }
         [[NSFileManager defaultManager] createFileAtPath:filePath
                                                 contents:nil

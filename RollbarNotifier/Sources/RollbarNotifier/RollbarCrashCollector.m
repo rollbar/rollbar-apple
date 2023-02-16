@@ -1,5 +1,6 @@
 #import "Rollbar.h"
 #import "RollbarCrashCollector.h"
+#import "RollbarInternalLogging.h"
 
 @import KSCrash_Reporting_Sinks;
 @import RollbarCrashReport;
@@ -57,7 +58,7 @@ static bool isDebuggerAttached();
 - (void)sendAllReports {
     [self sendAllReportsWithCompletion:^(NSArray *_, BOOL completed, NSError *error) {
         if (error || !completed) {
-            RollbarSdkLog(@"Error reporting crash: %@", error);
+            RBLog(@"Error reporting crash: %@", error);
         }
     }];
 }
@@ -83,9 +84,9 @@ static bool isDebuggerAttached() {
         int name[4] = { CTL_KERN, KERN_PROC, KERN_PROC_PID, getpid() };
 
         if (sysctl(name, 4, &info, &info_size, NULL, 0) == -1) {
-            RollbarSdkLog(@"Error checking for debugger via sysctl(): %s", strerror(errno));
+            RBErr(@"Error checking for debugger via sysctl(): %s", strerror(errno));
         } else if (info.kp_proc.p_flag & P_TRACED) {
-            RollbarSdkLog(@"Found a debugger attached");
+            RBErr(@"Found a debugger attached");
             attached = true;
         }
     });

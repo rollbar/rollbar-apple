@@ -1,4 +1,5 @@
 #import "RollbarPayloadTruncator.h"
+#import "RollbarInternalLogging.h"
 
 @import RollbarCommon;
 
@@ -65,7 +66,7 @@ static const unsigned long maxTraceFrames = 1;
                                    keepingTailsCount:payloadTailCrashThreadsToKeep
             ];
         } @catch (NSException *exception) {
-            RollbarSdkLog(@"Payload truncation EXCEPTION: %@", exception);
+            RBErr(@"Payload truncation EXCEPTION: %@", exception);
         }
 
     }
@@ -80,7 +81,7 @@ static const unsigned long maxTraceFrames = 1;
             ];
             stringLimit /= 2;
         } @catch (NSException *exception) {
-            RollbarSdkLog(@"Payload truncation EXCEPTION: %@", exception);
+            RBErr(@"Payload truncation EXCEPTION: %@", exception);
         }
     }
 
@@ -93,7 +94,7 @@ static const unsigned long maxTraceFrames = 1;
                                                       andTraceFramesLimit:maxTraceFrames
             ];
         } @catch (NSException *exception) {
-            RollbarSdkLog(@"Payload truncation EXCEPTION: %@", exception);
+            RBErr(@"Payload truncation EXCEPTION: %@", exception);
         }
     }
 
@@ -102,7 +103,7 @@ static const unsigned long maxTraceFrames = 1;
         @try {
             [RollbarPayloadTruncator limitRawCrashReportInPayload:payload];
         } @catch (NSException *exception) {
-            RollbarSdkLog(@"Payload truncation EXCEPTION: %@", exception);
+            RBErr(@"Payload truncation EXCEPTION: %@", exception);
         }
 
     }
@@ -227,7 +228,7 @@ withExceptionMessageLimit:(unsigned long)exeptionMessageLimit
                         @try {
                             obj[key] = strItem;
                         } @catch (NSException *exception) {
-                            RollbarSdkLog(@"Payload truncation EXCEPTION: %@", exception);
+                            RBErr(@"Payload truncation EXCEPTION: %@", exception);
                         }
                         [RollbarPayloadTruncator itereateObjectStructure:strItem
                                                    whileTuncatingStrings:stringBytesLimit];
@@ -251,7 +252,7 @@ withExceptionMessageLimit:(unsigned long)exeptionMessageLimit
             //nothing really...
         }
     } @catch (NSException *exception) {
-        RollbarSdkLog(@"Payload truncation EXCEPTION: %@", exception);
+        RBErr(@"Payload truncation EXCEPTION: %@", exception);
     }
     
 }
