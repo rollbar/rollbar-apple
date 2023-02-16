@@ -52,43 +52,38 @@ public class RollbarCrashDiagnosticFilter: NSObject, KSCrashReportFilter {
     /// - Parameter report: The `Report` to diagnose.
     /// - Returns: A new `Report` with the parsed diagnostic information.
     private func diagnose(_ report: Report) -> Result<Report, NSError> {
-        let error = report.crash.error
-        let handler = error?.type ?? "unknown"
-
         let kscrashDiagnostics = report.crash.diagnosis?
             .split(separator: "\n")
-            .map { Diagnostic($0, source: handler) }
+            .map { Diagnostic($0, source: report.crashType) } ?? []
 
         let dyldDiagnostics = report.binaryImages
-            .filter(\.hasCrashInfoMessage)
+            .filter(!\.crashInfoMessages.isEmpty)
             .flatMap { binaryImage in
                 binaryImage.crashInfoMessages.map { diagnosis in
-                    Diagnostic(diagnosis, source: binaryImage.fileName)
+                    Diagnostic(diagnosis, source: binaryImage.name)
                 }
             }
             .map { diagnostic in
                 diagnostic.source == "libswiftCore.dylib"
                     ? diagnostic.formatted(with: SwiftDiagnosisFormatter())
                     : diagnostic
-                }
+            }
 
+        let error = report.crash.error
         let machDiagnostics = zip(
             error?.address, error?.mach, error?.signal
         ).map { (address, mach, signal) in
             [Diagnostic("\(mach.exceptionName) (\(signal.signalName))", source: "Exception Type"),
-             Diagnostic("\(mach.codeName) at \(address)", source: "Exception Codes")]
-        }
+             Diagnostic("\(mach.codeName) at \(address)", source: "Exception Subtype")]
+        } ?? []
 
-        let diagnostic = kscrashDiagnostics?.first
+        let diagnostic = kscrashDiagnostics.first
             ?? dyldDiagnostics.first(where: { $0.source != "libsystem_sim_platform.dylib" })
-            ?? machDiagnostics?.first(where: { $0.source == "Exception Type" })
-
-        let diagnostics = [kscrashDiagnostics, dyldDiagnostics, machDiagnostics]
-            .compact().joined().map(\.rawValue)
+            ?? machDiagnostics.first(where: { $0.source == "Exception Type" })
 
         var diagnosedReport = report
         diagnosedReport.crash.diagnosis = diagnostic?.diagnosis
-        diagnosedReport.crash.diagnostics = diagnostics
+        diagnosedReport.crash.diagnostics = kscrashDiagnostics + dyldDiagnostics + machDiagnostics
         return .success(diagnosedReport)
     }
 
@@ -99,7 +94,7 @@ public class RollbarCrashDiagnosticFilter: NSObject, KSCrashReportFilter {
             return .failure(.invalidType(report))
         }
 
-        let missingKeys = Report.requiredKeys.filter(not(report.keys.contains))
+        let missingKeys = Report.requiredKeys.filter(!report.keys.contains)
 
         guard missingKeys.isEmpty else {
             return .failure(.missingKeys(report, keys: missingKeys))
@@ -131,10 +126,10 @@ class SwiftDiagnosisFormatter: Formatter {
     ///
     ///     Fatal error: An error occurred (src/Code.swift:123)
     override func string(for string: Any?) -> String? {
-        guard let string = string as? String else { return .none }
+        guard let string = (string as? String)?.trimming(.newlines) else { return .none }
         var groups = #"(^[^\s]+):\s(.*)"#.matches(in: string)?.makeIterator()
         return zip(groups?.next(), groups?.next()).map { (file, message) in
-            "\(message) (\(file))"
-        }
+            "\(message) (\(file.replacing(#"\/"#, with: "/")))"
+        } ?? string
     }
 }

@@ -64,7 +64,7 @@ static bool isDebuggerAttached();
 
 - (id<KSCrashReportFilter>)sink {
     id diagnose = [[RollbarCrashDiagnosticFilter alloc] init];
-    id format = [[KSCrashReportFilterAppleFmt alloc] init];
+    id format = [[RollbarCrashFormattingFilter alloc] init];
     id log = [[RollbarCrashLoggingFilter alloc] init];
     return [KSCrashReportFilterPipeline filterWithFilters:diagnose, format, log, nil];
 }

@@ -34,4 +34,19 @@ extension Error where Self == NSError {
             "missing_keys": keys.joined(separator: ", ")
         ])
     }
+
+    /// Returns a new `NSError` stating that a `Report` has the incorrect version and
+    /// is not supported.
+    static func unsupported(
+        _ report: Report,
+        version: String,
+        _ file: StaticString = #file,
+        _ line: UInt = #line
+    ) -> Self {
+        .init(domain: "\(file):\(line)", code: 2, userInfo: [
+            NSLocalizedDescriptionKey: "Unsupported format, invalid version.",
+            NSFilePathErrorKey: file,
+            "report_version": version
+        ])
+    }
 }
