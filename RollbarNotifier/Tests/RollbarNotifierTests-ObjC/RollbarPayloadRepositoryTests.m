@@ -235,10 +235,9 @@
     NSDate *cutoffTime = [NSDate date];
     NSNumber *threshold = [NSNumber numberWithInteger:cutoffTime.timeIntervalSince1970];
     
-    RollbarSdkLog(@"*** Removing payloads older than: %@ (%@)",
-                  cutoffTime,
-                  [NSDate dateWithTimeIntervalSince1970:[threshold integerValue]]
-                  );
+    NSLog(@"*** Removing payloads older than: %@ (%@)",
+          cutoffTime,
+          [NSDate dateWithTimeIntervalSince1970:[threshold integerValue]]);
     XCTAssertTrue((cutoffTime.timeIntervalSince1970 - threshold.doubleValue) < 1.0);
 }
 

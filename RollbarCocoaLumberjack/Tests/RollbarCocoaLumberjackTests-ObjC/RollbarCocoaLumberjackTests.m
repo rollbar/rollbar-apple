@@ -45,11 +45,10 @@ static const DDLogLevel ddLogLevel = DDLogLevelDebug;
     DDLogError(@"Broken sprocket detected!");
     DDLogVerbose(@"User selected file:%@ withSize:%u", @"somewhere/file.ext", 100);
     
-    RollbarConfig *config = [[RollbarConfig alloc] init];
+    RollbarMutableConfig *config = [[RollbarMutableConfig alloc] init];
     config.destination.accessToken = [RollbarTestHelper getRollbarPayloadsAccessToken];
     config.destination.environment = [RollbarTestHelper getRollbarEnvironment];
     config.developerOptions.transmit = YES;
-    config.developerOptions.logPayload = YES;
     config.loggingOptions.maximumReportsPerMinute = 5000;
     
     [DDLog addLogger:[RollbarCocoaLumberjackLogger createWithRollbarConfig:config]];

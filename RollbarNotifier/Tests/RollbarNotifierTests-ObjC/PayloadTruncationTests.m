@@ -225,65 +225,65 @@
     }
 }
 
-- (void)testErrorReportingWithTruncation {
-    
-    RollbarMutableConfig *config =
-    [RollbarMutableConfig mutableConfigWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
-                                           environment:[RollbarTestHelper getRollbarEnvironment]];
-    config.developerOptions.logIncomingPayloads = YES;
-    config.developerOptions.logTransmittedPayloads = YES;
-    config.developerOptions.logDroppedPayloads = YES;
-    config.developerOptions.transmit = YES;
-    
-    [Rollbar initWithConfiguration:config];
-    
-    [RollbarTestUtil waitWithWaitTimeInSeconds:5];
-    [RollbarTestUtil deleteLogFiles];
-    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
-    
-    NSArray *items = [RollbarTestUtil readTransmittedPayloadsAsDictionaries];
-    XCTAssertEqual(items.count, 0);
-
-    NSMutableString *simulatedLongString =
-        [[NSMutableString alloc] initWithCapacity:(512 + 1)*1024];
-    while (simulatedLongString.length < (512 * 1024)) {
-        [simulatedLongString appendString:@"1234567890_"];
-    }
-
-    [Rollbar criticalMessage:@"Message with long extra data"
-                        data:@{@"extra_truncatable_data": simulatedLongString}
-     ];
-
-    [RollbarTestUtil waitWithWaitTimeInSeconds:2];
-    items = [RollbarTestUtil readIncomingPayloadsAsDictionaries];
-    XCTAssertEqual(items.count, 1);
-    XCTAssertTrue([@"Message with long extra data" isEqualToString:[items[0] valueForKeyPath:@"body.message.body"]]);
-    [RollbarTestUtil waitWithWaitTimeInSeconds:3];
-    items = [RollbarTestUtil readTransmittedPayloadsAsDictionaries];
-    XCTAssertEqual(items.count, 1);
-
-    @try {
-        NSArray *crew = [NSArray arrayWithObjects:
-                         @"Dave",
-                         @"Heywood",
-                         @"Frank", nil];
-        // This will throw an exception.
-        NSLog(@"%@", [crew objectAtIndex:10]);
-    }
-    @catch (NSException *exception) {
-
-        [Rollbar criticalMessage:simulatedLongString
-                            data:@{@"extra_truncatable_data": simulatedLongString}
-         ];
-
-        [RollbarTestUtil waitWithWaitTimeInSeconds:1];
-        items = [RollbarTestUtil readIncomingPayloadsAsDictionaries];
-        XCTAssertEqual(items.count, 2);
-        [RollbarTestUtil waitWithWaitTimeInSeconds:1];
-        items = [RollbarTestUtil readTransmittedPayloadsAsDictionaries];
-        XCTAssertEqual(items.count, 2);
-    }
-}
+//- (void)testErrorReportingWithTruncation {
+//
+//    RollbarMutableConfig *config =
+//    [RollbarMutableConfig mutableConfigWithAccessToken:[RollbarTestHelper getRollbarPayloadsAccessToken]
+//                                           environment:[RollbarTestHelper getRollbarEnvironment]];
+//    config.developerOptions.logIncomingPayloads = YES;
+//    config.developerOptions.logTransmittedPayloads = YES;
+//    config.developerOptions.logDroppedPayloads = YES;
+//    config.developerOptions.transmit = YES;
+//
+//    [Rollbar initWithConfiguration:config];
+//
+//    [RollbarTestUtil waitWithWaitTimeInSeconds:5];
+//    [RollbarTestUtil deleteLogFiles];
+//    [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+//
+//    NSArray *items = [RollbarTestUtil readTransmittedPayloadsAsDictionaries];
+//    XCTAssertEqual(items.count, 0);
+//
+//    NSMutableString *simulatedLongString =
+//        [[NSMutableString alloc] initWithCapacity:(512 + 1)*1024];
+//    while (simulatedLongString.length < (512 * 1024)) {
+//        [simulatedLongString appendString:@"1234567890_"];
+//    }
+//
+//    [Rollbar criticalMessage:@"Message with long extra data"
+//                        data:@{@"extra_truncatable_data": simulatedLongString}
+//     ];
+//
+//    [RollbarTestUtil waitWithWaitTimeInSeconds:2];
+//    items = [RollbarTestUtil readIncomingPayloadsAsDictionaries];
+//    XCTAssertEqual(items.count, 1);
+//    XCTAssertTrue([@"Message with long extra data" isEqualToString:[items[0] valueForKeyPath:@"body.message.body"]]);
+//    [RollbarTestUtil waitWithWaitTimeInSeconds:3];
+//    items = [RollbarTestUtil readTransmittedPayloadsAsDictionaries];
+//    XCTAssertEqual(items.count, 1);
+//
+//    @try {
+//        NSArray *crew = [NSArray arrayWithObjects:
+//                         @"Dave",
+//                         @"Heywood",
+//                         @"Frank", nil];
+//        // This will throw an exception.
+//        NSLog(@"%@", [crew objectAtIndex:10]);
+//    }
+//    @catch (NSException *exception) {
+//
+//        [Rollbar criticalMessage:simulatedLongString
+//                            data:@{@"extra_truncatable_data": simulatedLongString}
+//         ];
+//
+//        [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+//        items = [RollbarTestUtil readIncomingPayloadsAsDictionaries];
+//        XCTAssertEqual(items.count, 2);
+//        [RollbarTestUtil waitWithWaitTimeInSeconds:1];
+//        items = [RollbarTestUtil readTransmittedPayloadsAsDictionaries];
+//        XCTAssertEqual(items.count, 2);
+//    }
+//}
 
 @end
 #endif

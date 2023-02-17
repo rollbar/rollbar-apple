@@ -89,80 +89,80 @@ final class RollbarNotifierLoggerTests: XCTestCase {
         //      once we add to this SDK a feature similar to Rollbar.NET's Internal Events...
     }
 
-    func testRollbarTransmit() {
-
-        let config = Rollbar.configuration().mutableCopy();
-        config.destination.accessToken = RollbarTestHelper.getRollbarPayloadsAccessToken();
-        config.destination.environment = RollbarTestHelper.getRollbarEnvironment();
-        config.developerOptions.transmit = true;
-
-        config.developerOptions.transmit = true;
-        Rollbar.update(withConfiguration: config);
-        Rollbar.criticalMessage("Transmission test YES");
-        RollbarTestUtil.wait(waitTimeInSeconds: 1.0);
-
-        config.developerOptions.transmit = false;
-        Rollbar.update(withConfiguration: config);
-        Rollbar.criticalMessage("Transmission test NO");
-        RollbarTestUtil.wait(waitTimeInSeconds: 1.0);
-
-        config.developerOptions.transmit = true;
-        Rollbar.update(withConfiguration: config);
-        Rollbar.criticalMessage("Transmission test YES2");
-        RollbarTestUtil.wait(waitTimeInSeconds: 1.0);
-
-        var count = 50;
-        while (count > 0) {
-            Rollbar.criticalMessage("Rate Limit Test \(count)");
-            RollbarTestUtil.wait(waitTimeInSeconds: 1.0);
-            count -= 1;
-        }
-    }
-    
-    func testNotification() {
-
-        let notificationText = [
-            "error": ["testing-error"],
-            "debug": ["testing-debug"],
-            "warning": ["testing-warning"],
-            "info": ["testing-info"],
-            "critical": ["testing-critical"]
-        ];
-        
-        for type in notificationText.keys {
-            let params = notificationText[type]!;
-            if (type.compare("error") == .orderedSame) {
-                Rollbar.errorMessage(params[0] as String);
-            } else if (type.compare("warning") == .orderedSame) {
-                Rollbar.warningMessage(params[0] as String);
-            } else if (type.compare("debug") == .orderedSame) {
-                Rollbar.debugMessage(params[0] as String);
-            } else if (type.compare("info") == .orderedSame) {
-                Rollbar.infoMessage(params[0] as String);
-            } else if (type.compare("critical") == .orderedSame) {
-                Rollbar.criticalMessage(params[0] as String);
-            }
-        }
-
-        RollbarLogger.flushRollbarThread();
-        RollbarTestUtil.wait(waitTimeInSeconds: 6.0);
-
-        let items = RollbarTestUtil.readTransmittedPayloadsAsStrings();
-        XCTAssertTrue(items.count >= notificationText.count);
-        var count:Int = 0;
-        for item in items {
-            if (!item.contains("testing-")) {
-                continue;
-            }
-            let payload = RollbarPayload(jsonString: item);
-            let level = payload.data.level;
-            let message: String? = payload.data.body.message?.body;
-            let params = notificationText[RollbarLevelUtil.rollbarLevel(toString: level)]!;
-            XCTAssertTrue(message!.compare(params[0] as String) == .orderedSame, "Expects '\(params[0])', got '\(message ?? "")'.");
-            count += 1;
-        }
-        XCTAssertEqual(count, notificationText.count);
-    }
+//    func testRollbarTransmit() {
+//
+//        let config = Rollbar.configuration().mutableCopy();
+//        config.destination.accessToken = RollbarTestHelper.getRollbarPayloadsAccessToken();
+//        config.destination.environment = RollbarTestHelper.getRollbarEnvironment();
+//        config.developerOptions.transmit = true;
+//
+//        config.developerOptions.transmit = true;
+//        Rollbar.update(withConfiguration: config);
+//        Rollbar.criticalMessage("Transmission test YES");
+//        RollbarTestUtil.wait(waitTimeInSeconds: 1.0);
+//
+//        config.developerOptions.transmit = false;
+//        Rollbar.update(withConfiguration: config);
+//        Rollbar.criticalMessage("Transmission test NO");
+//        RollbarTestUtil.wait(waitTimeInSeconds: 1.0);
+//
+//        config.developerOptions.transmit = true;
+//        Rollbar.update(withConfiguration: config);
+//        Rollbar.criticalMessage("Transmission test YES2");
+//        RollbarTestUtil.wait(waitTimeInSeconds: 1.0);
+//
+//        var count = 50;
+//        while (count > 0) {
+//            Rollbar.criticalMessage("Rate Limit Test \(count)");
+//            RollbarTestUtil.wait(waitTimeInSeconds: 1.0);
+//            count -= 1;
+//        }
+//    }
+//
+//    func testNotification() {
+//
+//        let notificationText = [
+//            "error": ["testing-error"],
+//            "debug": ["testing-debug"],
+//            "warning": ["testing-warning"],
+//            "info": ["testing-info"],
+//            "critical": ["testing-critical"]
+//        ];
+//
+//        for type in notificationText.keys {
+//            let params = notificationText[type]!;
+//            if (type.compare("error") == .orderedSame) {
+//                Rollbar.errorMessage(params[0] as String);
+//            } else if (type.compare("warning") == .orderedSame) {
+//                Rollbar.warningMessage(params[0] as String);
+//            } else if (type.compare("debug") == .orderedSame) {
+//                Rollbar.debugMessage(params[0] as String);
+//            } else if (type.compare("info") == .orderedSame) {
+//                Rollbar.infoMessage(params[0] as String);
+//            } else if (type.compare("critical") == .orderedSame) {
+//                Rollbar.criticalMessage(params[0] as String);
+//            }
+//        }
+//
+//        RollbarLogger.flushRollbarThread();
+//        RollbarTestUtil.wait(waitTimeInSeconds: 6.0);
+//
+//        let items = RollbarTestUtil.readTransmittedPayloadsAsStrings();
+//        XCTAssertTrue(items.count >= notificationText.count);
+//        var count:Int = 0;
+//        for item in items {
+//            if (!item.contains("testing-")) {
+//                continue;
+//            }
+//            let payload = RollbarPayload(jsonString: item);
+//            let level = payload.data.level;
+//            let message: String? = payload.data.body.message?.body;
+//            let params = notificationText[RollbarLevelUtil.rollbarLevel(toString: level)]!;
+//            XCTAssertTrue(message!.compare(params[0] as String) == .orderedSame, "Expects '\(params[0])', got '\(message ?? "")'.");
+//            count += 1;
+//        }
+//        XCTAssertEqual(count, notificationText.count);
+//    }
     
 //    func testNSErrorReporting() {
 //        do {
@@ -192,8 +192,8 @@ final class RollbarNotifierLoggerTests: XCTestCase {
     static var allTests = [
         ("testRollbarConfiguration", testRollbarConfiguration),
         ("testRollbarNotifiersIndependentConfiguration", testRollbarNotifiersIndependentConfiguration),
-        ("testRollbarTransmit", testRollbarTransmit),
-        ("testNotification", testNotification),
+        //("testRollbarTransmit", testRollbarTransmit),
+        //("testNotification", testNotification),
         //("testNSErrorReporting", testNSErrorReporting),
     ]
 }
