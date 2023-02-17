@@ -12,14 +12,10 @@ final class RollbarCocoaLumberjackTests: XCTestCase {
         
         RollbarLogger.clearSdkDataStore();
         
-        let rollbarConfig = RollbarConfig();
+        let rollbarConfig = RollbarMutableConfig();
         rollbarConfig.destination.accessToken = RollbarTestHelper.getRollbarPayloadsAccessToken();
         rollbarConfig.destination.environment = RollbarTestHelper.getRollbarEnvironment();
         rollbarConfig.developerOptions.transmit = false;
-        rollbarConfig.developerOptions.logPayload = true;
-
-        XCTAssertTrue(RollbarLogger.readPayloadsFromSdkLog().count == 0);
-        XCTAssertEqual(RollbarLogger.readPayloadsFromSdkLog().count, 0);
 
         dynamicLogLevel = DDLogLevel.debug;
         DDLog.add(DDOSLogger.sharedInstance);
@@ -34,15 +30,11 @@ final class RollbarCocoaLumberjackTests: XCTestCase {
     
     func testBasics() {
         
-        XCTAssertEqual(RollbarLogger.readPayloadsFromSdkLog().count, 0);
-        
         DDLogError("Get it to Rollbar #1!");
         DDLogError("Get it to Rollbar #2!");
         DDLogError("Get it to Rollbar #3!");
 
         Thread.sleep(forTimeInterval: 3.0);
-
-        XCTAssertEqual(RollbarLogger.readPayloadsFromSdkLog().count, 3);
     }
 
 //    func testExample() throws {

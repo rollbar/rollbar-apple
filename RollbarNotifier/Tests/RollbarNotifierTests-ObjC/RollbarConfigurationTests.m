@@ -407,7 +407,7 @@
 
 - (void)testLogTelemetryAutoCapture {
     
-    NSString *logMsg = @"log-message-testing";
+    NSString *logMsg = @"Rollbar is running";
     [[RollbarTelemetry sharedInstance] clearAllData];
 
     RollbarMutableConfig *config = [[Rollbar configuration] mutableCopy];
