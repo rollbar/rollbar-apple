@@ -12,6 +12,7 @@
 #import "RollbarPayloadPostReply.h"
 #import "RollbarRegistry.h"
 #import "RollbarPayloadRepository.h"
+#import "RollbarInternalLogging.h"
 
 static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
 // hours-per day * 60 min-per-hour * 60 sec-per-min = 1 day in sec
@@ -142,7 +143,7 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
             shouldIgnore = config.checkIgnoreRollbarData(payload.data);
         }
         @catch(NSException *e) {
-            RollbarSdkLog(@"checkIgnore error: %@", e.reason);
+            RBErr(@"checkIgnore error: %@", e.reason);
             NSAssert(false, @"Provided checkIgnore implementation throws an exception!");
             shouldIgnore = NO;
         }
@@ -163,7 +164,7 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
             payload.data = config.modifyRollbarData(payload.data);
         }
         @catch(NSException *e) {
-            RollbarSdkLog(@"modifyRollbarData error: %@", e.reason);
+            RBErr(@"modifyRollbarData error: %@", e.reason);
             NSAssert(false, @"Provided modifyRollbarData implementation throws an exception!");
             //return null;
         }
@@ -280,21 +281,21 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
     RollbarConfig *config = (RollbarConfig *)data[1];
     NSAssert(config, @"config can not be nil");
     if (!(payload && config)) {
-        RollbarSdkLog(@"Couldn't queue payload %@ with config %@", payload, config);
+        RBErr(@"Couldn't queue payload %@ with config %@", payload, config);
         return;
     }
     
     @try {
         [self savePayload:payload withConfig:config];
     } @catch (NSException *exception) {
-        RollbarSdkLog(@"Payload queuing EXCEPTION: %@", exception);
+        RBErr(@"Payload queuing EXCEPTION: %@", exception);
     } @finally {
         [[RollbarTelemetry sharedInstance] clearAllData];
     }
 }
 
 - (void)savePayload:(nonnull RollbarPayload *)payload withConfig:(nonnull RollbarConfig *)config {
-    //RollbarSdkLog(@"RollbarThread::savePayload: %@", payload.data.body);
+    RBLog(@"RollbarThread::savePayload: %@", payload.data.body);
 
     if ([RollbarThread shouldIgnorePayload:payload withConfig:config]) {
         
@@ -309,9 +310,9 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
             [RollbarFileWriter appendSafelyData:[payload serializeToJSONData] toFile:logFilePath];
         }
         if (!config.developerOptions.suppressSdkInfoLogging) {
-            RollbarSdkLog(@"Dropped payload (due to checkIgnore): %@",
-                          [[NSString alloc] initWithData:[payload serializeToJSONData]
-                                                encoding:NSUTF8StringEncoding]);
+            RBErr(@"Dropped payload (due to checkIgnore): %@",
+                  [[NSString alloc] initWithData:[payload serializeToJSONData]
+                                        encoding:NSUTF8StringEncoding]);
         }
         return;
     }
@@ -330,9 +331,9 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
             [RollbarFileWriter appendSafelyData:[payload serializeToJSONData] toFile:logFilePath];
         }
         if (!config.developerOptions.suppressSdkInfoLogging) {
-            RollbarSdkLog(@"Dropped payload (due to modifyPayload failure): %@",
-                          [[NSString alloc] initWithData:[payload serializeToJSONData]
-                                                encoding:NSUTF8StringEncoding]);
+            RBErr(@"Dropped payload (due to modifyPayload failure): %@",
+                  [[NSString alloc] initWithData:[payload serializeToJSONData]
+                                        encoding:NSUTF8StringEncoding]);
         }
         return;
     }
@@ -351,9 +352,9 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
             [RollbarFileWriter appendSafelyData:[payload serializeToJSONData] toFile:logFilePath];
         }
         if (!config.developerOptions.suppressSdkInfoLogging) {
-            RollbarSdkLog(@"Dropped payload (due to scrubPayload failure): %@",
-                          [[NSString alloc] initWithData:[payload serializeToJSONData]
-                                                encoding:NSUTF8StringEncoding]);
+            RBErr(@"Dropped payload (due to scrubPayload failure): %@",
+                  [[NSString alloc] initWithData:[payload serializeToJSONData]
+                                        encoding:NSUTF8StringEncoding]);
         }
         return;
     }
@@ -372,7 +373,7 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
     NSString *configJson = [config serializeToJSONString];
     NSAssert(configJson && configJson.length > 0, @"invalid configJson!");
     if (!configJson || (0 == configJson.length)) {
-        RollbarSdkLog(@"invalid configJson!");
+        RBErr(@"invalid configJson!");
         return;
     }
     
@@ -382,10 +383,10 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
                                                         withConfig:configJson
                                                   andDestinationID:destinationID];
     if (!payloadDataRow || !payloadDataRow[@"id"]) {
-        RollbarSdkLog(@"*** Couldn't add a payload to the repo: %@", payloadJson);
-        RollbarSdkLog(@"*** with config: %@", configJson);
-        RollbarSdkLog(@"*** with destinationID: %@", destinationID);
-        RollbarSdkLog(@"*** Resulting payloadDataRow: %@", payloadDataRow);
+        RBErr(@"*** Couldn't add a payload to the repo: %@", payloadJson);
+        RBErr(@"*** with config: %@", configJson);
+        RBErr(@"*** with destinationID: %@", destinationID);
+        RBErr(@"*** Resulting payloadDataRow: %@", payloadDataRow);
     }
 
     NSAssert(payloadDataRow && payloadDataRow[@"id"], @"Couldn't add a payload to the repo: %@", payloadJson);
@@ -404,12 +405,6 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
     }
     
     @autoreleasepool {
-        
-        //        if ((nil != _logger) && (NO == _logger.configuration.developerOptions.suppressSdkInfoLogging)) {
-        //
-        //            RollbarSdkLog(@"Checking items...");
-        //        }
-        
         [self processSavedItems];
     }
 }
@@ -440,10 +435,8 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
             }
         }
         
-        if (config && !config.developerOptions.suppressSdkInfoLogging) {
-            RollbarSdkLog(@"Dropped a stale payload: %@", payloadDataRow[@"payload_json"]);
-        }
-        
+        RBLog(@"Dropped a stale payload: %@", payloadDataRow[@"payload_json"]);
+
         return YES;
     }
     
@@ -462,7 +455,7 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
     
     //TODO: remove this code-block before the upcoming major release:
     if (!destination) {
-        RollbarSdkLog(@"Aha!");
+        RBLog(@"Aha!");
         [self->_payloadsRepo removePayloadByID:payloadDataRow[@"id"]];
         return;
     }
@@ -491,14 +484,14 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
                                                                     error:&error
                                                                      safe:true];
     if (nil == jsonPayload) {
-        RollbarSdkLog(@"Couldn't send jsonPayload that is nil");
+        RBErr(@"Couldn't send jsonPayload that is nil");
         if (nil != error) {
-            RollbarSdkLog(@"   DETAILS: an error while generating JSON data: %@", error);
+            RBErr(@"   DETAILS: an error while generating JSON data: %@", error);
         }
         // there is nothing we can do with this payload - let's drop it:
-        RollbarSdkLog(@"Dropping unprocessable payload: %@", payloadJson);
+        RBErr(@"Dropping unprocessable payload: %@", payloadJson);
         if (![self->_payloadsRepo removePayloadByID:payloadDataRow[@"id"]]) {
-            RollbarSdkLog(@"Couldn't remove payload data row with ID: %@", payloadDataRow[@"id"]);
+            RBErr(@"Couldn't remove payload data row with ID: %@", payloadDataRow[@"id"]);
         }
         return;
     }
@@ -522,7 +515,7 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
             // The payload is fully processed and transmitted.
             // It can be removed from the repo:
             if (![self->_payloadsRepo removePayloadByID:payloadDataRow[@"id"]]) {
-                RollbarSdkLog(@"Couldn't remove payload data row with ID: %@", payloadDataRow[@"id"]);
+                RBErr(@"Couldn't remove payload data row with ID: %@", payloadDataRow[@"id"]);
             }
             if (config.developerOptions.logTransmittedPayloads) {
                 payloadsLogFile = config.developerOptions.transmittedPayloadsLogFile;
@@ -532,7 +525,7 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
             // The payload is fully processed but not accepted by the server due to some invalid content.
             // It must be removed from the repo:
             if (![self->_payloadsRepo removePayloadByID:payloadDataRow[@"id"]]) {
-                RollbarSdkLog(@"Couldn't remove payload data row with ID: %@", payloadDataRow[@"id"]);
+                RBErr(@"Couldn't remove payload data row with ID: %@", payloadDataRow[@"id"]);
             }
             if (config.developerOptions.logDroppedPayloads) {
                 payloadsLogFile = config.developerOptions.droppedPayloadsLogFile;
@@ -555,13 +548,13 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
         NSString *sdkLogTrace = nil;
         switch(success) {
             case RollbarTriStateFlag_On:
-                //RollbarSdkLog(@"Transmitted payload: %@", [[NSString alloc] initWithData:jsonPayload encoding:NSUTF8StringEncoding]);
+                RBLog(@"Transmitted payload: %@", [[NSString alloc] initWithData:jsonPayload encoding:NSUTF8StringEncoding]);
                 break;
             case RollbarTriStateFlag_Off:
-                RollbarSdkLog(@"Dropped payload: %@", [[NSString alloc] initWithData:jsonPayload encoding:NSUTF8StringEncoding]);
+                RBLog(@"Dropped payload: %@", [[NSString alloc] initWithData:jsonPayload encoding:NSUTF8StringEncoding]);
                 break;
             case RollbarTriStateFlag_None:
-                RollbarSdkLog(@"Couldn't transmit (and will try) payload: %@", [[NSString alloc] initWithData:jsonPayload encoding:NSUTF8StringEncoding]);
+                RBErr(@"Couldn't transmit (and will try) payload: %@", [[NSString alloc] initWithData:jsonPayload encoding:NSUTF8StringEncoding]);
                 break;
         }
     }
@@ -571,7 +564,7 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
     
 #if !TARGET_OS_WATCH
     if (!self->_isNetworkReachable) {
-        RollbarSdkLog(@"Processing saved items: no network!");
+        RBLog(@"Processing saved items: no network!");
         // Don't attempt sending if the network is known to be not reachable
         return;
     }
@@ -582,7 +575,7 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
         @try {
             [self processSavedPayload:payload];
         } @catch (NSException *exception) {
-            RollbarSdkLog(@"Payload processing EXCEPTION: %@", exception);
+            RBErr(@"Payload processing EXCEPTION: %@", exception);
         } @finally {
         }
     }

@@ -3,6 +3,7 @@
 #import "RollbarConfigUtil.h"
 #import "RollbarConfig.h"
 #import "RollbarNotifierFiles.h"
+#import "RollbarInternalLogging.h"
 
 #pragma mark - constants
 
@@ -69,7 +70,7 @@ static NSString *configurationFilePath = nil;
         
         if ((nil != error) && (nil != *error)) {
             
-            RollbarSdkLog(@"Error loading RollbarConfig from %@: %@", filePath, [*error localizedDescription]);
+            RBErr(@"Error loading RollbarConfig from %@: %@", filePath, [*error localizedDescription]);
         }
         return nil;
     }
@@ -130,13 +131,11 @@ static NSString *configurationFilePath = nil;
             
             if ((nil != error) && (nil != *error)) {
                 
-                RollbarSdkLog(@"Error while deleting file %@: %@",
-                              filePath,
-                              [*error localizedDescription]);
+                RBErr(@"Error while deleting file %@: %@", filePath, [*error localizedDescription]);
             }
             else {
                 
-                RollbarSdkLog(@"Error while deleting file %@", filePath);
+                RBErr(@"Error while deleting file %@", filePath);
             }
         }
         

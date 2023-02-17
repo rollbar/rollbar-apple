@@ -1,5 +1,5 @@
 #import "RollbarFileWriter.h"
-#import "RollbarSdkLog.h"
+#import "RollbarInternalLogging.h"
 
 @implementation RollbarFileWriter
 
@@ -7,7 +7,7 @@
     
     if (!(fileFullPath && (fileFullPath.length > 0))) {
         
-        RollbarSdkLog(@"Can't ensure existance of this file: %@!", fileFullPath);
+        RBCErr(@"Can't ensure existance of this file: %@!", fileFullPath);
         return NO;
     }
 
@@ -17,7 +17,7 @@
         if (![[NSFileManager defaultManager] createFileAtPath:fileFullPath
                                                      contents:nil
                                                    attributes:nil]) {
-            RollbarSdkLog(@"    Error while creating file: %@", fileFullPath);
+            RBCErr(@"    Error while creating file: %@", fileFullPath);
             return NO;
         }
     }
@@ -29,7 +29,7 @@
     
     if (!(data && fileFullPath && (fileFullPath.length > 0))) {
         
-        RollbarSdkLog(@"Can't append data: %@ to file: %@!", data, fileFullPath);
+        RBCErr(@"Can't append data: %@ to file: %@!", data, fileFullPath);
         return;
     }
     
@@ -40,32 +40,32 @@
     NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:fileFullPath];
     if (!fileHandle) {
         
-        RollbarSdkLog(@"    Error while acquiring file handle for: %@", fileFullPath);
+        RBCErr(@"    Error while acquiring file handle for: %@", fileFullPath);
         return;
     }
     
     unsigned long long offset;
     if (![fileHandle seekToEndReturningOffset:&offset error:&error]) {
         
-        RollbarSdkLog(@"    Error while seeking to file end of %@: %@", fileFullPath, [error localizedDescription]);
+        RBCErr(@"    Error while seeking to file end of %@: %@", fileFullPath, [error localizedDescription]);
         return;
     }
     
     if (![fileHandle writeData:data error:&error]) {
         
-        RollbarSdkLog(@"    Error while writing data to %@: %@", fileFullPath, [error localizedDescription]);
+        RBCErr(@"    Error while writing data to %@: %@", fileFullPath, [error localizedDescription]);
         return;
     }
     
     if (![fileHandle writeData:[@"\n" dataUsingEncoding:NSUTF8StringEncoding] error:&error]) {
         
-        RollbarSdkLog(@"    Error while writing data to %@: %@", fileFullPath, [error localizedDescription]);
+        RBCErr(@"    Error while writing data to %@: %@", fileFullPath, [error localizedDescription]);
         return;
     }
     
     if (![fileHandle closeAndReturnError:&error]) {
         
-        RollbarSdkLog(@"    Error while closing %@: %@", fileFullPath, [error localizedDescription]);
+        RBCErr(@"    Error while closing %@: %@", fileFullPath, [error localizedDescription]);
         return;
     }
 }
@@ -74,7 +74,7 @@
 
     if (!data) {
         
-        RollbarSdkLog(@"No data to append!");
+        RBCErr(@"No data to append!");
         return;
     }
     

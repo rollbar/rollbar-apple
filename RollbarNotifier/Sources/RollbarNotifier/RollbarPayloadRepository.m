@@ -1,5 +1,5 @@
 #import "RollbarPayloadRepository.h"
-
+#import "RollbarInternalLogging.h"
 #import "RollbarNotifierFiles.h"
 
 @import RollbarCommon;
@@ -15,12 +15,6 @@ typedef int (^SqliteCallback)(void *info, int columns, char **data, char **colum
 
 static int defaultOnSelectCallback(void *info, int columns, char **data, char **column)
 {
-//    RollbarSdkLog(@"Columns: %d", columns);
-//    for (int i = 0; i < columns; i++) {
-//        RollbarSdkLog(@"Column: %s", column[i]);
-//        RollbarSdkLog(@"Data: %s", data[i]);
-//    }
-    
     return SQLITE_OK;
 }
 
@@ -480,7 +474,7 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
     }
     else {
         
-        RollbarSdkLog(@"Can not open database: %@!!!", inMemory ? @"in memory" : self->_storePath);
+        RBErr(@"Can not open database: %@!!!", inMemory ? @"in memory" : self->_storePath);
     }
 }
 
@@ -493,7 +487,7 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
     int result = sqlite3_open_v2([self->_storePath UTF8String], &self->_db, sqliteDbFlags, NULL);
     if (result != SQLITE_OK) {
         
-        RollbarSdkLog(@"sqlite3_open: %s", sqlite3_errmsg(self->_db));
+        RBErr(@"sqlite3_open: %s", sqlite3_errmsg(self->_db));
         return NO;
     }
 
@@ -537,7 +531,7 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
     int sqlResult = sqlite3_exec(self->_db, [sql UTF8String], checkIfTableExistsCallback, &answerFlag, &sqliteErrorMessage);
     if (sqlResult != SQLITE_OK) {
         
-        RollbarSdkLog(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
+    RBErr(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
         sqlite3_free(sqliteErrorMessage);
     }
     
@@ -552,7 +546,7 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
     int sqlResult = sqlite3_exec(self->_db, [sql UTF8String], NULL, NULL, &sqliteErrorMessage);
     if (sqlResult != SQLITE_OK) {
         
-        RollbarSdkLog(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
+        RBErr(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
         sqlite3_free(sqliteErrorMessage);
         return NO;
     }
@@ -570,7 +564,7 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
     int sqlResult = sqlite3_exec(self->_db, [sql UTF8String], callback, &result, &sqliteErrorMessage);
     if (sqlResult != SQLITE_OK) {
         
-        RollbarSdkLog(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
+        RBErr(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
         sqlite3_free(sqliteErrorMessage);
     }
     
@@ -588,7 +582,7 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
     int sqlResult = sqlite3_exec(self->_db, [sql UTF8String], callback, &result, &sqliteErrorMessage);
     if (sqlResult != SQLITE_OK) {
         
-        RollbarSdkLog(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
+        RBErr(@"sqlite3_exec: %s during %@", sqliteErrorMessage, sql);
         sqlite3_free(sqliteErrorMessage);
     }
     
@@ -603,7 +597,7 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
 - (void)checkDbFile {
 
     if (self->_storePath && ![[NSFileManager defaultManager] fileExistsAtPath:self->_storePath]) {
-        RollbarSdkLog(@"Persistent payloads store was not created: %@!!!", self->_storePath);
+        RBErr(@"Persistent payloads store was not created: %@!!!", self->_storePath);
         [self openDB:NO];
         [self ensureDestinationsTable];
         [self ensurePayloadsTable];

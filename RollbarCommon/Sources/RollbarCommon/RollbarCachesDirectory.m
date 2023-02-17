@@ -1,4 +1,5 @@
 #import "RollbarCachesDirectory.h"
+#import "RollbarInternalLogging.h"
 
 @implementation RollbarCachesDirectory
 
@@ -51,12 +52,12 @@
                                                attributes:nil
                                                     error:&error
     ];
-    NSLog(@"Created a new caches directory: %@", [NSNumber numberWithBool:success]);
+    RBCLog(@"Created a new caches directory: %@", [NSNumber numberWithBool:success]);
     if (NO == success) {
         
         if (!error) {
 
-            NSLog(@"Error creating a new caches directory: %@", error);
+            RBCErr(@"Error creating a new caches directory: %@", error);
         }
     }
     return success;

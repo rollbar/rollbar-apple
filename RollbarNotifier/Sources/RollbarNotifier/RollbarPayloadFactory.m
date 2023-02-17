@@ -4,6 +4,7 @@
 #import "RollbarLoggingOptions.h"
 #import "RollbarScrubbingOptions.h"
 #import "RollbarDestination.h"
+#import "RollbarInternalLogging.h"
 
 #import "RollbarPayload.h"
 #import "RollbarBody.h"
@@ -305,7 +306,7 @@
         NSRange diagnosisRange = NSMakeRange(start, lineRange.length - range.length);
         NSString *diagnosis = [report substringWithRange:diagnosisRange];
         diagnosis = [diagnosis stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
-        RollbarSdkLog(@"%@", diagnosis);
+        RBLog(@"%@", diagnosis);
         return diagnosis;
     }
 

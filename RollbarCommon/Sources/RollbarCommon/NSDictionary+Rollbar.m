@@ -1,5 +1,5 @@
 #import "NSDictionary+Rollbar.h"
-#import "RollbarSdkLog.h"
+#import "RollbarInternalLogging.h"
 
 @implementation NSDictionary (Rollbar)
 
@@ -14,11 +14,11 @@ NS_ASSUME_NONNULL_BEGIN
             return YES;
         }
         else {
-            RollbarSdkLog(@"[%@] - key %@ has no value", context, key);
+            RBCErr(@"[%@] - key %@ has no value", context, key);
         }
     }
     else {
-        RollbarSdkLog(@"[%@] - key %@ not found", context, key);
+        RBCErr(@"[%@] - key %@ not found", context, key);
     }
     
     return NO;
