@@ -262,7 +262,7 @@ fileprivate extension RollbarCrashFormattingFilter {
                 case let .instruction(addr):
                     "\(index) \("?".pad(31)) \(addr) ? + \(addr.value)"
 
-                case let .unsymbolicated(frame):
+                case let .symbolicated(frame) where frame.object.name == process:
                     let preamble = "\(index) \(frame.object.name.pad(31)) \(frame.instructionAddr)"
                     let offset = frame.instructionAddr - frame.object.addr.value
                     "\(preamble) \(frame.object.addr) + \(offset.value)"
@@ -271,6 +271,11 @@ fileprivate extension RollbarCrashFormattingFilter {
                     let preamble = "\(index) \(frame.object.name.pad(31)) \(frame.instructionAddr)"
                     let offset = frame.instructionAddr - frame.symbol.addr.value
                     "\(preamble) \(frame.symbol.name) + \(offset.value)"
+
+                case let .unsymbolicated(frame):
+                    let preamble = "\(index) \(frame.object.name.pad(31)) \(frame.instructionAddr)"
+                    let offset = frame.instructionAddr - frame.object.addr.value
+                    "\(preamble) \(frame.object.addr) + \(offset.value)"
                 }
             }
         }
