@@ -29,7 +29,7 @@ struct BinaryImage: RawRepresentable {
 
     /// A tuple holding the starting and ending address pointing to
     /// the location of the symbols within the debug information file (dSYM/DWARF).
-    let addr: (Address, Address)
+    let addr: (start: Address, end: Address)
 
     /// The VM address where this binary was located in memory.
     let vmaddr: Address

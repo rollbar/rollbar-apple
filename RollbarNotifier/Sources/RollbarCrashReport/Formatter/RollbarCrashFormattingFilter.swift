@@ -321,11 +321,11 @@ fileprivate extension RollbarCrashFormattingFilter {
     func binaryImages(for report: Report) -> Formatted<String> {
         .init {
             "\nBinary Images:"
-            for img in report.binaryImages.sorted(by: their(\.addr.0)) {
+            for img in report.binaryImages.sorted(by: their(\.addr.start)) {
                 let cpu = img.cpu.subtypeName
                 let uuid = img.uuid.uuidString.replacingOccurrences(of: "-", with: "").lowercased()
                 let isMain = img.path == report.system.bundleExecutablePath ? "+" : " "
-                "\(img.addr.0) - \(img.addr.1) \(isMain)\(img.name) \(cpu)  <\(uuid)> \(img.path.absoluteString)"
+                "\(img.addr.start) - \(img.addr.end) \(isMain)\(img.name) \(cpu)  <\(uuid)> \(img.path.absoluteString)"
             }
         }
     }
