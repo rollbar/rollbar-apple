@@ -14,8 +14,7 @@ struct CPU {
         case CPU_TYPE_ARM: return "ARM"
         case CPU_TYPE_ARM64: return "ARM-64"
         case CPU_TYPE_ARM64_32: return "ARM-64_32"
-        case CPU_TYPE_X86: return "X86"
-        case CPU_TYPE_I386: return "I386"
+        case CPU_TYPE_X86 | CPU_TYPE_I386: return "X86"
         case CPU_TYPE_X86_64: return "X86-64"
         case _: return "UNKNOWN"
         }
@@ -23,31 +22,34 @@ struct CPU {
 
     /// A crash reporting appropriate formatted String of the specific architecture.
     var subtypeName: String {
-        switch (type, subtype) {
-        case (CPU_TYPE_ARM, CPU_SUBTYPE_ARM_V6): return "armv6"
-        case (CPU_TYPE_ARM, CPU_SUBTYPE_ARM_V7): return "armv7"
-        case (CPU_TYPE_ARM, CPU_SUBTYPE_ARM_V7F): return "armv7f"
-        case (CPU_TYPE_ARM, CPU_SUBTYPE_ARM_V7S): return "armv7s"
-        case (CPU_TYPE_ARM, CPU_SUBTYPE_ARM_V7K): return "armv7k"
-        case (CPU_TYPE_ARM, CPU_SUBTYPE_ARM_V7M): return "armv7m"
-        case (CPU_TYPE_ARM, CPU_SUBTYPE_ARM_V7EM): return "armv7em"
-        case (CPU_TYPE_ARM, CPU_SUBTYPE_ARM_V8): return "armv8"
-        case (CPU_TYPE_ARM, CPU_SUBTYPE_ARM_V8M): return "armv8"
-        case (CPU_TYPE_ARM, _): return "arm"
-
-        case (CPU_TYPE_ARM64, CPU_SUBTYPE_ARM64E): return "arm64e"
-        case (CPU_TYPE_ARM64, CPU_SUBTYPE_ARM64_V8): return "arm64v8"
-        case (CPU_TYPE_ARM64, _): return "arm64"
-
-        case (CPU_TYPE_ARM64_32, CPU_SUBTYPE_ARM64_32_V8): return "arm64_32v8"
-        case (CPU_TYPE_ARM64_32, _): return "arm64_32"
-
-        case (CPU_TYPE_X86, _): return "x86"
-        case (CPU_TYPE_I386, _): return "i386"
-        case (CPU_TYPE_X86_64, _): return "x86_64"
-
-        case let (type, subtype):
-            return "unknown(\(type), \(subtype))"
+        switch self.type {
+        case CPU_TYPE_ARM:
+            return [
+                (mask: CPU_SUBTYPE_ARM_V6, name: "armv6"),
+                (mask: CPU_SUBTYPE_ARM_V7, name: "armv7"),
+                (mask: CPU_SUBTYPE_ARM_V7F, name: "armv7f"),
+                (mask: CPU_SUBTYPE_ARM_V7S, name: "armv7s"),
+                (mask: CPU_SUBTYPE_ARM_V7K, name: "armv7k"),
+                (mask: CPU_SUBTYPE_ARM_V7M, name: "armv7m"),
+                (mask: CPU_SUBTYPE_ARM_V7EM, name: "armv7em"),
+                (mask: CPU_SUBTYPE_ARM_V8, name: "armv8"),
+                (mask: CPU_SUBTYPE_ARM_V8M, name: "armv8m")
+            ].first(where: { self.subtype & $0.mask == $0.mask })?.name ?? "arm"
+        case CPU_TYPE_ARM64:
+            return [
+                (mask: CPU_SUBTYPE_ARM64_V8, name: "arm64v8"),
+                (mask: CPU_SUBTYPE_ARM64E, name: "arm64e")
+            ].first(where: { self.subtype & $0.mask == $0.mask })?.name ?? "arm64"
+        case CPU_TYPE_ARM64_32:
+            return [
+                (mask: CPU_SUBTYPE_ARM64_32_V8, name: "arm64_32v8"),
+            ].first(where: { self.subtype & $0.mask == $0.mask })?.name ?? "arm64_32"
+        case CPU_TYPE_X86 | CPU_TYPE_I386:
+            return "x86"
+        case CPU_TYPE_X86_64:
+            return "x86_64"
+        case _:
+            return "unknown"
         }
     }
 
@@ -95,5 +97,17 @@ struct CPU {
         case _:
             return []
         }
+    }
+}
+
+extension CPU: CustomDebugStringConvertible {
+
+    var debugDescription: String {
+        """
+        CPU (\(self.typeName), \(self.subtypeName)) {
+            type:    \(self.type)
+            subtype: \(self.subtype)
+        }
+        """
     }
 }
