@@ -6,15 +6,15 @@ import RollbarNotifier
 enum ExampleError: Error {
     case
         invalidResult,
-        outOfBounds,
-        invalidInput
+        invalidInput,
+        someOtherError
 }
 
 struct ContentView: View {
     let example = Example()
 
     func button(_ title: String, action: @escaping () -> ()) -> some View {
-        Button(title, action: action)
+        return Button(title, action: action)
             .buttonStyle(.bordered)
             .tint(.blue)
     }
@@ -26,41 +26,41 @@ struct ContentView: View {
                 .padding(.bottom)
 
             VStack {
-                button("Manual Logging Example", action: example.manualLogging)
-                    .padding(.bottom)
-
                 Group {
-                    button("Force unwrap nil", action: example.forceUnwrapNil)
-                    button("Implicitly unwrapped nil argument") { example.implicitlyUnwrappedArgument(nil) }
-                    button("Implicitly unwrapped nil value", action: example.implicitlyUnwrappedValue)
+                    button("Manual Logging Example", action: example.manualLogging)
                         .padding(.bottom)
                 }
 
                 Group {
-                    button("Force as! invalid cast") { example.forceInvalidCast(to: Int.self) }
-                    button("Unsafe bit cast", action: example.unsafeBitCast)
+                    button("Fatal Error", action: example.forceFatalError)
                         .padding(.bottom)
                 }
 
                 Group {
-                    button("Out of bounds access", action: example.outOfBounds)
-                    //button("Increment past endIndex", action: example.incrementPastEndIndex)
-                    //button("Neg Double outside UInt range") { example.outsideRepresentableRange(-21.5) }
-                    button("Duplicate Dictionary keys", action: example.duplicateKeys)
+                    button("Force unwrap nil") { example.forceUnwrapNil(Int?.none) }
+                    button("Implicitly unwrapped nil arg") { example.implicitlyUnwrappedArg(String?.none) }
+                        .padding(.bottom)
+                }
+
+                Group {
+                    button("Force as! invalid cast") { example.forceInvalidCast([""]) }
+                    button("Unsafe bit cast") { example.unsafeBitCast(0) }
+                        .padding(.bottom)
+                }
+
+                Group {
+                    button("Out of bounds access") { example.outOfBounds(Int.max) }
+                    button("Increment past endIndex") { example.incrementPastEndIndex(0...3) }
+                    button("Outside UInt range") { example.outsideRepresentableRange(-21.5) }
+                    button("Duplicate Dictionary keys") { example.duplicateKeys("someKey") }
                     button("Divide by zero") { example.divide(by: 0) }
                         .padding(.bottom)
                 }
 
                 Group {
                     button("Force try! and fail") { try! example.throwError() }
-                    button("Throw an NSException", action: example.throwNSException)
+                    button("Throw an NSException") { example.throwNSException((1, 2)) }
                         .padding(.bottom)
-                }
-
-                Group {
-                    button("Assertion Failure", action: example.forceAssertFailure)
-                    button("Precondition Failure", action: example.forcePrecondFailure)
-                    button("Fatal Error", action: example.forceFatalError)
                 }
             }
         }
@@ -94,7 +94,7 @@ struct Example {
         Rollbar.criticalError(ExampleError.invalidResult, data: extraInfo)
 
         do {
-            throw ExampleError.outOfBounds
+            throw ExampleError.someOtherError
         } catch {
             Rollbar.errorError(error, data: extraInfo)
         }
@@ -106,61 +106,77 @@ struct Example {
         fatalError("This is the description of a fatal error.")
     }
 
-    func forcePrecondFailure() {
-        preconditionFailure("The description of a precondition failure")
+    func forceUnwrapNil<T: Numeric>(_ x: T?) {
+        // implementation detail:
+        // ----------------------
+        // since these functions are basically noops, the
+        // optimizer is clever enough to crush all of them
+        // into a single noop, which in turn, messes up the
+        // stackframe.
+        //
+        // we prevent this by simply producing a side-effect.
+        //
+        // all other functions follow the same pattern:
+        //  1. a side-effect (print), followed by
+        //  2. an illegal operation that crashes the app.
+        print("forceUnwrapNil: \(String(describing: x))") // the side-effect.
+
+        _ = x! * x! // the illegal op.
     }
 
-    func forceAssertFailure() {
-        assertionFailure("The description of an assertion failure")
+    func implicitlyUnwrappedArg<S: StringProtocol>(_ s: S!) {
+        print("implicitlyUnwrappedArgument: \(String(describing: s))")
+        _ = s.lowercased()
     }
 
-    func forceUnwrapNil() {
-        _ = String?.none!
+    func forceInvalidCast<T>(_ xs: [T]) {
+        print("forceInvalidCast: \(xs)")
+        _ = xs as! [Double]
     }
 
-    func implicitlyUnwrappedArgument(_ x: Int!) {
-        _ = x + 1
+    func unsafeBitCast(_ x: Float) {
+        print("unsafeBitCast: \(x)")
+        _ = Swift.unsafeBitCast(x, to: String.self)
     }
 
-    func implicitlyUnwrappedValue() {
-        let x: Int! = nil
-        _ = x + 1
+    func outOfBounds(_ index: Int) {
+        print("outOfBounds: \(index)")
+        _ = [][index]
     }
 
-    func forceInvalidCast<T>(to type: T.Type) {
-        _ = "" as! T
-    }
-
-    func outsideRepresentableRange(_ d: Double) {
-        _ = UInt(d)
-    }
-
-    func outOfBounds() {
-        _ = [][Int.max]
-    }
-
-    func duplicateKeys() {
-        _ = ["one": 1, "one": 1]
-    }
-
-    func incrementPastEndIndex() {
-        let r = 0...3
+    func incrementPastEndIndex(_ r: ClosedRange<Int>) {
+        print("incrementPastEndIndex: \(r)")
         _ = r.index(after: r.endIndex)
     }
 
-    func unsafeBitCast() {
-        _ = Swift.unsafeBitCast(Int.min, to: String.self)
+    func outsideRepresentableRange(_ d: Double) {
+        print("outsideRepresentableRange: \(d)")
+        _ = UInt(d)
+    }
+
+    func duplicateKeys(_ key: String) {
+        print("duplicateKeys: \(key)")
+        var map = [key: 1, key: 1] // the illegal op.
+        // implementation detail:
+        // this function requires a bit more trickery to prevent
+        // the optimizer from simply removing the line above.
+        if let x = map[key] {
+            map[key] = x + x
+        }
     }
 
     func divide(by y: Int) {
+        print("divideBy: \(y)")
         _ = 1 / y
     }
 
     func throwError() throws {
-        throw ExampleError.outOfBounds
+        print("throwError: ExampleError.someOtherError")
+        throw ExampleError.someOtherError
     }
 
-    func throwNSException() {
-        _ = try? JSONSerialization.data(withJSONObject: (1, 2))
+    func throwNSException<A, B>(_ pair: (A, B)) {
+        print("throwNSException: \(pair)")
+        _ = try? JSONSerialization.data(withJSONObject: pair)
     }
 }
