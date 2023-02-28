@@ -298,7 +298,7 @@
     return self.osData;
 }
 
-- (nonnull NSString *)messageFromCrashReport:(nonnull NSString *)report {
+- (nullable NSString *)messageFromCrashReport:(nonnull NSString *)report {
     NSRange range = [report rangeOfString:@"Rollbar Diagnosis: "];
     if (range.length != 0) {
         NSRange lineRange = [report lineRangeForRange:range];
@@ -310,7 +310,7 @@
         return diagnosis;
     }
 
-    return @"Undiagnosed crash";
+    return nil;
 }
 
 @end
