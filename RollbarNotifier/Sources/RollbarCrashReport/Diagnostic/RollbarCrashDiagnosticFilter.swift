@@ -69,21 +69,12 @@ public class RollbarCrashDiagnosticFilter: NSObject, KSCrashReportFilter {
                     : diagnostic
             }
 
-        let error = report.crash.error
-        let machDiagnostics = zip(
-            error?.address, error?.mach, error?.signal
-        ).map { (address, mach, signal) in
-            [Diagnostic("\(mach.exceptionName) (\(signal.signalName))", source: "Exception Type"),
-             Diagnostic("\(mach.codeName) at \(address)", source: "Exception Subtype")]
-        } ?? []
-
         let diagnostic = kscrashDiagnostics.first
             ?? dyldDiagnostics.first(where: { $0.source != "libsystem_sim_platform.dylib" })
-            ?? machDiagnostics.first(where: { $0.source == "Exception Type" })
 
         var diagnosedReport = report
         diagnosedReport.crash.diagnosis = diagnostic?.diagnosis
-        diagnosedReport.crash.diagnostics = kscrashDiagnostics + dyldDiagnostics + machDiagnostics
+        diagnosedReport.crash.diagnostics = kscrashDiagnostics + dyldDiagnostics
         return .success(diagnosedReport)
     }
 
