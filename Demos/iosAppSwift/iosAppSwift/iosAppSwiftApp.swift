@@ -14,13 +14,14 @@ struct iosAppSwiftApp: App {
 }
 
 class AppDelegate: NSObject, UIApplicationDelegate {
+    @AppStorage("rollbar_post_client_item_access_token") var accessToken = ""
 
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
     ) -> Bool {
         // Dynamically read these settings from your config settings on application startup.
-        let accessToken = "YOUR-ROLLBAR-TOKEN"  // Rollbar post_client_item access token
+        let accessToken = self.accessToken // Rollbar post_client_item access token
         let environment = "staging"
         let codeVersion = "main"  // Ideally codeVersion is commit SHA https://docs.rollbar.com/docs/versions
 
