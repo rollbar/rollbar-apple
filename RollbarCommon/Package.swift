@@ -5,10 +5,10 @@ import PackageDescription
 let package = Package(
     name: "RollbarCommon",
     platforms: [
-        .macOS(.v10_15),
-        .iOS(.v13),
-        .tvOS(.v13),
-        .watchOS(.v7),
+        .macOS(.v12),
+        .iOS(.v14),
+        .tvOS(.v14),
+        .watchOS(.v8),
     ],
     products: [
         .library(name: "RollbarCommon", targets: ["RollbarCommon"]),

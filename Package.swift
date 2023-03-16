@@ -5,14 +5,14 @@ import PackageDescription
 let package = Package(
     name: "RollbarSDK",
     platforms: [
-        .macOS(.v10_15),
-        .iOS(.v13),
-        .tvOS(.v13),
-        .watchOS(.v7),
+        .macOS(.v12),
+        .iOS(.v14),
+        .tvOS(.v14),
+        .watchOS(.v8),
     ],
     products: [
         .library(name: "RollbarCommon", targets: ["RollbarCommon"]),
-        .library(name: "RollbarNotifier", targets: ["RollbarNotifier"]),
+        .library(name: "RollbarNotifier", targets: ["RollbarNotifier", "RollbarCrashReport"]),
         .library(name: "RollbarSwift", targets: ["RollbarSwift"]),
         .library(name: "RollbarDeploys", targets: ["RollbarDeploys"]),
         .library(name: "RollbarAUL", targets: ["RollbarAUL"]),
@@ -31,10 +31,18 @@ let package = Package(
                 .headerSearchPath("RollbarCommon/Sources/RollbarCommon/**"),
             ]),
         .target(
+            name: "RollbarCrashReport",
+            dependencies: [
+                "KSCrash",
+            ],
+            path: "RollbarNotifier/Sources/RollbarCrashReport"
+        ),
+        .target(
             name: "RollbarNotifier",
             dependencies: [
                 "RollbarCommon",
                 "KSCrash",
+                "RollbarCrashReport"
             ],
             path: "RollbarNotifier/Sources/RollbarNotifier",
             publicHeadersPath: "include",

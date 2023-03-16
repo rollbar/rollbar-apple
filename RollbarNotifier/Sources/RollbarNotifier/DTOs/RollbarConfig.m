@@ -14,7 +14,7 @@
 
 #pragma mark - constants
 
-static NSString * const NOTIFIER_VERSION = @"2.4.0";
+static NSString * const NOTIFIER_VERSION = @"3.0.0";
 
 static NSString * const NOTIFIER_NAME = @"rollbar-apple";
 
@@ -55,7 +55,7 @@ static NSString * const DFK_CUSTOM = @"custom";
 #pragma mark - factory methods
 
 + (nonnull RollbarConfig *)configWithAccessToken:(nonnull NSString *)token {
-    
+
     NSAssert(token, @"Access token must be initialized!");
     NSAssert(token.length > 0, @"Access token must not be empty string!");
 
@@ -67,36 +67,36 @@ static NSString * const DFK_CUSTOM = @"custom";
 
 + (nonnull RollbarConfig *)configWithAccessToken:(nonnull NSString *)token
                                      environment:(nonnull NSString *)env {
-    
+
     NSAssert(env, @"Environment must be initialized!");
     NSAssert(env.length > 0, @"Environment must not be empty string!");
 
     RollbarConfig *config = [[RollbarConfig alloc] initWithAccessToken:token
                                                            environment:env];
-    
+
     return config;
 }
 
 + (nonnull RollbarMutableConfig *)mutableConfigWithAccessToken:(nonnull NSString *)token {
-    
+
     NSAssert(token, @"Access token must be initialized!");
     NSAssert(token.length > 0, @"Access token must not be empty string!");
-    
+
     RollbarMutableConfig *config = [[RollbarMutableConfig alloc] initWithAccessToken:token
                                                                          environment:nil];
-    
+
     return config;
 }
 
 + (nonnull RollbarMutableConfig *)mutableConfigWithAccessToken:(nonnull NSString *)token
                                                    environment:(nonnull NSString *)env {
-    
+
     NSAssert(env, @"Environment must be initialized!");
     NSAssert(env.length > 0, @"Environment must not be empty string!");
-    
+
     RollbarMutableConfig *config = [[RollbarMutableConfig alloc] initWithAccessToken:token
                                                                          environment:env];
-    
+
     return config;
 }
 
@@ -115,11 +115,11 @@ static NSString * const DFK_CUSTOM = @"custom";
     else {
         destination = [[RollbarMutableDestination alloc] init];
     }
-    
+
     if (!destination) {
         return nil;
     }
-    
+
     if (self = [super initWithDictionary:@{
         DFK_DESTINATION:destination.jsonFriendlyData,
         DFK_DEVELOPER_OPTIONS:[RollbarDeveloperOptions new].jsonFriendlyData,
@@ -133,15 +133,15 @@ static NSString * const DFK_CUSTOM = @"custom";
         DFK_PERSON: [NSMutableDictionary<NSString *, id> new],
         DFK_CUSTOM: [NSMutableDictionary<NSString *, id> new]
     }]) {
-        
+
         return self;
     }
-    
+
     return nil;
 }
 
 - (instancetype)init {
-    
+
     self = [super initWithDictionary:@{
         DFK_DESTINATION:[RollbarDestination new].jsonFriendlyData,
         DFK_DEVELOPER_OPTIONS:[RollbarDeveloperOptions new].jsonFriendlyData,
@@ -245,7 +245,7 @@ static NSString * const DFK_CUSTOM = @"custom";
 #pragma mark - overrides
 
 - (nonnull RollbarMutableConfig *) mutableCopy {
-    
+
     return [self mutableCopyWithZone:nil];
 }
 
@@ -261,7 +261,7 @@ static NSString * const DFK_CUSTOM = @"custom";
 #pragma mark - NSCopying protocol
 
 -(id) copyWithZone: (NSZone *) zone {
-    
+
     RollbarConfig *clone = [super copyWithZone:zone];
     if (clone != self) {
         clone->_checkIgnoreRollbarData = self->_checkIgnoreRollbarData;
@@ -273,7 +273,7 @@ static NSString * const DFK_CUSTOM = @"custom";
 #pragma mark - NSMutableCopying protocol
 
 -(id) mutableCopyWithZone: (NSZone *) zone {
-    
+
     RollbarConfig *clone = [super mutableCopyWithZone:zone];
     if (clone != self) {
         clone->_checkIgnoreRollbarData = self->_checkIgnoreRollbarData;
@@ -289,7 +289,7 @@ static NSString * const DFK_CUSTOM = @"custom";
 #pragma mark - initializers
 
 -(instancetype)init {
-    
+
     if (self = [super init]) {
         return self;
     }
@@ -460,7 +460,7 @@ static NSString * const DFK_CUSTOM = @"custom";
 #pragma mark - overrides
 
 - (nonnull RollbarConfig *) copy {
-    
+
     return [self copyWithZone:nil];
 }
 
