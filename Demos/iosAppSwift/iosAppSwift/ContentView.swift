@@ -11,57 +11,66 @@ enum ExampleError: Error {
 }
 
 struct ContentView: View {
+    @AppStorage("rollbar_post_client_item_access_token") var accessToken = ""
+
     let example = Example()
 
     func button(_ title: String, action: @escaping () -> ()) -> some View {
-        return Button(title, action: action)
+        Button(title, action: action)
             .buttonStyle(.bordered)
             .tint(.blue)
     }
 
+    func restart() {
+        let config = Rollbar.configuration().mutableCopy()
+        config.destination.accessToken = accessToken
+        Rollbar.update(withConfiguration: config)
+        Rollbar.infoMessage("Rollbar Apple SDK access token changed.")
+    }
+
     var body: some View {
         VStack {
-            Text("Rollbar Apple SDK Example")
+            Text("Rollbar Apple SDK Demo")
                 .font(.title)
                 .padding(.bottom)
 
-            VStack {
-                Group {
-                    button("Manual Logging Example", action: example.manualLogging)
-                        .padding(.bottom)
-                }
+            TextField("post client item access token", text: $accessToken)
+                .foregroundColor(accessToken.isValid ? .accentColor : .red)
+                .textFieldStyle(.roundedBorder)
+                .multilineTextAlignment(.center)
+                .textCase(.lowercase)
+                .lineLimit(1)
+                .onSubmit(accessToken.isValid ? restart : {})
+                .padding(.bottom)
 
-                Group {
-                    button("Fatal Error", action: example.forceFatalError)
-                        .padding(.bottom)
-                }
+            ScrollView {
+                VStack {
+                    Group {
+                        button("Manual Logging Example", action: example.manualLogging)
+                            .padding(.bottom)
+                        button("Force unwrap nil") { example.forceUnwrapNil(Int?.none) }
+                        button("Implicitly unwrapped nil") { example.implicitlyUnwrapped(nil) }
+                            .padding(.bottom)
+                    }
 
-                Group {
-                    button("Force unwrap nil") { example.forceUnwrapNil(Int?.none) }
-                    button("Implicitly unwrapped nil arg") { example.implicitlyUnwrappedArg(String?.none) }
-                        .padding(.bottom)
-                }
+                    Group {
+                        button("Force try! and fail") { try! example.throwError() }
+                        button("Force as! invalid cast") { example.forceInvalidCast([""]) }
+                        button("Unsafe bit cast") { example.unsafeBitCast(0) }
+                            .padding(.bottom)
 
-                Group {
-                    button("Force as! invalid cast") { example.forceInvalidCast([""]) }
-                    button("Unsafe bit cast") { example.unsafeBitCast(0) }
-                        .padding(.bottom)
-                }
+                        button("Out of bounds access") { example.outOfBounds(Int.max) }
+                        button("Increment past endIndex") { example.incrementPastEndIndex(0...3) }
+                        button("Outside UInt range") { example.outsideRepresentableRange(-21.5) }
+                            .padding(.bottom)
 
-                Group {
-                    button("Out of bounds access") { example.outOfBounds(Int.max) }
-                    button("Increment past endIndex") { example.incrementPastEndIndex(0...3) }
-                    button("Outside UInt range") { example.outsideRepresentableRange(-21.5) }
-                    button("Duplicate Dictionary keys") { example.duplicateKeys("someKey") }
-                    button("Divide by zero") { example.divide(by: 0) }
-                        .padding(.bottom)
-                }
-
-                Group {
-                    button("Force try! and fail") { try! example.throwError() }
-                    button("Throw an NSException") { example.throwNSException((1, 2)) }
-                        .padding(.bottom)
-                }
+                        button("Duplicate Dictionary keys") { example.duplicateKeys("someKey") }
+                        button("Divide by zero") { example.divide(by: 0) }
+                        button("Throw an NSException") { example.throwNSException((1, 2)) }
+                        button("Fatal Error", action: example.forceFatalError)
+                            .padding(.bottom)
+                    }
+                }.padding(.horizontal)
             }
         }
         .padding()
@@ -109,9 +118,9 @@ struct Example {
     func forceUnwrapNil<T: Numeric>(_ x: T?) {
         // implementation detail:
         // ----------------------
-        // since these functions are basically noops, the
+        // since these functions are basically no-ops, the
         // optimizer is clever enough to crush all of them
-        // into a single noop, which in turn, messes up the
+        // into a single no-op, which in turn, messes up the
         // stackframe.
         //
         // we prevent this by simply producing a side-effect.
@@ -124,7 +133,7 @@ struct Example {
         _ = x! * x! // the illegal op.
     }
 
-    func implicitlyUnwrappedArg<S: StringProtocol>(_ s: S!) {
+    func implicitlyUnwrapped(_ s: String!) {
         print("implicitlyUnwrappedArgument: \(String(describing: s))")
         _ = s.lowercased()
     }
