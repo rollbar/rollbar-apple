@@ -1,5 +1,5 @@
 Pod::Spec.new do |s|
-    s.version      = "2.4.0"
+    s.version      = "3.0.0"
     s.name         = "RollbarAUL"
     s.summary      = "Application or client side SDK for interacting with the Rollbar API Server."
     s.description  = <<-DESC
@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
     s.social_media_url  = "http://twitter.com/rollbar"
     s.resource = "rollbar-logo.png"
 
-    s.osx.deployment_target = "10.15"
+    s.osx.deployment_target = "12.0"
 
     s.source_files = "#{s.name}/Sources/#{s.name}/**/*.{h,m}"
     s.public_header_files = "#{s.name}/Sources/#{s.name}/include/*.h"
