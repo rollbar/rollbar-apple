@@ -10,15 +10,15 @@ Pod::Spec.new do |s|
                    DESC
     s.homepage     = "https://rollbar.com"
     s.license      = { :type => "MIT", :file => "LICENSE" }
-    s.resource     = "rollbar-logo.png"
-    s.authors      = { "Andrey Kornich (Wide Spectrum Computing LLC)" => "akornich@gmail.com",
-                       "Rollbar" => "support@rollbar.com" }
+    s.authors      = { "Rollbar" => "support@rollbar.com",
+                       "Andrey Kornich (Wide Spectrum Computing LLC)" => "akornich@gmail.com",
+                       "Matias Pequeno" => "matias.pequeno@rollbar.com" }
     s.source       = { :git => "https://github.com/rollbar/rollbar-apple.git",
                        :tag => "#{s.version}" }
     s.documentation_url = "https://docs.rollbar.com/docs/apple"
-    s.social_media_url  = "http://twitter.com/rollbar"
+    s.social_media_url   = "http://twitter.com/rollbar"
+    s.resource = "rollbar-logo.png"
 
-    #  When using multiple platforms:
     s.osx.deployment_target = "10.15"
     s.ios.deployment_target = "13.0"
     s.tvos.deployment_target = "13.0"
@@ -30,7 +30,6 @@ Pod::Spec.new do |s|
 
     s.framework = "Foundation"
     s.dependency "RollbarCommon", "~> #{s.version}"
-    s.dependency "KSCrash", "~> 1.15.26"
 
     s.requires_arc = true
 end
