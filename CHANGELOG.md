@@ -1,10 +1,33 @@
 # CHANGELOG
 
-The change log has moved to this repo's [GitHub Releases Page](https://github.com/rollbar/rollbar-apple/releases).
-
 ## Release Notes
 
+### 3.0.0
+
+- The crash collection and reporting mechanism has been redone from scratch, this now allows us to:
+  - Collect and report all types of crashes together with full stack trace information.
+  - Provide useful error descriptions on all use cases that trigger crash reporting.
+  - Produce Swift diagnostics for all types of crashes.
+  - Format full crash reports with extra diagnostic information.
+- Initialization has been simplified:
+  - Crash collection is now fully automatic.
+  - There's no need to investigate and select crash reporting libraries in order to make an informed decision, this is all now automatic and works much better than before.
+- The Swift Demo has been greatly expanded and enhanced:
+  - Demo: Expanded Swift Demo with more types of crashes.
+  - Demo: Prevent optimizer from erasing crashing funcs that result in noops.
+  - Demo: Allow users to change access token from the Demo UI.
+- Fixed unsuppressed logging, and suppress it by default.
+- Remove faulty Out of Memory detection.
+- Remove RollbarPLCrashReporter library.
+- Never symbolicate main executable frames.
+- Don't send mach diagnostics as title, let the server figure it out.
+- Add Rollbar branding to the Readme.
+- Minimum Swift version is now 5.0 and minimum deployment is 14.0.
+- Cleaned up podspecs, added publishing script.
+- Remove old, non-working examples and low quality demos.
+
 ### 2.4.0
+
 - New SDK Demos for iOS Swift and Objective-C.
 - Fixed a rare crash during JSON serialization.
 - More robust and more flexible SDK reconfigurability.
