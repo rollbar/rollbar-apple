@@ -18,7 +18,8 @@
 
 /* Begin PBXFileReference section */
 		3B24660929C37CEA0078C74F /* Prelude.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Prelude.swift; sourceTree = "<group>"; };
-		3BDB823C292D2DCE0093AC9D /* iosAppSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iosAppSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3BD306A729C4E1BC0049F3D1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		3BDB823C292D2DCE0093AC9D /* Rollbar Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Rollbar Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BDB823F292D2DCE0093AC9D /* iosAppSwiftApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iosAppSwiftApp.swift; sourceTree = "<group>"; };
 		3BDB8241292D2DCE0093AC9D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		3BDB8243292D2DCF0093AC9D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -50,7 +51,7 @@
 		3BDB823D292D2DCE0093AC9D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3BDB823C292D2DCE0093AC9D /* iosAppSwift.app */,
+				3BDB823C292D2DCE0093AC9D /* Rollbar Demo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -58,6 +59,7 @@
 		3BDB823E292D2DCE0093AC9D /* iosAppSwift */ = {
 			isa = PBXGroup;
 			children = (
+				3BD306A729C4E1BC0049F3D1 /* Info.plist */,
 				3BDB823F292D2DCE0093AC9D /* iosAppSwiftApp.swift */,
 				3BDB8241292D2DCE0093AC9D /* ContentView.swift */,
 				3BDB8243292D2DCF0093AC9D /* Assets.xcassets */,
@@ -85,9 +87,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		3BDB823B292D2DCE0093AC9D /* iosAppSwift */ = {
+		3BDB823B292D2DCE0093AC9D /* Rollbar Demo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3BDB824A292D2DCF0093AC9D /* Build configuration list for PBXNativeTarget "iosAppSwift" */;
+			buildConfigurationList = 3BDB824A292D2DCF0093AC9D /* Build configuration list for PBXNativeTarget "Rollbar Demo" */;
 			buildPhases = (
 				3BDB8238292D2DCE0093AC9D /* Sources */,
 				3BDB8239292D2DCE0093AC9D /* Frameworks */,
@@ -97,13 +99,13 @@
 			);
 			dependencies = (
 			);
-			name = iosAppSwift;
+			name = "Rollbar Demo";
 			packageProductDependencies = (
 				3BDB8252292D2E4B0093AC9D /* RollbarNotifier */,
 				3BDB8256292D2E4B0093AC9D /* RollbarSwift */,
 			);
 			productName = iosAppSwift;
-			productReference = 3BDB823C292D2DCE0093AC9D /* iosAppSwift.app */;
+			productReference = 3BDB823C292D2DCE0093AC9D /* Rollbar Demo.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -134,7 +136,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				3BDB823B292D2DCE0093AC9D /* iosAppSwift */,
+				3BDB823B292D2DCE0093AC9D /* Rollbar Demo */,
 			);
 		};
 /* End PBXProject section */
@@ -285,12 +287,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 35;
+				CURRENT_PROJECT_VERSION = 46;
 				DEVELOPMENT_ASSET_PATHS = "\"iosAppSwift/Preview Content\"";
-				DEVELOPMENT_TEAM = 6B5NER795L;
+				DEVELOPMENT_TEAM = 9P5JVC2F34;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = iosAppSwift/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Rollbar Demo";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -302,7 +306,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.matux.test.rollbarAppDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rollbar.apple.demo.swift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -316,12 +320,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 35;
+				CURRENT_PROJECT_VERSION = 46;
 				DEVELOPMENT_ASSET_PATHS = "\"iosAppSwift/Preview Content\"";
-				DEVELOPMENT_TEAM = 6B5NER795L;
+				DEVELOPMENT_TEAM = 9P5JVC2F34;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = iosAppSwift/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Rollbar Demo";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -333,7 +339,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.matux.test.rollbarAppDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rollbar.apple.demo.swift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -353,7 +359,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3BDB824A292D2DCF0093AC9D /* Build configuration list for PBXNativeTarget "iosAppSwift" */ = {
+		3BDB824A292D2DCF0093AC9D /* Build configuration list for PBXNativeTarget "Rollbar Demo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3BDB824B292D2DCF0093AC9D /* Debug */,

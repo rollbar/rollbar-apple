@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "3BDB823B292D2DCE0093AC9D"
-               BuildableName = "iosAppSwift.app"
-               BlueprintName = "iosAppSwift"
+               BuildableName = "Rollbar Demo.app"
+               BlueprintName = "Rollbar Demo"
                ReferencedContainer = "container:iosAppSwift.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,8 +45,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3BDB823B292D2DCE0093AC9D"
-            BuildableName = "iosAppSwift.app"
-            BlueprintName = "iosAppSwift"
+            BuildableName = "Rollbar Demo.app"
+            BlueprintName = "Rollbar Demo"
             ReferencedContainer = "container:iosAppSwift.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -62,8 +62,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3BDB823B292D2DCE0093AC9D"
-            BuildableName = "iosAppSwift.app"
-            BlueprintName = "iosAppSwift"
+            BuildableName = "Rollbar Demo.app"
+            BlueprintName = "Rollbar Demo"
             ReferencedContainer = "container:iosAppSwift.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

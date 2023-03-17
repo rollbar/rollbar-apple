@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "55684F6A2553B4C400F82F34"
-               BuildableName = "iosAppObjC.app"
-               BlueprintName = "iosAppObjC"
+               BuildableName = "Rollbar ObjC Demo.app"
+               BlueprintName = "Rollbar ObjC Demo"
                ReferencedContainer = "container:iosAppObjC.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,8 +45,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "55684F6A2553B4C400F82F34"
-            BuildableName = "iosAppObjC.app"
-            BlueprintName = "iosAppObjC"
+            BuildableName = "Rollbar ObjC Demo.app"
+            BlueprintName = "Rollbar ObjC Demo"
             ReferencedContainer = "container:iosAppObjC.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -62,8 +62,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "55684F6A2553B4C400F82F34"
-            BuildableName = "iosAppObjC.app"
-            BlueprintName = "iosAppObjC"
+            BuildableName = "Rollbar ObjC Demo.app"
+            BlueprintName = "Rollbar ObjC Demo"
             ReferencedContainer = "container:iosAppObjC.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
