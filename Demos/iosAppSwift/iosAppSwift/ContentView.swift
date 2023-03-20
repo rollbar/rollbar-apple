@@ -21,11 +21,16 @@ struct ContentView: View {
             .tint(.blue)
     }
 
-    func restart() {
+    func restartIfValid(_ accessToken: String) {
+        guard accessToken.isValid else { return }
+
         let config = Rollbar.configuration().mutableCopy()
         config.destination.accessToken = accessToken
         Rollbar.update(withConfiguration: config)
+
         Rollbar.infoMessage("Rollbar Apple SDK access token changed.")
+
+        print("Rollbar Apple SDK access token changed to \(accessToken)")
     }
 
     var body: some View {
@@ -40,7 +45,7 @@ struct ContentView: View {
                 .multilineTextAlignment(.center)
                 .textCase(.lowercase)
                 .lineLimit(1)
-                .onSubmit(accessToken.isValid ? restart : {})
+                .onChange(of: accessToken, perform: restartIfValid)
                 .padding(.bottom)
 
             ScrollView {
@@ -88,9 +93,13 @@ struct Example {
 
     /// Some different ways to explicitly log an error to Rollbar.
     func manualLogging() {
-        let extraInfo =  ["item_1": "value_1", "item_2": "value_2"]
+        Rollbar.infoMessage(
+            "Rollbar is up and running! Enjoy your remote error and log monitoring...",
+            data: ["key_x": "value_x", "key_y": "value_y"])
 
         Rollbar.log(.error, message: "My log message")
+
+        let extraInfo =  ["item_1": "value_1", "item_2": "value_2"]
 
         Rollbar.log(
             .error,
