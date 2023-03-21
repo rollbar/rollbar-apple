@@ -61,11 +61,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         // Initialize a Rollbar shared instance with a crash collector
         Rollbar.initWithConfiguration(config)
 
-        // Note the ability to add aditional key/value pairs to the occurrence data for extra context
-        Rollbar.infoMessage(
-            "Rollbar is up and running! Enjoy your remote error and log monitoring...",
-            data: ["key_x": "value_x", "key_y": "value_y"])
-
         return true
     }
 }
