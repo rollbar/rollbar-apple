@@ -62,8 +62,6 @@ A collector is optional and can be supplied into a notifier (`RollbarLogger`) in
 
 *RollbarAUL* module implements *RollbarNotifier* integration with Apple Unified Logging (AUL) and allows capture of the AUL entries as corresponding Rollbar Telemetry log events.
 
-*RollbarSwift* implements components useful in cases when the SDK is used by a client code written in Swift. For example, any call chain made from Swift that eventually resolves into an Objective-C code being invoked can potentially produce an NSException that Swift cannot handle natively. So, the module provides utility classes and components that are helping to either handle or process such scenarios.
-
 *RollbarDeploys* is the package that should be used, for example by your CI Release pipeline, to track/manage your application releases/deployments so they are reported to the Rollbar Project and Rollbar would correlate the incoming payloads with specific deployment instance.
 
 *RollbarCommon* is just a shared package with types used by any of the other packages as well as some potentially useful public utility classes that you may find useful.
