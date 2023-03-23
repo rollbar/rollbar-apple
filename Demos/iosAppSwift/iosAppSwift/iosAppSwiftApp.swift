@@ -1,5 +1,4 @@
 import SwiftUI
-import RollbarSwift
 import RollbarNotifier
 
 @main
