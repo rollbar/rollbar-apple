@@ -13,7 +13,6 @@ let package = Package(
     products: [
         .library(name: "RollbarCommon", targets: ["RollbarCommon"]),
         .library(name: "RollbarNotifier", targets: ["RollbarNotifier", "RollbarCrashReport"]),
-        .library(name: "RollbarSwift", targets: ["RollbarSwift"]),
         .library(name: "RollbarDeploys", targets: ["RollbarDeploys"]),
         .library(name: "RollbarAUL", targets: ["RollbarAUL"]),
         .library(name: "RollbarCocoaLumberjack", targets: ["RollbarCocoaLumberjack"]),
@@ -48,17 +47,6 @@ let package = Package(
             publicHeadersPath: "include",
             cSettings: [
                 .headerSearchPath("RollbarNotifier/Sources/RollbarNotifier/**"),
-            ]),
-        .target(
-            name: "RollbarSwift",
-            dependencies: [
-                "RollbarCommon",
-                "RollbarNotifier",
-            ],
-            path: "RollbarSwift/Sources/RollbarSwift",
-            publicHeadersPath: "include",
-            cSettings: [
-                .headerSearchPath("RollbarSwift/Sources/RollbarSwift/**"),
             ]),
         .target(
             name: "RollbarDeploys",

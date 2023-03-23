@@ -13,7 +13,6 @@
 		3BDB8244292D2DCF0093AC9D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BDB8243292D2DCF0093AC9D /* Assets.xcassets */; };
 		3BDB8247292D2DCF0093AC9D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BDB8246292D2DCF0093AC9D /* Preview Assets.xcassets */; };
 		3BDB8253292D2E4B0093AC9D /* RollbarNotifier in Frameworks */ = {isa = PBXBuildFile; productRef = 3BDB8252292D2E4B0093AC9D /* RollbarNotifier */; };
-		3BDB8257292D2E4B0093AC9D /* RollbarSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3BDB8256292D2E4B0093AC9D /* RollbarSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,7 +31,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BDB8253292D2E4B0093AC9D /* RollbarNotifier in Frameworks */,
-				3BDB8257292D2E4B0093AC9D /* RollbarSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,7 +100,6 @@
 			name = "Rollbar Demo";
 			packageProductDependencies = (
 				3BDB8252292D2E4B0093AC9D /* RollbarNotifier */,
-				3BDB8256292D2E4B0093AC9D /* RollbarSwift */,
 			);
 			productName = iosAppSwift;
 			productReference = 3BDB823C292D2DCE0093AC9D /* Rollbar Demo.app */;
@@ -374,10 +371,6 @@
 		3BDB8252292D2E4B0093AC9D /* RollbarNotifier */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RollbarNotifier;
-		};
-		3BDB8256292D2E4B0093AC9D /* RollbarSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = RollbarSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
