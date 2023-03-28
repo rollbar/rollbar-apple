@@ -17,10 +17,6 @@ let package = Package(
         .library(name: "RollbarAUL", targets: ["RollbarAUL"]),
         .library(name: "RollbarCocoaLumberjack", targets: ["RollbarCocoaLumberjack"]),
     ],
-    dependencies: [
-        .package(url: "https://github.com/kstenerud/KSCrash.git", from: "1.15.26"),
-        .package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git", from: "3.7.4"),
-    ],
     targets: [
         .target(
             name: "RollbarCommon",
@@ -32,7 +28,7 @@ let package = Package(
         .target(
             name: "RollbarCrashReport",
             dependencies: [
-                "KSCrash",
+                .package(url: "https://github.com/kstenerud/KSCrash.git", from: "1.15.26"),
             ],
             path: "RollbarNotifier/Sources/RollbarCrashReport"
         ),
@@ -40,7 +36,7 @@ let package = Package(
             name: "RollbarNotifier",
             dependencies: [
                 "RollbarCommon",
-                "KSCrash",
+                .package(url: "https://github.com/kstenerud/KSCrash.git", from: "1.15.26"),
                 "RollbarCrashReport"
             ],
             path: "RollbarNotifier/Sources/RollbarNotifier",
@@ -74,7 +70,7 @@ let package = Package(
             dependencies: [
                 "RollbarCommon",
                 "RollbarNotifier",
-                "CocoaLumberjack",
+                .package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git", from: "3.7.4"),
             ],
             path: "RollbarCocoaLumberjack/Sources/RollbarCocoaLumberjack",
             publicHeadersPath: "include",
