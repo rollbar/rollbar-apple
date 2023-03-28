@@ -495,6 +495,8 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
         }
         return;
     }
+
+    RBLog(@"Processing %d payloads left", [self->_payloadsRepo getPayloadCount]);
     
     RollbarTriStateFlag result = RollbarTriStateFlag_On;
     if (!config) {
@@ -551,23 +553,21 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
         return;
     }
 #endif
-    
-    NSArray<NSDictionary<NSString *, NSString *> *> *payloads = [self->_payloadsRepo getPayloadsWithOffset:0 andLimit:5];
-    for(NSDictionary<NSString *, NSString *> *payload in payloads) {
+
+    NSArray *payloads = [self->_payloadsRepo getPayloadsWithOffset:0 andLimit:5];
+    for (NSDictionary<NSString *, NSString *> *payload in payloads) {
         @try {
             [self processSavedPayload:payload];
         } @catch (NSException *exception) {
             RBErr(@"Payload processing EXCEPTION: %@", exception);
-        } @finally {
         }
     }
 }
 
 - (RollbarTriStateFlag)sendPayload:(nonnull NSData *)payload
-                       usingConfig:(nonnull RollbarConfig  *)config {
-    
+                       usingConfig:(nonnull RollbarConfig *)config
+{
     if (!payload || !config) {
-        
         return RollbarTriStateFlag_Off; //obviously invalid payload to sent or invalid destination...
     }
     
@@ -576,9 +576,7 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
         return RollbarTriStateFlag_None; // nothing obviously wrong with the payload - just can not send at the moment
     }
     
-    RollbarPayloadPostReply *reply = [[RollbarSender new] sendPayload:payload
-                                                          usingConfig:config
-    ];
+    RollbarPayloadPostReply *reply = [[RollbarSender new] sendPayload:payload usingConfig:config];
     [record recordPostReply:reply];
     
     if (!reply) {

@@ -76,6 +76,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (nonnull NSArray<NSDictionary<NSString *, NSString *> *> *)getAllPayloads;
 
+- (NSInteger)getPayloadCount;
+
 - (BOOL)removePayloadByID:(nonnull NSString *)payloadID;
 
 - (BOOL)removePayloadsOlderThan:(nonnull NSDate *)cutoffTime;
