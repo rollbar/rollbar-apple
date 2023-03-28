@@ -1,54 +1,36 @@
 #import "RollbarPayloadPostReply.h"
 
-/// Rollbar API Service enforced payload rate limit:
 static NSString * const RESPONSE_HEADER_RATE_LIMIT = @"x-rate-limit-limit";
-/// Rollbar API Service enforced remaining payload count until the limit is reached:
-static NSString * const RESPONSE_HEADER_REMAINING_COUNT = @"x-rate-limit-remaining";
-/// Rollbar API Service enforced rate limit reset time for the current limit window:
-static NSString * const RESPONSE_HEADER_RESET_TIME = @"x-rate-limit-reset";
-/// Rollbar API Service enforced rate limit remaining seconds of the current limit window:
-static NSString * const RESPONSE_HEADER_REMAINING_SECONDS = @"x-rate-limit-remaining-seconds";
+static NSString * const RESPONSE_HEADER_RESET_TIME = @"x-rate-limit-reset"; // rate limit reset time for the current limit window
+static NSString * const RESPONSE_HEADER_REMAINING_COUNT = @"x-rate-limit-remaining"; // remaining payload count until the limit is reached
+static NSString * const RESPONSE_HEADER_REMAINING_SECONDS = @"x-rate-limit-remaining-seconds"; // rate limit remaining seconds of the current limit window
 
 @implementation RollbarPayloadPostReply
 
 + (nullable RollbarPayloadPostReply *)replyFromHttpResponse:(nonnull NSHTTPURLResponse *)httpResponse {
-    
-    NSUInteger rateLimit =
-    [NSNumber numberWithLongLong:[httpResponse valueForHTTPHeaderField:RESPONSE_HEADER_RATE_LIMIT]]
-        .unsignedIntegerValue;
+    NSInteger rateLimit = [[httpResponse valueForHTTPHeaderField:RESPONSE_HEADER_RATE_LIMIT] integerValue];
+    NSInteger remainingCount = [[httpResponse valueForHTTPHeaderField:RESPONSE_HEADER_REMAINING_COUNT] integerValue];
+    NSInteger remainingSeconds = [[httpResponse valueForHTTPHeaderField:RESPONSE_HEADER_REMAINING_SECONDS] integerValue];
 
-    NSUInteger remainingCount =
-    [NSNumber numberWithLongLong:[httpResponse valueForHTTPHeaderField:RESPONSE_HEADER_REMAINING_COUNT]]
-        .unsignedIntegerValue;
-
-    NSUInteger remainingSeconds =
-    [NSNumber numberWithLongLong:[httpResponse valueForHTTPHeaderField:RESPONSE_HEADER_REMAINING_SECONDS]]
-        .unsignedIntegerValue;
-    
     return [[RollbarPayloadPostReply alloc] initWithStatusCode:httpResponse.statusCode
                                                      rateLimit:rateLimit
                                                 remainingCount:remainingCount
-                                              remainingSeconds:remainingSeconds
-    ];
+                                              remainingSeconds:remainingSeconds];
 }
 
 - (instancetype)initWithStatusCode:(NSUInteger)statusCode
                          rateLimit:(NSUInteger)rateLimit
                     remainingCount:(NSUInteger)remainingCount
-                  remainingSeconds:(NSUInteger)remainingSeconds {
-    
+                  remainingSeconds:(NSUInteger)remainingSeconds
+{
     if (self = [super init]) {
         self->_statusCode = statusCode;
         self->_rateLimit = rateLimit;
         self->_remainingCount = remainingCount;
         self->_remainingSeconds = remainingSeconds;
-        
-        if (self->_remainingCount > 0) {
-            self->_nextPostTime = [[NSDate alloc] init];
-        }
-        else {
-            self->_nextPostTime = [[NSDate alloc] initWithTimeIntervalSinceNow:self->_remainingSeconds];
-        }
+        self->_nextPostTime = self->_remainingCount > 0
+            ? [[NSDate alloc] init]
+            : [[NSDate alloc] initWithTimeIntervalSinceNow:self->_remainingSeconds];
     }
     
     return self;

@@ -50,6 +50,7 @@ struct ContentView: View {
             ScrollView {
                 VStack {
                     Group {
+                        button("Log a message", action: example.logMessage)
                         button("Manual Logging Example", action: example.manualLogging)
                             .padding(.bottom)
                         button("Force unwrap nil") { example.forceUnwrapNil(Int?.none) }
@@ -90,12 +91,15 @@ struct ContentView_Previews: PreviewProvider {
 struct Example {
     let logger = RollbarLogger(configuration: Rollbar.configuration())
 
-    /// Some different ways to explicitly log an error to Rollbar.
-    func manualLogging() {
+    /// Log a single informational message to Rollbar.
+    func logMessage() {
         Rollbar.infoMessage(
             "Rollbar is up and running! Enjoy your remote error and log monitoring...",
             data: ["key_x": "value_x", "key_y": "value_y"])
+    }
 
+    /// Some different ways to explicitly log an error to Rollbar.
+    func manualLogging() {
         Rollbar.log(.error, message: "My log message")
 
         let extraInfo =  ["item_1": "value_1", "item_2": "value_2"]
@@ -175,8 +179,8 @@ struct Example {
         print("duplicateKeys: \(key)")
         var map = [key: 1, key: 1] // the illegal op.
         // implementation detail:
-        // this function requires a bit more trickery to prevent
-        // the optimizer from simply removing the line above.
+        // this function requires a bit more effectful trickery to
+        // prevent the optimizer from simply removing the line above.
         if let x = map[key] {
             map[key] = x + x
         }

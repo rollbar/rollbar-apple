@@ -399,6 +399,24 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
     return result;
 }
 
+- (NSInteger)getPayloadCount {
+    const char *sql = "SELECT COUNT(*) FROM payloads";
+    sqlite3_stmt *statement;
+    NSInteger count = 0;
+
+    if (sqlite3_prepare_v2(self->_db, sql, -1, &statement, NULL) == SQLITE_OK) {
+        while (sqlite3_step(statement) == SQLITE_ROW) {
+            count = sqlite3_column_int(statement, 0);
+            break;
+        }
+    } else {
+        RBErr(@"sqlite3_prepare_v2 error %s", sqlite3_errmsg(self->_db));
+    }
+
+    sqlite3_finalize(statement);
+    return count;
+}
+
 - (BOOL)removePayloadByID:(nonnull NSString *)payloadID {
     
     NSString *sql =

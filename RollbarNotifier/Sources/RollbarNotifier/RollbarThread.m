@@ -495,22 +495,19 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
         }
         return;
     }
+
+    RBLog(@"Processing %d payloads left", [self->_payloadsRepo getPayloadCount]);
     
-    RollbarTriStateFlag success = RollbarTriStateFlag_On;
+    RollbarTriStateFlag result = RollbarTriStateFlag_On;
     if (!config) {
-        success = [self sendPayload:jsonPayload]; // backward compatibility with just upgraded very old SDKs...
-    }
-    else if (config.developerOptions.transmit) {
-        success = [self sendPayload:jsonPayload usingConfig:config];
+        result = [self sendPayload:jsonPayload]; // backward compatibility with just upgraded very old SDKs...
+    } else if (config.developerOptions.transmit) {
+        result = [self sendPayload:jsonPayload usingConfig:config];
     }
     
     NSString *payloadsLogFile = nil;
-    NSString *sdkLogTrace = (RollbarTriStateFlag_None == success) ? nil
-    : [NSString stringWithFormat:@"%@ payload: %@",
-       (RollbarTriStateFlag_On == success) ? @"Transmitted" : @"Dropped",
-       [[NSString alloc] initWithData:jsonPayload encoding:NSUTF8StringEncoding]
-    ];
-    switch(success) {
+
+    switch (result) {
         case RollbarTriStateFlag_On:
             // The payload is fully processed and transmitted.
             // It can be removed from the repo:
@@ -544,20 +541,7 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
         [RollbarFileWriter appendSafelyData:jsonPayload toFile:payloadsLogFilePath];
     }
 
-    if (!config.developerOptions.suppressSdkInfoLogging) {
-        NSString *sdkLogTrace = nil;
-        switch(success) {
-            case RollbarTriStateFlag_On:
-                RBLog(@"Transmitted payload: %@", [[NSString alloc] initWithData:jsonPayload encoding:NSUTF8StringEncoding]);
-                break;
-            case RollbarTriStateFlag_Off:
-                RBLog(@"Dropped payload: %@", [[NSString alloc] initWithData:jsonPayload encoding:NSUTF8StringEncoding]);
-                break;
-            case RollbarTriStateFlag_None:
-                RBErr(@"Couldn't transmit (and will try) payload: %@", [[NSString alloc] initWithData:jsonPayload encoding:NSUTF8StringEncoding]);
-                break;
-        }
-    }
+    RBLog([self loggableStringFromPayload:jsonPayload result:result]);
 }
 
 - (void)processSavedItems {
@@ -569,23 +553,21 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
         return;
     }
 #endif
-    
-    NSArray<NSDictionary<NSString *, NSString *> *> *payloads = [self->_payloadsRepo getPayloadsWithOffset:0 andLimit:5];
-    for(NSDictionary<NSString *, NSString *> *payload in payloads) {
+
+    NSArray *payloads = [self->_payloadsRepo getPayloadsWithOffset:0 andLimit:5];
+    for (NSDictionary<NSString *, NSString *> *payload in payloads) {
         @try {
             [self processSavedPayload:payload];
         } @catch (NSException *exception) {
             RBErr(@"Payload processing EXCEPTION: %@", exception);
-        } @finally {
         }
     }
 }
 
 - (RollbarTriStateFlag)sendPayload:(nonnull NSData *)payload
-                       usingConfig:(nonnull RollbarConfig  *)config {
-    
+                       usingConfig:(nonnull RollbarConfig *)config
+{
     if (!payload || !config) {
-        
         return RollbarTriStateFlag_Off; //obviously invalid payload to sent or invalid destination...
     }
     
@@ -594,9 +576,7 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
         return RollbarTriStateFlag_None; // nothing obviously wrong with the payload - just can not send at the moment
     }
     
-    RollbarPayloadPostReply *reply = [[RollbarSender new] sendPayload:payload
-                                                          usingConfig:config
-    ];
+    RollbarPayloadPostReply *reply = [[RollbarSender new] sendPayload:payload usingConfig:config];
     [record recordPostReply:reply];
     
     if (!reply) {
@@ -656,7 +636,21 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
 #endif
 }
 
-#pragma mark - Sigleton pattern
+#pragma mark -
+
+- (NSString *)loggableStringFromPayload:(NSData *)jsonPayload result:(RollbarTriStateFlag)result {
+    NSString *payloadString = [[NSString alloc] initWithData:jsonPayload encoding:NSUTF8StringEncoding];
+    NSString *truncatedPayload = [payloadString substringToIndex:MIN(payloadString.length, 128)];
+
+    NSString *resultString =
+        result == RollbarTriStateFlag_On ? @"Transmitted" :
+        result == RollbarTriStateFlag_Off ? @"Dropped" :
+        @"Unavailable will retry";
+
+    return [NSString stringWithFormat:@"%@ payload: %@", resultString, truncatedPayload];
+}
+
+#pragma mark - Singleton pattern
 
 + (nonnull instancetype)sharedInstance {
     
@@ -664,7 +658,6 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
     static dispatch_once_t onceToken;
     
     dispatch_once(&onceToken, ^{
-        
         singleton = [[self alloc] initWithTarget:self
                                         selector:@selector(run)
                                           object:nil];

@@ -34,7 +34,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         // Optionally anonymize the IP address
         //config.loggingOptions.captureIp = RollbarCaptureIpType.anonymize
 
-        // Suppress Rollbar event being logged (e.g. in XCode debug logs)
+        // Suppress (default) Rollbar internal logging
         config.developerOptions.suppressSdkInfoLogging = true
 
         config.telemetry.enabled = true

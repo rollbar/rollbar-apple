@@ -1,5 +1,6 @@
 #import "RollbarDestinationRecord.h"
 #import "RollbarRegistry.h"
+#import "RollbarInternalLogging.h"
 
 @implementation RollbarDestinationRecord {
     @private
@@ -49,22 +50,14 @@
 #pragma mark - methods
 
 - (BOOL)canPost {
- 
     if (!self->_nextEarliestPost) {
         return NO;
     }
-    
-    if (NSOrderedDescending == [self->_nextEarliestPost compare:[NSDate date]]) {
-        return NO;
-    }
-    else {
-        return YES;
-    }
+
+    return [self->_nextEarliestPost compare:[NSDate date]] != NSOrderedDescending;
 }
 
 - (BOOL)canPostWithConfig:(nonnull RollbarConfig *)config {
-    
-    
     if (self->_nextLocalWindowStart && (self->_localWindowCount >= config.loggingOptions.maximumReportsPerMinute)) {
         // we already exceeded local rate limits, let's wait till the next local rate limiting window:
         //self->_nextEarliestPost = self->_nextLocalWindowStart;
@@ -74,13 +67,14 @@
     if (!self->_nextEarliestPost) {
         return NO;
     }
-    
-    if (NSOrderedDescending == [self->_nextEarliestPost compare:[NSDate date]]) {
-        return NO;
+
+    BOOL shouldPost = [self->_nextEarliestPost compare:[NSDate date]] != NSOrderedDescending;
+
+    if (shouldPost) {
+        RBLog(@"%@ ≤ %@ :: GO", self->_nextEarliestPost, [NSDate date]);
     }
-    else {
-        return YES;
-    }
+
+    return shouldPost;
 }
 
 - (void)recordPostReply:(nullable RollbarPayloadPostReply *)reply {
@@ -117,11 +111,10 @@
         default:
             self->_nextServerWindowStart = [NSDate dateWithTimeIntervalSinceNow:reply.remainingSeconds];;
             self->_serverWindowRemainingCount = reply.remainingCount;
-            if (self->_nextLocalWindowStart ) {
+            if (self->_nextLocalWindowStart) {
                 self->_localWindowCount = 0;
                 self->_nextLocalWindowStart = [NSDate dateWithTimeIntervalSinceNow:60];
-            }
-            else {
+            } else {
                 self->_localWindowCount += 1;
             }
             break;
@@ -171,12 +164,5 @@
     ];
     return description;
 }
-
-//- (NSString *)debugDescription {
-//    NSString *description = [NSString stringWithFormat:@"totalLoggerRecords: %lu",
-//                             (unsigned long)[self totalLoggerRecords]
-//    ];
-//    return description;
-//}
 
 @end
