@@ -24,17 +24,6 @@
         reply = [RollbarPayloadPostReply greenReply]; // we just successfully short-circuit here...
     }
 
-    NSString *payloadString = [[NSString alloc] initWithData:payload encoding:NSUTF8StringEncoding];
-    NSString *truncatedPayload = [payloadString substringToIndex:MIN(payloadString.length, 128)];
-
-    if (reply && reply.statusCode == 200) {
-        RBLog(@"Transmitted payload: %@", truncatedPayload);
-    } else if (reply) {
-        RBLog(@"Failed to transmit payload (%li status code): %@", (long)reply.statusCode, truncatedPayload);
-    } else {
-        RBLog(@"Failed to transmit payload (no reply): %@", truncatedPayload);
-    }
-
     return reply;
 }
 
