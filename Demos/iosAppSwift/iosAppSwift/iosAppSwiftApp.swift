@@ -31,11 +31,15 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
         config.loggingOptions.codeVersion = codeVersion
 
+        // Optionally defined whether rate limited occurrences should be dropped or
+        // kept in a queue. Defaults to drop.
+        //config.loggingOptions.rateLimitBehavior = .queue
+
         // Optionally anonymize the IP address
         //config.loggingOptions.captureIp = RollbarCaptureIpType.anonymize
 
-        // Suppress (default) Rollbar internal logging
-        config.developerOptions.suppressSdkInfoLogging = true
+        // Suppress internal Rollbar logging. Defaults to true.
+        config.developerOptions.suppressSdkInfoLogging = false
 
         config.telemetry.enabled = true
         config.telemetry.captureLog = true

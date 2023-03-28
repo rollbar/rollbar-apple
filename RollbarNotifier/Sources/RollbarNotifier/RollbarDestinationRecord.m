@@ -77,8 +77,9 @@
     return shouldPost;
 }
 
-- (void)recordPostReply:(nullable RollbarPayloadPostReply *)reply {
-    
+- (void)recordPostReply:(nullable RollbarPayloadPostReply *)reply
+             withConfig:(nonnull RollbarConfig *)config
+{
     if (!reply) {
         //no response from the server to our lates POST of a payload,
         //let's hold on on posting to the destination for 1 minute:
@@ -91,10 +92,6 @@
     }
     
     switch(reply.statusCode) {
-        case 429: // too many requests
-            self->_nextLocalWindowStart = [NSDate dateWithTimeIntervalSinceNow:reply.remainingSeconds];;
-            self->_serverWindowRemainingCount = 0;
-            break;
         case 403: // access denied
         case 404: // not found
             //let's hold on on posting to the destination for 1 minute:
@@ -104,6 +101,12 @@
             self->_nextLocalWindowStart = self->_nextEarliestPost;
             self->_nextServerWindowStart = nil;
             return; // nothing else to do...
+        case 429: // too many requests
+            if (!config.loggingOptions.rateLimitBehavior) {
+                self->_nextLocalWindowStart = [NSDate dateWithTimeIntervalSinceNow:reply.remainingSeconds];
+                self->_serverWindowRemainingCount = 0;
+                break;
+            }
         case 200: // OK
         case 400: // bad request
         case 413: // request entity too large

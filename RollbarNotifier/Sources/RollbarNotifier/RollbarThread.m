@@ -577,7 +577,7 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
     }
     
     RollbarPayloadPostReply *reply = [[RollbarSender new] sendPayload:payload usingConfig:config];
-    [record recordPostReply:reply];
+    [record recordPostReply:reply withConfig:config];
     
     if (!reply) {
         return RollbarTriStateFlag_None; // nothing obviously wrong with the payload - just there was no deterministic

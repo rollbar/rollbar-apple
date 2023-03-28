@@ -7,6 +7,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef NS_ENUM(NSInteger, RollbarRateLimitBehavior) {
+    RollbarRateLimitBehavior_Drop,
+    RollbarRateLimitBehavior_Queue
+};
+
 /// Models logging settings of a configuration
 @interface RollbarLoggingOptions : RollbarDTO
 
@@ -20,6 +25,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Reporting rate limit
 @property (nonatomic, readonly) NSUInteger maximumReportsPerMinute;
+
+/// Whether to drop or queue rate limited occurrences, defaults to drop.
+@property (nonatomic, readonly) RollbarRateLimitBehavior rateLimitBehavior;
 
 /// A way of capturing IP addresses
 @property (nonatomic, readonly) RollbarCaptureIpType captureIp;
@@ -39,6 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param logLevel minimum log level to start logging from
 /// @param crashLevel log level to mark crash reports with
 /// @param maximumReportsPerMinute Reporting rate limit
+/// @param rateLimitBehavior Whether to drop or queue rate limited occurrences
 /// @param captureIp a way of capturing IP addresses
 /// @param codeVersion a code version to mark payloads with
 /// @param framework A framework tag to mark payloads with
@@ -46,6 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithLogLevel:(RollbarLevel)logLevel
                       crashLevel:(RollbarLevel)crashLevel
          maximumReportsPerMinute:(NSUInteger)maximumReportsPerMinute
+               rateLimitBehavior:(RollbarRateLimitBehavior)rateLimitBehavior
                        captureIp:(RollbarCaptureIpType)captureIp
                      codeVersion:(nullable NSString *)codeVersion
                        framework:(nullable NSString *)framework
@@ -55,12 +65,14 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param logLevel minimum log level to start logging from
 /// @param crashLevel log level to mark crash reports with
 /// @param maximumReportsPerMinute Reporting rate limit
+/// @param rateLimitBehavior Whether to drop or queue rate limited occurrences
 /// @param codeVersion a code version to mark payloads with
 /// @param framework A framework tag to mark payloads with
 /// @param requestId A request ID to mark payloads with
 - (instancetype)initWithLogLevel:(RollbarLevel)logLevel
                       crashLevel:(RollbarLevel)crashLevel
          maximumReportsPerMinute:(NSUInteger)maximumReportsPerMinute
+               rateLimitBehavior:(RollbarRateLimitBehavior)rateLimitBehavior
                      codeVersion:(nullable NSString *)codeVersion
                        framework:(nullable NSString *)framework
                        requestId:(nullable NSString *)requestId;
@@ -95,9 +107,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param logLevel minimum log level to start logging from
 /// @param crashLevel log level to mark crash reports with
 /// @param maximumReportsPerMinute Reporting rate limit
+/// @param rateLimitBehavior Whether to drop or queue rate limited occurrences
 - (instancetype)initWithLogLevel:(RollbarLevel)logLevel
                       crashLevel:(RollbarLevel)crashLevel
-         maximumReportsPerMinute:(NSUInteger)maximumReportsPerMinute;
+         maximumReportsPerMinute:(NSUInteger)maximumReportsPerMinute
+               rateLimitBehavior:(RollbarRateLimitBehavior)rateLimitBehavior;
 
 /// Initializer
 /// @param logLevel minimum log level to start logging from
@@ -124,6 +138,9 @@ NS_DESIGNATED_INITIALIZER;
 
 /// Reporting rate limit
 @property (nonatomic, readwrite) NSUInteger maximumReportsPerMinute;
+
+/// Whether to drop or queue rate limited occurrences, defaults to drop.
+@property (nonatomic, readwrite) RollbarRateLimitBehavior rateLimitBehavior;
 
 /// A way of capturing IP addresses
 @property (nonatomic, readwrite) RollbarCaptureIpType captureIp;
