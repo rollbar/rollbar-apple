@@ -25,15 +25,14 @@
     }
 
     NSString *payloadString = [[NSString alloc] initWithData:payload encoding:NSUTF8StringEncoding];
+    NSString *truncatedPayload = [payloadString substringToIndex:MIN(payloadString.length, 128)];
 
     if (reply && reply.statusCode == 200) {
-        NSUInteger truncateIndex = MIN(payloadString.length, 256);
-        NSString *truncatedString = [payloadString substringToIndex:truncateIndex];
-        RBLog(@"Transmitted payload: %@...", truncatedString);
+        RBLog(@"Transmitted payload: %@", truncatedPayload);
     } else if (reply) {
-        RBLog(@"Failed to transmit payload (%li status code): %@", (long)reply.statusCode, payloadString);
+        RBLog(@"Failed to transmit payload (%li status code): %@", (long)reply.statusCode, truncatedPayload);
     } else {
-        RBLog(@"Failed to transmit payload (no reply): %@", payloadString);
+        RBLog(@"Failed to transmit payload (no reply): %@", truncatedPayload);
     }
 
     return reply;
@@ -83,7 +82,7 @@
 
     __block NSHTTPURLResponse *httpResponse = nil;
 
-    dispatch_semaphore_t sem = dispatch_semaphore_create(0);
+    dispatch_semaphore_t sem = dispatch_semaphore_create(NULL);
 
     NSURLSession *session = [NSURLSession sharedSession];
 
@@ -104,10 +103,7 @@
 
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request
                                                 completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        httpResponse = [self checkPayloadResponse:response
-                                           error:error
-                                            data:data
-                           usingDeveloperOptions:developerOptions];
+        httpResponse = [self checkPayloadResponse:response error:error];
         dispatch_semaphore_signal(sem);
     }];
 
@@ -118,28 +114,18 @@
     return httpResponse;
 }
 
-- (nullable NSHTTPURLResponse *)checkPayloadResponse:(NSURLResponse *)response
-                                               error:(NSError *)error
-                                                data:(NSData *)data
-                               usingDeveloperOptions:(nonnull RollbarDeveloperOptions *)developerOptions
-{
-    if (error) {
-        RBLog(@"There was an error reporting to Rollbar:");
-        RBLog(@"\tError: %@", [error localizedDescription]);
-        return nil;
-    }
-
+- (nullable NSHTTPURLResponse *)checkPayloadResponse:(NSURLResponse *)response error:(NSError *)error {
     NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-    if (httpResponse && [httpResponse statusCode] == 200) {
-        RBLog(@"OK response from Rollar: %ld", [httpResponse statusCode]);
-        return httpResponse;
+
+    if (httpResponse.statusCode == 200) {
+        RBLog(@"OK response from Rollar");
+    } else {
+        RBLog(@"There was a problem reporting to Rollbar:");
+        RBLog(@"\tError: %@", [error localizedDescription]);
+        RBLog(@"\tResponse: %@", httpResponse);
     }
 
-    RBLog(@"There was a problem reporting to Rollbar:");
-    RBLog(@"\tResponse: %@", response);
-    RBLog(@"\tResponse data: %@", data);
-
-    return nil;
+    return httpResponse;
 }
 
 @end

@@ -9,8 +9,7 @@ void RBLog(NSString *format, ...) {
 
     va_list args;
     va_start(args, format);
-    fprintf(
-            stdout, "[Rollbar] %s\n",
+    fprintf(stdout, "[Rollbar] %s\n",
             [[[NSString alloc] initWithFormat:format arguments:args] UTF8String]);
     va_end(args);
 #endif
@@ -24,8 +23,7 @@ void RBErr(NSString *format, ...) {
 
     va_list args;
     va_start(args, format);
-    fprintf(
-            stderr, "[Rollbar] %s\n",
+    fprintf(stderr, "[Rollbar] %s\n",
             [[[NSString alloc] initWithFormat:format arguments:args] UTF8String]);
     va_end(args);
 #endif
