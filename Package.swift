@@ -15,11 +15,9 @@ let package = Package(
         .library(name: "RollbarNotifier", targets: ["RollbarNotifier", "RollbarCrashReport"]),
         .library(name: "RollbarDeploys", targets: ["RollbarDeploys"]),
         .library(name: "RollbarAUL", targets: ["RollbarAUL"]),
-        .library(name: "RollbarCocoaLumberjack", targets: ["RollbarCocoaLumberjack"]),
     ],
     dependencies: [
         .package(url: "https://github.com/kstenerud/KSCrash.git", from: "1.15.26"),
-        .package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git", from: "3.7.4"),
     ],
     targets: [
         .target(
@@ -69,19 +67,6 @@ let package = Package(
             cSettings: [
                 .headerSearchPath("RollbarAUL/Sources/RollbarAUL/**"),
             ]),
-        .target(
-            name: "RollbarCocoaLumberjack",
-            dependencies: [
-                .product(name: "CocoaLumberjack", package: "CocoaLumberjack"),
-                "RollbarCommon",
-                "RollbarNotifier",
-            ],
-            path: "RollbarCocoaLumberjack/Sources/RollbarCocoaLumberjack",
-            publicHeadersPath: "include",
-            cSettings: [
-                .headerSearchPath("RollbarCocoaLumberjack/Sources/RollbarCocoaLumberjack/**"),
-            ]
-        ),
     ],
     swiftLanguageVersions: [
         SwiftVersion.v5,

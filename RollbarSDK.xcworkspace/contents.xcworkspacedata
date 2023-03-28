@@ -41,9 +41,6 @@
          location = "group:RollbarAUL.podspec">
       </FileRef>
       <FileRef
-         location = "group:RollbarCocoaLumberjack.podspec">
-      </FileRef>
-      <FileRef
          location = "group:upload_dsym.py">
       </FileRef>
    </Group>
@@ -58,9 +55,6 @@
    </FileRef>
    <FileRef
       location = "group:RollbarAUL">
-   </FileRef>
-   <FileRef
-      location = "group:RollbarCocoaLumberjack">
    </FileRef>
    <FileRef
       location = "group:UnitTesting">

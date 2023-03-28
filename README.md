@@ -64,13 +64,11 @@ All the active development will be done within this SDK repository.
 [![Platform](https://img.shields.io/cocoapods/p/RollbarNotifier.svg?label=RollbarNotifier)](https://docs.rollbar.com/docs/apple)
 [![Platform](https://img.shields.io/cocoapods/p/RollbarDeploys.svg?label=RollbarDeploys)](https://docs.rollbar.com/docs/apple)
 [![Platform](https://img.shields.io/cocoapods/p/RollbarAUL.svg?label=RollbarAUL)](https://docs.rollbar.com/docs/apple)
-[![Platform](https://img.shields.io/cocoapods/p/RollbarCocoaLumberjack.svg?label=RollbarCocoaLumberjack)](https://docs.rollbar.com/docs/apple)
 
 [![CocoaPods](https://img.shields.io/cocoapods/v/RollbarCommon?label=RollbarCommon)](https://cocoapods.org/pods/RollbarCommon)
 [![CocoaPods](https://img.shields.io/cocoapods/v/RollbarNotifier?label=RollbarNotifier)](https://cocoapods.org/pods/RollbarNotifier)
 [![CocoaPods](https://img.shields.io/cocoapods/v/RollbarDeploys?label=RollbarDeploys)](https://cocoapods.org/pods/RollbarDeploys)
 [![CocoaPods](https://img.shields.io/cocoapods/v/RollbarAUL?label=RollbarAUL)](https://cocoapods.org/pods/RollbarAUL)
-[![CocoaPods](https://img.shields.io/cocoapods/v/RollbarCocoaLumberjack?label=RollbarCocoaLumberjack)](https://cocoapods.org/pods/RollbarCocoaLumberjack)
 
 
 ## Setup Instructions

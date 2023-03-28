@@ -25,6 +25,7 @@
 - Minimum Swift version is now 5.0 and minimum deployment is 14.0.
 - Cleaned up podspecs, added publishing script.
 - Remove old, non-working examples and low quality demos.
+- Remove outdated CocoaLumberjack integration in order to remove transitive dependencies being dragged into RollbarNotifier.
 
 ### 2.4.0
 
