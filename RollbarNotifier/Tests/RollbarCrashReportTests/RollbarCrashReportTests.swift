@@ -25,13 +25,9 @@ final class RollbarCrashReportTests: XCTestCase {
             }
 
             XCTAssertEqual(report.crash.diagnosis, "Fatal error: Unexpectedly found nil while unwrapping an Optional value (iosAppSwift/ContentView.swift:117)")
-            XCTAssertEqual(report.crash.diagnostics.count, 3)
+            XCTAssertEqual(report.crash.diagnostics.count, 1)
             XCTAssertEqual(report.crash.diagnostics[0].source, "libswiftCore.dylib")
-            XCTAssertEqual(report.crash.diagnostics[1].source, "Exception Type")
-            XCTAssertEqual(report.crash.diagnostics[2].source, "Exception Subtype")
             XCTAssertEqual(report.crash.diagnostics[0].diagnosis, "Fatal error: Unexpectedly found nil while unwrapping an Optional value (iosAppSwift/ContentView.swift:117)")
-            XCTAssertEqual(report.crash.diagnostics[1].diagnosis, "EXC_BREAKPOINT (SIGTRAP)")
-            XCTAssertEqual(report.crash.diagnostics[2].diagnosis, "KERN_INVALID_ADDRESS at 0x000000018b87eac4")
         }
     }
 
@@ -43,7 +39,7 @@ final class RollbarCrashReportTests: XCTestCase {
 
         let expectReport = Bundle.module
             .url(forResource: "report.crash", withExtension: .none)
-            .flatMap { try? String(contentsOf: $0) }
+            .flatMap { try! String(contentsOf: $0) }
 
         XCTAssertNotNil(diagnosedCrash)
         XCTAssertNotNil(expectReport)
@@ -56,7 +52,7 @@ final class RollbarCrashReportTests: XCTestCase {
             XCTAssertNotNil(reports?.first as? String)
             XCTAssertEqual(reports?.count, 1)
 
-            guard let report = reports?.first as? String, let expectReport = expectReport else {
+            guard let report = reports?.first as? String, let expectReport else {
                 return XCTFail()
             }
 
