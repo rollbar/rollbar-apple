@@ -330,7 +330,8 @@
 
 #pragma mark - Initializers
 
-- (instancetype)initWithJSONString: (NSString *)jsonString {
+- (instancetype)initWithJSONString:(NSString *)jsonString {
+    NSAssert(jsonString && jsonString.length > 0, @"jsonString cannot be nil");
     self = [self init];
     if (self) {
         [self deserializeFromJSONString:jsonString];
@@ -338,7 +339,7 @@
     return self;
 }
 
-- (instancetype)initWithJSONData: (NSData *)data {
+- (instancetype)initWithJSONData:(NSData *)data {
     self = [self init];
     if (self) {
         [self deserializeFromJSONData:data];

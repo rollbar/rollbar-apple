@@ -33,7 +33,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
         // Optionally defined whether rate limited occurrences should be dropped or
         // kept in a queue. Defaults to drop.
-        //config.loggingOptions.rateLimitBehavior = .queue
+        config.loggingOptions.rateLimitBehavior = .queue
 
         // Optionally anonymize the IP address
         //config.loggingOptions.captureIp = RollbarCaptureIpType.anonymize

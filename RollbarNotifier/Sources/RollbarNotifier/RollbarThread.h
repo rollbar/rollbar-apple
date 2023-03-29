@@ -2,6 +2,7 @@
 
 #import "RollbarConfig.h"
 #import "RollbarPayload.h"
+#import "RollbarDestinationRecord.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -10,13 +11,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// Signifies that the thread is active or not.
 @property(atomic) BOOL active;
 
-//- (void)persist:(nonnull RollbarPayload *)payload;
-
 - (void)persistPayload:(nonnull RollbarPayload *)payload
             withConfig:(nonnull RollbarConfig *)config;
 
 - (RollbarTriStateFlag)sendPayload:(nonnull NSData *)payload
-                       usingConfig:(nonnull RollbarConfig  *)config;
+                        withConfig:(nonnull RollbarConfig *)config;
 
 /// Hides the initializer.
 - (instancetype)init NS_UNAVAILABLE;
