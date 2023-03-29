@@ -40,22 +40,22 @@
     
     RollbarDestinationRecord *record = [registry getRecordForConfig:config];
     XCTAssertEqual(1, registry.totalDestinationRecords);
-    XCTAssertEqual(YES, [record canPost]);
+    XCTAssertEqual(YES, [record canPostWithConfig:config]);
     XCTAssertNotNil(record.nextEarliestPost);
     XCTAssertNil(record.nextLocalWindowStart);
     XCTAssertNil(record.nextServerWindowStart);
 
     RollbarPayloadPostReply *reply = [RollbarPayloadPostReply greenReply];
-    [record recordPostReply:reply];
-    XCTAssertTrue([record canPost]);
+    [record recordPostReply:reply withConfig:config];
+    XCTAssertTrue([record canPostWithConfig:config]);
     
     reply = [RollbarPayloadPostReply yellowReply];
-    [record recordPostReply:reply];
-    XCTAssertFalse([record canPost]);
+    [record recordPostReply:reply withConfig:config];
+    XCTAssertFalse([record canPostWithConfig:config]);
 
     reply = [RollbarPayloadPostReply redReply];
-    [record recordPostReply:reply];
-    XCTAssertFalse([record canPost]);
+    [record recordPostReply:reply withConfig:config];
+    XCTAssertFalse([record canPostWithConfig:config]);
 }
 
 #pragma mark - registry records tests
