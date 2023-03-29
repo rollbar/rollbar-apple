@@ -17,19 +17,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (RollbarTriStateFlag)sendPayload:(nonnull NSData *)payload
                         withConfig:(nonnull RollbarConfig *)config;
 
-/// Hides the initializer.
 - (instancetype)init NS_UNAVAILABLE;
-
-/// Hides the initializer.
-- (instancetype)initWithTarget:(id)target
-                      selector:(SEL)selector
-                        object:(nullable id)argument
-NS_UNAVAILABLE;
-
+- (instancetype)initWithTarget:(id)target selector:(SEL)selector object:(nullable id)argument NS_UNAVAILABLE;
 - (instancetype)initWithBlock:(void (^)(void))block NS_UNAVAILABLE;
 
-
-#pragma mark - Sigleton pattern
+#pragma mark - Singleton pattern
 
 + (nonnull instancetype)sharedInstance;
 

@@ -186,38 +186,16 @@ static NSString *queuedItemsFilePath = nil;
 #pragma mark - Payload queueing/reporting
 
 - (void)report:(RollbarPayload *)payload {
-
     if (payload) {
-        
         [[RollbarThread sharedInstance] persistPayload:payload
                                             withConfig:self.configuration];
-        
-//        NSDictionary *payloadJsonData = payload.jsonFriendlyData;
-//        if (payloadJsonData) {
-//            [[RollbarThread sharedInstance] persistPayload:payloadJsonData];
-//        }
     }
 }
 
 #pragma mark - Update configuration methods
 
 - (void)updateConfiguration:(RollbarConfig *)configuration {
-
     self.configuration = [configuration copy];
 }
 
-//- (void)updateAccessToken:(NSString *)accessToken {
-//    self.configuration.destination.accessToken = accessToken;
-//}
-
-//- (void)updateReportingRate:(NSUInteger)maximumReportsPerMinute {
-//    if (nil != self.configuration) {
-//        self.configuration.loggingOptions.maximumReportsPerMinute = maximumReportsPerMinute;
-//    }
-//
-//    //[[RollbarThread sharedInstance] cancel];
-//    //[[RollbarThread sharedInstance] setReportingRate:maximumReportsPerMinute];
-//    //[[RollbarThread sharedInstance] start];
-//}
-    
 @end

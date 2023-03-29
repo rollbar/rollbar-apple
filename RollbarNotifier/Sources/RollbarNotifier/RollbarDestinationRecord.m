@@ -1,5 +1,6 @@
 #import "RollbarDestinationRecord.h"
 #import "RollbarRegistry.h"
+#import "RollbarInfrastructure.h"
 #import "RollbarInternalLogging.h"
 
 @implementation RollbarDestinationRecord {
@@ -7,6 +8,10 @@
 }
 
 #pragma mark - property accessors
+
+- (RollbarRateLimitBehavior)rateLimitBehavior {
+    return RollbarInfrastructure.sharedInstance.configuration.loggingOptions.rateLimitBehavior;
+}
 
 #pragma mark - initializers
 
@@ -95,7 +100,7 @@
             self->_nextServerWindowStart = nil;
             return; // nothing else to do...
         case 429: // too many requests
-            if (config.loggingOptions.rateLimitBehavior == RollbarRateLimitBehavior_Queue) {
+            if (self.rateLimitBehavior == RollbarRateLimitBehavior_Queue) {
                 RBLog(@"\tQueuing record");
                 self->_nextLocalWindowStart = [NSDate dateWithTimeIntervalSinceNow:reply.remainingSeconds];
                 self->_serverWindowRemainingCount = 0;
