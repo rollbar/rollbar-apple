@@ -6,6 +6,7 @@
 #import "RollbarTelemetry.h"
 #import "RollbarCrashCollector.h"
 #import "RollbarInternalLogging.h"
+#import "RollbarThread.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -49,8 +50,11 @@ NS_ASSUME_NONNULL_BEGIN
     [self.collector install];
     [self.collector sendAllReports];
 
-    NSLog(@"Rollbar is running")
-    
+    // Create RollbarThread and begin processing persisted occurrences
+    if ([[RollbarThread sharedInstance] active]) {
+        NSLog(@"Rollbar is running")
+    }
+
     return self;
 }
 

@@ -292,7 +292,8 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         var dto = RollbarMutableLoggingOptions(
             logLevel: .error,
             crash: .info,
-            maximumReportsPerMinute: UInt(45)
+            maximumReportsPerMinute: UInt(45),
+            rateLimitBehavior: .queue
         );
         dto.captureIp = .anonymize;
         dto.codeVersion = "CODEVERSION";

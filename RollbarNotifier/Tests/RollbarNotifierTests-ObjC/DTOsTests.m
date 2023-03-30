@@ -282,7 +282,8 @@
 - (void)testRollbarLoggingOptionsDTO {
     RollbarMutableLoggingOptions *dto = [[RollbarMutableLoggingOptions alloc] initWithLogLevel:RollbarLevel_Error
                                                                                     crashLevel:RollbarLevel_Info
-                                                                       maximumReportsPerMinute:45];
+                                                                       maximumReportsPerMinute:45
+                                                                             rateLimitBehavior:RollbarRateLimitBehavior_Queue];
     dto.captureIp = RollbarCaptureIpType_Anonymize;
     dto.codeVersion = @"CODEVERSION";
     dto.framework = @"FRAMEWORK";

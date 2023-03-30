@@ -90,6 +90,7 @@
         session = [NSURLSession sessionWithConfiguration:sessionConfig];
     }
 
+    RBLog(@"\tSending payload...");
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request
                                                 completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         httpResponse = [self checkPayloadResponse:response error:error];
@@ -107,11 +108,11 @@
     NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
 
     if (httpResponse.statusCode == 200) {
-        RBLog(@"OK response from Rollar");
+        RBLog(@"\tOK response from Rollbar");
     } else {
-        RBLog(@"There was a problem reporting to Rollbar:");
-        RBLog(@"\tError: %@", [error localizedDescription]);
-        RBLog(@"\tResponse: %@", httpResponse);
+        RBLog(@"\tThere was a problem reporting to Rollbar:");
+        RBLog(@"\t\tError: %@", [error localizedDescription]);
+        RBLog(@"\t\tResponse: %d", httpResponse.statusCode);
     }
 
     return httpResponse;

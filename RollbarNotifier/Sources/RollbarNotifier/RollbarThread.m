@@ -13,12 +13,12 @@
 #import "RollbarRegistry.h"
 #import "RollbarPayloadRepository.h"
 #import "RollbarInternalLogging.h"
+#import "RollbarInfrastructure.h"
 
 static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
 // hours-per day * 60 min-per-hour * 60 sec-per-min = 1 day in sec
 
 @implementation RollbarThread {
-
 @private
     NSUInteger _maxReportsPerMinute;
     NSTimeInterval _payloadLifetimeInSeconds;
@@ -31,32 +31,30 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
     RollbarReachability *_reachability;
     BOOL _isNetworkReachable;
 #endif
-    
 }
 
 - (instancetype)initWithTarget:(id)target
                       selector:(SEL)selector
-                        object:(nullable id)argument {
-
-    if ((self = [super initWithTarget:self
-                             selector:@selector(run)
-                               object:nil])) {
-        
+                        object:(nullable id)argument
+{
+    self = [super initWithTarget:self
+                        selector:@selector(run)
+                          object:nil];
+    if (self) {
         [self setupDataStorage];
         
-        self->_maxReportsPerMinute = 240;//60;
+        self->_maxReportsPerMinute = 240;
         self->_payloadLifetimeInSeconds = DEFAULT_PAYLOAD_LIFETIME_SECONDS;
         self->_registry = [RollbarRegistry new];
-        
+
 #if !TARGET_OS_WATCH
         self->_reachability = nil;
         self->_isNetworkReachable = YES;
 #endif
 
-        self.name = [RollbarThread rollbar_objectClassName];//NSStringFromClass([RollbarThread class]);
+        self.name = [RollbarThread rollbar_objectClassName];
         self.active = YES;
-        
-        
+
 #if !TARGET_OS_WATCH
         // Listen for reachability status so that the items are only sent when the internet is available:
         self->_reachability = [RollbarReachability reachabilityForInternetConnection];
@@ -95,22 +93,16 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
     self->_payloadsRepo =
     [RollbarPayloadRepository persistentRepositoryWithPath:self->_payloadsRepoFilePath];
     NSAssert([[NSFileManager defaultManager] fileExistsAtPath:self->_payloadsRepoFilePath],
-             @"Persistent payloads store was not created: %@!!!", self->_payloadsRepoFilePath
-             );
+             @"Persistent payloads store was not created: %@!!!", self->_payloadsRepoFilePath);
 }
 
 - (void)run {
-    
     @autoreleasepool {
-        
-        NSTimeInterval timeIntervalInSeconds = 60.0 / _maxReportsPerMinute;
-        
-        _timer = [NSTimer timerWithTimeInterval:timeIntervalInSeconds
-                                        target:self
-                                      selector:@selector(checkItems)
-                                      userInfo:nil
-                                       repeats:YES
-                 ];
+        _timer = [NSTimer timerWithTimeInterval:60.0 / _maxReportsPerMinute
+                                         target:self
+                                       selector:@selector(checkItems)
+                                       userInfo:nil
+                                        repeats:YES];
         
         NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
         [runLoop addTimer:_timer forMode:NSDefaultRunLoopMode];
@@ -127,7 +119,7 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
             withConfig:(nonnull RollbarConfig *)config {
     
     [self performSelector:@selector(queuePayload_OnlyCallOnThisThread:)
-                 onThread:self //[RollbarThread sharedInstance]
+                 onThread:self
                withObject:@[payload, config]
             waitUntilDone:NO
     ];
@@ -159,7 +151,7 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
                                 withConfig:(nonnull RollbarConfig *)config {
     
     if (config.modifyRollbarData) {
-    
+
         @try {
             payload.data = config.modifyRollbarData(payload.data);
         }
@@ -229,7 +221,7 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
 }
 
 + (void)createMutableDataWithData:(NSMutableDictionary *)data
-                           forPath:(NSString *)path {
+                          forPath:(NSString *)path {
     
     NSArray *pathComponents = [path componentsSeparatedByString:@"."];
     NSString *currentPath = @"";
@@ -295,8 +287,6 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
 }
 
 - (void)savePayload:(nonnull RollbarPayload *)payload withConfig:(nonnull RollbarConfig *)config {
-    RBLog(@"RollbarThread::savePayload: %@", payload.data.body);
-
     if ([RollbarThread shouldIgnorePayload:payload withConfig:config]) {
         
         if (config.developerOptions.logIncomingPayloads) {
@@ -376,8 +366,8 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
         RBErr(@"invalid configJson!");
         return;
     }
-    
-    //[payload.data.notifier setData:config.jsonFriendlyData byKey:@"configured_options"];
+
+    RBLog(@"Queuing %@ (%d in queue)", payload.data.uuid, [self->_payloadsRepo getPayloadCount]);
     NSString *payloadJson = [payload serializeToJSONString];
     NSDictionary *payloadDataRow = [self->_payloadsRepo addPayload:payloadJson
                                                         withConfig:configJson
@@ -395,7 +385,6 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
 #pragma mark - processing persisted payload items
 
 - (void)checkItems {
-    
     if (self.cancelled) {
         if (_timer) {
             [_timer invalidate];
@@ -410,19 +399,17 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
 }
 
 - (BOOL)checkProcessStalePayload:(nonnull NSDictionary<NSString *, NSString *> *)payloadDataRow {
-    
-    // let's make sure we are not dealng with a stale payload:
+    // let's make sure we are not dealing with a stale payload:
     NSString *timestampValue = payloadDataRow[@"created_at"];
     NSScanner *scanner = [NSScanner scannerWithString:timestampValue];
     double payloadTimestamp;
-    BOOL timestampParsingSuccess = [scanner scanDouble:&payloadTimestamp];
-    if (!timestampParsingSuccess
-        || ((payloadTimestamp + self->_payloadLifetimeInSeconds) < [NSDate date].timeIntervalSince1970)
-        ) {
+    BOOL timestampDidParse = [scanner scanDouble:&payloadTimestamp];
+    BOOL isStale = (payloadTimestamp + self->_payloadLifetimeInSeconds) < [[NSDate date] timeIntervalSince1970];
+    if (!timestampDidParse || isStale) {
         // we either have some sort of timestamp corruption or
         // we are processing a stale payload let's just drop it and call it done:
-        [self->_payloadsRepo removePayloadByID:payloadDataRow[@"id"]];
-        
+        [self removePayloadByID:payloadDataRow[@"id"]];
+
         RollbarConfig *config = [[RollbarConfig alloc] initWithJSONString:payloadDataRow[@"config_json"]];
         
         if (config && config.developerOptions.logTransmittedPayloads) {
@@ -435,7 +422,7 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
             }
         }
         
-        RBLog(@"Dropped a stale payload: %@", payloadDataRow[@"payload_json"]);
+        RBLog(@"Dropped stale payload: %@", payloadDataRow[@"payload_json"]);
 
         return YES;
     }
@@ -444,65 +431,45 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
 }
 
 - (void)processSavedPayload:(nonnull NSDictionary<NSString *, NSString *> *)payloadDataRow {
-    
     if ([self checkProcessStalePayload:payloadDataRow]) {
         return;
     }
 
-    NSString *destinationKey = payloadDataRow[@"destination_key"];
-    NSAssert(destinationKey && destinationKey.length > 0, @"destination_key is expected to be defined!");
-    NSDictionary<NSString *, NSString *> *destination = [self->_payloadsRepo getDestinationByID:destinationKey];
-    
-    //TODO: remove this code-block before the upcoming major release:
-    if (!destination) {
-        RBLog(@"Aha!");
-        [self->_payloadsRepo removePayloadByID:payloadDataRow[@"id"]];
-        return;
-    }
-    
-    NSAssert(destination, @"destination can not be nil!");
-    NSAssert(destination[@"endpoint"], @"destination endpoint can not be nil!");
-    NSAssert(destination[@"access_token"], @"destination access_token can not be nil!");
+    NSDictionary<NSString *, NSString *> *destination = [self->_payloadsRepo getDestinationByID:payloadDataRow[@"destination_key"]];
     RollbarDestinationRecord *destinationRecord = [self->_registry getRecordForEndpoint:destination[@"endpoint"]
                                                                          andAccessToken:destination[@"access_token"]];
-    NSString *configJson = payloadDataRow[@"config_json"];
-    NSAssert(configJson && configJson.length > 0, @"config_json is expected to be defined!");
-    RollbarConfig *config = [[RollbarConfig alloc] initWithJSONString:configJson];
-    NSAssert(config, @"config is expected to be defined!");
-    
+    RollbarPayload *payload = [[RollbarPayload alloc] initWithJSONString:payloadDataRow[@"payload_json"]];
+    RollbarConfig *config = [[RollbarConfig alloc] initWithJSONString:payloadDataRow[@"config_json"]];
+
     if (![destinationRecord canPostWithConfig:config]) {
+        if (self.rateLimitBehavior == RollbarRateLimitBehavior_Drop) {
+            RBLog(@"Processing %@ (%d in queue)", payload.data.uuid, [self->_payloadsRepo getPayloadCount]);
+            RBLog(@"\tRate limited");
+            [self removePayloadByID:payloadDataRow[@"id"]];
+            RBLog(@"Dropped %@", payload.data.uuid);
+        }
         return;
     }
-    
-    NSString *payloadJson = payloadDataRow[@"payload_json"];
-    RollbarPayload *payload = [[RollbarPayload alloc] initWithJSONString:payloadJson];
-    NSAssert(payload, @"payload is expected to be defined!");
-        
+
+    RBLog(@"Processing %@ (%d in queue)", payload.data.uuid, [self->_payloadsRepo getPayloadCount]);
+
     NSError *error;
     NSData *jsonPayload = [NSJSONSerialization rollbar_dataWithJSONObject:payload.jsonFriendlyData
                                                                   options:0
                                                                     error:&error
                                                                      safe:true];
-    if (nil == jsonPayload) {
+    if (jsonPayload == nil) {
         RBErr(@"Couldn't send jsonPayload that is nil");
-        if (nil != error) {
-            RBErr(@"   DETAILS: an error while generating JSON data: %@", error);
+        if (error != nil) {
+            RBErr(@"\tError while generating JSON data: %@", error);
         }
-        // there is nothing we can do with this payload - let's drop it:
-        RBErr(@"Dropping unprocessable payload: %@", payloadJson);
-        if (![self->_payloadsRepo removePayloadByID:payloadDataRow[@"id"]]) {
-            RBErr(@"Couldn't remove payload data row with ID: %@", payloadDataRow[@"id"]);
-        }
+        [self removePayloadByID:payloadDataRow[@"id"]];
         return;
     }
 
-    RBLog(@"Processing %d payloads left", [self->_payloadsRepo getPayloadCount]);
-    
     RollbarTriStateFlag result = RollbarTriStateFlag_On;
-    if (!config) {
-        result = [self sendPayload:jsonPayload]; // backward compatibility with just upgraded very old SDKs...
-    } else if (config.developerOptions.transmit) {
-        result = [self sendPayload:jsonPayload usingConfig:config];
+    if (config.developerOptions.transmit) {
+        result = [self sendPayload:jsonPayload toDestination:destinationRecord withConfig:config];
     }
     
     NSString *payloadsLogFile = nil;
@@ -510,20 +477,14 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
     switch (result) {
         case RollbarTriStateFlag_On:
             // The payload is fully processed and transmitted.
-            // It can be removed from the repo:
-            if (![self->_payloadsRepo removePayloadByID:payloadDataRow[@"id"]]) {
-                RBErr(@"Couldn't remove payload data row with ID: %@", payloadDataRow[@"id"]);
-            }
+            [self removePayloadByID:payloadDataRow[@"id"]];
             if (config.developerOptions.logTransmittedPayloads) {
                 payloadsLogFile = config.developerOptions.transmittedPayloadsLogFile;
             }
             break;
         case RollbarTriStateFlag_Off:
             // The payload is fully processed but not accepted by the server due to some invalid content.
-            // It must be removed from the repo:
-            if (![self->_payloadsRepo removePayloadByID:payloadDataRow[@"id"]]) {
-                RBErr(@"Couldn't remove payload data row with ID: %@", payloadDataRow[@"id"]);
-            }
+            [self removePayloadByID:payloadDataRow[@"id"]];
             if (config.developerOptions.logDroppedPayloads) {
                 payloadsLogFile = config.developerOptions.droppedPayloadsLogFile;
             }
@@ -541,11 +502,10 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
         [RollbarFileWriter appendSafelyData:jsonPayload toFile:payloadsLogFilePath];
     }
 
-    RBLog([self loggableStringFromPayload:jsonPayload result:result]);
+    RBLog([self loggableStringFromPayload:payload result:result]);
 }
 
 - (void)processSavedItems {
-    
 #if !TARGET_OS_WATCH
     if (!self->_isNetworkReachable) {
         RBLog(@"Processing saved items: no network!");
@@ -565,45 +525,51 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
 }
 
 - (RollbarTriStateFlag)sendPayload:(nonnull NSData *)payload
-                       usingConfig:(nonnull RollbarConfig *)config
+                        withConfig:(nonnull RollbarConfig *)config
+{
+    RollbarDestinationRecord *destination = [self->_registry getRecordForConfig:config];
+    if ([destination canPostWithConfig:config]) {
+        return [self sendPayload:payload toDestination:destination withConfig:config];
+    }
+    return RollbarTriStateFlag_None; // nothing obviously wrong with the payload - just can not send at the moment
+}
+
+- (RollbarTriStateFlag)sendPayload:(nonnull NSData *)payload
+                     toDestination:(nullable RollbarDestinationRecord *)record
+                        withConfig:(nonnull RollbarConfig *)config
 {
     if (!payload || !config) {
         return RollbarTriStateFlag_Off; //obviously invalid payload to sent or invalid destination...
     }
-    
-    RollbarDestinationRecord *record = [self->_registry getRecordForConfig:config];
-    if (![record canPost]) {
-        return RollbarTriStateFlag_None; // nothing obviously wrong with the payload - just can not send at the moment
-    }
-    
+
     RollbarPayloadPostReply *reply = [[RollbarSender new] sendPayload:payload usingConfig:config];
-    [record recordPostReply:reply];
+    [record recordPostReply:reply withConfig:config];
     
     if (!reply) {
         return RollbarTriStateFlag_None; // nothing obviously wrong with the payload - just there was no deterministic
                                          // reply from the destination server
     }
     
-    switch(reply.statusCode) {
+    switch (reply.statusCode) {
         case 200: // OK
             return RollbarTriStateFlag_On; // the payload was successfully transmitted
         case 400: // bad request
         case 413: // request entity too large
         case 422: // unprocessable entity
             return RollbarTriStateFlag_Off; // unecceptable request/payload - should be dropped
+        case 429: // too many requests
+            switch (self.rateLimitBehavior) {
+                case RollbarRateLimitBehavior_Queue:
+                    return RollbarTriStateFlag_None;
+                case RollbarRateLimitBehavior_Drop:
+                default:
+                    return RollbarTriStateFlag_Off;
+            }
         case 403: // access denied
         case 404: // not found
-        case 429: // too many requests
         default:
             return RollbarTriStateFlag_None; // worth retrying later
     }
-}
-
-/// This is a DEPRECATED method left for some backward compatibility for very old clients eventually moving to this more recent implementation.
-/// Use/maintain sendPayload:usingConfig: instead!
-- (RollbarTriStateFlag)sendPayload:(NSData *)payload {
-    
-    return RollbarTriStateFlag_Off;
 }
 
 #pragma mark - Network telemetry data
@@ -638,31 +604,38 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
 
 #pragma mark -
 
-- (NSString *)loggableStringFromPayload:(NSData *)jsonPayload result:(RollbarTriStateFlag)result {
-    NSString *payloadString = [[NSString alloc] initWithData:jsonPayload encoding:NSUTF8StringEncoding];
-    NSString *truncatedPayload = [payloadString substringToIndex:MIN(payloadString.length, 128)];
+- (RollbarRateLimitBehavior)rateLimitBehavior {
+    return RollbarInfrastructure.sharedInstance.configuration.loggingOptions.rateLimitBehavior;
+}
 
+- (void)removePayloadByID:(nonnull NSString *)payloadID {
+    if (![self->_payloadsRepo removePayloadByID:payloadID]) {
+        RBErr(@"\tCouldn't remove payload data row with ID: %@", payloadID);
+    } else {
+        RBLog(@"\tRecord dropped");
+    }
+}
+
+- (NSString *)loggableStringFromPayload:(RollbarPayload *)payload result:(RollbarTriStateFlag)result {
     NSString *resultString =
         result == RollbarTriStateFlag_On ? @"Transmitted" :
-        result == RollbarTriStateFlag_Off ? @"Dropped" :
-        @"Unavailable will retry";
+        result == RollbarTriStateFlag_Off ? @"Dropped" : @"Queued";
 
-    return [NSString stringWithFormat:@"%@ payload: %@", resultString, truncatedPayload];
+    return [NSString stringWithFormat:@"%@ %@", resultString, payload.data.uuid];
 }
 
 #pragma mark - Singleton pattern
 
 + (nonnull instancetype)sharedInstance {
-    
     static id singleton;
     static dispatch_once_t onceToken;
-    
+
     dispatch_once(&onceToken, ^{
         singleton = [[self alloc] initWithTarget:self
                                         selector:@selector(run)
                                           object:nil];
     });
-    
+
     return singleton;
 }
 

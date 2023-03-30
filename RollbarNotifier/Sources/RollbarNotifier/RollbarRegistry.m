@@ -17,7 +17,6 @@ const NSUInteger DEFAULT_RegistryCapacity = 10;
 }
 
 - (nonnull RollbarDestinationRecord *)getRecordForConfig:(nonnull RollbarConfig *)config {
-    
     NSAssert(config, @"Config must not be null!");
     NSAssert(config.destination, @"Destination must not be null!");
     NSAssert(config.destination.endpoint, @"destination.endpoint must not be null!");
@@ -27,18 +26,14 @@ const NSUInteger DEFAULT_RegistryCapacity = 10;
     RollbarDestinationRecord *destinationRecord = [self getRecordForEndpoint:config.destination.endpoint
                                                               andAccessToken:config.destination.accessToken];
 
-    if (destinationRecord.localWindowLimit < config.loggingOptions.maximumReportsPerMinute) {
-        
-        // we use lagest configured limit per destination:
-        destinationRecord.localWindowLimit = config.loggingOptions.maximumReportsPerMinute;
-    }
-    
+    destinationRecord.localWindowLimit = MAX(destinationRecord.localWindowLimit, config.loggingOptions.maximumReportsPerMinute);
+
     return destinationRecord;
 }
 
 - (nonnull RollbarDestinationRecord *)getRecordForEndpoint:(nonnull NSString *)endpoint
-                                            andAccessToken:(nonnull NSString *)accessToken {
-
+                                            andAccessToken:(nonnull NSString *)accessToken \
+{
     NSAssert(endpoint, @"endpoint must not be null!");
     NSAssert(accessToken, @"accessToken must not be null!");
 
@@ -46,23 +41,12 @@ const NSUInteger DEFAULT_RegistryCapacity = 10;
     RollbarDestinationRecord *destinationRecord = self->_destinationRecords[destinationID];
     if (!destinationRecord) {
         destinationRecord = [[RollbarDestinationRecord alloc] initWithDestinationID:destinationID
-                                                                        andRegistry:self
-        ];
+                                                                        andRegistry:self];
         self->_destinationRecords[destinationID] = destinationRecord;
     }
-    
-//    if (destinationRecord.localWindowLimit < config.loggingOptions.maximumReportsPerMinute) {
-//
-//        // we use lagest configured limit per destination:
-//        destinationRecord.localWindowLimit = config.loggingOptions.maximumReportsPerMinute;
-//    }
-    
+
     return destinationRecord;
 }
-
-
-
-
 
 - (NSUInteger)totalDestinationRecords {
     return self->_destinationRecords.count;

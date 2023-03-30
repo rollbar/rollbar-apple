@@ -234,7 +234,7 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
 }
 
 - (nullable NSDictionary<NSString *, NSString *> *)getDestinationByID:(nonnull NSString *)destinationID {
-    
+    NSAssert(destinationID && destinationID.length > 0, @"destinationID cannot be nil");
     NSString *sql = [NSString stringWithFormat:
                      @"SELECT * FROM destinations WHERE id = '%@'",
                      destinationID

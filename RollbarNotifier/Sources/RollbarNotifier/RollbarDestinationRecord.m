@@ -1,5 +1,6 @@
 #import "RollbarDestinationRecord.h"
 #import "RollbarRegistry.h"
+#import "RollbarInfrastructure.h"
 #import "RollbarInternalLogging.h"
 
 @implementation RollbarDestinationRecord {
@@ -7,6 +8,10 @@
 }
 
 #pragma mark - property accessors
+
+- (RollbarRateLimitBehavior)rateLimitBehavior {
+    return RollbarInfrastructure.sharedInstance.configuration.loggingOptions.rateLimitBehavior;
+}
 
 #pragma mark - initializers
 
@@ -49,14 +54,6 @@
 
 #pragma mark - methods
 
-- (BOOL)canPost {
-    if (!self->_nextEarliestPost) {
-        return NO;
-    }
-
-    return [self->_nextEarliestPost compare:[NSDate date]] != NSOrderedDescending;
-}
-
 - (BOOL)canPostWithConfig:(nonnull RollbarConfig *)config {
     if (self->_nextLocalWindowStart && (self->_localWindowCount >= config.loggingOptions.maximumReportsPerMinute)) {
         // we already exceeded local rate limits, let's wait till the next local rate limiting window:
@@ -71,14 +68,15 @@
     BOOL shouldPost = [self->_nextEarliestPost compare:[NSDate date]] != NSOrderedDescending;
 
     if (shouldPost) {
-        RBLog(@"%@ ≤ %@ :: GO", self->_nextEarliestPost, [NSDate date]);
+        RBLog(@"Rate limit %@ ≤ %@ :: GO", self->_nextEarliestPost, [NSDate date]);
     }
 
     return shouldPost;
 }
 
-- (void)recordPostReply:(nullable RollbarPayloadPostReply *)reply {
-    
+- (void)recordPostReply:(nullable RollbarPayloadPostReply *)reply
+             withConfig:(nonnull RollbarConfig *)config
+{
     if (!reply) {
         //no response from the server to our lates POST of a payload,
         //let's hold on on posting to the destination for 1 minute:
@@ -90,13 +88,10 @@
         return; // nothing else to do...
     }
     
-    switch(reply.statusCode) {
-        case 429: // too many requests
-            self->_nextLocalWindowStart = [NSDate dateWithTimeIntervalSinceNow:reply.remainingSeconds];;
-            self->_serverWindowRemainingCount = 0;
-            break;
+    switch (reply.statusCode) {
         case 403: // access denied
         case 404: // not found
+            RBLog(@"\tQueuing record");
             //let's hold on on posting to the destination for 1 minute:
             self->_nextEarliestPost = [NSDate dateWithTimeIntervalSinceNow:60];
             self->_localWindowCount = 0;
@@ -104,11 +99,19 @@
             self->_nextLocalWindowStart = self->_nextEarliestPost;
             self->_nextServerWindowStart = nil;
             return; // nothing else to do...
+        case 429: // too many requests
+            if (self.rateLimitBehavior == RollbarRateLimitBehavior_Queue) {
+                RBLog(@"\tQueuing record");
+                self->_nextLocalWindowStart = [NSDate dateWithTimeIntervalSinceNow:reply.remainingSeconds];
+                self->_serverWindowRemainingCount = 0;
+                break;
+            }
         case 200: // OK
         case 400: // bad request
         case 413: // request entity too large
         case 422: // unprocessable entity
         default:
+            RBLog(@"\tDropping record");
             self->_nextServerWindowStart = [NSDate dateWithTimeIntervalSinceNow:reply.remainingSeconds];;
             self->_serverWindowRemainingCount = reply.remainingCount;
             if (self->_nextLocalWindowStart) {
@@ -150,7 +153,6 @@
                              "   nextLocalWindowStart:       %@\n"
                              "   nextServerWindowStart:      %@\n"
                              "   nextEarliestPost:           %@\n"
-                             "   canPost:                    %@\n"
                              ,
                              super.description,
                              self->_destinationID,
@@ -159,9 +161,7 @@
                              self->_serverWindowRemainingCount,
                              self->_nextLocalWindowStart,
                              self->_nextServerWindowStart,
-                             self->_nextEarliestPost,
-                             [self canPost] ? @"YES" : @"NO"
-    ];
+                             self->_nextEarliestPost];
     return description;
 }
 
