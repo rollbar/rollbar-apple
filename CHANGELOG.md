@@ -15,9 +15,15 @@
 - The Swift Demo has been greatly expanded and enhanced:
   - Demo: Expanded Swift Demo with more types of crashes.
   - Demo: Prevent optimizer from erasing crashing funcs that result in noops.
-  - Demo: Allow users to change access token from the Demo UI.
-- Fixed unsuppressed logging, and suppress it by default.
-- Remove faulty Out of Memory detection.
+  - Demo: Allow users to change access token from the Demo UI.  
+- A new logging option in the configuration allows users to choose whether they want to drop (default) rate limited API requests, or defer sending them until the next window of time.
+- Cleaned up extremely noisy internal logging. 
+
+- Fixed multiple issues while handling rate limited API requests.
+- Fixed an important bug where the library would drop non-200 API responses thus treating all failing requests as retry-immediately.
+- Fixed logging not being suppressed, and enabled suppression by default.
+- Removed faulty Out of Memory detection that was triggering substantial false positives.
+
 - Remove RollbarPLCrashReporter library.
 - Never symbolicate main executable frames.
 - Don't send mach diagnostics as title, let the server figure it out.
