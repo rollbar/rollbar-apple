@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
     s.license      = { :type => "MIT", :file => "LICENSE" }
     s.authors      = { "Rollbar" => "support@rollbar.com" }
     s.source       = { :git => "https://github.com/rollbar/rollbar-apple.git",
-                       :tag => "#{s.version}" }
+                       :tag => s.version.to_s }
     s.documentation_url = "https://docs.rollbar.com/docs/apple"
     s.social_media_url  = "http://twitter.com/rollbar"
 
@@ -23,7 +23,7 @@ Pod::Spec.new do |s|
     s.tvos.deployment_target = "14.0"
     s.watchos.deployment_target = "8.0"
 
-    s.source_files  = "#{s.name}/Sources/#{s.name}/**/*.{h,m}"
+    s.source_files  = "#{s.name}/Sources/#{s.name}/**/*.{h,m}", "RollbarNotifier/Sources/RollbarCrashReport/**/*.swift"
     s.public_header_files = "#{s.name}/Sources/#{s.name}/include/*.h"
     s.module_map = "#{s.name}/Sources/#{s.name}/include/module.modulemap"
 
