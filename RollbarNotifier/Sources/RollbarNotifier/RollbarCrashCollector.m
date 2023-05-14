@@ -1,8 +1,8 @@
 #import "Rollbar.h"
 #import "RollbarCrashCollector.h"
 #import "RollbarInternalLogging.h"
+#import "KSCrashReportFilter.h"
 
-@import KSCrash_Reporting_Sinks;
 @import RollbarCrashReport;
 
 NS_ASSUME_NONNULL_BEGIN
