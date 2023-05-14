@@ -28,6 +28,7 @@ Pod::Spec.new do |s|
 
     s.framework = "Foundation"
     s.dependency "RollbarCommon", "~> #{s.version}"
+    s.dependency "KSCrash", "~> 1.15.27"
 
     s.requires_arc = true
 end
