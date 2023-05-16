@@ -23,13 +23,14 @@ Pod::Spec.new do |s|
     s.tvos.deployment_target = "14.0"
     s.watchos.deployment_target = "8.0"
 
-    s.source_files  = "#{s.name}/Sources/#{s.name}/**/*.{h,m}", "RollbarNotifier/Sources/RollbarCrashReport/**/*.swift"
+    s.source_files  = "#{s.name}/Sources/#{s.name}/**/*.{h,m}"
     s.public_header_files = "#{s.name}/Sources/#{s.name}/include/*.h"
     s.module_map = "#{s.name}/Sources/#{s.name}/include/module.modulemap"
 
     s.framework = "Foundation"
     s.dependency "RollbarCommon", "~> #{s.version}"
-    s.dependency "KSCrash", "~> 1.15.27"
+    s.dependency "RollbarCrashReport", "~> #{s.version}"
+    s.dependency "KSCrash", "~> 1.15"
 
     s.requires_arc = true
 end
