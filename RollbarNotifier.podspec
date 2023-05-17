@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
-    s.version      = "3.0.0"
     s.name         = "RollbarNotifier"
+    s.version      = "3.0.0"
     s.summary      = "Application or client side SDK for interacting with the Rollbar API Server."
     s.description  = <<-DESC
                       Find, fix, and resolve errors with Rollbar.
@@ -8,14 +8,15 @@ Pod::Spec.new do |s|
                       Analyze, de-dupe, send alerts, and prepare the data for further analysis.
                       Search, sort, and prioritize via the Rollbar dashboard.
                    DESC
+
     s.homepage     = "https://rollbar.com"
+    s.resource     = "rollbar-logo.png"
     s.license      = { :type => "MIT", :file => "LICENSE" }
     s.authors      = { "Rollbar" => "support@rollbar.com" }
     s.source       = { :git => "https://github.com/rollbar/rollbar-apple.git",
-                       :tag => "#{s.version}" }
+                       :tag => s.version.to_s }
     s.documentation_url = "https://docs.rollbar.com/docs/apple"
     s.social_media_url  = "http://twitter.com/rollbar"
-    s.resource = "rollbar-logo.png"
 
     s.osx.deployment_target = "12.0"
     s.ios.deployment_target = "14.0"
@@ -28,6 +29,8 @@ Pod::Spec.new do |s|
 
     s.framework = "Foundation"
     s.dependency "RollbarCommon", "~> #{s.version}"
+    s.dependency "RollbarCrashReport", "~> #{s.version}"
+    s.dependency "KSCrash", "~> 1.15"
 
     s.requires_arc = true
 end

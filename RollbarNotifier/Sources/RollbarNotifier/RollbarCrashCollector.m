@@ -1,8 +1,8 @@
 #import "Rollbar.h"
 #import "RollbarCrashCollector.h"
 #import "RollbarInternalLogging.h"
+#import "KSCrashReportFilter.h"
 
-@import KSCrash_Reporting_Sinks;
 @import RollbarCrashReport;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -38,13 +38,13 @@ static bool isDebuggerAttached();
     [super install];
 
     KSCrashMonitorType monitoring = isDebuggerAttached()
-    ? KSCrashMonitorTypeDebuggerSafe
-    & ~(KSCrashMonitorTypeOptional
-        | KSCrashMonitorTypeExperimental
-        | KSCrashMonitorTypeUserReported)
-    : KSCrashMonitorTypeProductionSafe
-    & ~(KSCrashMonitorTypeOptional
-        | KSCrashMonitorTypeUserReported);
+        ? KSCrashMonitorTypeDebuggerSafe
+        & ~(KSCrashMonitorTypeOptional
+            | KSCrashMonitorTypeExperimental
+            | KSCrashMonitorTypeUserReported)
+        : KSCrashMonitorTypeProductionSafe
+        & ~(KSCrashMonitorTypeOptional
+            | KSCrashMonitorTypeUserReported);
 
     [KSCrash.sharedInstance setDeleteBehaviorAfterSendAll:KSCDeleteOnSucess];
     [KSCrash.sharedInstance setDemangleLanguages:KSCrashDemangleLanguageAll];

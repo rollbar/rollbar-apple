@@ -25,17 +25,17 @@
 
 + (nonnull NSArray<NSMutableDictionary *> *)readPayloadsFromSdkIncomingLog {
     
-    [RollbarLogger readPayloadsDataFromFile:[RollbarLogger _incomingPayloadsLogPath]];
+    return [RollbarLogger readPayloadsDataFromFile:[RollbarLogger _incomingPayloadsLogPath]];
 }
 
 + (nonnull NSArray<NSMutableDictionary *> *)readPayloadsFromSdkTransmittedLog {
     
-    [RollbarLogger readPayloadsDataFromFile:[RollbarLogger _transmittedPayloadsLogPath]];
+    return [RollbarLogger readPayloadsDataFromFile:[RollbarLogger _transmittedPayloadsLogPath]];
 }
 
 + (nonnull NSArray<NSMutableDictionary *> *)readPayloadsFromSdkDroppedLog {
     
-    [RollbarLogger readPayloadsDataFromFile:[RollbarLogger _droppedPayloadsLogPath]];
+    return [RollbarLogger readPayloadsDataFromFile:[RollbarLogger _droppedPayloadsLogPath]];
 }
 
 + (nonnull NSArray<NSMutableDictionary *> *)readPayloadsDataFromFile:(nonnull NSString *)filePath {
