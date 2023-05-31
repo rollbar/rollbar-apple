@@ -2,7 +2,7 @@
 shopt -s nullglob
 set -e
 
-declare -a PODSPECS=(RollbarCommon RollbarNotifier RollbarSwift RollbarDeploys RollbarAUL RollbarCocoaLumberjack)
+declare -a PODSPECS=(RollbarCommon RollbarCrashReport RollbarNotifier RollbarSwift RollbarDeploys RollbarAUL RollbarCocoaLumberjack)
 declare -a OPTIONS=()
 
 function help {
