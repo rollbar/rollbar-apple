@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
-    s.version      = "3.0.0"
     s.name         = "RollbarAUL"
+    s.version      = "3.0.0"
     s.summary      = "Application or client side SDK for interacting with the Rollbar API Server."
     s.description  = <<-DESC
                       Find, fix, and resolve errors with Rollbar.
@@ -10,13 +10,11 @@ Pod::Spec.new do |s|
                    DESC
     s.homepage     = "https://rollbar.com"
     s.license      = { :type => "MIT", :file => "LICENSE" }
-    s.authors      = { "Rollbar" => "support@rollbar.com",
-                       "Andrey Kornich (Wide Spectrum Computing LLC)" => "akornich@gmail.com",
-                       "Matias Pequeno" => "matias.pequeno@rollbar.com" }
+    s.authors      = { "Rollbar" => "support@rollbar.com" }
     s.source       = { :git => "https://github.com/rollbar/rollbar-apple.git",
-                       :tag => "#{s.version}" }
+                       :tag => s.version.to_s }
     s.documentation_url = "https://docs.rollbar.com/docs/apple"
-    s.social_media_url  = "http://twitter.com/rollbar"
+    s.social_media_url  = "https://twitter.com/rollbar"
     s.resource = "rollbar-logo.png"
 
     s.osx.deployment_target = "12.0"
