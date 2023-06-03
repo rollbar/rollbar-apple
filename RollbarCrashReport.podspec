@@ -27,4 +27,6 @@ Pod::Spec.new do |s|
     s.dependency "KSCrash", "~> 1.15"
     s.frameworks = "Foundation"
     s.source_files  = "RollbarNotifier/Sources/RollbarCrashReport/**/*.swift"
+
+    s.swift_versions = "5.5"
 end
