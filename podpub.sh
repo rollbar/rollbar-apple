@@ -15,7 +15,7 @@ function help {
 
 while [ $# -gt 0 ]; do
   case $1 in
-    -v|--verbose)
+    -v|--verbose|--allow-warnings)
       OPTIONS+=($1)
       shift
       ;;
