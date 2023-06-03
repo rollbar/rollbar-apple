@@ -30,4 +30,5 @@ Pod::Spec.new do |s|
     s.source_files  = "RollbarNotifier/Sources/RollbarCrashReport/**/*.swift"
 
     s.swift_versions = "5.5"
+    s.requires_arc = true
 end
