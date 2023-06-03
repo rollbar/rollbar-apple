@@ -14,7 +14,8 @@ Pod::Spec.new do |s|
     s.license      = { :type => "MIT", :file => "LICENSE" }
     s.authors      = { "Rollbar" => "support@rollbar.com" }
     s.source       = { :git => "https://github.com/rollbar/rollbar-apple.git",
-                      :tag => s.version.to_s }
+                       #:tag => s.version.to_s }
+                       :branch => "push_pods" }
     s.documentation_url = "https://docs.rollbar.com/docs/apple"
     s.social_media_url  = "https://twitter.com/rollbar"
 
