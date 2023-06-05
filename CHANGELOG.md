@@ -2,6 +2,10 @@
 
 ## Release Notes
 
+### 3.0.1
+
+- This version brings support for Cocoapods and workarounds a [Cocoapods issue](https://github.com/CocoaPods/CocoaPods/issues/11839) in Xcode 14.3.
+
 ### 3.0.0
 
 - The crash collection and reporting mechanism has been redone from scratch, this now allows us to:
