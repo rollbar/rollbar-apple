@@ -2,6 +2,10 @@
 
 ## Release Notes
 
+### 3.0.1
+
+- This version brings support for Cocoapods and workarounds a [Cocoapods issue](https://github.com/CocoaPods/CocoaPods/issues/11839) in Xcode 14.3.
+
 ### 3.0.0
 
 - The crash collection and reporting mechanism has been redone from scratch, this now allows us to:
@@ -15,9 +19,9 @@
 - The Swift Demo has been greatly expanded and enhanced:
   - Demo: Expanded Swift Demo with more types of crashes.
   - Demo: Prevent optimizer from erasing crashing funcs that result in noops.
-  - Demo: Allow users to change access token from the Demo UI.  
+  - Demo: Allow users to change access token from the Demo UI.
 - A new logging option in the configuration allows users to choose whether they want to drop (default) rate limited API requests, or defer sending them until the next window of time.
-- Cleaned up extremely noisy internal logging. 
+- Cleaned up extremely noisy internal logging.
 
 - Fixed multiple issues while handling rate limited API requests.
 - Fixed an important bug where the library would drop non-200 API responses thus treating all failing requests as retry-immediately.
@@ -77,7 +81,7 @@
 
 ### 2.2.4
 
-- fix:   resolve #161 - Fix type conversion within RollbarAulEntitySnapper.m
+- fix: resolve #161 - Fix type conversion within RollbarAulEntitySnapper.m
 - chore: resolve #109 - ARM64 slice excluded from cocoapods spec?
 
 ### 2.2.3
@@ -101,21 +105,21 @@
 
 ### 2.1.0
 
-- feat:  resolve #141 - Apply developer options of the persisted payload when sending the payload
-- feat:  resolve #133 - Implement RollbarCocoaLumberjack module
-- test:  resolve #134 - Implement unit tests for RollbarCocoaLumberjack
-- fix:   resolve #136 - RollbarPLCrashReporter.init() no longer available
-- test:  resolve #140 - Factor out common SDK unit testing API
+- feat: resolve #141 - Apply developer options of the persisted payload when sending the payload
+- feat: resolve #133 - Implement RollbarCocoaLumberjack module
+- test: resolve #134 - Implement unit tests for RollbarCocoaLumberjack
+- fix: resolve #136 - RollbarPLCrashReporter.init() no longer available
+- test: resolve #140 - Factor out common SDK unit testing API
 - chore: resolve #112 - Upgrade to the latest PLCrashReporter 1.0.1
-- docs:  resolve #138 - Move current SDK documentation from readme.io to the repo
-- docs:  resolve #139 - Document new RollbarCocoaLumberjack module
+- docs: resolve #138 - Move current SDK documentation from readme.io to the repo
+- docs: resolve #139 - Document new RollbarCocoaLumberjack module
 
 ### 2.0.3
 
-- docs:  resolve #122 - Update RollbarCommon public API doc comments so they are properly rendered by Xcode Quick Help
-- docs:  resolve #124 - Update RollbarDeploys public API doc comments so they are properly rendered by Xcode Quick Help
-- docs:  resolve #126 - Update RollbarSwift, RollbarAUL, RollbarPLCrashReporter, and RollbarKSCrash public API doc comments so they are properly rendered by Xcode Quick Help
-- docs:  resolve #127 - Update RollbarNotifier public API doc comments so they are properly rendered by Xcode Quick Help
+- docs: resolve #122 - Update RollbarCommon public API doc comments so they are properly rendered by Xcode Quick Help
+- docs: resolve #124 - Update RollbarDeploys public API doc comments so they are properly rendered by Xcode Quick Help
+- docs: resolve #126 - Update RollbarSwift, RollbarAUL, RollbarPLCrashReporter, and RollbarKSCrash public API doc comments so they are properly rendered by Xcode Quick Help
+- docs: resolve #127 - Update RollbarNotifier public API doc comments so they are properly rendered by Xcode Quick Help
 - chore: resolve #114 - Consolidate destination parameters for samples
 - chore: resolve #113 - Consolidate destination parameters for unit tests
 
