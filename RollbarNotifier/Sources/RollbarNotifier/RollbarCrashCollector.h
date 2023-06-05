@@ -1,9 +1,10 @@
 #ifndef RollbarCrashCollector_h
 #define RollbarCrashCollector_h
 
+#import "KSCrashInstallation.h"
+
 @import Foundation;
 @import RollbarCommon;
-@import KSCrash_Installations;
 
 NS_ASSUME_NONNULL_BEGIN
 

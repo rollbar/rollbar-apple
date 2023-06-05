@@ -33,6 +33,7 @@
         self->_nextServerWindowStart = nil;
         self->_nextEarliestPost = [NSDate date];
     }
+    return self;
 }
 
 - (instancetype)initWithDestinationID:(nonnull NSString *)destinationID

@@ -2,7 +2,7 @@
 shopt -s nullglob
 set -e
 
-declare -a PODSPECS=(RollbarCommon RollbarNotifier RollbarSwift RollbarDeploys RollbarAUL RollbarCocoaLumberjack)
+declare -a PODSPECS=(RollbarCommon RollbarCrashReport RollbarNotifier RollbarSwift RollbarDeploys RollbarAUL RollbarCocoaLumberjack)
 declare -a OPTIONS=()
 
 function help {
@@ -15,7 +15,7 @@ function help {
 
 while [ $# -gt 0 ]; do
   case $1 in
-    -v|--verbose)
+    -v|--verbose|--allow-warnings)
       OPTIONS+=($1)
       shift
       ;;
@@ -34,13 +34,15 @@ while [ $# -gt 0 ]; do
 done
 
 if [ -z ${TAG:=$(git tag --points-at HEAD)} ]; then
-  echo "Error: Couldn't figure out git tag, try providing one with --tag."
-  exit 1
-fi
+  echo "WARN: Couldn't figure out git tag, only lint is available."
 
-for PODSPEC in ${PODSPECS[@]}; do
-  #pod spec lint $(IFS=$' '; echo ${OPTIONS[*]}) $PODSPEC.podspec
-  pod trunk push $(IFS=$' '; echo ${OPTIONS[*]}) $PODSPEC.podspec
-done
+  for PODSPEC in ${PODSPECS[@]}; do
+    pod spec lint $(IFS=$' '; echo ${OPTIONS[*]}) $PODSPEC.podspec
+  done
+else
+  for PODSPEC in ${PODSPECS[@]}; do
+    pod trunk push $(IFS=$' '; echo ${OPTIONS[*]}) $PODSPEC.podspec
+  done
+fi
 
 exit 0
