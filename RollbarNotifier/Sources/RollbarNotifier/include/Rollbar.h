@@ -546,6 +546,6 @@
 // to the end of your: -(BOOL)application:didFinishLaunchingWithOptions: method in AppDelegate.
 // Make sure that the [RollbarInfrastructure sharedInstance] was already configured as early as possible within the:
 // -(BOOL)application:didFinishLaunchingWithOptions: method in AppDelegate.
-static void uncaughtExceptionHandler(NSException * _Nonnull exception);
+extern void uncaughtExceptionHandler(NSException * _Nonnull exception);
 
 #endif //Rollbar_h
