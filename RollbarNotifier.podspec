@@ -31,5 +31,6 @@ Pod::Spec.new do |s|
     s.dependency "RollbarCrashReport", "~> #{s.version}"
     s.dependency "KSCrash", "~> 1.15"
 
+    s.swift_versions = "5.5"
     s.requires_arc = true
 end

@@ -578,7 +578,6 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
 
     NSDictionary<NSString *, NSString *> *result = nil;
     char *sqliteErrorMessage;
-    NSDictionary<NSString *, NSString *> *selectedRow = nil;
     int sqlResult = sqlite3_exec(self->_db, [sql UTF8String], callback, &result, &sqliteErrorMessage);
     if (sqlResult != SQLITE_OK) {
         

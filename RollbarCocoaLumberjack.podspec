@@ -32,5 +32,6 @@ Pod::Spec.new do |s|
     s.dependency "RollbarNotifier", "~> #{s.version}"
     s.dependency "CocoaLumberjack", "~> 3.7.4"
 
+    s.swift_versions = "5.5"
     s.requires_arc = true
 end

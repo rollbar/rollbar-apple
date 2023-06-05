@@ -27,6 +27,7 @@ Pod::Spec.new do |s|
     s.dependency "RollbarCommon", "~> #{s.version}"
     s.dependency "RollbarNotifier", "~> #{s.version}"
 
+    s.swift_versions = "5.5"
     s.requires_arc = true
     s.xcconfig = {
       "USE_HEADERMAP" => "NO",

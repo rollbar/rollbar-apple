@@ -5,9 +5,29 @@
 
 @import RollbarCrashReport;
 
-NS_ASSUME_NONNULL_BEGIN
+static bool isDebuggerAttached() {
+    static bool attached = false;
 
-static bool isDebuggerAttached();
+    static dispatch_once_t token;
+    dispatch_once(&token, ^{
+        struct kinfo_proc info;
+        size_t info_size = sizeof(info);
+        int name[4] = { CTL_KERN, KERN_PROC, KERN_PROC_PID, getpid() };
+
+        if (sysctl(name, 4, &info, &info_size, NULL, 0) == -1) {
+            RBErr(@"Error checking for debugger via sysctl(): %s", strerror(errno));
+        } else if (info.kp_proc.p_flag & P_TRACED) {
+            RBErr(@"Found a debugger attached");
+            attached = true;
+        }
+    });
+
+    return attached;
+}
+
+#pragma mark -
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface RollbarCrashLoggingFilter : NSObject <KSCrashReportFilter>
 @end
@@ -71,27 +91,5 @@ static bool isDebuggerAttached();
 }
 
 @end
-
-#pragma mark -
-
-static bool isDebuggerAttached() {
-    static bool attached = false;
-
-    static dispatch_once_t token;
-    dispatch_once(&token, ^{
-        struct kinfo_proc info;
-        size_t info_size = sizeof(info);
-        int name[4] = { CTL_KERN, KERN_PROC, KERN_PROC_PID, getpid() };
-
-        if (sysctl(name, 4, &info, &info_size, NULL, 0) == -1) {
-            RBErr(@"Error checking for debugger via sysctl(): %s", strerror(errno));
-        } else if (info.kp_proc.p_flag & P_TRACED) {
-            RBErr(@"Found a debugger attached");
-            attached = true;
-        }
-    });
-
-    return attached;
-}
 
 NS_ASSUME_NONNULL_END

@@ -71,7 +71,7 @@
 
     __block NSHTTPURLResponse *httpResponse = nil;
 
-    dispatch_semaphore_t sem = dispatch_semaphore_create(NULL);
+    dispatch_semaphore_t sem = dispatch_semaphore_create(0);
 
     NSURLSession *session = [NSURLSession sharedSession];
 

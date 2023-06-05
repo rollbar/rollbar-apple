@@ -28,5 +28,6 @@ Pod::Spec.new do |s|
 
     s.framework = "Foundation"
 
+    s.swift_versions = "5.5"
     s.requires_arc = true
 end
