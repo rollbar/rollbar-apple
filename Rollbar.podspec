@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
                      :tag => s.version.to_s }
 
   s.documentation_url = "https://docs.rollbar.com/docs/apple"
-  s.social_media_url  = "http://twitter.com/rollbar"
+  s.social_media_url  = "https://twitter.com/rollbar"
   s.resource = "rollbar-logo.png"
 
   s.osx.deployment_target = "12.0"
