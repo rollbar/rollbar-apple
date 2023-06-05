@@ -2,6 +2,10 @@
 
 ## Release Notes
 
+### 3.0.2
+
+- Import sqlite3 as a system header to prevent conflicts with Flutter's sqlite3 platform-specific libraries.
+
 ### 3.0.1
 
 - This version brings support for Cocoapods and workarounds a [Cocoapods issue](https://github.com/CocoaPods/CocoaPods/issues/11839) in Xcode 14.3.
