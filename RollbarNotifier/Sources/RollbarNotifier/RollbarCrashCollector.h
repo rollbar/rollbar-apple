@@ -1,7 +1,11 @@
 #ifndef RollbarCrashCollector_h
 #define RollbarCrashCollector_h
 
-#import "KSCrashInstallation.h"
+#if __has_include("KSCrash-umbrella.h")
+@import KSCrash;
+#else
+@import KSCrash_Installations;
+#endif
 
 @import Foundation;
 @import RollbarCommon;
