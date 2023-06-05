@@ -42,6 +42,7 @@ if [ -z ${TAG:=$(git tag --points-at HEAD)} ]; then
 else
   for PODSPEC in ${PODSPECS[@]}; do
     pod trunk push $(IFS=$' '; echo ${OPTIONS[*]}) $PODSPEC.podspec
+    pod repo update
   done
 fi
 
