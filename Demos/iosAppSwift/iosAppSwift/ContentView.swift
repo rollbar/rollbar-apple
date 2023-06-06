@@ -10,6 +10,7 @@ enum ExampleError: Error {
 }
 
 struct ContentView: View {
+    @AppStorage("rollbar_endpoint") var endpoint = "https://api.rollbar.com/api/1/item/"
     @AppStorage("rollbar_post_client_item_access_token") var accessToken = ""
 
     let example = Example()
@@ -20,16 +21,22 @@ struct ContentView: View {
             .tint(.blue)
     }
 
-    func restartIfValid(_ accessToken: String) {
-        guard accessToken.isValid else { return }
+    func accessTokenIsValid(_ accessToken: String) -> Bool {
+        #"(^[a-f0-9]{32}$)"#.matches(in: accessToken)?.count == 1
+    }
+
+    func restartIfValid(_ endpoint: String, _ accessToken: String) {
+        guard accessTokenIsValid(accessToken) else { return }
 
         let config = Rollbar.configuration().mutableCopy()
+        config.destination.endpoint = endpoint
         config.destination.accessToken = accessToken
         Rollbar.update(withConfiguration: config)
 
-        Rollbar.infoMessage("Rollbar Apple SDK access token changed.")
+        Rollbar.infoMessage("Rollbar Apple SDK access token and/or endpoint changed.")
 
-        print("Rollbar Apple SDK access token changed to \(accessToken)")
+        print("[Rollbar Demo] Updated endpoint: \(endpoint)")
+        print("[Rollbar Demo] Updated access token: \(accessToken)")
     }
 
     var body: some View {
@@ -38,13 +45,22 @@ struct ContentView: View {
                 .font(.title)
                 .padding(.bottom)
 
+            TextField("endpoint", text: $endpoint)
+                .foregroundColor(.accentColor)
+                .multilineTextAlignment(.center)
+                .textFieldStyle(.roundedBorder)
+                .textContentType(.URL)
+                .textCase(.lowercase)
+                .lineLimit(1)
+                .onChange(of: endpoint) { endpoint in restartIfValid(endpoint, accessToken) }
+
             TextField("post client item access token", text: $accessToken)
-                .foregroundColor(accessToken.isValid ? .accentColor : .red)
+                .foregroundColor(accessTokenIsValid(accessToken) ? .accentColor : .red)
                 .textFieldStyle(.roundedBorder)
                 .multilineTextAlignment(.center)
                 .textCase(.lowercase)
                 .lineLimit(1)
-                .onChange(of: accessToken, perform: restartIfValid)
+                .onChange(of: accessToken) { accessToken in restartIfValid(endpoint, accessToken) }
                 .padding(.bottom)
 
             ScrollView {
