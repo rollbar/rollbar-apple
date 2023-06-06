@@ -323,7 +323,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
                       );
         
         dto = RollbarMutableLoggingOptions();
-        XCTAssertTrue(dto.logLevel == .info,
+        XCTAssertTrue(dto.logLevel == .debug,
                       "Proper default log level"
                       );
         XCTAssertTrue(dto.crashLevel == .error,

@@ -6,11 +6,11 @@
 #pragma mark - RollbarLevel
 
 typedef NS_ENUM(NSUInteger, RollbarLevel) {
-    RollbarLevel_Info,
     RollbarLevel_Debug,
+    RollbarLevel_Info,
     RollbarLevel_Warning,
-    RollbarLevel_Critical,
-    RollbarLevel_Error
+    RollbarLevel_Error,
+    RollbarLevel_Critical
 };
 
 #pragma mark - RollbarLevel utility
@@ -22,11 +22,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Converts RollbarLevel enum value to its string equivalent or default string.
 /// @param value RollbarLevel enum value
-+ (NSString *) RollbarLevelToString:(RollbarLevel)value;
++ (NSString *)rollbarLevelToString:(RollbarLevel)value;
 
 /// Converts string value into its  RollbarLevel enum value equivalent or default enum value.
 /// @param value input string
-+ (RollbarLevel) RollbarLevelFromString:(nullable NSString *)value;
++ (RollbarLevel)rollbarLevelFromString:(nullable NSString *)value;
 
 @end
 

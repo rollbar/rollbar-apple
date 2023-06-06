@@ -312,7 +312,7 @@
                   );
     
     dto = [[RollbarMutableLoggingOptions alloc] init];
-    XCTAssertTrue(dto.logLevel == RollbarLevel_Info,
+    XCTAssertTrue(dto.logLevel == RollbarLevel_Debug,
                   @"Proper default log level"
                   );
     XCTAssertTrue(dto.crashLevel == RollbarLevel_Error,

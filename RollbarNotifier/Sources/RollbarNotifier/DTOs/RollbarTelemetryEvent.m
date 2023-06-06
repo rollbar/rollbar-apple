@@ -32,7 +32,7 @@ static NSString * const DFK_BODY = @"body";
     RollbarTelemetryBody *body = [RollbarTelemetryEvent createTelemetryBodyWithType:type
                                                                                data:nil];
     self = [self initWithDictionary:@{
-        DFK_LEVEL:[RollbarLevelUtil RollbarLevelToString:level],
+        DFK_LEVEL:[RollbarLevelUtil rollbarLevelToString:level],
         DFK_TYPE:[RollbarTelemetryTypeUtil RollbarTelemetryTypeToString:type],
         DFK_SOURCE:[RollbarSourceUtil RollbarSourceToString:source],
         DFK_TIMESTAMP:[NSNumber numberWithDouble:round(timestamp)],
@@ -48,7 +48,7 @@ static NSString * const DFK_BODY = @"body";
     NSTimeInterval timestamp = NSDate.date.timeIntervalSince1970 * 1000.0;
     RollbarTelemetryType type = [RollbarTelemetryEvent deriveTypeFromBody:body];
     self = [self initWithDictionary:@{
-        DFK_LEVEL:[RollbarLevelUtil RollbarLevelToString:level],
+        DFK_LEVEL:[RollbarLevelUtil rollbarLevelToString:level],
         DFK_TYPE:[RollbarTelemetryTypeUtil RollbarTelemetryTypeToString:type],
         DFK_SOURCE:[RollbarSourceUtil RollbarSourceToString:source],
         DFK_TIMESTAMP:[NSNumber numberWithDouble:round(timestamp)],
@@ -69,7 +69,7 @@ static NSString * const DFK_BODY = @"body";
 -(RollbarLevel)level {
 
     NSString *result = [self getDataByKey:DFK_LEVEL];
-    return [RollbarLevelUtil RollbarLevelFromString:result];
+    return [RollbarLevelUtil rollbarLevelFromString:result];
 }
 
 #pragma mark type
