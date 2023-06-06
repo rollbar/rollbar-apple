@@ -13,6 +13,7 @@ struct iosAppSwiftApp: App {
 }
 
 class AppDelegate: NSObject, UIApplicationDelegate {
+    @AppStorage("rollbar_endpoint") var endpoint = "https://api.rollbar.com/api/1/item/"
     @AppStorage("rollbar_post_client_item_access_token") var accessToken = ""
 
     func application(
@@ -29,11 +30,15 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             withAccessToken: accessToken,
             environment: environment)
 
+        // The config endpoint already defaults to `api.rollbar.com` so setting it is unnecessary.
+        // This is an implementation detail of this application and should very rarely be needed.
+        config.destination.endpoint = endpoint
+
         config.loggingOptions.codeVersion = codeVersion
 
         // Optionally defined whether rate limited occurrences should be dropped or
         // kept in a queue. Defaults to drop.
-        config.loggingOptions.rateLimitBehavior = .queue
+        config.loggingOptions.rateLimitBehavior = .drop // or .queue
 
         // Optionally anonymize the IP address
         //config.loggingOptions.captureIp = RollbarCaptureIpType.anonymize

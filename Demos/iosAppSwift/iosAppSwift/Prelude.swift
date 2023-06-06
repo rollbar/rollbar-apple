@@ -1,11 +1,5 @@
 import Foundation
 
-extension String {
-    var isValid: Bool {
-        #"(^[a-f0-9]{32}$)"#.matches(in: self)?.count == 1
-    }
-}
-
 extension StringProtocol {
 
     /// Returns an array of `Substring`s by matching the given `String` using
