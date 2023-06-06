@@ -213,7 +213,7 @@ static dispatch_queue_t fileQueue = nil;
     }
     
     NSTimeInterval timestamp = NSDate.date.timeIntervalSince1970 * 1000.0;
-    NSString *telemetryLvl = [RollbarLevelUtil   RollbarLevelToString:level];
+    NSString *telemetryLvl = [RollbarLevelUtil rollbarLevelToString:level];
     NSString *telemetryType = [RollbarTelemetryTypeUtil RollbarTelemetryTypeToString:type];
     NSDictionary *info = @{@"level": telemetryLvl,
                            @"type": telemetryType,
@@ -336,7 +336,7 @@ static dispatch_queue_t fileQueue = nil;
             [RollbarTelemetryEvent createTelemetryBodyWithType:eventType data:dataItem[@"body"]];
         if (nil != eventBody) {
             
-            RollbarLevel eventLevel = [RollbarLevelUtil RollbarLevelFromString:dataItem[@"level"]];
+            RollbarLevel eventLevel = [RollbarLevelUtil rollbarLevelFromString:dataItem[@"level"]];
             RollbarSource eventSource = [RollbarSourceUtil RollbarSourceFromString:dataItem[@"source"]];
             RollbarTelemetryEvent *event = [[RollbarTelemetryEvent alloc] initWithLevel:eventLevel
                                                                                  source:eventSource

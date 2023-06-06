@@ -2,7 +2,7 @@
 
 #pragma mark - constants
 
-static RollbarLevel const DEFAULT_LOG_LEVEL = RollbarLevel_Info;
+static RollbarLevel const DEFAULT_LOG_LEVEL = RollbarLevel_Debug;
 static RollbarLevel const DEFAULT_CRASH_LEVEL = RollbarLevel_Error;
 static NSUInteger const DEFAULT_MAX_REPORTS_PER_MINUTE = 60;
 static RollbarRateLimitBehavior const DEFAULT_RATE_LIMIT_BEHAVIOR = RollbarRateLimitBehavior_Drop;
@@ -41,8 +41,8 @@ static NSString * const DFK_REQUEST_ID = @"requestId";
                        requestId:(nullable NSString *)requestId
 {
     self = [super initWithDictionary:@{
-        DFK_LOG_LEVEL: [RollbarLevelUtil RollbarLevelToString:logLevel],
-        DFK_CRASH_LEVEL: [RollbarLevelUtil RollbarLevelToString:crashLevel],
+        DFK_LOG_LEVEL: [RollbarLevelUtil rollbarLevelToString:logLevel],
+        DFK_CRASH_LEVEL: [RollbarLevelUtil rollbarLevelToString:crashLevel],
         DFK_MAX_REPORTS_PER_MINUTE: [NSNumber numberWithUnsignedInteger:maximumReportsPerMinute],
         DFK_RATE_LIMIT_BEHAVIOR: [NSNumber numberWithBool:rateLimitBehavior],
         DFK_IP_CAPTURE_TYPE: [RollbarCaptureIpTypeUtil CaptureIpTypeToString:DEFAULT_IP_CAPTURE_TYPE],
@@ -142,12 +142,12 @@ static NSString * const DFK_REQUEST_ID = @"requestId";
 
 - (RollbarLevel)logLevel {
     NSString *logLevelString = [self safelyGetStringByKey:DFK_LOG_LEVEL];
-    return [RollbarLevelUtil RollbarLevelFromString:logLevelString];
+    return [RollbarLevelUtil rollbarLevelFromString:logLevelString];
 }
 
 - (RollbarLevel)crashLevel {
     NSString *logLevelString = [self safelyGetStringByKey:DFK_CRASH_LEVEL];
-    return [RollbarLevelUtil RollbarLevelFromString:logLevelString];
+    return [RollbarLevelUtil rollbarLevelFromString:logLevelString];
 }
 
 - (NSUInteger)maximumReportsPerMinute {
@@ -202,12 +202,12 @@ static NSString * const DFK_REQUEST_ID = @"requestId";
 @dynamic requestId;
 
 - (void)setLogLevel:(RollbarLevel)level {
-    NSString *levelString = [RollbarLevelUtil RollbarLevelToString:level];
+    NSString *levelString = [RollbarLevelUtil rollbarLevelToString:level];
     [self setString:levelString forKey:DFK_LOG_LEVEL];
 }
 
 - (void)setCrashLevel:(RollbarLevel)level {
-    NSString *levelString = [RollbarLevelUtil RollbarLevelToString:level];
+    NSString *levelString = [RollbarLevelUtil rollbarLevelToString:level];
     [self setString:levelString forKey:DFK_CRASH_LEVEL];
 }
 

@@ -52,11 +52,11 @@ static NSString * const DFK_NOTIFIER = @"notifier";
 
 -(RollbarLevel)level {
     NSString *result = [self safelyGetStringByKey:DFK_LEVEL];
-    return [RollbarLevelUtil RollbarLevelFromString:result];
+    return [RollbarLevelUtil rollbarLevelFromString:result];
 }
 
 -(void)setLevel:(RollbarLevel)value {
-    [self setData:[RollbarLevelUtil RollbarLevelToString:value]
+    [self setData:[RollbarLevelUtil rollbarLevelToString:value]
             byKey:DFK_LEVEL];
 }
 
