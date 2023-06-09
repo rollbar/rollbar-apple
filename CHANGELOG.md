@@ -2,6 +2,13 @@
 
 ## Release Notes
 
+### 3.0.3
+
+- The sequencing of logging levels has been revised to align with industry-standard priority order.
+  - Previous configuration listed logging levels (from lower to higher priority) as: Info, Debug, Warning, Critical, Error.
+  - The updated sequence is now: Debug, Info, Warning, Error, Critical.
+- Users can now modify the target endpoint URL for the SDK directly from the Swift Demo's user interface.
+
 ### 3.0.2
 
 - Import sqlite3 as a system header to prevent conflicts with Flutter's sqlite3 platform-specific libraries.
