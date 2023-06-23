@@ -9,4 +9,4 @@ target 'RollbarCocoapodsSwift' do
   #pod 'RollbarCocoaLumberjack', :path => '/Users/matux/code/Rollbar/rollbar-apple'
   #pod 'RollbarDeploys', :path => '/Users/matux/code/Rollbar/rollbar-apple'
 end
-1
+

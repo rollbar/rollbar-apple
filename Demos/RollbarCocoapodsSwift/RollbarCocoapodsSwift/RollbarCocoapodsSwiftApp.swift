@@ -1,6 +1,6 @@
 import SwiftUI
 //import RollbarCommon
-//import RollbarCrashReport
+import RollbarCrashReport
 import RollbarNotifier
 //import RollbarDeploys
 //import RollbarCocoaLumberjack
