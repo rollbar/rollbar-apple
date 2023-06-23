@@ -1,0 +1,4 @@
+{
+  "ios.useFrameworks": "static",
+  "expo.jsEngine": "hermes"
+}
