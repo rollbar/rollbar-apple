@@ -62,13 +62,13 @@ PODS:
     - KSCrash/Reporting/Tools
   - KSCrash/Reporting/Tools (1.15.27):
     - KSCrash/Recording
-  - RollbarCommon (3.0.1)
-  - RollbarCrashReport (3.0.1):
+  - RollbarCommon (3.0.3)
+  - RollbarCrashReport (3.0.3):
     - KSCrash (~> 1.15)
-  - RollbarNotifier (3.0.1):
+  - RollbarNotifier (3.0.3):
     - KSCrash (~> 1.15)
-    - RollbarCommon (~> 3.0.1)
-    - RollbarCrashReport (~> 3.0.1)
+    - RollbarCommon (~> 3.0.3)
+    - RollbarCrashReport (~> 3.0.3)
 
 DEPENDENCIES:
   - RollbarNotifier (~> 3.0.1)
@@ -82,9 +82,9 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   KSCrash: c97c661a989f4d1562e139b8a12bc77a8f08f76e
-  RollbarCommon: 447d74c2350f27d104cd42bd5a0cb5a590f16c5b
-  RollbarCrashReport: f20bdd4f210b69f09b5b060dfdb285f47a34b649
-  RollbarNotifier: 3b2528cb69e60c1ed2359010cd9d4b84cf665ac1
+  RollbarCommon: 0a27d31077d6748fc9b1205935a286e4638693b8
+  RollbarCrashReport: 42639f9b5cf52dd9800a4fdd0cc0c340dc2671fa
+  RollbarNotifier: 83cb331853027736df859dbfe6bc55fa5a75cf1a
 
 PODFILE CHECKSUM: e7eaa6c1417a607cfb40845f8128bd0fdadb5c88
 
