@@ -500,7 +500,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rollbar.app.cocoapods.RollbarCocoapodsSwift;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rollbar.apple.demo.cocoapods;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -531,7 +531,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rollbar.app.cocoapods.RollbarCocoapodsSwift;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rollbar.apple.demo.cocoapods;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -550,7 +550,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rollbar.app.cocoapods.RollbarCocoapodsSwiftTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rollbar.apple.demo.cocoapods;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
@@ -570,7 +570,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rollbar.app.cocoapods.RollbarCocoapodsSwiftTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rollbar.apple.demo.cocoapods;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
@@ -588,7 +588,7 @@
 				DEVELOPMENT_TEAM = 9P5JVC2F34;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rollbar.app.cocoapods.RollbarCocoapodsSwiftUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rollbar.apple.demo.cocoapods;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
@@ -606,7 +606,7 @@
 				DEVELOPMENT_TEAM = 9P5JVC2F34;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rollbar.app.cocoapods.RollbarCocoapodsSwiftUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rollbar.apple.demo.cocoapods;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
