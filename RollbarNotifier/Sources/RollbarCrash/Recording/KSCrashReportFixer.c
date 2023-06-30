@@ -27,10 +27,6 @@
 #include "KSCrashReportFields.h"
 #include "KSSystemCapabilities.h"
 #include "KSJSONCodec.h"
-#include "KSDemangle_CPP.h"
-#if KSCRASH_HAS_SWIFT
-#include "KSDemangle_Swift.h"
-#endif
 #include "KSDate.h"
 #include "KSLogger.h"
 
@@ -47,15 +43,6 @@ static char* datePaths[][MAX_DEPTH] =
     {"", KSCrashField_RecrashReport, KSCrashField_Report, KSCrashField_Timestamp},
 };
 static int datePathsCount = sizeof(datePaths) / sizeof(*datePaths);
-
-static char* demanglePaths[][MAX_DEPTH] =
-{
-    {"", KSCrashField_Crash, KSCrashField_Threads, "", KSCrashField_Backtrace, KSCrashField_Contents, "", KSCrashField_SymbolName},
-    {"", KSCrashField_RecrashReport, KSCrashField_Crash, KSCrashField_Threads, "", KSCrashField_Backtrace, KSCrashField_Contents, "", KSCrashField_SymbolName},
-    {"", KSCrashField_Crash, KSCrashField_Error, KSCrashField_CPPException, KSCrashField_Name},
-    {"", KSCrashField_RecrashReport, KSCrashField_Crash, KSCrashField_Error, KSCrashField_CPPException, KSCrashField_Name},
-};
-static int demanglePathsCount = sizeof(demanglePaths) / sizeof(*demanglePaths);
 
 static char* versionPaths[][MAX_DEPTH] =
 {
@@ -146,11 +133,6 @@ static bool matchesMinVersion(FixupContext* context, int major, int minor, int p
     return result;
 }
 
-static bool shouldDemangle(FixupContext* context, const char* name)
-{
-    return matchesAPath(context, name, demanglePaths, demanglePathsCount);
-}
-
 static bool shouldFixDate(FixupContext* context, const char* name)
 {
     return matchesAPath(context, name, datePaths, datePathsCount);
@@ -218,26 +200,7 @@ static int onStringElement(const char* const name,
 {
     FixupContext* context = (FixupContext*)userData;
     const char* stringValue = value;
-    char* demangled = NULL;
-    if(shouldDemangle(context, name))
-    {
-        demangled = ksdm_demangleCPP(value);
-#if KSCRASH_HAS_SWIFT
-        if(demangled == NULL)
-        {
-            demangled = ksdm_demangleSwift(value);
-        }
-#endif
-        if(demangled != NULL)
-        {
-            stringValue = demangled;
-        }
-    }
     int result = ksjson_addStringElement(context->encodeContext, name, stringValue, (int)strlen(stringValue));
-    if(demangled != NULL)
-    {
-        free(demangled);
-    }
     if(shouldSaveVersion(context, name))
     {
         memset(context->reportVersionComponents, 0, sizeof(context->reportVersionComponents));

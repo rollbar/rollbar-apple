@@ -33,14 +33,6 @@
 
 typedef enum
 {
-    KSCrashDemangleLanguageNone = 0,
-    KSCrashDemangleLanguageCPlusPlus = 1,
-    KSCrashDemangleLanguageSwift = 2,
-    KSCrashDemangleLanguageAll = ~1
-} KSCrashDemangleLanguage;
-
-typedef enum
-{
     KSCDeleteNever,
     KSCDeleteOnSucess,
     KSCDeleteAlways
@@ -175,9 +167,6 @@ typedef enum
  *  This is primarily for debugging purposes.
  */
 @property(nonatomic,readwrite,assign) BOOL printPreviousLog;
-
-/** Which languages to demangle when getting stack traces (default KSCrashDemangleLanguageAll) */
-@property(nonatomic,readwrite,assign) KSCrashDemangleLanguage demangleLanguages;
 
 /** Exposes the uncaughtExceptionHandler if set from KSCrash. Is nil if debugger is running. **/
 @property (nonatomic, assign) NSUncaughtExceptionHandler *uncaughtExceptionHandler;
