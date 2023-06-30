@@ -11,18 +11,30 @@ let package = Package(
         .watchOS(.v8),
     ],
     products: [
-        .library(name: "RollbarNotifier", targets: ["RollbarNotifier", "RollbarCrashReport"]),
+        .library(
+            name: "RollbarNotifier",
+            targets: ["RollbarCrash", "RollbarNotifier", "RollbarCrashReport"]
+        ),
     ],
     dependencies: [
         .package(path: "../RollbarCommon"),
         .package(path: "../UnitTesting"),
-        .package(url: "https://github.com/kstenerud/KSCrash.git", from: "1.15.26"),
     ],
     targets: [
         .target(
+            name: "RollbarCrash",
+            dependencies: [],
+            path: "Sources/RollbarCrash",
+            publicHeadersPath: "include",
+            cxxSettings: [
+                .define("GCC_ENABLE_CPP_EXCEPTIONS", to: "YES"),
+                .headerSearchPath("./**")
+            ]
+        ),
+        .target(
             name: "RollbarCrashReport",
             dependencies: [
-                "KSCrash",
+                "RollbarCrash"
             ],
             path: "Sources/RollbarCrashReport"
         ),
@@ -30,7 +42,7 @@ let package = Package(
             name: "RollbarNotifier",
             dependencies: [
                 "RollbarCommon",
-                "KSCrash",
+                "RollbarCrash",
                 "RollbarCrashReport"
             ],
             publicHeadersPath: "include",
@@ -62,6 +74,7 @@ let package = Package(
         ),
     ],
     swiftLanguageVersions: [
-        SwiftVersion.v5,
-    ]
+        SwiftVersion.v5
+    ],
+    cxxLanguageStandard: .cxx17
 )

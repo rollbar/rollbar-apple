@@ -1,8 +1,5 @@
-#if canImport(KSCrash_Reporting_Filters)
-import KSCrash_Reporting_Filters
-#else
-import KSCrash
-#endif
+import Foundation
+import RollbarCrash
 
 /// A `KSCrash` filter that produces richer diagnostic information by extracting data from a raw
 /// crash hashmap that's not usually made available in Apple crash reports.

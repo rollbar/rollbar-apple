@@ -1,7 +1,8 @@
+@import Darwin.sys.sysctl;
+
 #import "Rollbar.h"
 #import "RollbarCrashCollector.h"
 #import "RollbarInternalLogging.h"
-#import "KSCrashReportFilter.h"
 
 @import RollbarCrashReport;
 
