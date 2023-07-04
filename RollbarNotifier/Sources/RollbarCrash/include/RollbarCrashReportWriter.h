@@ -1,5 +1,5 @@
 //
-//  KSCrashReportWriter.h
+//  RollbarCrashReportWriter.h
 //
 //  Created by Karl Stenerud on 2012-01-28.
 //
@@ -30,8 +30,8 @@
  */
 
 
-#ifndef HDR_KSCrashReportWriter_h
-#define HDR_KSCrashReportWriter_h
+#ifndef HDR_RollbarCrashReportWriter_h
+#define HDR_RollbarCrashReportWriter_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -45,7 +45,7 @@ extern "C" {
 /**
  * Encapsulates report writing functionality.
  */
-typedef struct KSCrashReportWriter
+typedef struct RollbarCrashReportWriter
 {
     /** Add a boolean element to the report.
      *
@@ -55,7 +55,7 @@ typedef struct KSCrashReportWriter
      *
      * @param value The value to add.
      */
-    void (*addBooleanElement)(const struct KSCrashReportWriter* writer,
+    void (*addBooleanElement)(const struct RollbarCrashReportWriter* writer,
                               const char* name,
                               bool value);
 
@@ -67,7 +67,7 @@ typedef struct KSCrashReportWriter
      *
      * @param value The value to add.
      */
-    void (*addFloatingPointElement)(const struct KSCrashReportWriter* writer,
+    void (*addFloatingPointElement)(const struct RollbarCrashReportWriter* writer,
                                     const char* name,
                                     double value);
 
@@ -79,7 +79,7 @@ typedef struct KSCrashReportWriter
      *
      * @param value The value to add.
      */
-    void (*addIntegerElement)(const struct KSCrashReportWriter* writer,
+    void (*addIntegerElement)(const struct RollbarCrashReportWriter* writer,
                               const char* name,
                               int64_t value);
 
@@ -91,7 +91,7 @@ typedef struct KSCrashReportWriter
      *
      * @param value The value to add.
      */
-    void (*addUIntegerElement)(const struct KSCrashReportWriter* writer,
+    void (*addUIntegerElement)(const struct RollbarCrashReportWriter* writer,
                                const char* name,
                                uint64_t value);
 
@@ -103,7 +103,7 @@ typedef struct KSCrashReportWriter
      *
      * @param value The value to add.
      */
-    void (*addStringElement)(const struct KSCrashReportWriter* writer,
+    void (*addStringElement)(const struct RollbarCrashReportWriter* writer,
                              const char* name,
                              const char* value);
 
@@ -115,7 +115,7 @@ typedef struct KSCrashReportWriter
      *
      * @param filePath The path to the file containing the value to add.
      */
-    void (*addTextFileElement)(const struct KSCrashReportWriter* writer,
+    void (*addTextFileElement)(const struct RollbarCrashReportWriter* writer,
                                const char* name,
                                const char* filePath);
 
@@ -127,7 +127,7 @@ typedef struct KSCrashReportWriter
      *
      * @param filePath The path to the file containing the value to add.
      */
-    void (*addTextFileLinesElement)(const struct KSCrashReportWriter* writer,
+    void (*addTextFileLinesElement)(const struct RollbarCrashReportWriter* writer,
                                     const char* name,
                                     const char* filePath);
 
@@ -141,7 +141,7 @@ typedef struct KSCrashReportWriter
      *
      * @param closeLastContainer If false, do not close the last container.
      */
-    void (*addJSONFileElement)(const struct KSCrashReportWriter* writer,
+    void (*addJSONFileElement)(const struct RollbarCrashReportWriter* writer,
                                const char* name,
                                const char* filePath,
                                const bool closeLastContainer);
@@ -156,7 +156,7 @@ typedef struct KSCrashReportWriter
      *
      * @paramn length The length of the data.
      */
-    void (*addDataElement)(const struct KSCrashReportWriter* writer,
+    void (*addDataElement)(const struct RollbarCrashReportWriter* writer,
                            const char* name,
                            const char* value,
                            const int length);
@@ -167,7 +167,7 @@ typedef struct KSCrashReportWriter
      *
      * @param name The name to give this element.
      */
-    void (*beginDataElement)(const struct KSCrashReportWriter* writer,
+    void (*beginDataElement)(const struct RollbarCrashReportWriter* writer,
                              const char* name);
 
     /** Append hex encoded data to the current data element in the report.
@@ -178,7 +178,7 @@ typedef struct KSCrashReportWriter
      *
      * @paramn length The length of the data.
      */
-    void (*appendDataElement)(const struct KSCrashReportWriter* writer,
+    void (*appendDataElement)(const struct RollbarCrashReportWriter* writer,
                               const char* value,
                               const int length);
 
@@ -186,7 +186,7 @@ typedef struct KSCrashReportWriter
      *
      * @param writer This writer.
      */
-    void (*endDataElement)(const struct KSCrashReportWriter* writer);
+    void (*endDataElement)(const struct RollbarCrashReportWriter* writer);
 
     /** Add a UUID element to the report.
      *
@@ -196,7 +196,7 @@ typedef struct KSCrashReportWriter
      *
      * @param value A pointer to the binary UUID data.
      */
-    void (*addUUIDElement)(const struct KSCrashReportWriter* writer,
+    void (*addUUIDElement)(const struct RollbarCrashReportWriter* writer,
                            const char* name,
                            const unsigned char* value);
 
@@ -208,7 +208,7 @@ typedef struct KSCrashReportWriter
      *
      * @param value A pointer to the JSON data.
      */
-    void (*addJSONElement)(const struct KSCrashReportWriter* writer,
+    void (*addJSONElement)(const struct RollbarCrashReportWriter* writer,
                            const char* name,
                            const char* jsonElement,
                            bool closeLastContainer);
@@ -219,7 +219,7 @@ typedef struct KSCrashReportWriter
      *
      * @param name The name to give this element.
      */
-    void (*beginObject)(const struct KSCrashReportWriter* writer,
+    void (*beginObject)(const struct RollbarCrashReportWriter* writer,
                         const char* name);
 
     /** Begin a new array container.
@@ -228,7 +228,7 @@ typedef struct KSCrashReportWriter
      *
      * @param name The name to give this element.
      */
-    void (*beginArray)(const struct KSCrashReportWriter* writer,
+    void (*beginArray)(const struct RollbarCrashReportWriter* writer,
                        const char* name);
 
     /** Leave the current container, returning to the next higher level
@@ -236,19 +236,19 @@ typedef struct KSCrashReportWriter
      *
      * @param writer This writer.
      */
-    void (*endContainer)(const struct KSCrashReportWriter* writer);
+    void (*endContainer)(const struct RollbarCrashReportWriter* writer);
 
     /** Internal contextual data for the writer */
     void* context;
 
-} KSCrashReportWriter;
+} RollbarCrashReportWriter;
 
-typedef void (*KSReportWriteCallback)(const KSCrashReportWriter* writer);
+typedef void (*RollbarCrashReportWriteCallback)(const RollbarCrashReportWriter* writer);
 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // HDR_KSCrashReportWriter_h
+#endif // HDR_RollbarCrashReportWriter_h
 

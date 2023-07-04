@@ -1,5 +1,5 @@
 //
-//  KSCrashCachedData.c
+//  RollbarCrashCachedData.c
 //
 //  Copyright (c) 2012 Karl Stenerud. All rights reserved.
 //
@@ -23,10 +23,10 @@
 //
 
 
-#include "KSCrashCachedData.h"
+#include "RollbarCrashCachedData.h"
 
-//#define KSLogger_LocalLevel TRACE
-#include "KSLogger.h"
+//#define RollbarCrashLogger_LocalLevel TRACE
+#include "RollbarCrashLogger.h"
 
 #include <mach/mach.h>
 #include <errno.h>
@@ -46,8 +46,8 @@
 
 static int g_pollingIntervalInSeconds;
 static pthread_t g_cacheThread;
-static KSThread* g_allMachThreads;
-static KSThread* g_allPThreads;
+static RollbarCrashThread* g_allMachThreads;
+static RollbarCrashThread* g_allPThreads;
 static const char** g_allThreadNames;
 static const char** g_allQueueNames;
 static int g_allThreadsCount;
@@ -59,8 +59,8 @@ static void updateThreadList()
 {
     const task_t thisTask = mach_task_self();
     int oldThreadsCount = g_allThreadsCount;
-    KSThread* allMachThreads = NULL;
-    KSThread* allPThreads = NULL;
+    RollbarCrashThread* allMachThreads = NULL;
+    RollbarCrashThread* allPThreads = NULL;
     static const char** allThreadNames;
     static const char** allQueueNames;
 
@@ -69,7 +69,7 @@ static void updateThreadList()
     kern_return_t kr;
     if((kr = task_threads(thisTask, &threads, &allThreadsCount)) != KERN_SUCCESS)
     {
-        KSLOG_ERROR("task_threads: %s", mach_error_string(kr));
+        RollbarCrashLOG_ERROR("task_threads: %s", mach_error_string(kr));
         return;
     }
 
@@ -83,13 +83,13 @@ static void updateThreadList()
         char buffer[1000];
         thread_t thread = threads[i];
         pthread_t pthread = pthread_from_mach_thread_np(thread);
-        allMachThreads[i] = (KSThread)thread;
-        allPThreads[i] = (KSThread)pthread;
+        allMachThreads[i] = (RollbarCrashThread)thread;
+        allPThreads[i] = (RollbarCrashThread)pthread;
         if(pthread != 0 && pthread_getname_np(pthread, buffer, sizeof(buffer)) == 0 && buffer[0] != 0)
         {
             allThreadNames[i] = strdup(buffer);
         }
-        if(g_searchQueueNames && ksthread_getQueueName((KSThread)thread, buffer, sizeof(buffer)) && buffer[0] != 0)
+        if(g_searchQueueNames && ksthread_getQueueName((RollbarCrashThread)thread, buffer, sizeof(buffer)) && buffer[0] != 0)
         {
             allQueueNames[i] = strdup(buffer);
         }
@@ -177,10 +177,10 @@ void ksccd_init(int pollingIntervalInSeconds)
     int error = pthread_create(&g_cacheThread,
                            &attr,
                            &monitorCachedData,
-                           "KSCrash Cached Data Monitor");
+                           "RollbarCrash Cached Data Monitor");
     if(error != 0)
     {
-        KSLOG_ERROR("pthread_create_suspended_np: %s", strerror(error));
+        RollbarCrashLOG_ERROR("pthread_create_suspended_np: %s", strerror(error));
     }
     pthread_attr_destroy(&attr);
 }
@@ -208,7 +208,7 @@ void ksccd_setSearchQueueNames(bool searchQueueNames)
     g_searchQueueNames = searchQueueNames;
 }
 
-KSThread* ksccd_getAllThreads(int* threadCount)
+RollbarCrashThread* ksccd_getAllThreads(int* threadCount)
 {
     if(threadCount != NULL)
     {
@@ -217,7 +217,7 @@ KSThread* ksccd_getAllThreads(int* threadCount)
     return g_allMachThreads;
 }
 
-const char* ksccd_getThreadName(KSThread thread)
+const char* ksccd_getThreadName(RollbarCrashThread thread)
 {
     if(g_allThreadNames != NULL)
     {
@@ -232,7 +232,7 @@ const char* ksccd_getThreadName(KSThread thread)
     return NULL;
 }
 
-const char* ksccd_getQueueName(KSThread thread)
+const char* ksccd_getQueueName(RollbarCrashThread thread)
 {
     if(g_allQueueNames != NULL)
     {

@@ -1,5 +1,5 @@
 //
-//  KSStackCursor_MachineContext.h
+//  RollbarCrashStackCursor_MachineContext.h
 //
 //  Copyright (c) 2016 Karl Stenerud. All rights reserved.
 //
@@ -23,15 +23,15 @@
 //
 
 
-#ifndef KSStackCursor_MachineContext_h
-#define KSStackCursor_MachineContext_h
+#ifndef RollbarCrashStackCursor_MachineContext_h
+#define RollbarCrashStackCursor_MachineContext_h
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     
     
-#include "KSStackCursor.h"
+#include "RollbarCrashStackCursor.h"
 
 /** Initialize a stack cursor for a machine context.
  *
@@ -41,11 +41,11 @@ extern "C" {
  *
  * @param machineContext The machine context whose stack to walk.
  */
-void kssc_initWithMachineContext(KSStackCursor *cursor, int maxStackDepth, const struct KSMachineContext* machineContext);
+void kssc_initWithMachineContext(RollbarCrashStackCursor *cursor, int maxStackDepth, const struct RollbarCrashMachineContext* machineContext);
     
     
 #ifdef __cplusplus
 }
 #endif
 
-#endif // KSStackCursor_MachineContext_h
+#endif // RollbarCrashStackCursor_MachineContext_h

@@ -1,5 +1,5 @@
 //
-//  KSCrashReport.h
+//  RollbarCrashReport.h
 //
 //  Created by Karl Stenerud on 2012-01-28.
 //
@@ -29,15 +29,15 @@
  */
 
 
-#ifndef HDR_KSCrashReport_h
-#define HDR_KSCrashReport_h
+#ifndef HDR_RollbarCrashReport_h
+#define HDR_RollbarCrashReport_h
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#import "KSCrashReportWriter.h"
-#import "KSCrashMonitorContext.h"
+#import "RollbarCrashReportWriter.h"
+#import "RollbarCrashMonitorContext.h"
 
 #include <stdbool.h>
 
@@ -72,7 +72,7 @@ void kscrashreport_setDoNotIntrospectClasses(const char** doNotIntrospectClasses
  *
  * @param userSectionWriteCallback The user section write callback.
  */
-void kscrashreport_setUserSectionWriteCallback(const KSReportWriteCallback userSectionWriteCallback);
+void kscrashreport_setUserSectionWriteCallback(const RollbarCrashReportWriteCallback userSectionWriteCallback);
 
 
 // ============================================================================
@@ -86,7 +86,7 @@ void kscrashreport_setUserSectionWriteCallback(const KSReportWriteCallback userS
  *
  * @param path The file to write to.
  */
-void kscrashreport_writeStandardReport(const struct KSCrash_MonitorContext* const monitorContext,
+void kscrashreport_writeStandardReport(const struct RollbarCrash_MonitorContext* const monitorContext,
                                        const char* path);
 
 /** Write a minimal crash report to a file.
@@ -96,7 +96,7 @@ void kscrashreport_writeStandardReport(const struct KSCrash_MonitorContext* cons
  *
  * @param path The file to write to.
  */
-void kscrashreport_writeRecrashReport(const struct KSCrash_MonitorContext* const monitorContext,
+void kscrashreport_writeRecrashReport(const struct RollbarCrash_MonitorContext* const monitorContext,
                                       const char* path);
 
 
@@ -104,4 +104,4 @@ void kscrashreport_writeRecrashReport(const struct KSCrash_MonitorContext* const
 }
 #endif
 
-#endif // HDR_KSCrashReport_h
+#endif // HDR_RollbarCrashReport_h

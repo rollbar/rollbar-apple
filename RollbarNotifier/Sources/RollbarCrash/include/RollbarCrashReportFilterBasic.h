@@ -1,5 +1,5 @@
 //
-//  KSCrashReportFilterBasic.h
+//  RollbarCrashReportFilterBasic.h
 //
 //  Created by Karl Stenerud on 2012-05-11.
 //
@@ -25,7 +25,7 @@
 //
 
 
-#import "KSCrashReportFilter.h"
+#import "RollbarCrashReportFilter.h"
 
 
 /**
@@ -34,9 +34,9 @@
  * Input: Anything.
  * Output: Same as input (passthrough).
  */
-@interface KSCrashReportFilterPassthrough : NSObject <KSCrashReportFilter>
+@interface RollbarCrashReportFilterPassthrough : NSObject <RollbarCrashReportFilter>
 
-+ (KSCrashReportFilterPassthrough*) filter;
++ (RollbarCrashReportFilterPassthrough*) filter;
 
 @end
 
@@ -48,20 +48,20 @@
  * Input: Anything
  * Output: NSDictionary
  */
-@interface KSCrashReportFilterCombine : NSObject <KSCrashReportFilter>
+@interface RollbarCrashReportFilterCombine : NSObject <RollbarCrashReportFilter>
 
 /** Constructor.
  *
  * @param firstFilter The first filter, followed by key, filter, key, ...
- *                    Each "filter" can be id<KSCrashReportFilter> or an NSArray
+ *                    Each "filter" can be id<RollbarCrashReportFilter> or an NSArray
  *                    of filters (which gets wrapped in a pipeline filter).
  */
-+ (KSCrashReportFilterCombine*) filterWithFiltersAndKeys:(id) firstFilter, ... NS_REQUIRES_NIL_TERMINATION;
++ (RollbarCrashReportFilterCombine*) filterWithFiltersAndKeys:(id) firstFilter, ... NS_REQUIRES_NIL_TERMINATION;
 
 /** Initializer.
  *
  * @param firstFilter The first filter, followed by key, filter, key, ...
- *                    Each "filter" can be id<KSCrashReportFilter> or an NSArray
+ *                    Each "filter" can be id<RollbarCrashReportFilter> or an NSArray
  *                    of filters (which gets wrapped in a pipeline filter).
  */
 - (id) initWithFiltersAndKeys:(id)firstFilter, ... NS_REQUIRES_NIL_TERMINATION;
@@ -75,7 +75,7 @@
  * Input: Depends on what's in the pipeline.
  * Output: Depends on what's in the pipeline.
  */
-@interface KSCrashReportFilterPipeline : NSObject <KSCrashReportFilter>
+@interface RollbarCrashReportFilterPipeline : NSObject <RollbarCrashReportFilter>
 
 /** The filters in this pipeline. */
 @property(nonatomic,readonly,retain) NSArray* filters;
@@ -84,7 +84,7 @@
  *
  * @param firstFilter The first filter, followed by filter, filter, ...
  */
-+ (KSCrashReportFilterPipeline*) filterWithFilters:(id) firstFilter, ... NS_REQUIRES_NIL_TERMINATION;
++ (RollbarCrashReportFilterPipeline*) filterWithFilters:(id) firstFilter, ... NS_REQUIRES_NIL_TERMINATION;
 
 /** Initializer.
  *
@@ -92,7 +92,7 @@
  */
 - (id) initWithFilters:(id) firstFilter, ... NS_REQUIRES_NIL_TERMINATION;
 
-- (void) addFilter:(id<KSCrashReportFilter>) filter;
+- (void) addFilter:(id<RollbarCrashReportFilter>) filter;
 
 @end
 
@@ -100,7 +100,7 @@
 /**
  * Extracts data associated with a key from each report.
  */
-@interface KSCrashReportFilterObjectForKey : NSObject <KSCrashReportFilter>
+@interface RollbarCrashReportFilterObjectForKey : NSObject <RollbarCrashReportFilter>
 
 /** Constructor.
  *
@@ -109,7 +109,7 @@
  * @param allowNotFound If NO, filtering will stop with an error if the key
  *                      was not found in a report.
  */
-+ (KSCrashReportFilterObjectForKey*) filterWithKey:(id) key
++ (RollbarCrashReportFilterObjectForKey*) filterWithKey:(id) key
                                      allowNotFound:(BOOL) allowNotFound;
 
 /** Initializer.
@@ -131,7 +131,7 @@
  * Input: NSDictionary
  * Output: NSString
  */
-@interface KSCrashReportFilterConcatenate : NSObject <KSCrashReportFilter>
+@interface RollbarCrashReportFilterConcatenate : NSObject <RollbarCrashReportFilter>
 
 /** Constructor.
  *
@@ -139,7 +139,7 @@
  *                     %@ in the formatting text to include the key name as well.
  * @param firstKey Series of keys to extract from the source report.
  */
-+ (KSCrashReportFilterConcatenate*) filterWithSeparatorFmt:(NSString*) separatorFmt
++ (RollbarCrashReportFilterConcatenate*) filterWithSeparatorFmt:(NSString*) separatorFmt
                                                       keys:(id) firstKey, ... NS_REQUIRES_NIL_TERMINATION;
 
 /** Constructor.
@@ -160,13 +160,13 @@
  * Input: NSDictionary
  * Output: NSDictionary
  */
-@interface KSCrashReportFilterSubset : NSObject <KSCrashReportFilter>
+@interface RollbarCrashReportFilterSubset : NSObject <RollbarCrashReportFilter>
 
 /** Constructor.
  *
  * @param firstKeyPath Series of key paths to search in the source reports.
  */
-+ (KSCrashReportFilterSubset*) filterWithKeys:(id) firstKeyPath, ... NS_REQUIRES_NIL_TERMINATION;
++ (RollbarCrashReportFilterSubset*) filterWithKeys:(id) firstKeyPath, ... NS_REQUIRES_NIL_TERMINATION;
 
 /** Initializer.
  *
@@ -183,9 +183,9 @@
  * Input: NSData
  * Output: NSString
  */
-@interface KSCrashReportFilterDataToString : NSObject <KSCrashReportFilter>
+@interface RollbarCrashReportFilterDataToString : NSObject <RollbarCrashReportFilter>
 
-+ (KSCrashReportFilterDataToString*) filter;
++ (RollbarCrashReportFilterDataToString*) filter;
 
 @end
 
@@ -196,8 +196,8 @@
  * Input: NSString
  * Output: NSData
  */
-@interface KSCrashReportFilterStringToData : NSObject <KSCrashReportFilter>
+@interface RollbarCrashReportFilterStringToData : NSObject <RollbarCrashReportFilter>
 
-+ (KSCrashReportFilterStringToData*) filter;
++ (RollbarCrashReportFilterStringToData*) filter;
 
 @end

@@ -1,5 +1,5 @@
 //
-//  KSCrashMonitor_Deadlock.m
+//  RollbarCrashMonitor_Deadlock.m
 //
 //  Created by Karl Stenerud on 2012-12-09.
 //
@@ -24,21 +24,21 @@
 // THE SOFTWARE.
 //
 
-#import "KSCrashMonitor_Deadlock.h"
-#import "KSCrashMonitorContext.h"
-#import "KSID.h"
-#import "KSThread.h"
-#import "KSStackCursor_MachineContext.h"
+#import "RollbarCrashMonitor_Deadlock.h"
+#import "RollbarCrashMonitorContext.h"
+#import "RollbarCrashID.h"
+#import "RollbarCrashThread.h"
+#import "RollbarCrashStackCursor_MachineContext.h"
 #import <Foundation/Foundation.h>
 
-//#define KSLogger_LocalLevel TRACE
-#import "KSLogger.h"
+//#define RollbarCrashLogger_LocalLevel TRACE
+#import "RollbarCrashLogger.h"
 
 
 #define kIdleInterval 5.0f
 
 
-@class KSCrashDeadlockMonitor;
+@class RollbarCrashDeadlockMonitor;
 
 // ============================================================================
 #pragma mark - Globals -
@@ -46,12 +46,12 @@
 
 static volatile bool g_isEnabled = false;
 
-static KSCrash_MonitorContext g_monitorContext;
+static RollbarCrash_MonitorContext g_monitorContext;
 
 /** Thread which monitors other threads. */
-static KSCrashDeadlockMonitor* g_monitor;
+static RollbarCrashDeadlockMonitor* g_monitor;
 
-static KSThread g_mainQueueThread;
+static RollbarCrashThread g_mainQueueThread;
 
 /** Interval between watchdog pulses. */
 static NSTimeInterval g_watchdogInterval = 0;
@@ -61,14 +61,14 @@ static NSTimeInterval g_watchdogInterval = 0;
 #pragma mark - X -
 // ============================================================================
 
-@interface KSCrashDeadlockMonitor: NSObject
+@interface RollbarCrashDeadlockMonitor: NSObject
 
 @property(nonatomic, readwrite, retain) NSThread* monitorThread;
 @property(atomic, readwrite, assign) BOOL awaitingResponse;
 
 @end
 
-@implementation KSCrashDeadlockMonitor
+@implementation RollbarCrashDeadlockMonitor
 
 @synthesize monitorThread = _monitorThread;
 @synthesize awaitingResponse = _awaitingResponse;
@@ -79,7 +79,7 @@ static NSTimeInterval g_watchdogInterval = 0;
     {
         // target (self) is retained until selector (runMonitor) exits.
         self.monitorThread = [[NSThread alloc] initWithTarget:self selector:@selector(runMonitor) object:nil];
-        self.monitorThread.name = @"KSCrash Deadlock Detection Thread";
+        self.monitorThread.name = @"RollbarCrash Deadlock Detection Thread";
         [self.monitorThread start];
     }
     return self;
@@ -112,17 +112,17 @@ static NSTimeInterval g_watchdogInterval = 0;
     ksmc_suspendEnvironment(&threads, &numThreads);
     kscm_notifyFatalExceptionCaptured(false);
 
-    KSMC_NEW_CONTEXT(machineContext);
+    RollbarCrashMC_NEW_CONTEXT(machineContext);
     ksmc_getContextForThread(g_mainQueueThread, machineContext, false);
-    KSStackCursor stackCursor;
-    kssc_initWithMachineContext(&stackCursor, KSSC_MAX_STACK_DEPTH, machineContext);
+    RollbarCrashStackCursor stackCursor;
+    kssc_initWithMachineContext(&stackCursor, RollbarCrashSC_MAX_STACK_DEPTH, machineContext);
     char eventID[37];
     ksid_generate(eventID);
 
-    KSLOG_DEBUG(@"Filling out context.");
-    KSCrash_MonitorContext* crashContext = &g_monitorContext;
+    RollbarCrashLOG_DEBUG(@"Filling out context.");
+    RollbarCrash_MonitorContext* crashContext = &g_monitorContext;
     memset(crashContext, 0, sizeof(*crashContext));
-    crashContext->crashType = KSCrashMonitorTypeMainThreadDeadlock;
+    crashContext->crashType = RollbarCrashMonitorTypeMainThreadDeadlock;
     crashContext->eventID = eventID;
     crashContext->registersAreValid = false;
     crashContext->offendingMachineContext = machineContext;
@@ -131,7 +131,7 @@ static NSTimeInterval g_watchdogInterval = 0;
     kscm_handleException(crashContext);
     ksmc_resumeEnvironment(threads, numThreads);
 
-    KSLOG_DEBUG(@"Calling abort()");
+    RollbarCrashLOG_DEBUG(@"Calling abort()");
     abort();
 }
 
@@ -189,13 +189,13 @@ static void setEnabled(bool isEnabled)
         g_isEnabled = isEnabled;
         if(isEnabled)
         {
-            KSLOG_DEBUG(@"Creating new deadlock monitor.");
+            RollbarCrashLOG_DEBUG(@"Creating new deadlock monitor.");
             initialize();
-            g_monitor = [[KSCrashDeadlockMonitor alloc] init];
+            g_monitor = [[RollbarCrashDeadlockMonitor alloc] init];
         }
         else
         {
-            KSLOG_DEBUG(@"Stopping deadlock monitor.");
+            RollbarCrashLOG_DEBUG(@"Stopping deadlock monitor.");
             [g_monitor cancel];
             g_monitor = nil;
         }
@@ -207,9 +207,9 @@ static bool isEnabled()
     return g_isEnabled;
 }
 
-KSCrashMonitorAPI* kscm_deadlock_getAPI()
+RollbarCrashMonitorAPI* kscm_deadlock_getAPI()
 {
-    static KSCrashMonitorAPI api =
+    static RollbarCrashMonitorAPI api =
     {
         .setEnabled = setEnabled,
         .isEnabled = isEnabled

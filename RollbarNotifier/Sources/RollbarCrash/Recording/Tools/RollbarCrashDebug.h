@@ -1,5 +1,5 @@
 //
-//  KSDebug.h
+//  RollbarCrashDebug.h
 //
 //  Created by Karl Stenerud on 2012-01-29.
 //
@@ -29,8 +29,8 @@
  */
 
 
-#ifndef HDR_KSDebug_h
-#define HDR_KSDebug_h
+#ifndef HDR_RollbarCrashDebug_h
+#define HDR_RollbarCrashDebug_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -50,4 +50,4 @@ bool ksdebug_isBeingTraced(void);
 }
 #endif
 
-#endif // HDR_KSDebug_h
+#endif // HDR_RollbarCrashDebug_h

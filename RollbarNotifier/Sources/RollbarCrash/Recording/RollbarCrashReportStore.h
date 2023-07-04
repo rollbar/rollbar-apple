@@ -1,5 +1,5 @@
 //
-//  KSCrashReportStore.h
+//  RollbarCrashReportStore.h
 //
 //  Created by Karl Stenerud on 2012-02-05.
 //
@@ -24,8 +24,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef HDR_KSCrashReportStore_h
-#define HDR_KSCrashReportStore_h
+#ifndef HDR_RollbarCrashReportStore_h
+#define HDR_RollbarCrashReportStore_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -34,7 +34,7 @@ extern "C" {
 
 #include <stdint.h>
 
-#define KSCRS_MAX_PATH_LENGTH 500
+#define RollbarCrashCRS_MAX_PATH_LENGTH 500
 
 /** Initialize the report store.
  *
@@ -44,7 +44,7 @@ extern "C" {
 void kscrs_initialize(const char* appName, const char* reportsPath);
 
 /** Get the next crash report to be generated.
- * Max length for paths is KSCRS_MAX_PATH_LENGTH
+ * Max length for paths is RollbarCrashCRS_MAX_PATH_LENGTH
  *
  * @param crashReportPathBuffer Buffer to store the crash report path.
  *
@@ -103,4 +103,4 @@ void kscrs_deleteReportWithID(int64_t reportID);
 }
 #endif
 
-#endif // HDR_KSCrashReportStore_h
+#endif // HDR_RollbarCrashReportStore_h

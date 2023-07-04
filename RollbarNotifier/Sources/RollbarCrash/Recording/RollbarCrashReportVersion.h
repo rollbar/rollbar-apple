@@ -1,5 +1,5 @@
 //
-//  KSCrashReportVersion.h
+//  RollbarCrashReportVersion.h
 //
 //  Created by Karl Stenerud on 2016-03-10.
 //
@@ -24,9 +24,9 @@
 // THE SOFTWARE.
 //
 
-#ifndef HDR_KSCrashReportVersion_h
-#define HDR_KSCrashReportVersion_h
+#ifndef HDR_RollbarCrashReportVersion_h
+#define HDR_RollbarCrashReportVersion_h
 
-#define KSCRASH_REPORT_VERSION "3.3.0"
+#define RollbarCrashCRASH_REPORT_VERSION "3.3.0"
 
-#endif /* HDR_KSCrashReportVersion_h */
+#endif /* HDR_RollbarCrashReportVersion_h */

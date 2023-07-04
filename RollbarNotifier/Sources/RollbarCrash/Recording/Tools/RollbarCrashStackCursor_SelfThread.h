@@ -1,5 +1,5 @@
 //
-//  KSStackCursor_SelfThread.h
+//  RollbarCrashStackCursor_SelfThread.h
 //
 //  Copyright (c) 2016 Karl Stenerud. All rights reserved.
 //
@@ -23,15 +23,15 @@
 //
 
 
-#ifndef KSStackCursor_SelfThread_h
-#define KSStackCursor_SelfThread_h
+#ifndef RollbarCrashStackCursor_SelfThread_h
+#define RollbarCrashStackCursor_SelfThread_h
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     
     
-#include "KSStackCursor.h"
+#include "RollbarCrashStackCursor.h"
 
 /** Initialize a stack cursor for the current thread.
  *  You may want to skip some entries to account for the trace immediately leading
@@ -41,11 +41,11 @@ extern "C" {
  *
  * @param skipEntries The number of stack entries to skip.
  */
-void kssc_initSelfThread(KSStackCursor *cursor, int skipEntries);
+void kssc_initSelfThread(RollbarCrashStackCursor *cursor, int skipEntries);
     
     
 #ifdef __cplusplus
 }
 #endif
 
-#endif // KSStackCursor_SelfThread_h
+#endif // RollbarCrashStackCursor_SelfThread_h

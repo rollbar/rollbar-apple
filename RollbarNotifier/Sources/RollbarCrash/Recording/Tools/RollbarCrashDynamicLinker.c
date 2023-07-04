@@ -1,5 +1,5 @@
 //
-//  KSDynamicLinker.c
+//  RollbarCrashDynamicLinker.c
 //
 //  Created by Karl Stenerud on 2013-10-02.
 //
@@ -24,7 +24,7 @@
 // THE SOFTWARE.
 //
 
-#include "KSDynamicLinker.h"
+#include "RollbarCrashDynamicLinker.h"
 
 #include <limits.h>
 #include <mach-o/dyld.h>
@@ -33,12 +33,12 @@
 #include <mach-o/getsect.h>
 #include <string.h>
 
-#include "KSLogger.h"
-#include "KSMemory.h"
-#include "KSPlatformSpecificDefines.h"
+#include "RollbarCrashLogger.h"
+#include "RollbarCrashMemory.h"
+#include "RollbarCrashPlatformSpecificDefines.h"
 
-#ifndef KSDL_MaxCrashInfoStringLength
-    #define KSDL_MaxCrashInfoStringLength 1024
+#ifndef RollbarCrashDL_MaxCrashInfoStringLength
+    #define RollbarCrashDL_MaxCrashInfoStringLength 1024
 #endif
 
 #pragma pack(8)
@@ -53,7 +53,7 @@ typedef struct {
     void* reserved3; // First introduced in version 5
 } crash_info_t;
 #pragma pack()
-#define KSDL_SECT_CRASH_INFO "__crash_info"
+#define RollbarCrashDL_SECT_CRASH_INFO "__crash_info"
 
 
 /** Get the address of the first command following a header (which will be of
@@ -324,7 +324,7 @@ static bool isValidCrashInfoMessage(const char* str)
     {
         return false;
     }
-    int maxReadableBytes = ksmem_maxReadableBytes(str, KSDL_MaxCrashInfoStringLength + 1);
+    int maxReadableBytes = ksmem_maxReadableBytes(str, RollbarCrashDL_MaxCrashInfoStringLength + 1);
     if(maxReadableBytes == 0)
     {
         return false;
@@ -338,47 +338,47 @@ static bool isValidCrashInfoMessage(const char* str)
     return false;
 }
 
-static void getCrashInfo(const struct mach_header* header, KSBinaryImage* buffer)
+static void getCrashInfo(const struct mach_header* header, RollbarCrashBinaryImage* buffer)
 {
     unsigned long size = 0;
     crash_info_t* crashInfo =
-        (crash_info_t*)getsectiondata((mach_header_t*)header, SEG_DATA, KSDL_SECT_CRASH_INFO, &size);
+        (crash_info_t*)getsectiondata((mach_header_t*)header, SEG_DATA, RollbarCrashDL_SECT_CRASH_INFO, &size);
     if(crashInfo == NULL)
     {
         return;
     }
 
-    KSLOG_TRACE("Found crash info section in binary: %s", buffer->name);
+    RollbarCrashLOG_TRACE("Found crash info section in binary: %s", buffer->name);
     const unsigned int minimalSize = offsetof(crash_info_t, reserved); // Include message and message2
     if(size < minimalSize)
     {
-        KSLOG_TRACE("Skipped reading crash info: section is too small");
+        RollbarCrashLOG_TRACE("Skipped reading crash info: section is too small");
         return;
     }
     if(!ksmem_isMemoryReadable(crashInfo, minimalSize))
     {
-        KSLOG_TRACE("Skipped reading crash info: section memory is not readable");
+        RollbarCrashLOG_TRACE("Skipped reading crash info: section memory is not readable");
         return;
     }
     if(crashInfo->version != 4 && crashInfo->version != 5)
     {
-        KSLOG_TRACE("Skipped reading crash info: invalid version '%d'", crashInfo->version);
+        RollbarCrashLOG_TRACE("Skipped reading crash info: invalid version '%d'", crashInfo->version);
         return;
     }
     if(crashInfo->message == NULL && crashInfo->message2 == NULL)
     {
-        KSLOG_TRACE("Skipped reading crash info: both messages are null");
+        RollbarCrashLOG_TRACE("Skipped reading crash info: both messages are null");
         return;
     }
 
     if(isValidCrashInfoMessage(crashInfo->message))
     {
-        KSLOG_DEBUG("Found first message: %s", crashInfo->message);
+        RollbarCrashLOG_DEBUG("Found first message: %s", crashInfo->message);
         buffer->crashInfoMessage = crashInfo->message;
     }
     if(isValidCrashInfoMessage(crashInfo->message2))
     {
-        KSLOG_DEBUG("Found second message: %s", crashInfo->message2);
+        RollbarCrashLOG_DEBUG("Found second message: %s", crashInfo->message2);
         buffer->crashInfoMessage2 = crashInfo->message2;
     }
 }
@@ -388,7 +388,7 @@ int ksdl_imageCount()
     return (int)_dyld_image_count();
 }
 
-bool ksdl_getBinaryImage(int index, KSBinaryImage* buffer)
+bool ksdl_getBinaryImage(int index, RollbarCrashBinaryImage* buffer)
 {
     const struct mach_header* header = _dyld_get_image_header((unsigned)index);
     if(header == NULL)
@@ -399,7 +399,7 @@ bool ksdl_getBinaryImage(int index, KSBinaryImage* buffer)
     return ksdl_getBinaryImageForHeader((const void*)header, _dyld_get_image_name((unsigned)index), buffer);
 }
 
-bool ksdl_getBinaryImageForHeader(const void* const header_ptr, const char* const image_name, KSBinaryImage* buffer)
+bool ksdl_getBinaryImageForHeader(const void* const header_ptr, const char* const image_name, RollbarCrashBinaryImage* buffer)
 {
     const struct mach_header* header = (const struct mach_header*)header_ptr;
     uintptr_t cmdPtr = firstCmdAfterHeader(header);

@@ -1,5 +1,5 @@
 //
-//  KSID.h
+//  RollbarCrashID.h
 //
 //  Copyright (c) 2016 Karl Stenerud. All rights reserved.
 //
@@ -22,8 +22,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef HDR_KSID_h
-#define HDR_KSID_h
+#ifndef HDR_RollbarCrashID_h
+#define HDR_RollbarCrashID_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -41,4 +41,4 @@ void ksid_generate(char* destinationBuffer37Bytes);
 }
 #endif
 
-#endif // HDR_KSID_h
+#endif // HDR_RollbarCrashID_h

@@ -1,5 +1,5 @@
 //
-//  KSSymbolicator.h
+//  RollbarCrashSymbolicator.h
 //
 //  Copyright (c) 2016 Karl Stenerud. All rights reserved.
 //
@@ -23,15 +23,15 @@
 //
 
 
-#ifndef KSSymbolicator_h
-#define KSSymbolicator_h
+#ifndef RollbarCrashSymbolicator_h
+#define RollbarCrashSymbolicator_h
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
-#include "KSStackCursor.h"
+#include "RollbarCrashStackCursor.h"
 #include <stdbool.h>
 
 /** Call instruction address is different from return address.
@@ -48,11 +48,11 @@ uintptr_t kssymbolicator_callInstructionAddress(const uintptr_t returnAddress);
  *
  * @return True if successful.
  */
-bool kssymbolicator_symbolicate(KSStackCursor *cursor);
+bool kssymbolicator_symbolicate(RollbarCrashStackCursor *cursor);
 
     
 #ifdef __cplusplus
 }
 #endif
 
-#endif // KSSymbolicator_h
+#endif // RollbarCrashSymbolicator_h

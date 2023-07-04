@@ -1,5 +1,5 @@
 //
-//  KSStackCursor.h
+//  RollbarCrashStackCursor.h
 //
 //  Copyright (c) 2016 Karl Stenerud. All rights reserved.
 //
@@ -23,28 +23,28 @@
 //
 
 
-#ifndef KSStackCursor_h
-#define KSStackCursor_h
+#ifndef RollbarCrashStackCursor_h
+#define RollbarCrashStackCursor_h
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     
     
-#include "KSMachineContext.h"
+#include "RollbarCrashMachineContext.h"
 
 #include <stdbool.h>
 #include <sys/types.h>
 
-#define KSSC_CONTEXT_SIZE 100
+#define RollbarCrashSC_CONTEXT_SIZE 100
 
 /** Point at which to give up walking a stack and consider it a stack overflow. */
-#define KSSC_STACK_OVERFLOW_THRESHOLD 150
+#define RollbarCrashSC_STACK_OVERFLOW_THRESHOLD 150
 
 /** The max depth to search before giving up. */
-#define KSSC_MAX_STACK_DEPTH 500
+#define RollbarCrashSC_MAX_STACK_DEPTH 500
 
-typedef struct KSStackCursor
+typedef struct RollbarCrashStackCursor
 {
     struct
     {
@@ -73,17 +73,17 @@ typedef struct KSStackCursor
     } state;
 
     /** Reset the cursor back to the beginning. */
-    void (*resetCursor)(struct KSStackCursor*);
+    void (*resetCursor)(struct RollbarCrashStackCursor*);
 
     /** Advance the cursor to the next stack entry. */
-    bool (*advanceCursor)(struct KSStackCursor*);
+    bool (*advanceCursor)(struct RollbarCrashStackCursor*);
     
     /** Attempt to symbolicate the current address, filling in the fields in stackEntry. */
-    bool (*symbolicate)(struct KSStackCursor*);
+    bool (*symbolicate)(struct RollbarCrashStackCursor*);
     
     /** Internal context-specific information. */
-    void* context[KSSC_CONTEXT_SIZE];
-} KSStackCursor;
+    void* context[RollbarCrashSC_CONTEXT_SIZE];
+} RollbarCrashStackCursor;
 
 
 /** Common initialization routine for a stack cursor.
@@ -95,20 +95,20 @@ typedef struct KSStackCursor
  *
  * @param advanceCursor Function to advance the cursor (NULL = default: Do nothing and return false).
  */
-void kssc_initCursor(KSStackCursor *cursor,
-                     void (*resetCursor)(KSStackCursor*),
-                     bool (*advanceCursor)(KSStackCursor*));
+void kssc_initCursor(RollbarCrashStackCursor *cursor,
+                     void (*resetCursor)(RollbarCrashStackCursor*),
+                     bool (*advanceCursor)(RollbarCrashStackCursor*));
 
 /** Reset a cursor.
  *  INTERNAL METHOD. Do not call!
  *
  * @param cursor The cursor to reset.
  */
-void kssc_resetCursor(KSStackCursor *cursor);
+void kssc_resetCursor(RollbarCrashStackCursor *cursor);
 
     
 #ifdef __cplusplus
 }
 #endif
 
-#endif // KSStackCursor_h
+#endif // RollbarCrashStackCursor_h

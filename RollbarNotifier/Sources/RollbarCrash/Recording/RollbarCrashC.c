@@ -1,5 +1,5 @@
 //
-//  KSCrashC.c
+//  RollbarCrashC.c
 //
 //  Created by Karl Stenerud on 2012-01-28.
 //
@@ -25,26 +25,26 @@
 //
 
 
-#include "KSCrashC.h"
+#include "RollbarCrashC.h"
 
-#include "KSCrashCachedData.h"
-#include "KSCrashReport.h"
-#include "KSCrashReportFixer.h"
-#include "KSCrashReportStore.h"
-#include "KSCrashMonitor_CPPException.h"
-#include "KSCrashMonitor_Deadlock.h"
-#include "KSCrashMonitor_User.h"
-#include "KSFileUtils.h"
-#include "KSObjC.h"
-#include "KSString.h"
-#include "KSCrashMonitor_System.h"
-#include "KSCrashMonitor_Zombie.h"
-#include "KSCrashMonitor_AppState.h"
-#include "KSCrashMonitorContext.h"
-#include "KSSystemCapabilities.h"
+#include "RollbarCrashCachedData.h"
+#include "RollbarCrashReport.h"
+#include "RollbarCrashReportFixer.h"
+#include "RollbarCrashReportStore.h"
+#include "RollbarCrashMonitor_CPPException.h"
+#include "RollbarCrashMonitor_Deadlock.h"
+#include "RollbarCrashMonitor_User.h"
+#include "RollbarCrashFileUtils.h"
+#include "RollbarCrashObjC.h"
+#include "RollbarCrashString.h"
+#include "RollbarCrashMonitor_System.h"
+#include "RollbarCrashMonitor_Zombie.h"
+#include "RollbarCrashMonitor_AppState.h"
+#include "RollbarCrashMonitorContext.h"
+#include "RollbarCrashSystemCapabilities.h"
 
-//#define KSLogger_LocalLevel TRACE
-#include "KSLogger.h"
+//#define RollbarCrashLogger_LocalLevel TRACE
+#include "RollbarCrashLogger.h"
 
 #include <inttypes.h>
 #include <stdio.h>
@@ -53,28 +53,28 @@
 
 typedef enum
 {
-    KSApplicationStateNone,
-    KSApplicationStateDidBecomeActive,
-    KSApplicationStateWillResignActiveActive,
-    KSApplicationStateDidEnterBackground,
-    KSApplicationStateWillEnterForeground,
-    KSApplicationStateWillTerminate
-} KSApplicationState;
+    RollbarCrashApplicationStateNone,
+    RollbarCrashApplicationStateDidBecomeActive,
+    RollbarCrashApplicationStateWillResignActiveActive,
+    RollbarCrashApplicationStateDidEnterBackground,
+    RollbarCrashApplicationStateWillEnterForeground,
+    RollbarCrashApplicationStateWillTerminate
+} RollbarCrashApplicationState;
 
 // ============================================================================
 #pragma mark - Globals -
 // ============================================================================
 
-/** True if KSCrash has been installed. */
+/** True if RollbarCrash has been installed. */
 static volatile bool g_installed = 0;
 
 static bool g_shouldAddConsoleLogToReport = false;
 static bool g_shouldPrintPreviousLog = false;
-static char g_consoleLogPath[KSFU_MAX_PATH_LENGTH];
-static KSCrashMonitorType g_monitoring = KSCrashMonitorTypeProductionSafeMinimal;
-static char g_lastCrashReportFilePath[KSFU_MAX_PATH_LENGTH];
-static KSReportWrittenCallback g_reportWrittenCallback;
-static KSApplicationState g_lastApplicationState = KSApplicationStateNone;
+static char g_consoleLogPath[RollbarCrashFU_MAX_PATH_LENGTH];
+static RollbarCrashMonitorType g_monitoring = RollbarCrashMonitorTypeProductionSafeMinimal;
+static char g_lastCrashReportFilePath[RollbarCrashFU_MAX_PATH_LENGTH];
+static RollbarCrashReportWrittenCallback g_reportWrittenCallback;
+static RollbarCrashApplicationState g_lastApplicationState = RollbarCrashApplicationStateNone;
 
 // ============================================================================
 #pragma mark - Utility -
@@ -96,18 +96,18 @@ static void printPreviousLog(const char* filePath)
 
 static void notifyOfBeforeInstallationState(void)
 {
-    KSLOG_DEBUG("Notifying of pre-installation state");
+    RollbarCrashLOG_DEBUG("Notifying of pre-installation state");
     switch (g_lastApplicationState)
     {
-        case KSApplicationStateDidBecomeActive:
+        case RollbarCrashApplicationStateDidBecomeActive:
             return kscrash_notifyAppActive(true);
-        case KSApplicationStateWillResignActiveActive:
+        case RollbarCrashApplicationStateWillResignActiveActive:
             return kscrash_notifyAppActive(false);
-        case KSApplicationStateDidEnterBackground:
+        case RollbarCrashApplicationStateDidEnterBackground:
             return kscrash_notifyAppInForeground(false);
-        case KSApplicationStateWillEnterForeground:
+        case RollbarCrashApplicationStateWillEnterForeground:
             return kscrash_notifyAppInForeground(true);
-        case KSApplicationStateWillTerminate:
+        case RollbarCrashApplicationStateWillTerminate:
             return kscrash_notifyAppTerminate();
         default:
             return;
@@ -122,10 +122,10 @@ static void notifyOfBeforeInstallationState(void)
  *
  * This function gets passed as a callback to a crash handler.
  */
-static void onCrash(struct KSCrash_MonitorContext* monitorContext)
+static void onCrash(struct RollbarCrash_MonitorContext* monitorContext)
 {
     if (monitorContext->currentSnapshotUserReported == false) {
-        KSLOG_DEBUG("Updating application state to note crash.");
+        RollbarCrashLOG_DEBUG("Updating application state to note crash.");
         kscrashstate_notifyAppCrash();
     }
     monitorContext->consoleLogPath = g_shouldAddConsoleLogToReport ? g_consoleLogPath : NULL;
@@ -136,7 +136,7 @@ static void onCrash(struct KSCrash_MonitorContext* monitorContext)
     }
     else
     {
-        char crashReportFilePath[KSFU_MAX_PATH_LENGTH];
+        char crashReportFilePath[RollbarCrashFU_MAX_PATH_LENGTH];
         int64_t reportID = kscrs_getNextCrashReport(crashReportFilePath);
         strncpy(g_lastCrashReportFilePath, crashReportFilePath, sizeof(g_lastCrashReportFilePath));
         kscrashreport_writeStandardReport(monitorContext, crashReportFilePath);
@@ -153,18 +153,18 @@ static void onCrash(struct KSCrash_MonitorContext* monitorContext)
 #pragma mark - API -
 // ============================================================================
 
-KSCrashMonitorType kscrash_install(const char* appName, const char* const installPath)
+RollbarCrashMonitorType kscrash_install(const char* appName, const char* const installPath)
 {
-    KSLOG_DEBUG("Installing crash reporter.");
+    RollbarCrashLOG_DEBUG("Installing crash reporter.");
 
     if(g_installed)
     {
-        KSLOG_DEBUG("Crash reporter already installed.");
+        RollbarCrashLOG_DEBUG("Crash reporter already installed.");
         return g_monitoring;
     }
     g_installed = 1;
 
-    char path[KSFU_MAX_PATH_LENGTH];
+    char path[RollbarCrashFU_MAX_PATH_LENGTH];
     snprintf(path, sizeof(path), "%s/Reports", installPath);
     ksfu_makePath(path);
     kscrs_initialize(appName, path);
@@ -184,16 +184,16 @@ KSCrashMonitorType kscrash_install(const char* appName, const char* const instal
     ksccd_init(60);
 
     kscm_setEventCallback(onCrash);
-    KSCrashMonitorType monitors = kscrash_setMonitoring(g_monitoring);
+    RollbarCrashMonitorType monitors = kscrash_setMonitoring(g_monitoring);
 
-    KSLOG_DEBUG("Installation complete.");
+    RollbarCrashLOG_DEBUG("Installation complete.");
 
     notifyOfBeforeInstallationState();
 
     return monitors;
 }
 
-KSCrashMonitorType kscrash_setMonitoring(KSCrashMonitorType monitors)
+RollbarCrashMonitorType kscrash_setMonitoring(RollbarCrashMonitorType monitors)
 {
     g_monitoring = monitors;
     
@@ -213,7 +213,7 @@ void kscrash_setUserInfoJSON(const char* const userInfoJSON)
 
 void kscrash_setDeadlockWatchdogInterval(double deadlockWatchdogInterval)
 {
-#if KSCRASH_HAS_OBJC
+#if RollbarCrashCRASH_HAS_OBJC
     kscm_setDeadlockHandlerWatchdogInterval(deadlockWatchdogInterval);
 #endif
 }
@@ -233,12 +233,12 @@ void kscrash_setDoNotIntrospectClasses(const char** doNotIntrospectClasses, int 
     kscrashreport_setDoNotIntrospectClasses(doNotIntrospectClasses, length);
 }
 
-void kscrash_setCrashNotifyCallback(const KSReportWriteCallback onCrashNotify)
+void kscrash_setCrashNotifyCallback(const RollbarCrashReportWriteCallback onCrashNotify)
 {
     kscrashreport_setUserSectionWriteCallback(onCrashNotify);
 }
 
-void kscrash_setReportWrittenCallback(const KSReportWrittenCallback onReportWrittenNotify)
+void kscrash_setReportWrittenCallback(const RollbarCrashReportWrittenCallback onReportWrittenNotify)
 {
     g_reportWrittenCallback = onReportWrittenNotify;
 }
@@ -296,8 +296,8 @@ void kscrash_notifyAppActive(bool isActive)
         kscrashstate_notifyAppActive(isActive);
     }
     g_lastApplicationState = isActive
-        ? KSApplicationStateDidBecomeActive
-        : KSApplicationStateWillResignActiveActive;
+        ? RollbarCrashApplicationStateDidBecomeActive
+        : RollbarCrashApplicationStateWillResignActiveActive;
 }
 
 void kscrash_notifyAppInForeground(bool isInForeground)
@@ -307,8 +307,8 @@ void kscrash_notifyAppInForeground(bool isInForeground)
         kscrashstate_notifyAppInForeground(isInForeground);
     }
     g_lastApplicationState = isInForeground
-        ? KSApplicationStateWillEnterForeground
-        : KSApplicationStateDidEnterBackground;
+        ? RollbarCrashApplicationStateWillEnterForeground
+        : RollbarCrashApplicationStateDidEnterBackground;
 }
 
 void kscrash_notifyAppTerminate(void)
@@ -317,7 +317,7 @@ void kscrash_notifyAppTerminate(void)
     {
         kscrashstate_notifyAppTerminate();
     }
-    g_lastApplicationState = KSApplicationStateWillTerminate;
+    g_lastApplicationState = RollbarCrashApplicationStateWillTerminate;
 }
 
 void kscrash_notifyAppCrash(void)
@@ -339,21 +339,21 @@ char* kscrash_readReport(int64_t reportID)
 {
     if(reportID <= 0)
     {
-        KSLOG_ERROR("Report ID was %" PRIx64, reportID);
+        RollbarCrashLOG_ERROR("Report ID was %" PRIx64, reportID);
         return NULL;
     }
 
     char* rawReport = kscrs_readReport(reportID);
     if(rawReport == NULL)
     {
-        KSLOG_ERROR("Failed to load report ID %" PRIx64, reportID);
+        RollbarCrashLOG_ERROR("Failed to load report ID %" PRIx64, reportID);
         return NULL;
     }
 
     char* fixedReport = kscrf_fixupCrashReport(rawReport);
     if(fixedReport == NULL)
     {
-        KSLOG_ERROR("Failed to fixup report ID %" PRIx64, reportID);
+        RollbarCrashLOG_ERROR("Failed to fixup report ID %" PRIx64, reportID);
     }
 
     free(rawReport);

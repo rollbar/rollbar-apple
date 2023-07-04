@@ -1,5 +1,5 @@
 //
-//  KSLogger.h
+//  RollbarCrashLogger.h
 //
 //  Created by Karl Stenerud on 11-06-25.
 //
@@ -26,7 +26,7 @@
 
 
 /**
- * KSLogger
+ * RollbarCrashLogger
  * ========
  *
  * Prints log entries to the console consisting of:
@@ -48,38 +48,38 @@
  * Set the log level in your "Preprocessor Macros" build setting. You may choose
  * TRACE, DEBUG, INFO, WARN, ERROR. If nothing is set, it defaults to ERROR.
  *
- * Example: KSLogger_Level=WARN
+ * Example: RollbarCrashLogger_Level=WARN
  *
- * Anything below the level specified for KSLogger_Level will not be compiled
+ * Anything below the level specified for RollbarCrashLogger_Level will not be compiled
  * or printed.
  * 
  *
  * Next, include the header file:
  *
- * #include "KSLogger.h"
+ * #include "RollbarCrashLogger.h"
  *
  *
  * Next, call the logger functions from your code (using objective-c strings
  * in objective-C files and regular strings in regular C files):
  *
  * Code:
- *    KSLOG_ERROR(@"Some error message");
+ *    RollbarCrashLOG_ERROR(@"Some error message");
  *
  * Prints:
  *    2011-07-16 05:41:01.379 TestApp[4439:f803] ERROR: SomeClass.m (21): -[SomeFunction]: Some error message 
  *
  * Code:
- *    KSLOG_INFO(@"Info about %@", someObject);
+ *    RollbarCrashLOG_INFO(@"Info about %@", someObject);
  *
  * Prints:
  *    2011-07-16 05:44:05.239 TestApp[4473:f803] INFO : SomeClass.m (20): -[SomeFunction]: Info about <NSObject: 0xb622840>
  *
  *
  * The "BASIC" versions of the macros behave exactly like NSLog() or printf(),
- * except they respect the KSLogger_Level setting:
+ * except they respect the RollbarCrashLogger_Level setting:
  *
  * Code:
- *    KSLOGBASIC_ERROR(@"A basic log entry");
+ *    RollbarCrashLOGBASIC_ERROR(@"A basic log entry");
  *
  * Prints:
  *    2011-07-16 05:44:05.916 TestApp[4473:f803] A basic log entry
@@ -89,12 +89,12 @@
  *       in C files do not print the NSLog preamble:
  *
  * Objective-C version:
- *    KSLOG_ERROR(@"Some error message");
+ *    RollbarCrashLOG_ERROR(@"Some error message");
  *
  *    2011-07-16 05:41:01.379 TestApp[4439:f803] ERROR: SomeClass.m (21): -[SomeFunction]: Some error message
  *
  * C version:
- *    KSLOG_ERROR("Some error message");
+ *    RollbarCrashLOG_ERROR("Some error message");
  *
  *    ERROR: SomeClass.c (21): SomeFunction(): Some error message
  *
@@ -104,20 +104,20 @@
  * =============
  *
  * You can control logging messages at the local file level using the
- * "KSLogger_LocalLevel" define. Note that it must be defined BEFORE
- * including KSLogger.h
+ * "RollbarCrashLogger_LocalLevel" define. Note that it must be defined BEFORE
+ * including RollbarCrashLogger.h
  *
- * The KSLOG_XX() and KSLOGBASIC_XX() macros will print out based on the LOWER
- * of KSLogger_Level and KSLogger_LocalLevel, so if KSLogger_Level is DEBUG
- * and KSLogger_LocalLevel is TRACE, it will print all the way down to the trace
- * level for the local file where KSLogger_LocalLevel was defined, and to the
+ * The RollbarCrashLOG_XX() and RollbarCrashLOGBASIC_XX() macros will print out based on the LOWER
+ * of RollbarCrashLogger_Level and RollbarCrashLogger_LocalLevel, so if RollbarCrashLogger_Level is DEBUG
+ * and RollbarCrashLogger_LocalLevel is TRACE, it will print all the way down to the trace
+ * level for the local file where RollbarCrashLogger_LocalLevel was defined, and to the
  * debug level everywhere else.
  *
  * Example:
  *
- * // KSLogger_LocalLevel, if defined, MUST come BEFORE including KSLogger.h
- * #define KSLogger_LocalLevel TRACE
- * #import "KSLogger.h"
+ * // RollbarCrashLogger_LocalLevel, if defined, MUST come BEFORE including RollbarCrashLogger.h
+ * #define RollbarCrashLogger_LocalLevel TRACE
+ * #import "RollbarCrashLogger.h"
  *
  *
  * ===============
@@ -125,16 +125,16 @@
  * ===============
  *
  * The C logger changes its behavior depending on the value of the preprocessor
- * define KSLogger_CBufferSize.
+ * define RollbarCrashLogger_CBufferSize.
  *
- * If KSLogger_CBufferSize is > 0, the C logger will behave in an async-safe
+ * If RollbarCrashLogger_CBufferSize is > 0, the C logger will behave in an async-safe
  * manner, calling write() instead of printf(). Any log messages that exceed the
- * length specified by KSLogger_CBufferSize will be truncated.
+ * length specified by RollbarCrashLogger_CBufferSize will be truncated.
  *
- * If KSLogger_CBufferSize == 0, the C logger will use printf(), and there will
+ * If RollbarCrashLogger_CBufferSize == 0, the C logger will use printf(), and there will
  * be no limit on the log message length.
  *
- * KSLogger_CBufferSize can only be set as a preprocessor define, and will
+ * RollbarCrashLogger_CBufferSize can only be set as a preprocessor define, and will
  * default to 1024 if not specified during compilation.
  */
 
@@ -144,8 +144,8 @@
 // ============================================================================
 
 
-#ifndef HDR_KSLogger_h
-#define HDR_KSLogger_h
+#ifndef HDR_RollbarCrashLogger_h
+#define HDR_RollbarCrashLogger_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -167,8 +167,8 @@ void i_kslog_logObjC(const char* level,
 
 void i_kslog_logObjCBasic(CFStringRef fmt, ...);
 
-#define i_KSLOG_FULL(LEVEL,FILE,LINE,FUNCTION,FMT,...) i_kslog_logObjC(LEVEL,FILE,LINE,FUNCTION,(__bridge CFStringRef)FMT,##__VA_ARGS__)
-#define i_KSLOG_BASIC(FMT, ...) i_kslog_logObjCBasic((__bridge CFStringRef)FMT,##__VA_ARGS__)
+#define i_RollbarCrashLOG_FULL(LEVEL,FILE,LINE,FUNCTION,FMT,...) i_kslog_logObjC(LEVEL,FILE,LINE,FUNCTION,(__bridge CFStringRef)FMT,##__VA_ARGS__)
+#define i_RollbarCrashLOG_BASIC(FMT, ...) i_kslog_logObjCBasic((__bridge CFStringRef)FMT,##__VA_ARGS__)
 
 #else // __OBJC__
 
@@ -180,64 +180,64 @@ void i_kslog_logC(const char* level,
 
 void i_kslog_logCBasic(const char* fmt, ...);
 
-#define i_KSLOG_FULL i_kslog_logC
-#define i_KSLOG_BASIC i_kslog_logCBasic
+#define i_RollbarCrashLOG_FULL i_kslog_logC
+#define i_RollbarCrashLOG_BASIC i_kslog_logCBasic
 
 #endif // __OBJC__
 
 
 /* Back up any existing defines by the same name */
-#ifdef KS_NONE
-    #define KSLOG_BAK_NONE KS_NONE
-    #undef KS_NONE
+#ifdef RollbarCrash_NONE
+    #define RollbarCrashLOG_BAK_NONE RollbarCrash_NONE
+    #undef RollbarCrash_NONE
 #endif
 #ifdef ERROR
-    #define KSLOG_BAK_ERROR ERROR
+    #define RollbarCrashLOG_BAK_ERROR ERROR
     #undef ERROR
 #endif
 #ifdef WARN
-    #define KSLOG_BAK_WARN WARN
+    #define RollbarCrashLOG_BAK_WARN WARN
     #undef WARN
 #endif
 #ifdef INFO
-    #define KSLOG_BAK_INFO INFO
+    #define RollbarCrashLOG_BAK_INFO INFO
     #undef INFO
 #endif
 #ifdef DEBUG
-    #define KSLOG_BAK_DEBUG DEBUG
+    #define RollbarCrashLOG_BAK_DEBUG DEBUG
     #undef DEBUG
 #endif
 #ifdef TRACE
-    #define KSLOG_BAK_TRACE TRACE
+    #define RollbarCrashLOG_BAK_TRACE TRACE
     #undef TRACE
 #endif
 
 
-#define KSLogger_Level_None   0
-#define KSLogger_Level_Error 10
-#define KSLogger_Level_Warn  20
-#define KSLogger_Level_Info  30
-#define KSLogger_Level_Debug 40
-#define KSLogger_Level_Trace 50
+#define RollbarCrashLogger_Level_None   0
+#define RollbarCrashLogger_Level_Error 10
+#define RollbarCrashLogger_Level_Warn  20
+#define RollbarCrashLogger_Level_Info  30
+#define RollbarCrashLogger_Level_Debug 40
+#define RollbarCrashLogger_Level_Trace 50
 
-#define KS_NONE  KSLogger_Level_None
-#define ERROR KSLogger_Level_Error
-#define WARN  KSLogger_Level_Warn
-#define INFO  KSLogger_Level_Info
-#define DEBUG KSLogger_Level_Debug
-#define TRACE KSLogger_Level_Trace
+#define RollbarCrash_NONE  RollbarCrashLogger_Level_None
+#define ERROR RollbarCrashLogger_Level_Error
+#define WARN  RollbarCrashLogger_Level_Warn
+#define INFO  RollbarCrashLogger_Level_Info
+#define DEBUG RollbarCrashLogger_Level_Debug
+#define TRACE RollbarCrashLogger_Level_Trace
 
 
-#ifndef KSLogger_Level
-    #define KSLogger_Level KSLogger_Level_Error
+#ifndef RollbarCrashLogger_Level
+    #define RollbarCrashLogger_Level RollbarCrashLogger_Level_Error
 #endif
 
-#ifndef KSLogger_LocalLevel
-    #define KSLogger_LocalLevel KSLogger_Level_None
+#ifndef RollbarCrashLogger_LocalLevel
+    #define RollbarCrashLogger_LocalLevel RollbarCrashLogger_Level_None
 #endif
 
-#define a_KSLOG_FULL(LEVEL, FMT, ...) \
-    i_KSLOG_FULL(LEVEL, \
+#define a_RollbarCrashLOG_FULL(LEVEL, FMT, ...) \
+    i_RollbarCrashLOG_FULL(LEVEL, \
                  __FILE__, \
                  __LINE__, \
                  __PRETTY_FUNCTION__, \
@@ -264,24 +264,24 @@ bool kslog_clearLogFile(void);
 /** Tests if the logger would print at the specified level.
  *
  * @param LEVEL The level to test for. One of:
- *            KSLogger_Level_Error,
- *            KSLogger_Level_Warn,
- *            KSLogger_Level_Info,
- *            KSLogger_Level_Debug,
- *            KSLogger_Level_Trace,
+ *            RollbarCrashLogger_Level_Error,
+ *            RollbarCrashLogger_Level_Warn,
+ *            RollbarCrashLogger_Level_Info,
+ *            RollbarCrashLogger_Level_Debug,
+ *            RollbarCrashLogger_Level_Trace,
  *
  * @return TRUE if the logger would print at the specified level.
  */
-#define KSLOG_PRINTS_AT_LEVEL(LEVEL) \
-    (KSLogger_Level >= LEVEL || KSLogger_LocalLevel >= LEVEL)
+#define RollbarCrashLOG_PRINTS_AT_LEVEL(LEVEL) \
+    (RollbarCrashLogger_Level >= LEVEL || RollbarCrashLogger_LocalLevel >= LEVEL)
 
 /** Log a message regardless of the log settings.
  * Normal version prints out full context. Basic version prints directly.
  *
  * @param FMT The format specifier, followed by its arguments.
  */
-#define KSLOG_ALWAYS(FMT, ...) a_KSLOG_FULL("FORCE", FMT, ##__VA_ARGS__)
-#define KSLOGBASIC_ALWAYS(FMT, ...) i_KSLOG_BASIC(FMT, ##__VA_ARGS__)
+#define RollbarCrashLOG_ALWAYS(FMT, ...) a_RollbarCrashLOG_FULL("FORCE", FMT, ##__VA_ARGS__)
+#define RollbarCrashLOGBASIC_ALWAYS(FMT, ...) i_RollbarCrashLOG_BASIC(FMT, ##__VA_ARGS__)
 
 
 /** Log an error.
@@ -289,12 +289,12 @@ bool kslog_clearLogFile(void);
  *
  * @param FMT The format specifier, followed by its arguments.
  */
-#if KSLOG_PRINTS_AT_LEVEL(KSLogger_Level_Error)
-    #define KSLOG_ERROR(FMT, ...) a_KSLOG_FULL("ERROR", FMT, ##__VA_ARGS__)
-    #define KSLOGBASIC_ERROR(FMT, ...) i_KSLOG_BASIC(FMT, ##__VA_ARGS__)
+#if RollbarCrashLOG_PRINTS_AT_LEVEL(RollbarCrashLogger_Level_Error)
+    #define RollbarCrashLOG_ERROR(FMT, ...) a_RollbarCrashLOG_FULL("ERROR", FMT, ##__VA_ARGS__)
+    #define RollbarCrashLOGBASIC_ERROR(FMT, ...) i_RollbarCrashLOG_BASIC(FMT, ##__VA_ARGS__)
 #else
-    #define KSLOG_ERROR(FMT, ...)
-    #define KSLOGBASIC_ERROR(FMT, ...)
+    #define RollbarCrashLOG_ERROR(FMT, ...)
+    #define RollbarCrashLOGBASIC_ERROR(FMT, ...)
 #endif
 
 /** Log a warning.
@@ -302,12 +302,12 @@ bool kslog_clearLogFile(void);
  *
  * @param FMT The format specifier, followed by its arguments.
  */
-#if KSLOG_PRINTS_AT_LEVEL(KSLogger_Level_Warn)
-    #define KSLOG_WARN(FMT, ...)  a_KSLOG_FULL("WARN ", FMT, ##__VA_ARGS__)
-    #define KSLOGBASIC_WARN(FMT, ...) i_KSLOG_BASIC(FMT, ##__VA_ARGS__)
+#if RollbarCrashLOG_PRINTS_AT_LEVEL(RollbarCrashLogger_Level_Warn)
+    #define RollbarCrashLOG_WARN(FMT, ...)  a_RollbarCrashLOG_FULL("WARN ", FMT, ##__VA_ARGS__)
+    #define RollbarCrashLOGBASIC_WARN(FMT, ...) i_RollbarCrashLOG_BASIC(FMT, ##__VA_ARGS__)
 #else
-    #define KSLOG_WARN(FMT, ...)
-    #define KSLOGBASIC_WARN(FMT, ...)
+    #define RollbarCrashLOG_WARN(FMT, ...)
+    #define RollbarCrashLOGBASIC_WARN(FMT, ...)
 #endif
 
 /** Log an info message.
@@ -315,12 +315,12 @@ bool kslog_clearLogFile(void);
  *
  * @param FMT The format specifier, followed by its arguments.
  */
-#if KSLOG_PRINTS_AT_LEVEL(KSLogger_Level_Info)
-    #define KSLOG_INFO(FMT, ...)  a_KSLOG_FULL("INFO ", FMT, ##__VA_ARGS__)
-    #define KSLOGBASIC_INFO(FMT, ...) i_KSLOG_BASIC(FMT, ##__VA_ARGS__)
+#if RollbarCrashLOG_PRINTS_AT_LEVEL(RollbarCrashLogger_Level_Info)
+    #define RollbarCrashLOG_INFO(FMT, ...)  a_RollbarCrashLOG_FULL("INFO ", FMT, ##__VA_ARGS__)
+    #define RollbarCrashLOGBASIC_INFO(FMT, ...) i_RollbarCrashLOG_BASIC(FMT, ##__VA_ARGS__)
 #else
-    #define KSLOG_INFO(FMT, ...)
-    #define KSLOGBASIC_INFO(FMT, ...)
+    #define RollbarCrashLOG_INFO(FMT, ...)
+    #define RollbarCrashLOGBASIC_INFO(FMT, ...)
 #endif
 
 /** Log a debug message.
@@ -328,12 +328,12 @@ bool kslog_clearLogFile(void);
  *
  * @param FMT The format specifier, followed by its arguments.
  */
-#if KSLOG_PRINTS_AT_LEVEL(KSLogger_Level_Debug)
-    #define KSLOG_DEBUG(FMT, ...) a_KSLOG_FULL("DEBUG", FMT, ##__VA_ARGS__)
-    #define KSLOGBASIC_DEBUG(FMT, ...) i_KSLOG_BASIC(FMT, ##__VA_ARGS__)
+#if RollbarCrashLOG_PRINTS_AT_LEVEL(RollbarCrashLogger_Level_Debug)
+    #define RollbarCrashLOG_DEBUG(FMT, ...) a_RollbarCrashLOG_FULL("DEBUG", FMT, ##__VA_ARGS__)
+    #define RollbarCrashLOGBASIC_DEBUG(FMT, ...) i_RollbarCrashLOG_BASIC(FMT, ##__VA_ARGS__)
 #else
-    #define KSLOG_DEBUG(FMT, ...)
-    #define KSLOGBASIC_DEBUG(FMT, ...)
+    #define RollbarCrashLOG_DEBUG(FMT, ...)
+    #define RollbarCrashLOGBASIC_DEBUG(FMT, ...)
 #endif
 
 /** Log a trace message.
@@ -341,12 +341,12 @@ bool kslog_clearLogFile(void);
  *
  * @param FMT The format specifier, followed by its arguments.
  */
-#if KSLOG_PRINTS_AT_LEVEL(KSLogger_Level_Trace)
-    #define KSLOG_TRACE(FMT, ...) a_KSLOG_FULL("TRACE", FMT, ##__VA_ARGS__)
-    #define KSLOGBASIC_TRACE(FMT, ...) i_KSLOG_BASIC(FMT, ##__VA_ARGS__)
+#if RollbarCrashLOG_PRINTS_AT_LEVEL(RollbarCrashLogger_Level_Trace)
+    #define RollbarCrashLOG_TRACE(FMT, ...) a_RollbarCrashLOG_FULL("TRACE", FMT, ##__VA_ARGS__)
+    #define RollbarCrashLOGBASIC_TRACE(FMT, ...) i_RollbarCrashLOG_BASIC(FMT, ##__VA_ARGS__)
 #else
-    #define KSLOG_TRACE(FMT, ...)
-    #define KSLOGBASIC_TRACE(FMT, ...)
+    #define RollbarCrashLOG_TRACE(FMT, ...)
+    #define RollbarCrashLOGBASIC_TRACE(FMT, ...)
 #endif
 
 
@@ -357,29 +357,29 @@ bool kslog_clearLogFile(void);
 
 /* Put everything back to the way we found it. */
 #undef ERROR
-#ifdef KSLOG_BAK_ERROR
-    #define ERROR KSLOG_BAK_ERROR
-    #undef KSLOG_BAK_ERROR
+#ifdef RollbarCrashLOG_BAK_ERROR
+    #define ERROR RollbarCrashLOG_BAK_ERROR
+    #undef RollbarCrashLOG_BAK_ERROR
 #endif
 #undef WARNING
-#ifdef KSLOG_BAK_WARN
-    #define WARNING KSLOG_BAK_WARN
-    #undef KSLOG_BAK_WARN
+#ifdef RollbarCrashLOG_BAK_WARN
+    #define WARNING RollbarCrashLOG_BAK_WARN
+    #undef RollbarCrashLOG_BAK_WARN
 #endif
 #undef INFO
-#ifdef KSLOG_BAK_INFO
-    #define INFO KSLOG_BAK_INFO
-    #undef KSLOG_BAK_INFO
+#ifdef RollbarCrashLOG_BAK_INFO
+    #define INFO RollbarCrashLOG_BAK_INFO
+    #undef RollbarCrashLOG_BAK_INFO
 #endif
 #undef DEBUG
-#ifdef KSLOG_BAK_DEBUG
-    #define DEBUG KSLOG_BAK_DEBUG
-    #undef KSLOG_BAK_DEBUG
+#ifdef RollbarCrashLOG_BAK_DEBUG
+    #define DEBUG RollbarCrashLOG_BAK_DEBUG
+    #undef RollbarCrashLOG_BAK_DEBUG
 #endif
 #undef TRACE
-#ifdef KSLOG_BAK_TRACE
-    #define TRACE KSLOG_BAK_TRACE
-    #undef KSLOG_BAK_TRACE
+#ifdef RollbarCrashLOG_BAK_TRACE
+    #define TRACE RollbarCrashLOG_BAK_TRACE
+    #undef RollbarCrashLOG_BAK_TRACE
 #endif
 
 
@@ -387,4 +387,4 @@ bool kslog_clearLogFile(void);
 }
 #endif
 
-#endif // HDR_KSLogger_h
+#endif // HDR_RollbarCrashLogger_h

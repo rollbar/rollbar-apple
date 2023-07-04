@@ -1,5 +1,5 @@
 //
-//  KSStackCursor_SelfThread.c
+//  RollbarCrashStackCursor_SelfThread.c
 //
 //  Copyright (c) 2016 Karl Stenerud. All rights reserved.
 //
@@ -23,22 +23,22 @@
 //
 
 
-#include "KSStackCursor_SelfThread.h"
-#include "KSStackCursor_Backtrace.h"
+#include "RollbarCrashStackCursor_SelfThread.h"
+#include "RollbarCrashStackCursor_Backtrace.h"
 #include <execinfo.h>
 
-//#define KSLogger_LocalLevel TRACE
-#include "KSLogger.h"
+//#define RollbarCrashLogger_LocalLevel TRACE
+#include "RollbarCrashLogger.h"
 
-#define MAX_BACKTRACE_LENGTH (KSSC_CONTEXT_SIZE - sizeof(KSStackCursor_Backtrace_Context) / sizeof(void*) - 1)
+#define MAX_BACKTRACE_LENGTH (RollbarCrashSC_CONTEXT_SIZE - sizeof(RollbarCrashStackCursor_Backtrace_Context) / sizeof(void*) - 1)
 
 typedef struct
 {
-    KSStackCursor_Backtrace_Context SelfThreadContextSpacer;
+    RollbarCrashStackCursor_Backtrace_Context SelfThreadContextSpacer;
     uintptr_t backtrace[0];
 } SelfThreadContext;
 
-void kssc_initSelfThread(KSStackCursor *cursor, int skipEntries)
+void kssc_initSelfThread(RollbarCrashStackCursor *cursor, int skipEntries)
 {
     SelfThreadContext* context = (SelfThreadContext*)cursor->context;
     int backtraceLength = backtrace((void**)context->backtrace, MAX_BACKTRACE_LENGTH);

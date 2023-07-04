@@ -1,5 +1,5 @@
 //
-//  KSObjC.c
+//  RollbarCrashObjC.c
 //
 //  Created by Karl Stenerud on 2012-08-30.
 //
@@ -25,13 +25,13 @@
 //
 
 
-#include "KSObjC.h"
-#include "KSObjCApple.h"
+#include "RollbarCrashObjC.h"
+#include "RollbarCrashObjCApple.h"
 
-#include "KSMemory.h"
-#include "KSString.h"
+#include "RollbarCrashMemory.h"
+#include "RollbarCrashString.h"
 
-#include "KSLogger.h"
+#include "RollbarCrashLogger.h"
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > 70000
 #include <objc/NSObjCRuntime.h>
@@ -79,7 +79,7 @@ typedef enum
 typedef struct
 {
     const char* name;
-    KSObjCClassType type;
+    RollbarCrashObjCClassType type;
     ClassSubtype subtype;
     bool isMutable;
     bool (*isValidObject)(const void* object);
@@ -118,34 +118,34 @@ static int taggedStringDescription(const void* object, char* buffer, int bufferL
 
 static ClassData g_classData[] =
 {
-    {"__NSCFString",         KSObjCClassTypeString,  ClassSubtypeNone,             true,  stringIsValid,     stringDescription},
-    {"NSCFString",           KSObjCClassTypeString,  ClassSubtypeNone,             true,  stringIsValid,     stringDescription},
-    {"__NSCFConstantString", KSObjCClassTypeString,  ClassSubtypeNone,             true,  stringIsValid,     stringDescription},
-    {"NSCFConstantString",   KSObjCClassTypeString,  ClassSubtypeNone,             true,  stringIsValid,     stringDescription},
-    {"__NSArray0",           KSObjCClassTypeArray,   ClassSubtypeNSArrayImmutable, false, arrayIsValid,      arrayDescription},
-    {"__NSArrayI",           KSObjCClassTypeArray,   ClassSubtypeNSArrayImmutable, false, arrayIsValid,      arrayDescription},
-    {"__NSArrayM",           KSObjCClassTypeArray,   ClassSubtypeNSArrayMutable,   true,  arrayIsValid,      arrayDescription},
-    {"__NSCFArray",          KSObjCClassTypeArray,   ClassSubtypeCFArray,          false, arrayIsValid,      arrayDescription},
-    {"NSCFArray",            KSObjCClassTypeArray,   ClassSubtypeCFArray,          false, arrayIsValid,      arrayDescription},
-    {"__NSDate",             KSObjCClassTypeDate,    ClassSubtypeNone,             false, dateIsValid,       dateDescription},
-    {"NSDate",               KSObjCClassTypeDate,    ClassSubtypeNone,             false, dateIsValid,       dateDescription},
-    {"__NSCFNumber",         KSObjCClassTypeNumber,  ClassSubtypeNone,             false, numberIsValid,     numberDescription},
-    {"NSCFNumber",           KSObjCClassTypeNumber,  ClassSubtypeNone,             false, numberIsValid,     numberDescription},
-    {"NSNumber",             KSObjCClassTypeNumber,  ClassSubtypeNone,             false, numberIsValid,     numberDescription},
-    {"NSURL",                KSObjCClassTypeURL,     ClassSubtypeNone,             false, urlIsValid,        urlDescription},
-    {NULL,                   KSObjCClassTypeUnknown, ClassSubtypeNone,             false, objectIsValid,     objectDescription},
+    {"__NSCFString",         RollbarCrashObjCClassTypeString,  ClassSubtypeNone,             true,  stringIsValid,     stringDescription},
+    {"NSCFString",           RollbarCrashObjCClassTypeString,  ClassSubtypeNone,             true,  stringIsValid,     stringDescription},
+    {"__NSCFConstantString", RollbarCrashObjCClassTypeString,  ClassSubtypeNone,             true,  stringIsValid,     stringDescription},
+    {"NSCFConstantString",   RollbarCrashObjCClassTypeString,  ClassSubtypeNone,             true,  stringIsValid,     stringDescription},
+    {"__NSArray0",           RollbarCrashObjCClassTypeArray,   ClassSubtypeNSArrayImmutable, false, arrayIsValid,      arrayDescription},
+    {"__NSArrayI",           RollbarCrashObjCClassTypeArray,   ClassSubtypeNSArrayImmutable, false, arrayIsValid,      arrayDescription},
+    {"__NSArrayM",           RollbarCrashObjCClassTypeArray,   ClassSubtypeNSArrayMutable,   true,  arrayIsValid,      arrayDescription},
+    {"__NSCFArray",          RollbarCrashObjCClassTypeArray,   ClassSubtypeCFArray,          false, arrayIsValid,      arrayDescription},
+    {"NSCFArray",            RollbarCrashObjCClassTypeArray,   ClassSubtypeCFArray,          false, arrayIsValid,      arrayDescription},
+    {"__NSDate",             RollbarCrashObjCClassTypeDate,    ClassSubtypeNone,             false, dateIsValid,       dateDescription},
+    {"NSDate",               RollbarCrashObjCClassTypeDate,    ClassSubtypeNone,             false, dateIsValid,       dateDescription},
+    {"__NSCFNumber",         RollbarCrashObjCClassTypeNumber,  ClassSubtypeNone,             false, numberIsValid,     numberDescription},
+    {"NSCFNumber",           RollbarCrashObjCClassTypeNumber,  ClassSubtypeNone,             false, numberIsValid,     numberDescription},
+    {"NSNumber",             RollbarCrashObjCClassTypeNumber,  ClassSubtypeNone,             false, numberIsValid,     numberDescription},
+    {"NSURL",                RollbarCrashObjCClassTypeURL,     ClassSubtypeNone,             false, urlIsValid,        urlDescription},
+    {NULL,                   RollbarCrashObjCClassTypeUnknown, ClassSubtypeNone,             false, objectIsValid,     objectDescription},
 };
 
 static ClassData g_taggedClassData[] =
 {
-    {"NSAtom",               KSObjCClassTypeUnknown, ClassSubtypeNone,             false, taggedObjectIsValid, taggedObjectDescription},
-    {NULL,                   KSObjCClassTypeUnknown, ClassSubtypeNone,             false, taggedObjectIsValid, taggedObjectDescription},
-    {"NSString",             KSObjCClassTypeString,  ClassSubtypeNone,             false, taggedStringIsValid, taggedStringDescription},
-    {"NSNumber",             KSObjCClassTypeNumber,  ClassSubtypeNone,             false, taggedNumberIsValid, taggedNumberDescription},
-    {"NSIndexPath",          KSObjCClassTypeUnknown, ClassSubtypeNone,             false, taggedObjectIsValid, taggedObjectDescription},
-    {"NSManagedObjectID",    KSObjCClassTypeUnknown, ClassSubtypeNone,             false, taggedObjectIsValid, taggedObjectDescription},
-    {"NSDate",               KSObjCClassTypeDate,    ClassSubtypeNone,             false, taggedDateIsValid,   taggedDateDescription},
-    {NULL,                   KSObjCClassTypeUnknown, ClassSubtypeNone,             false, taggedObjectIsValid, taggedObjectDescription},
+    {"NSAtom",               RollbarCrashObjCClassTypeUnknown, ClassSubtypeNone,             false, taggedObjectIsValid, taggedObjectDescription},
+    {NULL,                   RollbarCrashObjCClassTypeUnknown, ClassSubtypeNone,             false, taggedObjectIsValid, taggedObjectDescription},
+    {"NSString",             RollbarCrashObjCClassTypeString,  ClassSubtypeNone,             false, taggedStringIsValid, taggedStringDescription},
+    {"NSNumber",             RollbarCrashObjCClassTypeNumber,  ClassSubtypeNone,             false, taggedNumberIsValid, taggedNumberDescription},
+    {"NSIndexPath",          RollbarCrashObjCClassTypeUnknown, ClassSubtypeNone,             false, taggedObjectIsValid, taggedObjectDescription},
+    {"NSManagedObjectID",    RollbarCrashObjCClassTypeUnknown, ClassSubtypeNone,             false, taggedObjectIsValid, taggedObjectDescription},
+    {"NSDate",               RollbarCrashObjCClassTypeDate,    ClassSubtypeNone,             false, taggedDateIsValid,   taggedDateDescription},
+    {NULL,                   RollbarCrashObjCClassTypeUnknown, ClassSubtypeNone,             false, taggedObjectIsValid, taggedObjectDescription},
 };
 static int g_taggedClassDataCount = sizeof(g_taggedClassData) / sizeof(*g_taggedClassData);
 
@@ -184,7 +184,7 @@ static bool isValidTaggedPointer(const void* object)
         if(getTaggedSlot(object) <= g_taggedClassDataCount)
         {
             const ClassData* classData = getClassDataFromTaggedPointer(object);
-            return classData->type != KSObjCClassTypeUnknown;
+            return classData->type != RollbarCrashObjCClassTypeUnknown;
         }
     }
     return false;
@@ -797,7 +797,7 @@ int ksobjc_ivarCount(const void* const classPtr)
     return (int)ivars->count;
 }
 
-int ksobjc_ivarList(const void* const classPtr, KSObjCIvar* dstIvars, int ivarsCount)
+int ksobjc_ivarList(const void* const classPtr, RollbarCrashObjCIvar* dstIvars, int ivarsCount)
 {
     // TODO: Check this for a possible bad access.
     if(dstIvars == NULL)
@@ -820,7 +820,7 @@ int ksobjc_ivarList(const void* const classPtr, KSObjCIvar* dstIvars, int ivarsC
     const struct ivar_t* src = (void*)srcPtr;
     for(int i = 0; i < count; i++)
     {
-        KSObjCIvar* dst = &dstIvars[i];
+        RollbarCrashObjCIvar* dst = &dstIvars[i];
         dst->name = src->name;
         dst->type = src->type;
         dst->index = i;
@@ -830,7 +830,7 @@ int ksobjc_ivarList(const void* const classPtr, KSObjCIvar* dstIvars, int ivarsC
     return count;
 }
 
-bool ksobjc_ivarNamed(const void* const classPtr, const char* name, KSObjCIvar* dst)
+bool ksobjc_ivarNamed(const void* const classPtr, const char* name, RollbarCrashObjCIvar* dst)
 {
     if(name == NULL)
     {
@@ -912,40 +912,40 @@ static inline bool isBlockClass(const void* class)
     return strcmp(name, g_blockBaseClassName) == 0;
 }
 
-KSObjCType ksobjc_objectType(const void* objectOrClassPtr)
+RollbarCrashObjCType ksobjc_objectType(const void* objectOrClassPtr)
 {
     if(objectOrClassPtr == NULL)
     {
-        return KSObjCTypeUnknown;
+        return RollbarCrashObjCTypeUnknown;
     }
 
     if(isTaggedPointer(objectOrClassPtr))
     {
-        return KSObjCTypeObject;
+        return RollbarCrashObjCTypeObject;
     }
     
     if(!isValidObject(objectOrClassPtr))
     {
-        return KSObjCTypeUnknown;
+        return RollbarCrashObjCTypeUnknown;
     }
     
     if(!isValidClass(objectOrClassPtr))
     {
-        return KSObjCTypeUnknown;
+        return RollbarCrashObjCTypeUnknown;
     }
     
     const struct class_t* isa = getIsaPointer(objectOrClassPtr);
 
     if(isBlockClass(isa))
     {
-        return KSObjCTypeBlock;
+        return RollbarCrashObjCTypeBlock;
     }
     if(!isMetaClass(isa))
     {
-        return KSObjCTypeObject;
+        return RollbarCrashObjCTypeObject;
     }
     
-    return KSObjCTypeClass;
+    return RollbarCrashObjCTypeClass;
 }
 
 
@@ -1704,7 +1704,7 @@ bool ksobjc_isValidObject(const void* object)
     return data->isValidObject(object);
 }
 
-KSObjCClassType ksobjc_objectClassType(const void* object)
+RollbarCrashObjCClassType ksobjc_objectClassType(const void* object)
 {
     const ClassData* data = getClassDataFromObject(object);
     return data->type;

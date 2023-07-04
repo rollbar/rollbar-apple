@@ -1,5 +1,5 @@
 //
-//  KSLogger.c
+//  RollbarCrashLogger.c
 //
 //  Created by Karl Stenerud on 11-06-25.
 //
@@ -25,8 +25,8 @@
 //
 
 
-#include "KSLogger.h"
-#include "KSSystemCapabilities.h"
+#include "RollbarCrashLogger.h"
+#include "RollbarCrashSystemCapabilities.h"
 
 // ===========================================================================
 #pragma mark - Common -
@@ -54,8 +54,8 @@
  *
  * Unless you're logging from within signal handlers, it's safe to set it to 0.
  */
-#ifndef KSLOGGER_CBufferSize
-#define KSLOGGER_CBufferSize 1024
+#ifndef RollbarCrashLOGGER_CBufferSize
+#define RollbarCrashLOGGER_CBufferSize 1024
 #endif
 
 /** Where console logs will be written */
@@ -94,7 +94,7 @@ static inline void writeFmtToLog(const char* fmt, ...)
     va_end(args);
 }
 
-#if KSLOGGER_CBufferSize > 0
+#if RollbarCrashLOGGER_CBufferSize > 0
 
 /** The file descriptor where log entries get written. */
 static int g_fd = -1;
@@ -128,7 +128,7 @@ static inline void writeFmtArgsToLog(const char* fmt, va_list args)
     }
     else
     {
-        char buffer[KSLOGGER_CBufferSize];
+        char buffer[RollbarCrashLOGGER_CBufferSize];
         vsnprintf(buffer, sizeof(buffer), fmt, args);
         writeToLog(buffer);
     }
@@ -161,7 +161,7 @@ bool kslog_setLogFilename(const char* filename, bool overwrite)
         fd = open(filename, openMask, 0644);
         unlikely_if(fd < 0)
         {
-            writeFmtToLog("KSLogger: Could not open %s: %s", filename, strerror(errno));
+            writeFmtToLog("RollbarCrashLogger: Could not open %s: %s", filename, strerror(errno));
             return false;
         }
         if(filename != g_logFilename)
@@ -174,7 +174,7 @@ bool kslog_setLogFilename(const char* filename, bool overwrite)
     return true;
 }
 
-#else // if KSLogger_CBufferSize <= 0
+#else // if RollbarCrashLogger_CBufferSize <= 0
 
 static FILE* g_file = NULL;
 
@@ -227,7 +227,7 @@ bool kslog_setLogFilename(const char* filename, bool overwrite)
         file = fopen(filename, overwrite ? "wb" : "ab");
         unlikely_if(file == NULL)
         {
-            writeFmtToLog("KSLogger: Could not open %s: %s", filename, strerror(errno));
+            writeFmtToLog("RollbarCrashLogger: Could not open %s: %s", filename, strerror(errno));
             return false;
         }
     }
@@ -287,7 +287,7 @@ void i_kslog_logC(const char* const level,
 #pragma mark - Objective-C -
 // ===========================================================================
 
-#if KSCRASH_HAS_OBJC
+#if RollbarCrashCRASH_HAS_OBJC
 #include <CoreFoundation/CoreFoundation.h>
 
 void i_kslog_logObjCBasic(CFStringRef fmt, ...)
@@ -345,4 +345,4 @@ void i_kslog_logObjC(const char* const level,
     }
     CFRelease(logFmt);
 }
-#endif // KSCRASH_HAS_OBJC
+#endif // RollbarCrashCRASH_HAS_OBJC

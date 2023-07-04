@@ -1,5 +1,5 @@
 //
-//  KSCrashMonitor_NSException.m
+//  RollbarCrashMonitor_NSException.m
 //
 //  Created by Karl Stenerud on 2012-01-28.
 //
@@ -24,16 +24,16 @@
 // THE SOFTWARE.
 //
 
-#import "KSCrash.h"
-#import "KSCrashMonitor_NSException.h"
-#import "KSStackCursor_Backtrace.h"
-#include "KSCrashMonitorContext.h"
-#include "KSID.h"
-#include "KSThread.h"
+#import "RollbarCrash.h"
+#import "RollbarCrashMonitor_NSException.h"
+#import "RollbarCrashStackCursor_Backtrace.h"
+#include "RollbarCrashMonitorContext.h"
+#include "RollbarCrashID.h"
+#include "RollbarCrashThread.h"
 #import <Foundation/Foundation.h>
 
-//#define KSLogger_LocalLevel TRACE
-#import "KSLogger.h"
+//#define RollbarCrashLogger_LocalLevel TRACE
+#import "RollbarCrashLogger.h"
 
 
 // ============================================================================
@@ -42,7 +42,7 @@
 
 static volatile bool g_isEnabled = 0;
 
-static KSCrash_MonitorContext g_monitorContext;
+static RollbarCrash_MonitorContext g_monitorContext;
 
 /** The exception handler that was in place before we installed ours. */
 static NSUncaughtExceptionHandler* g_previousUncaughtExceptionHandler;
@@ -59,7 +59,7 @@ static NSUncaughtExceptionHandler* g_previousUncaughtExceptionHandler;
  */
 
 static void handleException(NSException* exception, BOOL currentSnapshotUserReported) {
-    KSLOG_DEBUG(@"Trapped exception %@", exception);
+    RollbarCrashLOG_DEBUG(@"Trapped exception %@", exception);
     if(g_isEnabled)
     {
         thread_act_array_t threads = NULL;
@@ -67,7 +67,7 @@ static void handleException(NSException* exception, BOOL currentSnapshotUserRepo
         ksmc_suspendEnvironment(&threads, &numThreads);
         kscm_notifyFatalExceptionCaptured(false);
 
-        KSLOG_DEBUG(@"Filling out context.");
+        RollbarCrashLOG_DEBUG(@"Filling out context.");
         NSArray* addresses = [exception callStackReturnAddresses];
         NSUInteger numFrames = addresses.count;
         uintptr_t* callstack = malloc(numFrames * sizeof(*callstack));
@@ -78,14 +78,14 @@ static void handleException(NSException* exception, BOOL currentSnapshotUserRepo
 
         char eventID[37];
         ksid_generate(eventID);
-        KSMC_NEW_CONTEXT(machineContext);
+        RollbarCrashMC_NEW_CONTEXT(machineContext);
         ksmc_getContextForThread(ksthread_self(), machineContext, true);
-        KSStackCursor cursor;
+        RollbarCrashStackCursor cursor;
         kssc_initWithBacktrace(&cursor, callstack, (int)numFrames, 0);
 
-        KSCrash_MonitorContext* crashContext = &g_monitorContext;
+        RollbarCrash_MonitorContext* crashContext = &g_monitorContext;
         memset(crashContext, 0, sizeof(*crashContext));
-        crashContext->crashType = KSCrashMonitorTypeNSException;
+        crashContext->crashType = RollbarCrashMonitorTypeNSException;
         crashContext->eventID = eventID;
         crashContext->offendingMachineContext = machineContext;
         crashContext->registersAreValid = false;
@@ -96,7 +96,7 @@ static void handleException(NSException* exception, BOOL currentSnapshotUserRepo
         crashContext->stackCursor = &cursor;
         crashContext->currentSnapshotUserReported = currentSnapshotUserReported;
 
-        KSLOG_DEBUG(@"Calling main crash handler.");
+        RollbarCrashLOG_DEBUG(@"Calling main crash handler.");
         kscm_handleException(crashContext);
 
         free(callstack);
@@ -105,7 +105,7 @@ static void handleException(NSException* exception, BOOL currentSnapshotUserRepo
         }
         if (g_previousUncaughtExceptionHandler != NULL)
         {
-            KSLOG_DEBUG(@"Calling original exception handler.");
+            RollbarCrashLOG_DEBUG(@"Calling original exception handler.");
             g_previousUncaughtExceptionHandler(exception);
         }
     }
@@ -130,17 +130,17 @@ static void setEnabled(bool isEnabled)
         g_isEnabled = isEnabled;
         if(isEnabled)
         {
-            KSLOG_DEBUG(@"Backing up original handler.");
+            RollbarCrashLOG_DEBUG(@"Backing up original handler.");
             g_previousUncaughtExceptionHandler = NSGetUncaughtExceptionHandler();
             
-            KSLOG_DEBUG(@"Setting new handler.");
+            RollbarCrashLOG_DEBUG(@"Setting new handler.");
             NSSetUncaughtExceptionHandler(&handleUncaughtException);
-            KSCrash.sharedInstance.uncaughtExceptionHandler = &handleUncaughtException;
-            KSCrash.sharedInstance.currentSnapshotUserReportedExceptionHandler = &handleCurrentSnapshotUserReportedException;
+            RollbarCrash.sharedInstance.uncaughtExceptionHandler = &handleUncaughtException;
+            RollbarCrash.sharedInstance.currentSnapshotUserReportedExceptionHandler = &handleCurrentSnapshotUserReportedException;
         }
         else
         {
-            KSLOG_DEBUG(@"Restoring original handler.");
+            RollbarCrashLOG_DEBUG(@"Restoring original handler.");
             NSSetUncaughtExceptionHandler(g_previousUncaughtExceptionHandler);
         }
     }
@@ -151,9 +151,9 @@ static bool isEnabled()
     return g_isEnabled;
 }
 
-KSCrashMonitorAPI* kscm_nsexception_getAPI()
+RollbarCrashMonitorAPI* kscm_nsexception_getAPI()
 {
-    static KSCrashMonitorAPI api =
+    static RollbarCrashMonitorAPI api =
     {
         .setEnabled = setEnabled,
         .isEnabled = isEnabled

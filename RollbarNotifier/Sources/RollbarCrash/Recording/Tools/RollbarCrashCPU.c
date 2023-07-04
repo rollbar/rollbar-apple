@@ -1,5 +1,5 @@
 //
-//  KSCPU.h
+//  RollbarCrashCPU.h
 //
 //  Created by Karl Stenerud on 2012-01-29.
 //
@@ -25,15 +25,15 @@
 //
 
 
-#include "KSCPU.h"
+#include "RollbarCrashCPU.h"
 
-#include "KSSystemCapabilities.h"
+#include "RollbarCrashSystemCapabilities.h"
 
 #include <mach/mach.h>
 #include <mach-o/arch.h>
 
-//#define KSLogger_LocalLevel TRACE
-#include "KSLogger.h"
+//#define RollbarCrashLogger_LocalLevel TRACE
+#include "RollbarCrashLogger.h"
 
 
 const char* kscpu_currentArch(void)
@@ -42,20 +42,20 @@ const char* kscpu_currentArch(void)
     return archInfo == NULL ? NULL : archInfo->name;
 }
 
-#if KSCRASH_HAS_THREADS_API
+#if RollbarCrashCRASH_HAS_THREADS_API
 bool kscpu_i_fillState(const thread_t thread,
                        const thread_state_t state,
                        const thread_state_flavor_t flavor,
                        const mach_msg_type_number_t stateCount)
 {
-    KSLOG_TRACE("Filling thread state with flavor %x.", flavor);
+    RollbarCrashLOG_TRACE("Filling thread state with flavor %x.", flavor);
     mach_msg_type_number_t stateCountBuff = stateCount;
     kern_return_t kr;
     
     kr = thread_get_state(thread, flavor, state, &stateCountBuff);
     if(kr != KERN_SUCCESS)
     {
-        KSLOG_ERROR("thread_get_state: %s", mach_error_string(kr));
+        RollbarCrashLOG_ERROR("thread_get_state: %s", mach_error_string(kr));
         return false;
     }
     return true;

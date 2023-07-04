@@ -1,5 +1,5 @@
 //
-//  KSMach.h
+//  RollbarCrashMach.h
 //
 // Copyright 2016 Karl Stenerud.
 //
@@ -22,8 +22,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef HDR_KSMach_h
-#define HDR_KSMach_h
+#ifndef HDR_RollbarCrashMach_h
+#define HDR_RollbarCrashMach_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -71,4 +71,4 @@ int ksmach_machExceptionForSignal(int signal);
 }
 #endif
 
-#endif // HDR_KSMach_h
+#endif // HDR_RollbarCrashMach_h

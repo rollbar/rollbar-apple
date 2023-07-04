@@ -1,5 +1,5 @@
 //
-//  KSDate.c
+//  RollbarCrashDate.c
 //
 // Copyright 2016 Karl Stenerud.
 //
@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-#include "KSDate.h"
+#include "RollbarCrashDate.h"
 #include <stdio.h>
 #include <time.h>
 

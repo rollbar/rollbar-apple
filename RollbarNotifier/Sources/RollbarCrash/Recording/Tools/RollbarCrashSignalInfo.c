@@ -1,5 +1,5 @@
 //
-//  KSSignalInfo.c
+//  RollbarCrashSignalInfo.c
 //
 //  Created by Karl Stenerud on 2012-02-03.
 //
@@ -25,7 +25,7 @@
 //
 
 
-#include "KSSignalInfo.h"
+#include "RollbarCrashSignalInfo.h"
 
 #include <signal.h>
 #include <stdlib.h>
@@ -35,19 +35,19 @@ typedef struct
 {
     const int code;
     const char* const name;
-} KSSignalCodeInfo;
+} RollbarCrashSignalCodeInfo;
 
 typedef struct
 {
     const int sigNum;
     const char* const name;
-    const KSSignalCodeInfo* const codes;
+    const RollbarCrashSignalCodeInfo* const codes;
     const int numCodes;
-} KSSignalInfo;
+} RollbarCrashSignalInfo;
 
 #define ENUM_NAME_MAPPING(A) {A, #A}
 
-static const KSSignalCodeInfo g_sigIllCodes[] =
+static const RollbarCrashSignalCodeInfo g_sigIllCodes[] =
 {
 #ifdef ILL_NOOP
     ENUM_NAME_MAPPING(ILL_NOOP),
@@ -62,14 +62,14 @@ static const KSSignalCodeInfo g_sigIllCodes[] =
     ENUM_NAME_MAPPING(ILL_BADSTK),
 };
 
-static const KSSignalCodeInfo g_sigTrapCodes[] =
+static const RollbarCrashSignalCodeInfo g_sigTrapCodes[] =
 {
     ENUM_NAME_MAPPING(0),
     ENUM_NAME_MAPPING(TRAP_BRKPT),
     ENUM_NAME_MAPPING(TRAP_TRACE),
 };
 
-static const KSSignalCodeInfo g_sigFPECodes[] =
+static const RollbarCrashSignalCodeInfo g_sigFPECodes[] =
 {
 #ifdef FPE_NOOP
     ENUM_NAME_MAPPING(FPE_NOOP),
@@ -84,7 +84,7 @@ static const KSSignalCodeInfo g_sigFPECodes[] =
     ENUM_NAME_MAPPING(FPE_INTOVF),
 };
 
-static const KSSignalCodeInfo g_sigBusCodes[] =
+static const RollbarCrashSignalCodeInfo g_sigBusCodes[] =
 {
 #ifdef BUS_NOOP
     ENUM_NAME_MAPPING(BUS_NOOP),
@@ -94,7 +94,7 @@ static const KSSignalCodeInfo g_sigBusCodes[] =
     ENUM_NAME_MAPPING(BUS_OBJERR),
 };
 
-static const KSSignalCodeInfo g_sigSegVCodes[] =
+static const RollbarCrashSignalCodeInfo g_sigSegVCodes[] =
 {
 #ifdef SEGV_NOOP
     ENUM_NAME_MAPPING(SEGV_NOOP),
@@ -106,7 +106,7 @@ static const KSSignalCodeInfo g_sigSegVCodes[] =
 #define SIGNAL_INFO(SIGNAL, CODES) {SIGNAL, #SIGNAL, CODES, sizeof(CODES) / sizeof(*CODES)}
 #define SIGNAL_INFO_NOCODES(SIGNAL) {SIGNAL, #SIGNAL, 0, 0}
 
-static const KSSignalInfo g_fatalSignalData[] =
+static const RollbarCrashSignalInfo g_fatalSignalData[] =
 {
     SIGNAL_INFO_NOCODES(SIGABRT),
     SIGNAL_INFO(SIGBUS, g_sigBusCodes),

@@ -1,5 +1,5 @@
 //
-//  KSCxaThrowSwapper.cpp
+//  RollbarCrashCxaThrowSwapper.cpp
 //
 //  Copyright (c) 2019 YANDEX LLC. All rights reserved.
 //
@@ -48,7 +48,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "KSCxaThrowSwapper.h"
+#include "RollbarCrashCxaThrowSwapper.h"
 
 #include <stdlib.h>
 #include <execinfo.h>
@@ -60,8 +60,8 @@
 #include <mach-o/dyld.h>
 #include <mach-o/nlist.h>
 
-#include "KSgetsect.h"
-#include "KSPlatformSpecificDefines.h"
+#include "RollbarCrashgetsect.h"
+#include "RollbarCrashPlatformSpecificDefines.h"
 
 #ifndef SEG_DATA_CONST
 #define SEG_DATA_CONST  "__DATA_CONST"
@@ -71,23 +71,23 @@ typedef struct
 {
     uintptr_t image;
     uintptr_t function;
-} KSAddressPair;
+} RollbarCrashAddressPair;
 
 static cxa_throw_type g_cxa_throw_handler = NULL;
 static const char *const g_cxa_throw_name = "__cxa_throw";
 
-static KSAddressPair *g_cxa_originals = NULL;
+static RollbarCrashAddressPair *g_cxa_originals = NULL;
 static size_t g_cxa_originals_capacity = 0;
 static size_t g_cxa_originals_count = 0;
 
-static void addPair(KSAddressPair pair)
+static void addPair(RollbarCrashAddressPair pair)
 {
     if (g_cxa_originals_count == g_cxa_originals_capacity)
     {
         g_cxa_originals_capacity *= 2;
-        g_cxa_originals = (KSAddressPair *) realloc(g_cxa_originals, sizeof(KSAddressPair) * g_cxa_originals_capacity);
+        g_cxa_originals = (RollbarCrashAddressPair *) realloc(g_cxa_originals, sizeof(RollbarCrashAddressPair) * g_cxa_originals_capacity);
     }
-    memcpy(&g_cxa_originals[g_cxa_originals_count++], &pair, sizeof(KSAddressPair));
+    memcpy(&g_cxa_originals[g_cxa_originals_count++], &pair, sizeof(RollbarCrashAddressPair));
 }
 
 static uintptr_t findAddress(void *address)
@@ -275,7 +275,7 @@ static void perform_rebinding_with_section(const section_t *section,
             Dl_info info;
             if (dladdr(section, &info) != 0)
             {
-                KSAddressPair pair = {(uintptr_t) info.dli_fbase, (uintptr_t) indirect_symbol_bindings[i]};
+                RollbarCrashAddressPair pair = {(uintptr_t) info.dli_fbase, (uintptr_t) indirect_symbol_bindings[i]};
                 addPair(pair);
             }
             indirect_symbol_bindings[i] = (void *) __cxa_throw_decorator;
@@ -355,7 +355,7 @@ int ksct_swap(const cxa_throw_type handler)
     if (g_cxa_originals == NULL)
     {
         g_cxa_originals_capacity = 25;
-        g_cxa_originals = (KSAddressPair *) malloc(sizeof(KSAddressPair) * g_cxa_originals_capacity);
+        g_cxa_originals = (RollbarCrashAddressPair *) malloc(sizeof(RollbarCrashAddressPair) * g_cxa_originals_capacity);
     }
     g_cxa_originals_count = 0;
 

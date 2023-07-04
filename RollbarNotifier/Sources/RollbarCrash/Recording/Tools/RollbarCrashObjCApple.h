@@ -1,5 +1,5 @@
 //
-//  KSObjCApple.h
+//  RollbarCrashObjCApple.h
 //
 //  Created by Karl Stenerud on 2012-08-30.
 //
@@ -14,10 +14,10 @@
 //
 
 // This file contains structures and constants copied from Apple header
-// files, arranged for use in KSObjC.
+// files, arranged for use in RollbarCrashObjC.
 
-#ifndef HDR_KSObjCApple_h
-#define HDR_KSObjCApple_h
+#ifndef HDR_RollbarCrashObjCApple_h
+#define HDR_RollbarCrashObjCApple_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -88,7 +88,7 @@ NAME { \
     
 #if SUPPORT_TAGGED_POINTERS
 
-// KS: The original values wouldn't have worked. The slot shift and mask
+// RollbarCrash: The original values wouldn't have worked. The slot shift and mask
 // were incorrect.
 #define TAG_COUNT 8
 //#define TAG_SLOT_MASK 0xf
@@ -668,4 +668,4 @@ CF_INLINE uintptr_t __CFBasicHashGetSlotCount(CFConstBasicHashRef ht, CFIndex id
 }
 #endif
 
-#endif // HDR_KSObjCApple_h
+#endif // HDR_RollbarCrashObjCApple_h

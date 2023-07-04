@@ -1,5 +1,5 @@
 //
-//  KSObjC.h
+//  RollbarCrashObjC.h
 //
 //  Created by Karl Stenerud on 2012-08-30.
 //
@@ -25,8 +25,8 @@
 //
 
 
-#ifndef HDR_KSObjC_h
-#define HDR_KSObjC_h
+#ifndef HDR_RollbarCrashObjC_h
+#define HDR_RollbarCrashObjC_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -39,30 +39,30 @@ extern "C" {
 
 typedef enum
 {
-    KSObjCTypeUnknown = 0,
-    KSObjCTypeClass,
-    KSObjCTypeObject,
-    KSObjCTypeBlock,
-} KSObjCType;
+    RollbarCrashObjCTypeUnknown = 0,
+    RollbarCrashObjCTypeClass,
+    RollbarCrashObjCTypeObject,
+    RollbarCrashObjCTypeBlock,
+} RollbarCrashObjCType;
 
 typedef enum
 {
-    KSObjCClassTypeUnknown = 0,
-    KSObjCClassTypeString,
-    KSObjCClassTypeDate,
-    KSObjCClassTypeURL,
-    KSObjCClassTypeArray,
-    KSObjCClassTypeDictionary,
-    KSObjCClassTypeNumber,
-    KSObjCClassTypeException,
-} KSObjCClassType;
+    RollbarCrashObjCClassTypeUnknown = 0,
+    RollbarCrashObjCClassTypeString,
+    RollbarCrashObjCClassTypeDate,
+    RollbarCrashObjCClassTypeURL,
+    RollbarCrashObjCClassTypeArray,
+    RollbarCrashObjCClassTypeDictionary,
+    RollbarCrashObjCClassTypeNumber,
+    RollbarCrashObjCClassTypeException,
+} RollbarCrashObjCClassType;
 
 typedef struct
 {
     const char* name;
     const char* type;
     int index;
-} KSObjCIvar;
+} RollbarCrashObjCIvar;
 
 
 //======================================================================
@@ -97,10 +97,10 @@ bool ksobjc_isValidTaggedPointer(const void* const pointer);
  *
  * @param objectOrClassPtr Pointer to something that may be an object or class.
  *
- * @return The type of object, or KSObjCTypeNone if it was not an object or
+ * @return The type of object, or RollbarCrashObjCTypeNone if it was not an object or
  *         was inaccessible.
  */
-KSObjCType ksobjc_objectType(const void* objectOrClassPtr);
+RollbarCrashObjCType ksobjc_objectType(const void* objectOrClassPtr);
 
 /** Check that an object contains valid data.
  * If the object is of a recognized type (string, date, array, etc),
@@ -213,7 +213,7 @@ int ksobjc_ivarCount(const void* classPtr);
  *
  * @return The number of ivars copied.
  */
-int ksobjc_ivarList(const void* classPtr, KSObjCIvar* dstIvars, int ivarsCount);
+int ksobjc_ivarList(const void* classPtr, RollbarCrashObjCIvar* dstIvars, int ivarsCount);
 
 /** Get ivar information by name/
  *
@@ -225,7 +225,7 @@ int ksobjc_ivarList(const void* classPtr, KSObjCIvar* dstIvars, int ivarsCount);
  *
  * @return true if the operation was successful.
  */
-bool ksobjc_ivarNamed(const void* const classPtr, const char* name, KSObjCIvar* dst);
+bool ksobjc_ivarNamed(const void* const classPtr, const char* name, RollbarCrashObjCIvar* dst);
 
 /** Get the value of an ivar in an object.
  *
@@ -268,14 +268,14 @@ uintptr_t ksobjc_taggedPointerPayload(const void* taggedObjectPtr);
 int ksobjc_getDescription(void* object, char* buffer, int bufferLength);
 
 /** Get the class type of an object.
- * There are a number of common class types that KSObjC understamds,
- * listed in KSObjCClassType.
+ * There are a number of common class types that RollbarCrashObjC understamds,
+ * listed in RollbarCrashObjCClassType.
  *
  * @param object The object to query.
  *
- * @return The class type, or KSObjCClassTypeUnknown if it couldn't be determined.
+ * @return The class type, or RollbarCrashObjCClassTypeUnknown if it couldn't be determined.
  */
-KSObjCClassType ksobjc_objectClassType(const void* object);
+RollbarCrashObjCClassType ksobjc_objectClassType(const void* object);
 
 
 //======================================================================
@@ -399,4 +399,4 @@ int ksobjc_dictionaryCount(const void* dict);
 }
 #endif
 
-#endif // HDR_KSObjC_h
+#endif // HDR_RollbarCrashObjC_h

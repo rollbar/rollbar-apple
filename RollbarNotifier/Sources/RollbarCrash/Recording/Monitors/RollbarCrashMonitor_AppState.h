@@ -1,5 +1,5 @@
 //
-//  KSCrashMonitor_AppState.h
+//  RollbarCrashMonitor_AppState.h
 //
 //  Created by Karl Stenerud on 2012-02-05.
 //
@@ -30,14 +30,14 @@
  */
 
 
-#ifndef HDR_KSCrashMonitor_AppState_h
-#define HDR_KSCrashMonitor_AppState_h
+#ifndef HDR_RollbarCrashMonitor_AppState_h
+#define HDR_RollbarCrashMonitor_AppState_h
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "KSCrashMonitor.h"
+#include "RollbarCrashMonitor.h"
 
 #include <stdbool.h>
 
@@ -85,7 +85,7 @@ typedef struct
     /** If true, the application is currently in the foreground. */
     bool applicationIsInForeground;
     
-} KSCrash_AppState;
+} RollbarCrash_AppState;
     
 
 /** Initialize the state monitor.
@@ -98,7 +98,7 @@ void kscrashstate_initialize(const char* stateFilePath);
  */
 bool kscrashstate_reset(void);
 
-/** Notify the crash reporter of KSCrash being added to Objective-C runtime system.
+/** Notify the crash reporter of RollbarCrash being added to Objective-C runtime system.
  */
 void kscrashstate_notifyObjCLoad(void);
 
@@ -125,15 +125,15 @@ void kscrashstate_notifyAppCrash(void);
 
 /** Read-only access into the current state.
  */
-const KSCrash_AppState* const kscrashstate_currentState(void);
+const RollbarCrash_AppState* const kscrashstate_currentState(void);
 
 /** Access the Monitor API.
  */
-KSCrashMonitorAPI* kscm_appstate_getAPI(void);
+RollbarCrashMonitorAPI* kscm_appstate_getAPI(void);
 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // HDR_KSCrashMonitor_AppState_h
+#endif // HDR_RollbarCrashMonitor_AppState_h

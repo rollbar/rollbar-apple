@@ -1,5 +1,5 @@
 //
-//  KSCrashReportStore.c
+//  RollbarCrashReportStore.c
 //
 //  Created by Karl Stenerud on 2012-02-05.
 //
@@ -24,9 +24,9 @@
 // THE SOFTWARE.
 //
 
-#include "KSCrashReportStore.h"
-#include "KSLogger.h"
-#include "KSFileUtils.h"
+#include "RollbarCrashReportStore.h"
+#include "RollbarCrashLogger.h"
+#include "RollbarCrashFileUtils.h"
 
 #include <dirent.h>
 #include <errno.h>
@@ -68,7 +68,7 @@ static inline int64_t getNextUniqueID()
 
 static void getCrashReportPathByID(int64_t id, char* pathBuffer)
 {
-    snprintf(pathBuffer, KSCRS_MAX_PATH_LENGTH, "%s/%s-report-%016llx.json", g_reportsPath, g_appName, id);
+    snprintf(pathBuffer, RollbarCrashCRS_MAX_PATH_LENGTH, "%s/%s-report-%016llx.json", g_reportsPath, g_appName, id);
     
 }
 
@@ -88,7 +88,7 @@ static int getReportCount()
     DIR* dir = opendir(g_reportsPath);
     if(dir == NULL)
     {
-        KSLOG_ERROR("Could not open directory %s", g_reportsPath);
+        RollbarCrashLOG_ERROR("Could not open directory %s", g_reportsPath);
         goto done;
     }
     struct dirent* ent;
@@ -114,7 +114,7 @@ static int getReportIDs(int64_t* reportIDs, int count)
     DIR* dir = opendir(g_reportsPath);
     if(dir == NULL)
     {
-        KSLOG_ERROR("Could not open directory %s", g_reportsPath);
+        RollbarCrashLOG_ERROR("Could not open directory %s", g_reportsPath);
         goto done;
     }
 
@@ -213,7 +213,7 @@ int kscrs_getReportIDs(int64_t* reportIDs, int count)
 char* kscrs_readReport(int64_t reportID)
 {
     pthread_mutex_lock(&g_mutex);
-    char path[KSCRS_MAX_PATH_LENGTH];
+    char path[RollbarCrashCRS_MAX_PATH_LENGTH];
     getCrashReportPathByID(reportID, path);
     char* result;
     ksfu_readEntireFile(path, &result, NULL, 2000000);
@@ -225,25 +225,25 @@ int64_t kscrs_addUserReport(const char* report, int reportLength)
 {
     pthread_mutex_lock(&g_mutex);
     int64_t currentID = getNextUniqueID();
-    char crashReportPath[KSCRS_MAX_PATH_LENGTH];
+    char crashReportPath[RollbarCrashCRS_MAX_PATH_LENGTH];
     getCrashReportPathByID(currentID, crashReportPath);
 
     int fd = open(crashReportPath, O_WRONLY | O_CREAT, 0644);
     if(fd < 0)
     {
-        KSLOG_ERROR("Could not open file %s: %s", crashReportPath, strerror(errno));
+        RollbarCrashLOG_ERROR("Could not open file %s: %s", crashReportPath, strerror(errno));
         goto done;
     }
 
     int bytesWritten = (int)write(fd, report, (unsigned)reportLength);
     if(bytesWritten < 0)
     {
-        KSLOG_ERROR("Could not write to file %s: %s", crashReportPath, strerror(errno));
+        RollbarCrashLOG_ERROR("Could not write to file %s: %s", crashReportPath, strerror(errno));
         goto done;
     }
     else if(bytesWritten < reportLength)
     {
-        KSLOG_ERROR("Expected to write %d bytes to file %s, but only wrote %d", crashReportPath, reportLength, bytesWritten);
+        RollbarCrashLOG_ERROR("Expected to write %d bytes to file %s, but only wrote %d", crashReportPath, reportLength, bytesWritten);
     }
 
 done:
@@ -265,7 +265,7 @@ void kscrs_deleteAllReports()
 
 void kscrs_deleteReportWithID(int64_t reportID)
 {
-    char path[KSCRS_MAX_PATH_LENGTH];
+    char path[RollbarCrashCRS_MAX_PATH_LENGTH];
     getCrashReportPathByID(reportID, path);
     ksfu_removeFile(path, true);
 }

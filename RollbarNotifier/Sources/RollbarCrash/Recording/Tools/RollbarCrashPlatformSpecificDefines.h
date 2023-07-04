@@ -1,5 +1,5 @@
 //
-//  KSPlatformSpecificDefines.h
+//  RollbarCrashPlatformSpecificDefines.h
 //
 //  Copyright (c) 2019 YANDEX LLC. All rights reserved.
 //
@@ -22,8 +22,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef KSPlatformSpecificDefines_h
-#define KSPlatformSpecificDefines_h
+#ifndef RollbarCrashPlatformSpecificDefines_h
+#define RollbarCrashPlatformSpecificDefines_h
 
 #include <mach-o/loader.h>
 #include <mach-o/nlist.h>
@@ -42,4 +42,4 @@ typedef struct nlist nlist_t;
 #define LC_SEGMENT_ARCH_DEPENDENT LC_SEGMENT
 #endif /* __LP64__ */
 
-#endif /* KSPlatformSpecificDefines_h */
+#endif /* RollbarCrashPlatformSpecificDefines_h */

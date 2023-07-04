@@ -1,5 +1,5 @@
 //
-//  KSMemory.c
+//  RollbarCrashMemory.c
 //
 //  Created by Karl Stenerud on 2012-01-29.
 //
@@ -25,10 +25,10 @@
 //
 
 
-#include "KSMemory.h"
+#include "RollbarCrashMemory.h"
 
-//#define KSLogger_LocalLevel TRACE
-#include "KSLogger.h"
+//#define RollbarCrashLogger_LocalLevel TRACE
+#include "RollbarCrashLogger.h"
 
 #include <mach/mach.h>
 

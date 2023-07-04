@@ -1,5 +1,5 @@
 //
-//  KSStackCursor_Backtrace.h
+//  RollbarCrashStackCursor_Backtrace.h
 //
 //  Copyright (c) 2016 Karl Stenerud. All rights reserved.
 //
@@ -23,15 +23,15 @@
 //
 
 
-#ifndef KSStackCursor_Backtrace_h
-#define KSStackCursor_Backtrace_h
+#ifndef RollbarCrashStackCursor_Backtrace_h
+#define RollbarCrashStackCursor_Backtrace_h
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     
     
-#include "KSStackCursor.h"
+#include "RollbarCrashStackCursor.h"
 
 /** Exposed for other internal systems to use.
  */
@@ -40,7 +40,7 @@ typedef struct
     int skippedEntries;
     int backtraceLength;
     const uintptr_t* backtrace;
-} KSStackCursor_Backtrace_Context;
+} RollbarCrashStackCursor_Backtrace_Context;
     
 
 /** Initialize a stack cursor for an existing backtrace (array of addresses).
@@ -53,11 +53,11 @@ typedef struct
  *
  * @param skipEntries The number of stack entries to skip.
  */
-void kssc_initWithBacktrace(KSStackCursor *cursor, const uintptr_t* backtrace, int backtraceLength, int skipEntries);
+void kssc_initWithBacktrace(RollbarCrashStackCursor *cursor, const uintptr_t* backtrace, int backtraceLength, int skipEntries);
     
     
 #ifdef __cplusplus
 }
 #endif
 
-#endif // KSStackCursor_Backtrace_h
+#endif // RollbarCrashStackCursor_Backtrace_h

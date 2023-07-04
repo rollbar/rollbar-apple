@@ -1,5 +1,5 @@
 //
-//  KSID.c
+//  RollbarCrashID.c
 //
 //  Copyright (c) 2016 Karl Stenerud. All rights reserved.
 //

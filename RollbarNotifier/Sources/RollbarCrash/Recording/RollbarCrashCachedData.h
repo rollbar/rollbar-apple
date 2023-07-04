@@ -1,5 +1,5 @@
 //
-//  KSCrashCachedData.h
+//  RollbarCrashCachedData.h
 //
 //  Copyright (c) 2012 Karl Stenerud. All rights reserved.
 //
@@ -27,7 +27,7 @@
  */
 
 
-#include "KSThread.h"
+#include "RollbarCrashThread.h"
 
 void ksccd_init(int pollingIntervalInSeconds);
 
@@ -36,8 +36,8 @@ void ksccd_unfreeze(void);
 
 void ksccd_setSearchQueueNames(bool searchQueueNames);
 
-KSThread* ksccd_getAllThreads(int* threadCount);
+RollbarCrashThread* ksccd_getAllThreads(int* threadCount);
 
-const char* ksccd_getThreadName(KSThread thread);
+const char* ksccd_getThreadName(RollbarCrashThread thread);
 
-const char* ksccd_getQueueName(KSThread thread);
+const char* ksccd_getQueueName(RollbarCrashThread thread);

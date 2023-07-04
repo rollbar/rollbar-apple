@@ -1,5 +1,5 @@
 //
-//  KSCrash.m
+//  RollbarCrash.m
 //
 //  Created by Karl Stenerud on 2012-01-28.
 //
@@ -25,23 +25,23 @@
 //
 
 
-#import "KSCrash.h"
+#import "RollbarCrash.h"
 
-#import "KSCrashC.h"
-#import "KSCrashDoctor.h"
-#import "KSCrashReportFields.h"
-#import "KSCrashMonitor_AppState.h"
-#import "KSJSONCodecObjC.h"
+#import "RollbarCrashC.h"
+#import "RollbarCrashDoctor.h"
+#import "RollbarCrashReportFields.h"
+#import "RollbarCrashMonitor_AppState.h"
+#import "RollbarCrashJSONCodecObjC.h"
 #import "NSError+SimpleConstructor.h"
-#import "KSCrashMonitorContext.h"
-#import "KSCrashMonitor_System.h"
-#import "KSSystemCapabilities.h"
+#import "RollbarCrashMonitorContext.h"
+#import "RollbarCrashMonitor_System.h"
+#import "RollbarCrashSystemCapabilities.h"
 
-//#define KSLogger_LocalLevel TRACE
-#import "KSLogger.h"
+//#define RollbarCrashLogger_LocalLevel TRACE
+#import "RollbarCrashLogger.h"
 
 #include <inttypes.h>
-#if KSCRASH_HAS_UIKIT
+#if RollbarCrashCRASH_HAS_UIKIT
 #import <UIKit/UIKit.h>
 #endif
 
@@ -50,7 +50,7 @@
 #pragma mark - Globals -
 // ============================================================================
 
-@interface KSCrash ()
+@interface RollbarCrash ()
 
 @property(nonatomic,readwrite,retain) NSString* bundleName;
 @property(nonatomic,readwrite,retain) NSString* basePath;
@@ -75,21 +75,21 @@ static NSString* getBasePath()
                                                                YES);
     if([directories count] == 0)
     {
-        KSLOG_ERROR(@"Could not locate cache directory path.");
+        RollbarCrashLOG_ERROR(@"Could not locate cache directory path.");
         return nil;
     }
     NSString* cachePath = [directories objectAtIndex:0];
     if([cachePath length] == 0)
     {
-        KSLOG_ERROR(@"Could not locate cache directory path.");
+        RollbarCrashLOG_ERROR(@"Could not locate cache directory path.");
         return nil;
     }
-    NSString* pathEnd = [@"KSCrash" stringByAppendingPathComponent:getBundleName()];
+    NSString* pathEnd = [@"RollbarCrash" stringByAppendingPathComponent:getBundleName()];
     return [cachePath stringByAppendingPathComponent:pathEnd];
 }
 
 
-@implementation KSCrash
+@implementation RollbarCrash
 
 // ============================================================================
 #pragma mark - Properties -
@@ -123,18 +123,18 @@ static NSString* getBasePath()
 
 + (void)initialize
 {
-    if (self == [KSCrash class]) {
+    if (self == [RollbarCrash class]) {
         [[self class] subscribeToNotifications];
     }
 }
 
 + (instancetype) sharedInstance
 {
-    static KSCrash *sharedInstance = nil;
+    static RollbarCrash *sharedInstance = nil;
     static dispatch_once_t onceToken;
     
     dispatch_once(&onceToken, ^{
-        sharedInstance = [[KSCrash alloc] init];
+        sharedInstance = [[RollbarCrash alloc] init];
     });
     return sharedInstance;
 }
@@ -152,15 +152,15 @@ static NSString* getBasePath()
         self.basePath = basePath;
         if(self.basePath == nil)
         {
-            KSLOG_ERROR(@"Failed to initialize crash handler. Crash reporting disabled.");
+            RollbarCrashLOG_ERROR(@"Failed to initialize crash handler. Crash reporting disabled.");
             return nil;
         }
-        self.deleteBehaviorAfterSendAll = KSCDeleteAlways;
+        self.deleteBehaviorAfterSendAll = RollbarCrashDeleteAlways;
         self.introspectMemory = YES;
         self.catchZombies = NO;
         self.maxReportCount = 5;
         self.searchQueueNames = NO;
-        self.monitoring = KSCrashMonitorTypeProductionSafeMinimal;
+        self.monitoring = RollbarCrashMonitorTypeProductionSafeMinimal;
     }
     return self;
 }
@@ -183,12 +183,12 @@ static NSString* getBasePath()
         NSData* userInfoJSON = nil;
         if(userInfo != nil)
         {
-            userInfoJSON = [self nullTerminated:[KSJSONCodec encode:userInfo
-                                                            options:KSJSONEncodeOptionSorted
+            userInfoJSON = [self nullTerminated:[RollbarCrashJSONCodec encode:userInfo
+                                                            options:RollbarCrashJSONEncodeOptionSorted
                                                               error:&error]];
             if(error != NULL)
             {
-                KSLOG_ERROR(@"Could not serialize user info: %@", error);
+                RollbarCrashLOG_ERROR(@"Could not serialize user info: %@", error);
                 return;
             }
         }
@@ -198,7 +198,7 @@ static NSString* getBasePath()
     }
 }
 
-- (void) setMonitoring:(KSCrashMonitorType)monitoring
+- (void) setMonitoring:(RollbarCrashMonitorType)monitoring
 {
     _monitoring = kscrash_setMonitoring(monitoring);
 }
@@ -215,7 +215,7 @@ static NSString* getBasePath()
     kscrash_setSearchQueueNames(searchQueueNames);
 }
 
-- (void) setOnCrash:(KSReportWriteCallback) onCrash
+- (void) setOnCrash:(RollbarCrashReportWriteCallback) onCrash
 {
     _onCrash = onCrash;
     kscrash_setCrashNotifyCallback(onCrash);
@@ -229,18 +229,18 @@ static NSString* getBasePath()
 
 - (BOOL) catchZombies
 {
-    return (self.monitoring & KSCrashMonitorTypeZombie) != 0;
+    return (self.monitoring & RollbarCrashMonitorTypeZombie) != 0;
 }
 
 - (void) setCatchZombies:(BOOL)catchZombies
 {
     if(catchZombies)
     {
-        self.monitoring |= KSCrashMonitorTypeZombie;
+        self.monitoring |= RollbarCrashMonitorTypeZombie;
     }
     else
     {
-        self.monitoring &= (KSCrashMonitorType)~KSCrashMonitorTypeZombie;
+        self.monitoring &= (RollbarCrashMonitorType)~RollbarCrashMonitorTypeZombie;
     }
 }
 
@@ -272,7 +272,7 @@ static NSString* getBasePath()
 
 - (NSDictionary*) systemInfo
 {
-    KSCrash_MonitorContext fakeEvent = {0};
+    RollbarCrash_MonitorContext fakeEvent = {0};
     kscm_system_getAPI()->addContextualInfoToEvent(&fakeEvent);
     NSMutableDictionary* dict = [NSMutableDictionary new];
 
@@ -325,22 +325,22 @@ static NSString* getBasePath()
     return true;
 }
 
-- (void) sendAllReportsWithCompletion:(KSCrashReportFilterCompletion) onCompletion
+- (void) sendAllReportsWithCompletion:(RollbarCrashReportFilterCompletion) onCompletion
 {
     NSArray* reports = [self allReports];
     
-    KSLOG_INFO(@"Sending %d crash reports", [reports count]);
+    RollbarCrashLOG_INFO(@"Sending %d crash reports", [reports count]);
     
     [self sendReports:reports
          onCompletion:^(NSArray* filteredReports, BOOL completed, NSError* error)
      {
-         KSLOG_DEBUG(@"Process finished with completion: %d", completed);
+         RollbarCrashLOG_DEBUG(@"Process finished with completion: %d", completed);
          if(error != nil)
          {
-             KSLOG_ERROR(@"Failed to send reports: %@", error);
+             RollbarCrashLOG_ERROR(@"Failed to send reports: %@", error);
          }
-         if((self.deleteBehaviorAfterSendAll == KSCDeleteOnSucess && completed) ||
-            self.deleteBehaviorAfterSendAll == KSCDeleteAlways)
+         if((self.deleteBehaviorAfterSendAll == RollbarCrashDeleteOnSucess && completed) ||
+            self.deleteBehaviorAfterSendAll == RollbarCrashDeleteAlways)
          {
              kscrash_deleteAllReports();
          }
@@ -375,10 +375,10 @@ static NSString* getBasePath()
     if(stackTrace != nil)
     {
         NSError* error = nil;
-        NSData* jsonData = [KSJSONCodec encode:stackTrace options:0 error:&error];
+        NSData* jsonData = [RollbarCrashJSONCodec encode:stackTrace options:0 error:&error];
         if(jsonData == nil || error != nil)
         {
-            KSLOG_ERROR(@"Error encoding stack trace to JSON: %@", error);
+            RollbarCrashLOG_ERROR(@"Error encoding stack trace to JSON: %@", error);
             // Don't return, since we can still record other useful information.
         }
         NSString* jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
@@ -423,7 +423,7 @@ SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
     return kscrash_getReportCount();
 }
 
-- (void) sendReports:(NSArray*) reports onCompletion:(KSCrashReportFilterCompletion) onCompletion
+- (void) sendReports:(NSArray*) reports onCompletion:(RollbarCrashReportFilterCompletion) onCompletion
 {
     if([reports count] == 0)
     {
@@ -459,15 +459,15 @@ SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
 
 - (void) doctorReport:(NSMutableDictionary*) report
 {
-    NSMutableDictionary* crashReport = report[@KSCrashField_Crash];
+    NSMutableDictionary* crashReport = report[@RollbarCrashField_Crash];
     if(crashReport != nil)
     {
-        crashReport[@KSCrashField_Diagnosis] = [[KSCrashDoctor doctor] diagnoseCrash:report];
+        crashReport[@RollbarCrashField_Diagnosis] = [[RollbarCrashDoctor doctor] diagnoseCrash:report];
     }
-    crashReport = report[@KSCrashField_RecrashReport][@KSCrashField_Crash];
+    crashReport = report[@RollbarCrashField_RecrashReport][@RollbarCrashField_Crash];
     if(crashReport != nil)
     {
-        crashReport[@KSCrashField_Diagnosis] = [[KSCrashDoctor doctor] diagnoseCrash:report];
+        crashReport[@RollbarCrashField_Diagnosis] = [[RollbarCrashDoctor doctor] diagnoseCrash:report];
     }
 }
 
@@ -498,18 +498,18 @@ SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
     }
 
     NSError* error = nil;
-    NSMutableDictionary* crashReport = [KSJSONCodec decode:jsonData
-                                                   options:KSJSONDecodeOptionIgnoreNullInArray |
-                                                           KSJSONDecodeOptionIgnoreNullInObject |
-                                                           KSJSONDecodeOptionKeepPartialObject
+    NSMutableDictionary* crashReport = [RollbarCrashJSONCodec decode:jsonData
+                                                   options:RollbarCrashJSONDecodeOptionIgnoreNullInArray |
+                                                           RollbarCrashJSONDecodeOptionIgnoreNullInObject |
+                                                           RollbarCrashJSONDecodeOptionKeepPartialObject
                                                      error:&error];
     if(error != nil)
     {
-        KSLOG_ERROR(@"Encountered error loading crash report %" PRIx64 ": %@", reportID, error);
+        RollbarCrashLOG_ERROR(@"Encountered error loading crash report %" PRIx64 ": %@", reportID, error);
     }
     if(crashReport == nil)
     {
-        KSLOG_ERROR(@"Could not load crash report");
+        RollbarCrashLOG_ERROR(@"Could not load crash report");
         return nil;
     }
     [self doctorReport:crashReport];
@@ -570,7 +570,7 @@ SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
 
 + (void) subscribeToNotifications
 {
-#if KSCRASH_HAS_UIAPPLICATION
+#if RollbarCrashCRASH_HAS_UIAPPLICATION
     NSNotificationCenter* nCenter = [NSNotificationCenter defaultCenter];
     [nCenter addObserver:self
                 selector:@selector(applicationDidBecomeActive)
@@ -593,7 +593,7 @@ SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
                     name:UIApplicationWillTerminateNotification
                   object:nil];
 #endif
-#if KSCRASH_HAS_NSEXTENSION
+#if RollbarCrashCRASH_HAS_NSEXTENSION
     NSNotificationCenter* nCenter = [NSNotificationCenter defaultCenter];
     [nCenter addObserver:self
                 selector:@selector(applicationDidBecomeActive)
@@ -647,8 +647,8 @@ SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
 @end
 
 
-//! Project version number for KSCrashFramework.
-const double KSCrashFrameworkVersionNumber = 1.1527;
+//! Project version number for RollbarCrashFramework.
+const double RollbarCrashFrameworkVersionNumber = 1.1527;
 
-//! Project version string for KSCrashFramework.
-const unsigned char KSCrashFrameworkVersionString[] = "1.15.27";
+//! Project version string for RollbarCrashFramework.
+const unsigned char RollbarCrashFrameworkVersionString[] = "1.15.27";

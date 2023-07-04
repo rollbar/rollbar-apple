@@ -1,5 +1,5 @@
 //
-//  KSCrashMonitor_Signal.h
+//  RollbarCrashMonitor_Signal.h
 //
 //  Created by Karl Stenerud on 2012-01-28.
 //
@@ -29,24 +29,24 @@
  */
 
 
-#ifndef HDR_KSCrashMonitor_Signal_h
-#define HDR_KSCrashMonitor_Signal_h
+#ifndef HDR_RollbarCrashMonitor_Signal_h
+#define HDR_RollbarCrashMonitor_Signal_h
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
-#include "KSCrashMonitor.h"
+#include "RollbarCrashMonitor.h"
 
 
 /** Access the Monitor API.
  */
-KSCrashMonitorAPI* kscm_signal_getAPI(void);
+RollbarCrashMonitorAPI* kscm_signal_getAPI(void);
 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // HDR_KSCrashMonitor_Signal_h
+#endif // HDR_RollbarCrashMonitor_Signal_h

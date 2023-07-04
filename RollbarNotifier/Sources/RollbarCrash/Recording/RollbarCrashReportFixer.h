@@ -1,5 +1,5 @@
 //
-//  KSCrashReportFixer.c
+//  RollbarCrashReportFixer.c
 //
 //  Created by Karl Stenerud on 2016-11-07.
 //
@@ -24,8 +24,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef HDR_KSCrashReportFixer_h
-#define HDR_KSCrashReportFixer_h
+#ifndef HDR_RollbarCrashReportFixer_h
+#define HDR_RollbarCrashReportFixer_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -48,4 +48,4 @@ char* kscrf_fixupCrashReport(const char* crashReport);
 }
 #endif
 
-#endif // HDR_KSCrashReportFixer_h
+#endif // HDR_RollbarCrashReportFixer_h

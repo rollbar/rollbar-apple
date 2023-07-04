@@ -1,5 +1,5 @@
 //
-//  KSSysCtl.h
+//  RollbarCrashSysCtl.h
 //
 //  Created by Karl Stenerud on 2012-02-19.
 //
@@ -29,8 +29,8 @@
  */
 
 
-#ifndef HDR_KSSysCtl_h
-#define HDR_KSSysCtl_h
+#ifndef HDR_RollbarCrashSysCtl_h
+#define HDR_RollbarCrashSysCtl_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -188,4 +188,4 @@ bool kssysctl_getMacAddress(const char* name, char* macAddressBuffer);
 }
 #endif
 
-#endif // HDR_KSSysCtl_h
+#endif // HDR_RollbarCrashSysCtl_h

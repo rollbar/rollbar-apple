@@ -1,5 +1,5 @@
 //
-//  KSCrashMonitor_MachException.h
+//  RollbarCrashMonitor_MachException.h
 //
 //  Created by Karl Stenerud on 2012-02-04.
 //
@@ -29,24 +29,24 @@
  */
 
 
-#ifndef HDR_KSCrashMonitor_MachException_h
-#define HDR_KSCrashMonitor_MachException_h
+#ifndef HDR_RollbarCrashMonitor_MachException_h
+#define HDR_RollbarCrashMonitor_MachException_h
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "KSCrashMonitor.h"
+#include "RollbarCrashMonitor.h"
 #include <stdbool.h>
 
 
 /** Access the Monitor API.
  */
-KSCrashMonitorAPI* kscm_machexception_getAPI(void);
+RollbarCrashMonitorAPI* kscm_machexception_getAPI(void);
 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // HDR_KSCrashMonitor_MachException_h
+#endif // HDR_RollbarCrashMonitor_MachException_h

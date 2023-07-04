@@ -1,5 +1,5 @@
 //
-//  KSMach.c
+//  RollbarCrashMach.c
 //
 // Copyright 2016 Karl Stenerud.
 //
@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-#include "KSMach.h"
+#include "RollbarCrashMach.h"
 
 #include <mach/mach.h>
 #include <stdlib.h>

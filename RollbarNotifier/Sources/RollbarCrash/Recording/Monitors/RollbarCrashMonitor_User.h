@@ -1,5 +1,5 @@
 //
-//  KSCrashMonitor_User.h
+//  RollbarCrashMonitor_User.h
 //
 //  Copyright (c) 2012 Karl Stenerud. All rights reserved.
 //
@@ -22,15 +22,15 @@
 // THE SOFTWARE.
 //
 
-#ifndef HDR_KSCrashMonitor_User_h
-#define HDR_KSCrashMonitor_User_h
+#ifndef HDR_RollbarCrashMonitor_User_h
+#define HDR_RollbarCrashMonitor_User_h
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
-#include "KSCrashMonitor.h"
+#include "RollbarCrashMonitor.h"
 
 #include <stdbool.h>
 
@@ -65,11 +65,11 @@ void kscm_reportUserException(const char* name,
 
 /** Access the Monitor API.
  */
-KSCrashMonitorAPI* kscm_user_getAPI(void);
+RollbarCrashMonitorAPI* kscm_user_getAPI(void);
 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // HDR_KSCrashMonitor_User_h
+#endif // HDR_RollbarCrashMonitor_User_h

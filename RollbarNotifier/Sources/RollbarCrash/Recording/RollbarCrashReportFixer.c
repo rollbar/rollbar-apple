@@ -1,5 +1,5 @@
 //
-//  KSCrashReportFixer.c
+//  RollbarCrashReportFixer.c
 //
 //  Created by Karl Stenerud on 2016-11-07.
 //
@@ -24,11 +24,11 @@
 // THE SOFTWARE.
 //
 
-#include "KSCrashReportFields.h"
-#include "KSSystemCapabilities.h"
-#include "KSJSONCodec.h"
-#include "KSDate.h"
-#include "KSLogger.h"
+#include "RollbarCrashReportFields.h"
+#include "RollbarCrashSystemCapabilities.h"
+#include "RollbarCrashJSONCodec.h"
+#include "RollbarCrashDate.h"
+#include "RollbarCrashLogger.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -39,21 +39,21 @@
 
 static char* datePaths[][MAX_DEPTH] =
 {
-    {"", KSCrashField_Report, KSCrashField_Timestamp},
-    {"", KSCrashField_RecrashReport, KSCrashField_Report, KSCrashField_Timestamp},
+    {"", RollbarCrashField_Report, RollbarCrashField_Timestamp},
+    {"", RollbarCrashField_RecrashReport, RollbarCrashField_Report, RollbarCrashField_Timestamp},
 };
 static int datePathsCount = sizeof(datePaths) / sizeof(*datePaths);
 
 static char* versionPaths[][MAX_DEPTH] =
 {
-    {"", KSCrashField_Report, KSCrashField_Version},
-    {"", KSCrashField_RecrashReport, KSCrashField_Report, KSCrashField_Version},
+    {"", RollbarCrashField_Report, RollbarCrashField_Version},
+    {"", RollbarCrashField_RecrashReport, RollbarCrashField_Report, RollbarCrashField_Version},
 };
 static int versionPathsCount = sizeof(versionPaths) / sizeof(*versionPaths);
 
 typedef struct
 {
-    KSJSONEncodeContext* encodeContext;
+    RollbarCrashJSONEncodeContext* encodeContext;
     int reportVersionComponents[REPORT_VERSION_COMPONENTS_COUNT];
     char objectPath[MAX_DEPTH][MAX_NAME_LENGTH];
     int currentDepth;
@@ -124,7 +124,7 @@ static bool matchesAPath(FixupContext* context, const char* name, char* paths[][
 
 static bool matchesMinVersion(FixupContext* context, int major, int minor, int patch)
 {
-    // Works only for report version 3.1.0 and above. See KSCrashReportVersion.h
+    // Works only for report version 3.1.0 and above. See RollbarCrashReportVersion.h
     bool result = false;
     int *parts = context->reportVersionComponents;
     result = result || (parts[0] > major);
@@ -164,7 +164,7 @@ static int onIntegerElement(const char* const name,
                             void* const userData)
 {
     FixupContext* context = (FixupContext*)userData;
-    int result = KSJSON_OK;
+    int result = RollbarCrashJSON_OK;
     if(shouldFixDate(context, name))
     {
         char buffer[28];
@@ -224,7 +224,7 @@ static int onBeginObject(const char* const name,
     int result = ksjson_beginObject(context->encodeContext, name);
     if(!increaseDepth(context, name))
     {
-        return KSJSON_ERROR_DATA_TOO_LONG;
+        return RollbarCrashJSON_ERROR_DATA_TOO_LONG;
     }
     return result;
 }
@@ -236,7 +236,7 @@ static int onBeginArray(const char* const name,
     int result = ksjson_beginArray(context->encodeContext, name);
     if(!increaseDepth(context, name))
     {
-        return KSJSON_ERROR_DATA_TOO_LONG;
+        return RollbarCrashJSON_ERROR_DATA_TOO_LONG;
     }
     return result;
 }
@@ -263,13 +263,13 @@ static int addJSONData(const char* data, int length, void* userData)
     FixupContext* context = (FixupContext*)userData;
     if(length > context->outputBytesLeft)
     {
-        return KSJSON_ERROR_DATA_TOO_LONG;
+        return RollbarCrashJSON_ERROR_DATA_TOO_LONG;
     }
     memcpy(context->outputPtr, data, length);
     context->outputPtr += length;
     context->outputBytesLeft -= length;
     
-    return KSJSON_OK;
+    return RollbarCrashJSON_OK;
 }
 
 char* kscrf_fixupCrashReport(const char* crashReport)
@@ -279,7 +279,7 @@ char* kscrf_fixupCrashReport(const char* crashReport)
         return NULL;
     }
 
-    KSJSONDecodeCallbacks callbacks =
+    RollbarCrashJSONDecodeCallbacks callbacks =
     {
         .onBeginArray = onBeginArray,
         .onBeginObject = onBeginObject,
@@ -296,7 +296,7 @@ char* kscrf_fixupCrashReport(const char* crashReport)
     int crashReportLength = (int)strlen(crashReport);
     int fixedReportLength = (int)(crashReportLength * 1.5);
     char* fixedReport = malloc((unsigned)fixedReportLength);
-    KSJSONEncodeContext encodeContext;
+    RollbarCrashJSONEncodeContext encodeContext;
     FixupContext fixupContext =
     {
         .encodeContext = &encodeContext,
@@ -312,9 +312,9 @@ char* kscrf_fixupCrashReport(const char* crashReport)
     int result = ksjson_decode(crashReport, (int)strlen(crashReport), stringBuffer, stringBufferLength, &callbacks, &fixupContext, &errorOffset);
     *fixupContext.outputPtr = '\0';
     free(stringBuffer);
-    if(result != KSJSON_OK)
+    if(result != RollbarCrashJSON_OK)
     {
-        KSLOG_ERROR("Could not decode report: %s", ksjson_stringForError(result));
+        RollbarCrashLOG_ERROR("Could not decode report: %s", ksjson_stringForError(result));
         free(fixedReport);
         return NULL;
     }

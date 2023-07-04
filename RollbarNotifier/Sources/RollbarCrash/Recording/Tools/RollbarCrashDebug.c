@@ -1,5 +1,5 @@
 //
-//  KSDebug.c
+//  RollbarCrashDebug.c
 //
 //  Created by Karl Stenerud on 2012-01-29.
 //
@@ -25,10 +25,10 @@
 //
 
 
-#include "KSDebug.h"
+#include "RollbarCrashDebug.h"
 
-//#define KSLogger_LocalLevel TRACE
-#include "KSLogger.h"
+//#define RollbarCrashLogger_LocalLevel TRACE
+#include "RollbarCrashLogger.h"
 
 #include <errno.h>
 #include <string.h>
@@ -48,7 +48,7 @@ bool ksdebug_isBeingTraced(void)
     
     if(sysctl(mib, sizeof(mib)/sizeof(*mib), &procInfo, &structSize, NULL, 0) != 0)
     {
-        KSLOG_ERROR("sysctl: %s", strerror(errno));
+        RollbarCrashLOG_ERROR("sysctl: %s", strerror(errno));
         return false;
     }
     

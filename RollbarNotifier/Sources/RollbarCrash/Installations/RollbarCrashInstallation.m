@@ -1,5 +1,5 @@
 //
-//  KSCrashInstallation.m
+//  RollbarCrashInstallation.m
 //
 //  Created by Karl Stenerud on 2013-02-10.
 //
@@ -25,13 +25,13 @@
 //
 
 
-#import "KSCrashInstallation.h"
-#import "KSCrashInstallation+Private.h"
-#import "KSCrashReportFilterBasic.h"
-#import "KSCrash.h"
-#import "KSCString.h"
-#import "KSJSONCodecObjC.h"
-#import "KSLogger.h"
+#import "RollbarCrashInstallation.h"
+#import "RollbarCrashInstallation+Private.h"
+#import "RollbarCrashReportFilterBasic.h"
+#import "RollbarCrash.h"
+#import "RollbarCrashCString.h"
+#import "RollbarCrashJSONCodecObjC.h"
+#import "RollbarCrashLogger.h"
 #import "NSError+SimpleConstructor.h"
 #import <objc/runtime.h>
 
@@ -48,7 +48,7 @@ typedef struct
 
 typedef struct
 {
-    KSReportWriteCallback userCrashCallback;
+    RollbarCrashReportWriteCallback userCrashCallback;
     int reportFieldsCount;
     ReportField* reportFields[0];
 } CrashHandlerData;
@@ -57,7 +57,7 @@ typedef struct
 static CrashHandlerData* g_crashHandlerData;
 
 
-static void crashCallback(const KSCrashReportWriter* writer)
+static void crashCallback(const RollbarCrashReportWriter* writer)
 {
     for(int i = 0; i < g_crashHandlerData->reportFieldsCount; i++)
     {
@@ -74,7 +74,7 @@ static void crashCallback(const KSCrashReportWriter* writer)
 }
 
 
-@interface KSCrashInstReportField: NSObject
+@interface RollbarCrashInstReportField: NSObject
 
 @property(nonatomic,readonly,assign) int index;
 @property(nonatomic,readonly,assign) ReportField* field;
@@ -83,12 +83,12 @@ static void crashCallback(const KSCrashReportWriter* writer)
 @property(nonatomic,readwrite,retain) id value;
 
 @property(nonatomic,readwrite,retain) NSMutableData* fieldBacking;
-@property(nonatomic,readwrite,retain) KSCString* keyBacking;
-@property(nonatomic,readwrite,retain) KSCString* valueBacking;
+@property(nonatomic,readwrite,retain) RollbarCrashCString* keyBacking;
+@property(nonatomic,readwrite,retain) RollbarCrashCString* valueBacking;
 
 @end
 
-@implementation KSCrashInstReportField
+@implementation RollbarCrashInstReportField
 
 @synthesize index = _index;
 @synthesize key = _key;
@@ -97,9 +97,9 @@ static void crashCallback(const KSCrashReportWriter* writer)
 @synthesize keyBacking = _keyBacking;
 @synthesize valueBacking= _valueBacking;
 
-+ (KSCrashInstReportField*) fieldWithIndex:(int) index
++ (RollbarCrashInstReportField*) fieldWithIndex:(int) index
 {
-    return [(KSCrashInstReportField*)[self alloc] initWithIndex:index];
+    return [(RollbarCrashInstReportField*)[self alloc] initWithIndex:index];
 }
 
 - (id) initWithIndex:(int) index
@@ -126,7 +126,7 @@ static void crashCallback(const KSCrashReportWriter* writer)
     }
     else
     {
-        self.keyBacking = [KSCString stringWithString:key];
+        self.keyBacking = [RollbarCrashCString stringWithString:key];
     }
     self.field->key = self.keyBacking.bytes;
 }
@@ -141,34 +141,34 @@ static void crashCallback(const KSCrashReportWriter* writer)
     }
     
     NSError* error = nil;
-    NSData* jsonData = [KSJSONCodec encode:value options:KSJSONEncodeOptionPretty | KSJSONEncodeOptionSorted error:&error];
+    NSData* jsonData = [RollbarCrashJSONCodec encode:value options:RollbarCrashJSONEncodeOptionPretty | RollbarCrashJSONEncodeOptionSorted error:&error];
     if(jsonData == nil)
     {
-        KSLOG_ERROR(@"Could not set value %@ for property %@: %@", value, self.key, error);
+        RollbarCrashLOG_ERROR(@"Could not set value %@ for property %@: %@", value, self.key, error);
     }
     else
     {
         _value = value;
-        self.valueBacking = [KSCString stringWithData:jsonData];
+        self.valueBacking = [RollbarCrashCString stringWithData:jsonData];
         self.field->value = self.valueBacking.bytes;
     }
 }
 
 @end
 
-@interface KSCrashInstallation ()
+@interface RollbarCrashInstallation ()
 
 @property(nonatomic,readwrite,assign) int nextFieldIndex;
 @property(nonatomic,readonly,assign) CrashHandlerData* crashHandlerData;
 @property(nonatomic,readwrite,retain) NSMutableData* crashHandlerDataBacking;
 @property(nonatomic,readwrite,retain) NSMutableDictionary* fields;
 @property(nonatomic,readwrite,retain) NSArray* requiredProperties;
-@property(nonatomic,readwrite,retain) KSCrashReportFilterPipeline* prependedFilters;
+@property(nonatomic,readwrite,retain) RollbarCrashReportFilterPipeline* prependedFilters;
 
 @end
 
 
-@implementation KSCrashInstallation
+@implementation RollbarCrashInstallation
 
 @synthesize nextFieldIndex = _nextFieldIndex;
 @synthesize crashHandlerDataBacking = _crashHandlerDataBacking;
@@ -191,14 +191,14 @@ static void crashCallback(const KSCrashReportWriter* writer)
                                         sizeof(*self.crashHandlerData->reportFields) * kMaxProperties];
         self.fields = [NSMutableDictionary dictionary];
         self.requiredProperties = requiredProperties;
-        self.prependedFilters = [KSCrashReportFilterPipeline filterWithFilters:nil];
+        self.prependedFilters = [RollbarCrashReportFilterPipeline filterWithFilters:nil];
     }
     return self;
 }
 
 - (void) dealloc
 {
-    KSCrash* handler = [KSCrash sharedInstance];
+    RollbarCrash* handler = [RollbarCrash sharedInstance];
     @synchronized(handler)
     {
         if(g_crashHandlerData == self.crashHandlerData)
@@ -214,12 +214,12 @@ static void crashCallback(const KSCrashReportWriter* writer)
     return (CrashHandlerData*)self.crashHandlerDataBacking.mutableBytes;
 }
 
-- (KSCrashInstReportField*) reportFieldForProperty:(NSString*) propertyName
+- (RollbarCrashInstReportField*) reportFieldForProperty:(NSString*) propertyName
 {
-    KSCrashInstReportField* field = [self.fields objectForKey:propertyName];
+    RollbarCrashInstReportField* field = [self.fields objectForKey:propertyName];
     if(field == nil)
     {
-        field = [KSCrashInstReportField fieldWithIndex:self.nextFieldIndex];
+        field = [RollbarCrashInstReportField fieldWithIndex:self.nextFieldIndex];
         self.nextFieldIndex++;
         self.crashHandlerData->reportFieldsCount = self.nextFieldIndex;
         self.crashHandlerData->reportFields[field.index] = field.field;
@@ -230,13 +230,13 @@ static void crashCallback(const KSCrashReportWriter* writer)
 
 - (void) reportFieldForProperty:(NSString*) propertyName setKey:(id) key
 {
-    KSCrashInstReportField* field = [self reportFieldForProperty:propertyName];
+    RollbarCrashInstReportField* field = [self reportFieldForProperty:propertyName];
     field.key = key;
 }
 
 - (void) reportFieldForProperty:(NSString*) propertyName setValue:(id) value
 {
-    KSCrashInstReportField* field = [self reportFieldForProperty:propertyName];
+    RollbarCrashInstReportField* field = [self reportFieldForProperty:propertyName];
     field.value = value;
 }
 
@@ -300,7 +300,7 @@ static void crashCallback(const KSCrashReportWriter* writer)
     return result;
 }
 
-- (KSReportWriteCallback) onCrash
+- (RollbarCrashReportWriteCallback) onCrash
 {
     @synchronized(self)
     {
@@ -308,7 +308,7 @@ static void crashCallback(const KSCrashReportWriter* writer)
     }
 }
 
-- (void) setOnCrash:(KSReportWriteCallback)onCrash
+- (void) setOnCrash:(RollbarCrashReportWriteCallback)onCrash
 {
     @synchronized(self)
     {
@@ -318,7 +318,7 @@ static void crashCallback(const KSCrashReportWriter* writer)
 
 - (void) install
 {
-    KSCrash* handler = [KSCrash sharedInstance];
+    RollbarCrash* handler = [RollbarCrash sharedInstance];
     @synchronized(handler)
     {
         g_crashHandlerData = self.crashHandlerData;
@@ -327,7 +327,7 @@ static void crashCallback(const KSCrashReportWriter* writer)
     }
 }
 
-- (void) sendAllReportsWithCompletion:(KSCrashReportFilterCompletion) onCompletion
+- (void) sendAllReportsWithCompletion:(RollbarCrashReportFilterCompletion) onCompletion
 {
     NSError* error = [self validateProperties];
     if(error != nil)
@@ -339,7 +339,7 @@ static void crashCallback(const KSCrashReportWriter* writer)
         return;
     }
 
-    id<KSCrashReportFilter> sink = [self sink];
+    id<RollbarCrashReportFilter> sink = [self sink];
     if(sink == nil)
     {
         onCompletion(nil, NO, [NSError errorWithDomain:[[self class] description]
@@ -348,19 +348,19 @@ static void crashCallback(const KSCrashReportWriter* writer)
         return;
     }
     
-    sink = [KSCrashReportFilterPipeline filterWithFilters:self.prependedFilters, sink, nil];
+    sink = [RollbarCrashReportFilterPipeline filterWithFilters:self.prependedFilters, sink, nil];
 
-    KSCrash* handler = [KSCrash sharedInstance];
+    RollbarCrash* handler = [RollbarCrash sharedInstance];
     handler.sink = sink;
     [handler sendAllReportsWithCompletion:onCompletion];
 }
 
-- (void) addPreFilter:(id<KSCrashReportFilter>) filter
+- (void) addPreFilter:(id<RollbarCrashReportFilter>) filter
 {
     [self.prependedFilters addFilter:filter];
 }
 
-- (id<KSCrashReportFilter>) sink
+- (id<RollbarCrashReportFilter>) sink
 {
     return nil;
 }

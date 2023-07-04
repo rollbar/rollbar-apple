@@ -1,5 +1,5 @@
 //
-//  KSString.m
+//  RollbarCrashString.m
 //
 //  Created by Karl Stenerud on 2012-09-15.
 //
@@ -25,10 +25,10 @@
 //
 
 
-#include "KSString.h"
+#include "RollbarCrashString.h"
 #include <string.h>
 #include <stdlib.h>
-#include "KSSystemCapabilities.h"
+#include "RollbarCrashSystemCapabilities.h"
 
 
 // Compiler hints for "if" statements
@@ -136,7 +136,7 @@ bool ksstring_extractHexValue(const char* string, int stringLength, uint64_t* co
         const unsigned char* const end = current + stringLength;
         for(;;)
         {
-#if KSCRASH_HAS_STRNSTR
+#if RollbarCrashCRASH_HAS_STRNSTR
             current = (const unsigned char*)strnstr((const char*)current, "0x", (unsigned)(end - current));
 #else
             current = (const unsigned char*)strstr((const char*)current, "0x");

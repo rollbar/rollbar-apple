@@ -1,5 +1,5 @@
 //
-//  KSCrashMonitor_Deadlock.h
+//  RollbarCrashMonitor_Deadlock.h
 //
 //  Created by Karl Stenerud on 2012-12-09.
 //
@@ -28,15 +28,15 @@
  */
 
 
-#ifndef HDR_KSCrashMonitor_Deadlock_h
-#define HDR_KSCrashMonitor_Deadlock_h
+#ifndef HDR_RollbarCrashMonitor_Deadlock_h
+#define HDR_RollbarCrashMonitor_Deadlock_h
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
-#include "KSCrashMonitor.h"
+#include "RollbarCrashMonitor.h"
 
 #include <stdbool.h>
 
@@ -50,11 +50,11 @@ void kscm_setDeadlockHandlerWatchdogInterval(double value);
 
 /** Access the Monitor API.
  */
-KSCrashMonitorAPI* kscm_deadlock_getAPI(void);
+RollbarCrashMonitorAPI* kscm_deadlock_getAPI(void);
 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // HDR_KSCrashMonitor_Deadlock_h
+#endif // HDR_RollbarCrashMonitor_Deadlock_h

@@ -1,5 +1,5 @@
 //
-//  KSDynamicLinker.h
+//  RollbarCrashDynamicLinker.h
 //
 //  Created by Karl Stenerud on 2013-10-02.
 //
@@ -24,8 +24,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef HDR_KSDynamicLinker_h
-#define HDR_KSDynamicLinker_h
+#ifndef HDR_RollbarCrashDynamicLinker_h
+#define HDR_RollbarCrashDynamicLinker_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -50,7 +50,7 @@ typedef struct
     uint64_t revisionVersion;
     const char* crashInfoMessage;
     const char* crashInfoMessage2;
-} KSBinaryImage;
+} RollbarCrashBinaryImage;
 
 /** Get the number of loaded binary images.
  */
@@ -64,7 +64,7 @@ int ksdl_imageCount(void);
  *
  * @return True if the image was successfully queried.
  */
-bool ksdl_getBinaryImage(int index, KSBinaryImage* buffer);
+bool ksdl_getBinaryImage(int index, RollbarCrashBinaryImage* buffer);
 
 /** Get information about a binary image based on mach_header.
  *
@@ -76,7 +76,7 @@ bool ksdl_getBinaryImage(int index, KSBinaryImage* buffer);
  *
  * @return True if the image was successfully queried.
  */
-bool ksdl_getBinaryImageForHeader(const void* const header_ptr, const char* const image_name, KSBinaryImage* buffer);
+bool ksdl_getBinaryImageForHeader(const void* const header_ptr, const char* const image_name, RollbarCrashBinaryImage* buffer);
 
 /** Find a loaded binary image with the specified name.
  *
@@ -120,4 +120,4 @@ bool ksdl_dladdr(const uintptr_t address, Dl_info* const info);
 }
 #endif
 
-#endif // HDR_KSDynamicLinker_h
+#endif // HDR_RollbarCrashDynamicLinker_h

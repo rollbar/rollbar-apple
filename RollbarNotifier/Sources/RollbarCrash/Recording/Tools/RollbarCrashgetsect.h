@@ -1,5 +1,5 @@
 //
-//  KSgetsect.h
+//  RollbarCrashgetsect.h
 //
 //  Copyright (c) 2019 YANDEX LLC. All rights reserved.
 //
@@ -22,15 +22,15 @@
 // THE SOFTWARE.
 //
 
-#ifndef KSgetsect_h
-#define KSgetsect_h
+#ifndef RollbarCrashgetsect_h
+#define RollbarCrashgetsect_h
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
 #include <mach-o/loader.h>
-#include "KSPlatformSpecificDefines.h"
+#include "RollbarCrashPlatformSpecificDefines.h"
 
 /**
  * This routine returns the segment_command structure for the named segment
@@ -44,4 +44,4 @@ const segment_command_t *ksgs_getsegbynamefromheader(const mach_header_t *header
 }
 #endif /* __cplusplus */
 
-#endif /* KSgetsect_h */
+#endif /* RollbarCrashgetsect_h */

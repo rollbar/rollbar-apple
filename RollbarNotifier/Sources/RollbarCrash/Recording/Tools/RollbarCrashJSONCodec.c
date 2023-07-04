@@ -1,5 +1,5 @@
 //
-//  KSJSONCodec.c
+//  RollbarCrashJSONCodec.c
 //
 //  Created by Karl Stenerud on 2012-01-07.
 //
@@ -25,7 +25,7 @@
 //
 
 
-#include "KSJSONCodec.h"
+#include "RollbarCrashJSONCodec.h"
 
 #include <ctype.h>
 #include <errno.h>
@@ -41,22 +41,22 @@
 #pragma mark - Configuration -
 // ============================================================================
 
-/** Set to 1 if you're also compiling KSLogger and want to use it here */
-#ifndef KSJSONCODEC_UseKSLogger
-    #define KSJSONCODEC_UseKSLogger 1
+/** Set to 1 if you're also compiling RollbarCrashLogger and want to use it here */
+#ifndef RollbarCrashJSONCODEC_UseRollbarCrashLogger
+    #define RollbarCrashJSONCODEC_UseRollbarCrashLogger 1
 #endif
 
-#if KSJSONCODEC_UseKSLogger
-    #include "KSLogger.h"
+#if RollbarCrashJSONCODEC_UseRollbarCrashLogger
+    #include "RollbarCrashLogger.h"
 #else
-    #define KSLOG_DEBUG(FMT, ...)
+    #define RollbarCrashLOG_DEBUG(FMT, ...)
 #endif
 
 /** The work buffer size to use when escaping string values.
  * There's little reason to change this since nothing ever gets truncated.
  */
-#ifndef KSJSONCODEC_WorkBufferSize
-    #define KSJSONCODEC_WorkBufferSize 512
+#ifndef RollbarCrashJSONCODEC_WorkBufferSize
+    #define RollbarCrashJSONCODEC_WorkBufferSize 512
 #endif
 
 
@@ -79,15 +79,15 @@ const char* ksjson_stringForError(const int error)
 {
     switch (error)
     {
-        case KSJSON_ERROR_INVALID_CHARACTER:
+        case RollbarCrashJSON_ERROR_INVALID_CHARACTER:
             return "Invalid character";
-        case KSJSON_ERROR_DATA_TOO_LONG:
+        case RollbarCrashJSON_ERROR_DATA_TOO_LONG:
             return "Data too long";
-        case KSJSON_ERROR_CANNOT_ADD_DATA:
+        case RollbarCrashJSON_ERROR_CANNOT_ADD_DATA:
             return "Cannot add data";
-        case KSJSON_ERROR_INCOMPLETE:
+        case RollbarCrashJSON_ERROR_INCOMPLETE:
             return "Incomplete data";
-        case KSJSON_ERROR_INVALID_DATA:
+        case RollbarCrashJSON_ERROR_INVALID_DATA:
             return "Invalid data";
         default:
             return "(unknown error)";
@@ -108,7 +108,7 @@ const char* ksjson_stringForError(const int error)
  *
  * @param length The length of the data.
  *
- * @return KSJSON_OK if the data was handled successfully.
+ * @return RollbarCrashJSON_OK if the data was handled successfully.
  */
 #define addJSONData(CONTEXT,DATA,LENGTH) \
     (CONTEXT)->addJSONData(DATA, LENGTH, (CONTEXT)->userData)
@@ -121,13 +121,13 @@ const char* ksjson_stringForError(const int error)
  *
  * @param length The length of the string.
  *
- * @return KSJSON_OK if the data was handled successfully.
+ * @return RollbarCrashJSON_OK if the data was handled successfully.
  */
-static int appendEscapedString(KSJSONEncodeContext* const context,
+static int appendEscapedString(RollbarCrashJSONEncodeContext* const context,
                                const char* restrict const string,
                                int length)
 {
-    char workBuffer[KSJSONCODEC_WorkBufferSize];
+    char workBuffer[RollbarCrashJSONCODEC_WorkBufferSize];
     const char* const srcEnd = string + length;
 
     const char* restrict src = string;
@@ -175,9 +175,9 @@ static int appendEscapedString(KSJSONEncodeContext* const context,
             default:
                 unlikely_if((unsigned char)*src < ' ')
             {
-                KSLOG_DEBUG("Invalid character 0x%02x in string: %s",
+                RollbarCrashLOG_DEBUG("Invalid character 0x%02x in string: %s",
                             *src, string);
-                return KSJSON_ERROR_INVALID_CHARACTER;
+                return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
             }
                 *dst++ = *src;
         }
@@ -195,25 +195,25 @@ static int appendEscapedString(KSJSONEncodeContext* const context,
  *
  * @param length The length of the string.
  *
- * @return KSJSON_OK if the data was handled successfully.
+ * @return RollbarCrashJSON_OK if the data was handled successfully.
  */
-static int addEscapedString(KSJSONEncodeContext* const context,
+static int addEscapedString(RollbarCrashJSONEncodeContext* const context,
                             const char* restrict const string,
                             int length)
 {
-    int result = KSJSON_OK;
+    int result = RollbarCrashJSON_OK;
 
     // Keep adding portions until the whole string has been processed.
     int offset = 0;
     while(offset < length)
     {
         int toAdd = length - offset;
-        unlikely_if(toAdd > KSJSONCODEC_WorkBufferSize / 2)
+        unlikely_if(toAdd > RollbarCrashJSONCODEC_WorkBufferSize / 2)
         {
-            toAdd = KSJSONCODEC_WorkBufferSize / 2;
+            toAdd = RollbarCrashJSONCODEC_WorkBufferSize / 2;
         }
         result = appendEscapedString(context, string + offset, toAdd);
-        unlikely_if(result != KSJSON_OK)
+        unlikely_if(result != RollbarCrashJSON_OK)
         {
             break;
         }
@@ -230,14 +230,14 @@ static int addEscapedString(KSJSONEncodeContext* const context,
  *
  * @param length The length of the string.
  *
- * @return KSJSON_OK if the data was handled successfully.
+ * @return RollbarCrashJSON_OK if the data was handled successfully.
  */
-static int addQuotedEscapedString(KSJSONEncodeContext* const context,
+static int addQuotedEscapedString(RollbarCrashJSONEncodeContext* const context,
                                   const char* restrict const string,
                                   int length)
 {
     int result;
-    unlikely_if((result = addJSONData(context, "\"", 1)) != KSJSON_OK)
+    unlikely_if((result = addJSONData(context, "\"", 1)) != RollbarCrashJSON_OK)
     {
         return result;
     }
@@ -249,9 +249,9 @@ static int addQuotedEscapedString(KSJSONEncodeContext* const context,
     return result || closeResult;
 }
 
-int ksjson_beginElement(KSJSONEncodeContext* const context, const char* const name)
+int ksjson_beginElement(RollbarCrashJSONEncodeContext* const context, const char* const name)
 {
-    int result = KSJSON_OK;
+    int result = RollbarCrashJSON_OK;
 
     // Decide if a comma is warranted.
     unlikely_if(context->containerFirstEntry)
@@ -260,7 +260,7 @@ int ksjson_beginElement(KSJSONEncodeContext* const context, const char* const na
     }
     else
     {
-        unlikely_if((result = addJSONData(context, ",", 1)) != KSJSON_OK)
+        unlikely_if((result = addJSONData(context, ",", 1)) != RollbarCrashJSON_OK)
         {
             return result;
         }
@@ -269,13 +269,13 @@ int ksjson_beginElement(KSJSONEncodeContext* const context, const char* const na
     // Pretty printing
     unlikely_if(context->prettyPrint && context->containerLevel > 0)
     {
-        unlikely_if((result = addJSONData(context, "\n", 1)) != KSJSON_OK)
+        unlikely_if((result = addJSONData(context, "\n", 1)) != RollbarCrashJSON_OK)
         {
             return result;
         }
         for(int i = 0; i < context->containerLevel; i++)
         {
-            unlikely_if((result = addJSONData(context, "    ", 4)) != KSJSON_OK)
+            unlikely_if((result = addJSONData(context, "    ", 4)) != RollbarCrashJSON_OK)
             {
                 return result;
             }
@@ -287,23 +287,23 @@ int ksjson_beginElement(KSJSONEncodeContext* const context, const char* const na
     {
         unlikely_if(name == NULL)
         {
-            KSLOG_DEBUG("Name was null inside an object");
-            return KSJSON_ERROR_INVALID_DATA;
+            RollbarCrashLOG_DEBUG("Name was null inside an object");
+            return RollbarCrashJSON_ERROR_INVALID_DATA;
         }
-        unlikely_if((result = addQuotedEscapedString(context, name, (int)strlen(name))) != KSJSON_OK)
+        unlikely_if((result = addQuotedEscapedString(context, name, (int)strlen(name))) != RollbarCrashJSON_OK)
         {
             return result;
         }
         unlikely_if(context->prettyPrint)
         {
-            unlikely_if((result = addJSONData(context, ": ", 2)) != KSJSON_OK)
+            unlikely_if((result = addJSONData(context, ": ", 2)) != RollbarCrashJSON_OK)
             {
                 return result;
             }
         }
         else
         {
-            unlikely_if((result = addJSONData(context, ":", 1)) != KSJSON_OK)
+            unlikely_if((result = addJSONData(context, ":", 1)) != RollbarCrashJSON_OK)
             {
                 return result;
             }
@@ -312,19 +312,19 @@ int ksjson_beginElement(KSJSONEncodeContext* const context, const char* const na
     return result;
 }
 
-int ksjson_addRawJSONData(KSJSONEncodeContext* const context,
+int ksjson_addRawJSONData(RollbarCrashJSONEncodeContext* const context,
                           const char* const data,
                           const int length)
 {
     return addJSONData(context, data, length);
 }
 
-int ksjson_addBooleanElement(KSJSONEncodeContext* const context,
+int ksjson_addBooleanElement(RollbarCrashJSONEncodeContext* const context,
                              const char* const name,
                              const bool value)
 {
     int result = ksjson_beginElement(context, name);
-    unlikely_if(result != KSJSON_OK)
+    unlikely_if(result != RollbarCrashJSON_OK)
     {
         return result;
     }
@@ -338,12 +338,12 @@ int ksjson_addBooleanElement(KSJSONEncodeContext* const context,
     }
 }
 
-int ksjson_addFloatingPointElement(KSJSONEncodeContext* const context,
+int ksjson_addFloatingPointElement(RollbarCrashJSONEncodeContext* const context,
                                    const char* const name,
                                    double value)
 {
     int result = ksjson_beginElement(context, name);
-    unlikely_if(result != KSJSON_OK)
+    unlikely_if(result != RollbarCrashJSON_OK)
     {
         return result;
     }
@@ -352,12 +352,12 @@ int ksjson_addFloatingPointElement(KSJSONEncodeContext* const context,
     return addJSONData(context, buff, (int)strlen(buff));
 }
 
-int ksjson_addIntegerElement(KSJSONEncodeContext* const context,
+int ksjson_addIntegerElement(RollbarCrashJSONEncodeContext* const context,
                              const char* const name,
                              int64_t value)
 {
     int result = ksjson_beginElement(context, name);
-    unlikely_if(result != KSJSON_OK)
+    unlikely_if(result != RollbarCrashJSON_OK)
     {
         return result;
     }
@@ -366,12 +366,12 @@ int ksjson_addIntegerElement(KSJSONEncodeContext* const context,
     return addJSONData(context, buff, (int)strlen(buff));
 }
 
-int ksjson_addUIntegerElement(KSJSONEncodeContext* const context,
+int ksjson_addUIntegerElement(RollbarCrashJSONEncodeContext* const context,
                              const char* const name,
                              uint64_t value)
 {
     int result = ksjson_beginElement(context, name);
-    unlikely_if(result != KSJSON_OK)
+    unlikely_if(result != RollbarCrashJSON_OK)
     {
         return result;
     }
@@ -380,18 +380,18 @@ int ksjson_addUIntegerElement(KSJSONEncodeContext* const context,
     return addJSONData(context, buff, (int)strlen(buff));
 }
 
-int ksjson_addNullElement(KSJSONEncodeContext* const context,
+int ksjson_addNullElement(RollbarCrashJSONEncodeContext* const context,
                           const char* const name)
 {
     int result = ksjson_beginElement(context, name);
-    unlikely_if(result != KSJSON_OK)
+    unlikely_if(result != RollbarCrashJSON_OK)
     {
         return result;
     }
     return addJSONData(context, "null", 4);
 }
 
-int ksjson_addStringElement(KSJSONEncodeContext* const context,
+int ksjson_addStringElement(RollbarCrashJSONEncodeContext* const context,
                             const char* const name,
                             const char* const value,
                             int length)
@@ -401,78 +401,78 @@ int ksjson_addStringElement(KSJSONEncodeContext* const context,
         return ksjson_addNullElement(context, name);
     }
     int result = ksjson_beginElement(context, name);
-    unlikely_if(result != KSJSON_OK)
+    unlikely_if(result != RollbarCrashJSON_OK)
     {
         return result;
     }
-    if(length == KSJSON_SIZE_AUTOMATIC)
+    if(length == RollbarCrashJSON_SIZE_AUTOMATIC)
     {
         length = (int)strlen(value);
     }
     return addQuotedEscapedString(context, value, length);
 }
 
-int ksjson_beginStringElement(KSJSONEncodeContext* const context,
+int ksjson_beginStringElement(RollbarCrashJSONEncodeContext* const context,
                               const char* const name)
 {
     int result = ksjson_beginElement(context, name);
-    unlikely_if(result != KSJSON_OK)
+    unlikely_if(result != RollbarCrashJSON_OK)
     {
         return result;
     }
     return addJSONData(context, "\"", 1);
 }
 
-int ksjson_appendStringElement(KSJSONEncodeContext* const context,
+int ksjson_appendStringElement(RollbarCrashJSONEncodeContext* const context,
                                const char* const value,
                                int length)
 {
     return addEscapedString(context, value, length);
 }
 
-int ksjson_endStringElement(KSJSONEncodeContext* const context)
+int ksjson_endStringElement(RollbarCrashJSONEncodeContext* const context)
 {
     return addJSONData(context, "\"", 1);
 }
 
-int ksjson_addDataElement(KSJSONEncodeContext* const context,
+int ksjson_addDataElement(RollbarCrashJSONEncodeContext* const context,
                           const char* name,
                           const char* value,
                           int length)
 {
-    int result = KSJSON_OK;
+    int result = RollbarCrashJSON_OK;
     result = ksjson_beginDataElement(context, name);
-    if(result == KSJSON_OK)
+    if(result == RollbarCrashJSON_OK)
     {
         result = ksjson_appendDataElement(context, value, length);
     }
-    if(result == KSJSON_OK)
+    if(result == RollbarCrashJSON_OK)
     {
         result = ksjson_endDataElement(context);
     }
     return result;
 }
 
-int ksjson_beginDataElement(KSJSONEncodeContext* const context,
+int ksjson_beginDataElement(RollbarCrashJSONEncodeContext* const context,
                             const char* const name)
 {
     return ksjson_beginStringElement(context, name);
 }
 
-int ksjson_appendDataElement(KSJSONEncodeContext* const context,
+int ksjson_appendDataElement(RollbarCrashJSONEncodeContext* const context,
                              const char* const value,
                              int length)
 {
     unsigned char* currentByte = (unsigned char*)value;
     unsigned char* end = currentByte + length;
     char chars[2];
-    int result = KSJSON_OK;
+    int result = RollbarCrashJSON_OK;
     while(currentByte < end)
     {
         chars[0] = g_hexNybbles[(*currentByte>>4)&15];
         chars[1] = g_hexNybbles[*currentByte&15];
         result = addJSONData(context, chars, sizeof(chars));
-        if(result != KSJSON_OK)
+        if(result != RollbarCrashJSON_OK)
         {
             break;
         }
@@ -481,18 +481,18 @@ int ksjson_appendDataElement(KSJSONEncodeContext* const context,
     return result;
 }
 
-int ksjson_endDataElement(KSJSONEncodeContext* const context)
+int ksjson_endDataElement(RollbarCrashJSONEncodeContext* const context)
 {
     return ksjson_endStringElement(context);
 }
 
-int ksjson_beginArray(KSJSONEncodeContext* const context,
+int ksjson_beginArray(RollbarCrashJSONEncodeContext* const context,
                       const char* const name)
 {
     likely_if(context->containerLevel >= 0)
     {
         int result = ksjson_beginElement(context, name);
-        unlikely_if(result != KSJSON_OK)
+        unlikely_if(result != RollbarCrashJSON_OK)
         {
             return result;
         }
@@ -505,13 +505,13 @@ int ksjson_beginArray(KSJSONEncodeContext* const context,
     return addJSONData(context, "[", 1);
 }
 
-int ksjson_beginObject(KSJSONEncodeContext* const context,
+int ksjson_beginObject(RollbarCrashJSONEncodeContext* const context,
                        const char* const name)
 {
     likely_if(context->containerLevel >= 0)
     {
         int result = ksjson_beginElement(context, name);
-        unlikely_if(result != KSJSON_OK)
+        unlikely_if(result != RollbarCrashJSON_OK)
         {
             return result;
         }
@@ -524,11 +524,11 @@ int ksjson_beginObject(KSJSONEncodeContext* const context,
     return addJSONData(context, "{", 1);
 }
 
-int ksjson_endContainer(KSJSONEncodeContext* const context)
+int ksjson_endContainer(RollbarCrashJSONEncodeContext* const context)
 {
     unlikely_if(context->containerLevel <= 0)
     {
-        return KSJSON_OK;
+        return RollbarCrashJSON_OK;
     }
 
     bool isObject = context->isObject[context->containerLevel];
@@ -538,13 +538,13 @@ int ksjson_endContainer(KSJSONEncodeContext* const context)
     unlikely_if(context->prettyPrint && !context->containerFirstEntry)
     {
         int result;
-        unlikely_if((result = addJSONData(context, "\n", 1)) != KSJSON_OK)
+        unlikely_if((result = addJSONData(context, "\n", 1)) != RollbarCrashJSON_OK)
         {
             return result;
         }
         for(int i = 0; i < context->containerLevel; i++)
         {
-            unlikely_if((result = addJSONData(context, "    ", 4)) != KSJSON_OK)
+            unlikely_if((result = addJSONData(context, "    ", 4)) != RollbarCrashJSON_OK)
             {
                 return result;
             }
@@ -554,9 +554,9 @@ int ksjson_endContainer(KSJSONEncodeContext* const context)
     return addJSONData(context, isObject ? "}" : "]", 1);
 }
 
-void ksjson_beginEncode(KSJSONEncodeContext* const context,
+void ksjson_beginEncode(RollbarCrashJSONEncodeContext* const context,
                         bool prettyPrint,
-                        KSJSONAddDataFunc addJSONDataFunc,
+                        RollbarCrashJSONAddDataFunc addJSONDataFunc,
                         void* const userData)
 {
     memset(context, 0, sizeof(*context));
@@ -566,12 +566,12 @@ void ksjson_beginEncode(KSJSONEncodeContext* const context,
     context->containerFirstEntry = true;
 }
 
-int ksjson_endEncode(KSJSONEncodeContext* const context)
+int ksjson_endEncode(RollbarCrashJSONEncodeContext* const context)
 {
-    int result = KSJSON_OK;
+    int result = RollbarCrashJSON_OK;
     while(context->containerLevel > 0)
     {
-        unlikely_if((result = ksjson_endContainer(context)) != KSJSON_OK)
+        unlikely_if((result = ksjson_endContainer(context)) != RollbarCrashJSON_OK)
         {
             return result;
         }
@@ -601,10 +601,10 @@ typedef struct
     /** Length of the string buffer. */
     int stringBufferLength;
     /** The callbacks to call while decoding. */
-    KSJSONDecodeCallbacks* const callbacks;
+    RollbarCrashJSONDecodeCallbacks* const callbacks;
     /** Data that was specified when calling ksjson_decode(). */
     void* userData;
-} KSJSONDecodeContext;
+} RollbarCrashJSONDecodeContext;
 
 /** Lookup table for converting hex values to integers.
  * INV (0x11111) is used to mark invalid characters so that any attempted
@@ -638,7 +638,7 @@ static const unsigned int g_hexConversion[] =
  *
  * @param dst Where to write the UTF-8 character.
  *
- * @return KSJSON_OK if the encoding was successful.
+ * @return RollbarCrashJSON_OK if the encoding was successful.
  */
 static int writeUTF8(unsigned int character, char** dst);
 
@@ -650,9 +650,9 @@ static int writeUTF8(unsigned int character, char** dst);
  *
  * @param dstBufferLength Length of the destination buffer.
  *
- * @return KSJSON_OK if successful.
+ * @return RollbarCrashJSON_OK if successful.
  */
-static int decodeString(KSJSONDecodeContext* context, char* dstBuffer, int dstBufferLength);
+static int decodeString(RollbarCrashJSONDecodeContext* context, char* dstBuffer, int dstBufferLength);
 
 /** Decode a JSON element.
  *
@@ -660,10 +660,10 @@ static int decodeString(KSJSONDecodeContext* context, char* dstBuffer, int dstBu
  *
  * @param context The decoding context.
  *
- * @return KSJSON_OK if successful.
+ * @return RollbarCrashJSON_OK if successful.
  */
 static int decodeElement(const char* const name,
-                                KSJSONDecodeContext* context);
+                                RollbarCrashJSONDecodeContext* context);
 
 
 /** Skip past any whitespace.
@@ -703,14 +703,14 @@ static int writeUTF8(unsigned int character, char** dst)
     {
         **dst = (char) character;
         (*dst)++;
-        return KSJSON_OK;
+        return RollbarCrashJSON_OK;
     }
     if(character <= 0x7ff)
     {
         (*dst)[0] = (char)(0xc0 | (character >> 6));
         (*dst)[1] = (char)(0x80 | (character & 0x3f));
         *dst += 2;
-        return KSJSON_OK;
+        return RollbarCrashJSON_OK;
     }
     if(character <= 0xffff)
     {
@@ -718,7 +718,7 @@ static int writeUTF8(unsigned int character, char** dst)
         (*dst)[1] = (char)(0x80 | ((character >> 6) & 0x3f));
         (*dst)[2] = (char)(0x80 | (character & 0x3f));
         *dst += 3;
-        return KSJSON_OK;
+        return RollbarCrashJSON_OK;
     }
     // RFC3629 restricts UTF-8 to end at 0x10ffff.
     if(character <= 0x10ffff)
@@ -728,21 +728,21 @@ static int writeUTF8(unsigned int character, char** dst)
         (*dst)[2] = (char)(0x80 | ((character >> 6) & 0x3f));
         (*dst)[3] = (char)(0x80 | (character & 0x3f));
         *dst += 4;
-        return KSJSON_OK;
+        return RollbarCrashJSON_OK;
     }
 
     // If we get here, the character cannot be converted to valid UTF-8.
-    KSLOG_DEBUG("Invalid unicode: 0x%04x", character);
-    return KSJSON_ERROR_INVALID_CHARACTER;
+    RollbarCrashLOG_DEBUG("Invalid unicode: 0x%04x", character);
+    return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
 }
 
-static int decodeString(KSJSONDecodeContext* context, char* dstBuffer, int dstBufferLength)
+static int decodeString(RollbarCrashJSONDecodeContext* context, char* dstBuffer, int dstBufferLength)
 {
     *dstBuffer = '\0';
     unlikely_if(*context->bufferPtr != '\"')
     {
-        KSLOG_DEBUG("Expected '\"' but got '%c'", *context->bufferPtr);
-        return KSJSON_ERROR_INVALID_CHARACTER;
+        RollbarCrashLOG_DEBUG("Expected '\"' but got '%c'", *context->bufferPtr);
+        return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
     }
 
     const char* src = context->bufferPtr + 1;
@@ -758,16 +758,16 @@ static int decodeString(KSJSONDecodeContext* context, char* dstBuffer, int dstBu
     }
     unlikely_if(src >= context->bufferEnd)
     {
-        KSLOG_DEBUG("Premature end of data");
-        return KSJSON_ERROR_INCOMPLETE;
+        RollbarCrashLOG_DEBUG("Premature end of data");
+        return RollbarCrashJSON_ERROR_INCOMPLETE;
     }
     const char* srcEnd = src;
     src = context->bufferPtr + 1;
     int length = (int)(srcEnd - src);
     if(length >= dstBufferLength)
     {
-        KSLOG_DEBUG("String is too long");
-        return KSJSON_ERROR_DATA_TOO_LONG;
+        RollbarCrashLOG_DEBUG("String is too long");
+        return RollbarCrashJSON_ERROR_DATA_TOO_LONG;
     }
 
     context->bufferPtr = srcEnd + 1;
@@ -777,7 +777,7 @@ static int decodeString(KSJSONDecodeContext* context, char* dstBuffer, int dstBu
     {
         memcpy(dstBuffer, src, length);
         dstBuffer[length] = 0;
-        return KSJSON_OK;
+        return RollbarCrashJSON_OK;
     }
 
     char* dst = dstBuffer;
@@ -821,8 +821,8 @@ static int decodeString(KSJSONDecodeContext* context, char* dstBuffer, int dstBu
                 {
                     unlikely_if(src + 5 > srcEnd)
                     {
-                        KSLOG_DEBUG("Premature end of data");
-                        return KSJSON_ERROR_INCOMPLETE;
+                        RollbarCrashLOG_DEBUG("Premature end of data");
+                        return RollbarCrashJSON_ERROR_INCOMPLETE;
                     }
                     unsigned int accum =
                     g_hexConversion[src[1]] << 12 |
@@ -831,17 +831,17 @@ static int decodeString(KSJSONDecodeContext* context, char* dstBuffer, int dstBu
                     g_hexConversion[src[4]];
                     unlikely_if(accum > 0xffff)
                     {
-                        KSLOG_DEBUG("Invalid unicode sequence: %c%c%c%c",
+                        RollbarCrashLOG_DEBUG("Invalid unicode sequence: %c%c%c%c",
                                     src[1], src[2], src[3], src[4]);
-                        return KSJSON_ERROR_INVALID_CHARACTER;
+                        return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
                     }
 
                     // UTF-16 Trail surrogate on its own.
                     unlikely_if(accum >= 0xdc00 && accum <= 0xdfff)
                     {
-                        KSLOG_DEBUG("Unexpected trail surrogate: 0x%04x",
+                        RollbarCrashLOG_DEBUG("Unexpected trail surrogate: 0x%04x",
                                     accum);
-                        return KSJSON_ERROR_INVALID_CHARACTER;
+                        return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
                     }
 
                     // UTF-16 Lead surrogate.
@@ -850,15 +850,15 @@ static int decodeString(KSJSONDecodeContext* context, char* dstBuffer, int dstBu
                         // Fetch trail surrogate.
                         unlikely_if(src + 11 > srcEnd)
                         {
-                            KSLOG_DEBUG("Premature end of data");
-                            return KSJSON_ERROR_INCOMPLETE;
+                            RollbarCrashLOG_DEBUG("Premature end of data");
+                            return RollbarCrashJSON_ERROR_INCOMPLETE;
                         }
                         unlikely_if(src[5] != '\\' ||
                                     src[6] != 'u')
                         {
-                            KSLOG_DEBUG("Expected \"\\u\" but got: \"%c%c\"",
+                            RollbarCrashLOG_DEBUG("Expected \"\\u\" but got: \"%c%c\"",
                                         src[5], src[6]);
-                            return KSJSON_ERROR_INVALID_CHARACTER;
+                            return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
                         }
                         src += 6;
                         unsigned int accum2 =
@@ -868,16 +868,16 @@ static int decodeString(KSJSONDecodeContext* context, char* dstBuffer, int dstBu
                         g_hexConversion[src[4]];
                         unlikely_if(accum2 < 0xdc00 || accum2 > 0xdfff)
                         {
-                            KSLOG_DEBUG("Invalid trail surrogate: 0x%04x",
+                            RollbarCrashLOG_DEBUG("Invalid trail surrogate: 0x%04x",
                                         accum2);
-                            return KSJSON_ERROR_INVALID_CHARACTER;
+                            return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
                         }
                         // And combine 20 bit result.
                         accum = ((accum - 0xd800) << 10) | (accum2 - 0xdc00);
                     }
 
                     int result = writeUTF8(accum, &dst);
-                    unlikely_if(result != KSJSON_OK)
+                    unlikely_if(result != RollbarCrashJSON_OK)
                     {
                         return result;
                     }
@@ -885,23 +885,23 @@ static int decodeString(KSJSONDecodeContext* context, char* dstBuffer, int dstBu
                     continue;
                 }
                 default:
-                    KSLOG_DEBUG("Invalid control character '%c'", *src);
-                    return KSJSON_ERROR_INVALID_CHARACTER;
+                    RollbarCrashLOG_DEBUG("Invalid control character '%c'", *src);
+                    return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
             }
         }
     }
 
     *dst = 0;
-    return KSJSON_OK;
+    return RollbarCrashJSON_OK;
 }
 
-static int decodeElement(const char* const name, KSJSONDecodeContext* context)
+static int decodeElement(const char* const name, RollbarCrashJSONDecodeContext* context)
 {
     SKIP_WHITESPACE(context);
     unlikely_if(context->bufferPtr >= context->bufferEnd)
     {
-        KSLOG_DEBUG("Premature end of data");
-        return KSJSON_ERROR_INCOMPLETE;
+        RollbarCrashLOG_DEBUG("Premature end of data");
+        return RollbarCrashJSON_ERROR_INCOMPLETE;
     }
 
     int sign = 1;
@@ -913,7 +913,7 @@ static int decodeElement(const char* const name, KSJSONDecodeContext* context)
         {
             context->bufferPtr++;
             result = context->callbacks->onBeginArray(name, context->userData);
-            unlikely_if(result != KSJSON_OK) return result;
+            unlikely_if(result != RollbarCrashJSON_OK) return result;
             while(context->bufferPtr < context->bufferEnd)
             {
                 SKIP_WHITESPACE(context);
@@ -927,7 +927,7 @@ static int decodeElement(const char* const name, KSJSONDecodeContext* context)
                     return context->callbacks->onEndContainer(context->userData);
                 }
                 result = decodeElement(NULL, context);
-                unlikely_if(result != KSJSON_OK) return result;
+                unlikely_if(result != RollbarCrashJSON_OK) return result;
                 SKIP_WHITESPACE(context);
                 unlikely_if(context->bufferPtr >= context->bufferEnd)
                 {
@@ -938,14 +938,14 @@ static int decodeElement(const char* const name, KSJSONDecodeContext* context)
                     context->bufferPtr++;
                 }
             }
-            KSLOG_DEBUG("Premature end of data");
-            return KSJSON_ERROR_INCOMPLETE;
+            RollbarCrashLOG_DEBUG("Premature end of data");
+            return RollbarCrashJSON_ERROR_INCOMPLETE;
         }
         case '{':
         {
             context->bufferPtr++;
             result = context->callbacks->onBeginObject(name, context->userData);
-            unlikely_if(result != KSJSON_OK) return result;
+            unlikely_if(result != RollbarCrashJSON_OK) return result;
             while(context->bufferPtr < context->bufferEnd)
             {
                 SKIP_WHITESPACE(context);
@@ -959,7 +959,7 @@ static int decodeElement(const char* const name, KSJSONDecodeContext* context)
                     return context->callbacks->onEndContainer(context->userData);
                 }
                 result = decodeString(context, context->nameBuffer, context->nameBufferLength);
-                unlikely_if(result != KSJSON_OK) return result;
+                unlikely_if(result != RollbarCrashJSON_OK) return result;
                 SKIP_WHITESPACE(context);
                 unlikely_if(context->bufferPtr >= context->bufferEnd)
                 {
@@ -967,13 +967,13 @@ static int decodeElement(const char* const name, KSJSONDecodeContext* context)
                 }
                 unlikely_if(*context->bufferPtr != ':')
                 {
-                    KSLOG_DEBUG("Expected ':' but got '%c'", *context->bufferPtr);
-                    return KSJSON_ERROR_INVALID_CHARACTER;
+                    RollbarCrashLOG_DEBUG("Expected ':' but got '%c'", *context->bufferPtr);
+                    return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
                 }
                 context->bufferPtr++;
                 SKIP_WHITESPACE(context);
                 result = decodeElement(context->nameBuffer, context);
-                unlikely_if(result != KSJSON_OK) return result;
+                unlikely_if(result != RollbarCrashJSON_OK) return result;
                 SKIP_WHITESPACE(context);
                 unlikely_if(context->bufferPtr >= context->bufferEnd)
                 {
@@ -984,13 +984,13 @@ static int decodeElement(const char* const name, KSJSONDecodeContext* context)
                     context->bufferPtr++;
                 }
             }
-            KSLOG_DEBUG("Premature end of data");
-            return KSJSON_ERROR_INCOMPLETE;
+            RollbarCrashLOG_DEBUG("Premature end of data");
+            return RollbarCrashJSON_ERROR_INCOMPLETE;
         }
         case '\"':
         {
             result = decodeString(context, context->stringBuffer, context->stringBufferLength);
-            unlikely_if(result != KSJSON_OK) return result;
+            unlikely_if(result != RollbarCrashJSON_OK) return result;
             result = context->callbacks->onStringElement(name,
                                                 context->stringBuffer,
                                                 context->userData);
@@ -1000,17 +1000,17 @@ static int decodeElement(const char* const name, KSJSONDecodeContext* context)
         {
             unlikely_if(context->bufferEnd - context->bufferPtr < 5)
             {
-                KSLOG_DEBUG("Premature end of data");
-                return KSJSON_ERROR_INCOMPLETE;
+                RollbarCrashLOG_DEBUG("Premature end of data");
+                return RollbarCrashJSON_ERROR_INCOMPLETE;
             }
             unlikely_if(!(context->bufferPtr[1] == 'a' &&
                           context->bufferPtr[2] == 'l' &&
                           context->bufferPtr[3] == 's' &&
                           context->bufferPtr[4] == 'e'))
             {
-                KSLOG_DEBUG("Expected \"false\" but got \"f%c%c%c%c\"",
+                RollbarCrashLOG_DEBUG("Expected \"false\" but got \"f%c%c%c%c\"",
                             context->bufferPtr[1], context->bufferPtr[2], context->bufferPtr[3], context->bufferPtr[4]);
-                return KSJSON_ERROR_INVALID_CHARACTER;
+                return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
             }
             context->bufferPtr += 5;
             return context->callbacks->onBooleanElement(name, false, context->userData);
@@ -1019,16 +1019,16 @@ static int decodeElement(const char* const name, KSJSONDecodeContext* context)
         {
             unlikely_if(context->bufferEnd - context->bufferPtr < 4)
             {
-                KSLOG_DEBUG("Premature end of data");
-                return KSJSON_ERROR_INCOMPLETE;
+                RollbarCrashLOG_DEBUG("Premature end of data");
+                return RollbarCrashJSON_ERROR_INCOMPLETE;
             }
             unlikely_if(!(context->bufferPtr[1] == 'r' &&
                           context->bufferPtr[2] == 'u' &&
                           context->bufferPtr[3] == 'e'))
             {
-                KSLOG_DEBUG("Expected \"true\" but got \"t%c%c%c\"",
+                RollbarCrashLOG_DEBUG("Expected \"true\" but got \"t%c%c%c\"",
                             context->bufferPtr[1], context->bufferPtr[2], context->bufferPtr[3]);
-                return KSJSON_ERROR_INVALID_CHARACTER;
+                return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
             }
             context->bufferPtr += 4;
             return context->callbacks->onBooleanElement(name, true, context->userData);
@@ -1037,16 +1037,16 @@ static int decodeElement(const char* const name, KSJSONDecodeContext* context)
         {
             unlikely_if(context->bufferEnd - context->bufferPtr < 4)
             {
-                KSLOG_DEBUG("Premature end of data");
-                return KSJSON_ERROR_INCOMPLETE;
+                RollbarCrashLOG_DEBUG("Premature end of data");
+                return RollbarCrashJSON_ERROR_INCOMPLETE;
             }
             unlikely_if(!(context->bufferPtr[1] == 'u' &&
                           context->bufferPtr[2] == 'l' &&
                           context->bufferPtr[3] == 'l'))
             {
-                KSLOG_DEBUG("Expected \"null\" but got \"n%c%c%c\"",
+                RollbarCrashLOG_DEBUG("Expected \"null\" but got \"n%c%c%c\"",
                             context->bufferPtr[1], context->bufferPtr[2], context->bufferPtr[3]);
-                return KSJSON_ERROR_INVALID_CHARACTER;
+                return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
             }
             context->bufferPtr += 4;
             return context->callbacks->onNullElement(name, context->userData);
@@ -1056,8 +1056,8 @@ static int decodeElement(const char* const name, KSJSONDecodeContext* context)
             context->bufferPtr++;
             unlikely_if(!isdigit(*context->bufferPtr))
         {
-            KSLOG_DEBUG("Not a digit: '%c'", *context->bufferPtr);
-            return KSJSON_ERROR_INVALID_CHARACTER;
+            RollbarCrashLOG_DEBUG("Not a digit: '%c'", *context->bufferPtr);
+            return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
         }
             // Fall through
         case '0': case '1': case '2': case '3': case '4':
@@ -1085,8 +1085,8 @@ static int decodeElement(const char* const name, KSJSONDecodeContext* context)
 
             unlikely_if(context->bufferPtr >= context->bufferEnd)
             {
-                KSLOG_DEBUG("Premature end of data");
-                return KSJSON_ERROR_INCOMPLETE;
+                RollbarCrashLOG_DEBUG("Premature end of data");
+                return RollbarCrashJSON_ERROR_INCOMPLETE;
             }
 
             if(!isFPChar(*context->bufferPtr) && !isOverflow)
@@ -1106,8 +1106,8 @@ static int decodeElement(const char* const name, KSJSONDecodeContext* context)
 
             unlikely_if(context->bufferPtr >= context->bufferEnd)
             {
-                KSLOG_DEBUG("Premature end of data");
-                return KSJSON_ERROR_INCOMPLETE;
+                RollbarCrashLOG_DEBUG("Premature end of data");
+                return RollbarCrashJSON_ERROR_INCOMPLETE;
             }
 
             // our buffer is not necessarily NULL-terminated, so
@@ -1117,8 +1117,8 @@ static int decodeElement(const char* const name, KSJSONDecodeContext* context)
             int len = (int)(context->bufferPtr - start);
             if(len >= context->stringBufferLength)
             {
-                KSLOG_DEBUG("Number is too long.");
-                return KSJSON_ERROR_DATA_TOO_LONG;
+                RollbarCrashLOG_DEBUG("Number is too long.");
+                return RollbarCrashJSON_ERROR_DATA_TOO_LONG;
             }
             strncpy(context->stringBuffer, start, len);
             context->stringBuffer[len] = '\0';
@@ -1129,15 +1129,15 @@ static int decodeElement(const char* const name, KSJSONDecodeContext* context)
             return context->callbacks->onFloatingPointElement(name, value, context->userData);
         }
     }
-    KSLOG_DEBUG("Invalid character '%c'", *context->bufferPtr);
-    return KSJSON_ERROR_INVALID_CHARACTER;
+    RollbarCrashLOG_DEBUG("Invalid character '%c'", *context->bufferPtr);
+    return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
 }
 
 int ksjson_decode(const char* const data,
                   int length,
                   char* stringBuffer,
                   int stringBufferLength,
-                  KSJSONDecodeCallbacks* const callbacks,
+                  RollbarCrashJSONDecodeCallbacks* const callbacks,
                   void* const userData,
                   int* const errorOffset)
 {
@@ -1145,7 +1145,7 @@ int ksjson_decode(const char* const data,
     int nameBufferLength = stringBufferLength / 4;
     stringBuffer = nameBuffer + nameBufferLength;
     stringBufferLength -= nameBufferLength;
-    KSJSONDecodeContext context =
+    RollbarCrashJSONDecodeContext context =
     {
         .bufferPtr = (char*)data,
         .bufferEnd = (char*)data + length,
@@ -1160,12 +1160,12 @@ int ksjson_decode(const char* const data,
     const char* ptr = data;
 
     int result = decodeElement(NULL, &context);
-    likely_if(result == KSJSON_OK)
+    likely_if(result == RollbarCrashJSON_OK)
     {
         result = callbacks->onEndData(userData);
     }
 
-    unlikely_if(result != KSJSON_OK && errorOffset != NULL)
+    unlikely_if(result != RollbarCrashJSON_OK && errorOffset != NULL)
     {
         *errorOffset = (int)(ptr - data);
     }
@@ -1177,8 +1177,8 @@ typedef void (*UpdateDecoderCallback)(struct JSONFromFileContext* context);
 
 typedef struct JSONFromFileContext
 {
-    KSJSONEncodeContext* encodeContext;
-    KSJSONDecodeContext* decodeContext;
+    RollbarCrashJSONEncodeContext* encodeContext;
+    RollbarCrashJSONDecodeContext* decodeContext;
     char* bufferStart;
     const char* sourceFilename;
     int fd;
@@ -1211,7 +1211,7 @@ static void updateDecoder_readFile(struct JSONFromFileContext* context)
             {
                 if(bytesRead < 0)
                 {
-                    KSLOG_ERROR("Error reading file %s: %s", context->sourceFilename, strerror(errno));
+                    RollbarCrashLOG_ERROR("Error reading file %s: %s", context->sourceFilename, strerror(errno));
                 }
                 context->isEOF = true;
             }
@@ -1289,7 +1289,7 @@ static int addJSONFromFile_onBeginArray(const char* const name,
 static int addJSONFromFile_onEndContainer(void* const userData)
 {
     JSONFromFileContext* context = (JSONFromFileContext*)userData;
-    int result = KSJSON_OK;
+    int result = RollbarCrashJSON_OK;
     if(context->closeLastContainer || context->encodeContext->containerLevel > 2)
     {
         result = ksjson_endContainer(context->encodeContext);
@@ -1300,15 +1300,15 @@ static int addJSONFromFile_onEndContainer(void* const userData)
 
 static int addJSONFromFile_onEndData(__unused void* const userData)
 {
-    return KSJSON_OK;
+    return RollbarCrashJSON_OK;
 }
 
-int ksjson_addJSONFromFile(KSJSONEncodeContext* const encodeContext,
+int ksjson_addJSONFromFile(RollbarCrashJSONEncodeContext* const encodeContext,
                            const char* restrict const name,
                            const char* restrict const filename,
                            const bool closeLastContainer)
 {
-    KSJSONDecodeCallbacks callbacks =
+    RollbarCrashJSONDecodeCallbacks callbacks =
     {
         .onBeginArray = addJSONFromFile_onBeginArray,
         .onBeginObject = addJSONFromFile_onBeginObject,
@@ -1323,7 +1323,7 @@ int ksjson_addJSONFromFile(KSJSONEncodeContext* const encodeContext,
     char nameBuffer[100] = {0};
     char stringBuffer[500] = {0};
     char fileBuffer[1000] = {0};
-    KSJSONDecodeContext decodeContext =
+    RollbarCrashJSONDecodeContext decodeContext =
     {
         .bufferPtr = fileBuffer,
         .bufferEnd = fileBuffer + sizeof(fileBuffer),
@@ -1364,13 +1364,13 @@ int ksjson_addJSONFromFile(KSJSONEncodeContext* const encodeContext,
     return result;
 }
 
-int ksjson_addJSONElement(KSJSONEncodeContext* const encodeContext,
+int ksjson_addJSONElement(RollbarCrashJSONEncodeContext* const encodeContext,
                           const char* restrict const name,
                           const char* restrict const jsonData,
                           const int jsonDataLength,
                           const bool closeLastContainer)
 {
-    KSJSONDecodeCallbacks callbacks =
+    RollbarCrashJSONDecodeCallbacks callbacks =
     {
         .onBeginArray = addJSONFromFile_onBeginArray,
         .onBeginObject = addJSONFromFile_onBeginObject,
@@ -1384,7 +1384,7 @@ int ksjson_addJSONElement(KSJSONEncodeContext* const encodeContext,
     };
     char nameBuffer[100] = {0};
     char stringBuffer[5000] = {0};
-    KSJSONDecodeContext decodeContext =
+    RollbarCrashJSONDecodeContext decodeContext =
     {
         .bufferPtr = jsonData,
         .bufferEnd = jsonData + jsonDataLength,

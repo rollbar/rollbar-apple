@@ -1,5 +1,5 @@
 //
-//  KSCrashMonitor_NSException.h
+//  RollbarCrashMonitor_NSException.h
 //
 //  Created by Karl Stenerud on 2012-01-28.
 //
@@ -29,24 +29,24 @@
  */
 
 
-#ifndef HDR_KSCrashMonitor_NSException_h
-#define HDR_KSCrashMonitor_NSException_h
+#ifndef HDR_RollbarCrashMonitor_NSException_h
+#define HDR_RollbarCrashMonitor_NSException_h
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
-#include "KSCrashMonitor.h"
+#include "RollbarCrashMonitor.h"
 
 
 /** Access the Monitor API.
  */
-KSCrashMonitorAPI* kscm_nsexception_getAPI(void);
+RollbarCrashMonitorAPI* kscm_nsexception_getAPI(void);
 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // HDR_KSCrashMonitor_NSException_h
+#endif // HDR_RollbarCrashMonitor_NSException_h

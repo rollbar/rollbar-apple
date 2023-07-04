@@ -1,5 +1,5 @@
 //
-//  KSCrash.h
+//  RollbarCrash.h
 //
 //  Created by Karl Stenerud on 2012-01-28.
 //
@@ -27,27 +27,27 @@
 
 #import <Foundation/Foundation.h>
 
-#import "KSCrashReportWriter.h"
-#import "KSCrashReportFilter.h"
-#import "KSCrashMonitorType.h"
+#import "RollbarCrashReportWriter.h"
+#import "RollbarCrashReportFilter.h"
+#import "RollbarCrashMonitorType.h"
 
 typedef enum
 {
-    KSCDeleteNever,
-    KSCDeleteOnSucess,
-    KSCDeleteAlways
-} KSCDeleteBehavior;
+    RollbarCrashDeleteNever,
+    RollbarCrashDeleteOnSucess,
+    RollbarCrashDeleteAlways
+} RollbarCrashDeleteBehavior;
 
 /**
  * Reports any crashes that occur in the application.
  *
- * The crash reports will be located in $APP_HOME/Library/Caches/KSCrashReports
+ * The crash reports will be located in $APP_HOME/Library/Caches/RollbarCrashReports
  */
-@interface KSCrash : NSObject
+@interface RollbarCrash : NSObject
 
 #pragma mark - Configuration -
 
-/** Init KSCrash instance with custom base path. */
+/** Init RollbarCrash instance with custom base path. */
 - (id) initWithBasePath:(NSString *)basePath;
 
 /** A dictionary containing any info you'd like to appear in crash reports. Must
@@ -60,29 +60,29 @@ typedef enum
 
 /** What to do after sending reports via sendAllReportsWithCompletion:
  *
- * - Use KSCDeleteNever if you will manually manage the reports.
- * - Use KSCDeleteAlways if you will be using an alert confirmation (otherwise it
+ * - Use RollbarCrashCDeleteNever if you will manually manage the reports.
+ * - Use RollbarCrashCDeleteAlways if you will be using an alert confirmation (otherwise it
  *   will nag the user incessantly until he selects "yes").
- * - Use KSCDeleteOnSuccess for all other situations.
+ * - Use RollbarCrashCDeleteOnSuccess for all other situations.
  *
- * Default: KSCDeleteAlways
+ * Default: RollbarCrashCDeleteAlways
  */
-@property(nonatomic,readwrite,assign) KSCDeleteBehavior deleteBehaviorAfterSendAll;
+@property(nonatomic,readwrite,assign) RollbarCrashDeleteBehavior deleteBehaviorAfterSendAll;
 
 /** The monitors that will or have been installed.
- * Note: This value may change once KSCrash is installed if some monitors
+ * Note: This value may change once RollbarCrash is installed if some monitors
  *       fail to install.
  *
- * Default: KSCrashMonitorTypeProductionSafeMinimal
+ * Default: RollbarCrashMonitorTypeProductionSafeMinimal
  */
-@property(nonatomic,readwrite,assign) KSCrashMonitorType monitoring;
+@property(nonatomic,readwrite,assign) RollbarCrashMonitorType monitoring;
 
 /** Maximum time to allow the main thread to run without returning.
  * If a task occupies the main thread for longer than this interval, the
  * watchdog will consider the queue deadlocked and shut down the app and write a
  * crash report.
  *
- * Note: You must have added KSCrashMonitorTypeMainThreadDeadlock to the monitoring
+ * Note: You must have added RollbarCrashMonitorTypeMainThreadDeadlock to the monitoring
  *       property in order for this to have any effect.
  *
  * Warning: Make SURE that nothing in your app that runs on the main thread takes
@@ -146,7 +146,7 @@ typedef enum
  * Note: If you use an installation, it will automatically set this property.
  *       Do not modify it in such a case.
  */
-@property(nonatomic,readwrite,retain) id<KSCrashReportFilter> sink;
+@property(nonatomic,readwrite,retain) id<RollbarCrashReportFilter> sink;
 
 /** C Function to call during a crash report to give the callee an opportunity to
  * add to the report. NULL = ignore.
@@ -157,21 +157,21 @@ typedef enum
  * Note: If you use an installation, it will automatically set this property.
  *       Do not modify it in such a case.
  */
-@property(nonatomic,readwrite,assign) KSReportWriteCallback onCrash;
+@property(nonatomic,readwrite,assign) RollbarCrashReportWriteCallback onCrash;
 
-/** Add a copy of KSCrash's console log messages to the crash report.
+/** Add a copy of RollbarCrash's console log messages to the crash report.
  */
 @property(nonatomic,readwrite,assign) BOOL addConsoleLogToReport;
 
-/** Print the previous app run log to the console when installing KSCrash.
+/** Print the previous app run log to the console when installing RollbarCrash.
  *  This is primarily for debugging purposes.
  */
 @property(nonatomic,readwrite,assign) BOOL printPreviousLog;
 
-/** Exposes the uncaughtExceptionHandler if set from KSCrash. Is nil if debugger is running. **/
+/** Exposes the uncaughtExceptionHandler if set from RollbarCrash. Is nil if debugger is running. **/
 @property (nonatomic, assign) NSUncaughtExceptionHandler *uncaughtExceptionHandler;
 
-/** Exposes the currentSnapshotUserReportedExceptionHandler if set from KSCrash. Is nil if debugger is running. **/
+/** Exposes the currentSnapshotUserReportedExceptionHandler if set from RollbarCrash. Is nil if debugger is running. **/
 @property (nonatomic, assign) NSUncaughtExceptionHandler *currentSnapshotUserReportedExceptionHandler;
 
 #pragma mark - Information -
@@ -210,7 +210,7 @@ typedef enum
 
 /** Get the singleton instance of the crash reporter.
  */
-+ (KSCrash*) sharedInstance;
++ (RollbarCrash*) sharedInstance;
 
 /** Install the crash reporter.
  * The reporter will record crashes, but will not send any crash reports unless
@@ -230,7 +230,7 @@ typedef enum
  *
  * @param onCompletion Called when sending is complete (nil = ignore).
  */
-- (void) sendAllReportsWithCompletion:(KSCrashReportFilterCompletion) onCompletion;
+- (void) sendAllReportsWithCompletion:(RollbarCrashReportFilterCompletion) onCompletion;
 
 /** Get all unsent report IDs.
  *
@@ -242,7 +242,7 @@ typedef enum
  *
  * @param reportID An ID of report.
  *
- * @return A dictionary with report fields. See KSCrashReportFields.h for available fields.
+ * @return A dictionary with report fields. See RollbarCrashReportFields.h for available fields.
  */
 - (NSDictionary*) reportWithID:(NSNumber*) reportID;
 
@@ -295,8 +295,8 @@ typedef enum
 @end
 
 
-//! Project version number for KSCrashFramework.
-FOUNDATION_EXPORT const double KSCrashFrameworkVersionNumber;
+//! Project version number for RollbarCrashFramework.
+FOUNDATION_EXPORT const double RollbarCrashFrameworkVersionNumber;
 
-//! Project version string for KSCrashFramework.
-FOUNDATION_EXPORT const unsigned char KSCrashFrameworkVersionString[];
+//! Project version string for RollbarCrashFramework.
+FOUNDATION_EXPORT const unsigned char RollbarCrashFrameworkVersionString[];

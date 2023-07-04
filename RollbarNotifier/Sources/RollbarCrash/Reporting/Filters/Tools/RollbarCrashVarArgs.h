@@ -1,5 +1,5 @@
 //
-//  KSVarArgs.h
+//  RollbarCrashVarArgs.h
 //
 //  Created by Karl Stenerud on 2012-08-19.
 //
@@ -25,7 +25,7 @@
 //
 
 
-/* KSVarArgs is a set of macros designed to make dealing with variable arguments
+/* RollbarCrashVarArgs is a set of macros designed to make dealing with variable arguments
  * easier in Objective-C. All macros assume that the varargs list contains only
  * objective-c objects or object-like structures (assignable to type id).
  *
@@ -40,18 +40,18 @@
  *
  * @param entry The current argument in the vararg list.
  */
-typedef void (^KSVA_Block)(id entry);
+typedef void (^RollbarCrashVA_Block)(id entry);
 
 
 /**
  * Iterate over a va_list, executing the specified code block for each entry.
  *
  * @param FIRST_ARG_NAME The name of the first argument in the vararg list.
- * @param BLOCK A code block of type KSVA_Block.
+ * @param BLOCK A code block of type RollbarCrashVA_Block.
  */
 #define ksva_iterate_list(FIRST_ARG_NAME, BLOCK) \
 { \
-    KSVA_Block ksva_block = BLOCK; \
+    RollbarCrashVA_Block ksva_block = BLOCK; \
     va_list ksva_args; \
     va_start(ksva_args,FIRST_ARG_NAME); \
     for(id ksva_arg = FIRST_ARG_NAME; ksva_arg != nil; ksva_arg = va_arg(ksva_args, id)) \

@@ -1,5 +1,5 @@
 //
-//  KSCxaThrowSwapper.h
+//  RollbarCrashCxaThrowSwapper.h
 //
 //  Copyright (c) 2019 YANDEX LLC. All rights reserved.
 //
@@ -22,8 +22,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef KSCxaThrowSwapper_h
-#define KSCxaThrowSwapper_h
+#ifndef RollbarCrashCxaThrowSwapper_h
+#define RollbarCrashCxaThrowSwapper_h
 
 #ifdef __cplusplus
 
@@ -42,4 +42,4 @@ int ksct_swap(const cxa_throw_type handler);
 }
 #endif
 
-#endif /* KSCxaThrowSwapper_h */
+#endif /* RollbarCrashCxaThrowSwapper_h */

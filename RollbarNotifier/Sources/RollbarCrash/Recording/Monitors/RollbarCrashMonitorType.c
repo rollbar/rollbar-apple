@@ -1,5 +1,5 @@
 //
-//  KSCrashMonitorType.c
+//  RollbarCrashMonitorType.c
 //
 //  Copyright (c) 2012 Karl Stenerud. All rights reserved.
 //
@@ -23,32 +23,32 @@
 //
 
 
-#include "KSCrashMonitorType.h"
+#include "RollbarCrashMonitorType.h"
 
 #include <stdlib.h>
 
 
 static const struct
 {
-    const KSCrashMonitorType type;
+    const RollbarCrashMonitorType type;
     const char* const name;
 } g_monitorTypes[] =
 {
 #define MONITORTYPE(NAME) {NAME, #NAME}
-    MONITORTYPE(KSCrashMonitorTypeMachException),
-    MONITORTYPE(KSCrashMonitorTypeSignal),
-    MONITORTYPE(KSCrashMonitorTypeCPPException),
-    MONITORTYPE(KSCrashMonitorTypeNSException),
-    MONITORTYPE(KSCrashMonitorTypeMainThreadDeadlock),
-    MONITORTYPE(KSCrashMonitorTypeUserReported),
-    MONITORTYPE(KSCrashMonitorTypeSystem),
-    MONITORTYPE(KSCrashMonitorTypeApplicationState),
-    MONITORTYPE(KSCrashMonitorTypeZombie),
+    MONITORTYPE(RollbarCrashMonitorTypeMachException),
+    MONITORTYPE(RollbarCrashMonitorTypeSignal),
+    MONITORTYPE(RollbarCrashMonitorTypeCPPException),
+    MONITORTYPE(RollbarCrashMonitorTypeNSException),
+    MONITORTYPE(RollbarCrashMonitorTypeMainThreadDeadlock),
+    MONITORTYPE(RollbarCrashMonitorTypeUserReported),
+    MONITORTYPE(RollbarCrashMonitorTypeSystem),
+    MONITORTYPE(RollbarCrashMonitorTypeApplicationState),
+    MONITORTYPE(RollbarCrashMonitorTypeZombie),
 };
 static const int g_monitorTypesCount = sizeof(g_monitorTypes) / sizeof(*g_monitorTypes);
 
 
-const char* kscrashmonitortype_name(const KSCrashMonitorType monitorType)
+const char* kscrashmonitortype_name(const RollbarCrashMonitorType monitorType)
 {
     for(int i = 0; i < g_monitorTypesCount; i++)
     {

@@ -1,5 +1,5 @@
 //
-//  KSCrashMonitor_CPPException.c
+//  RollbarCrashMonitor_CPPException.c
 //
 //  Copyright (c) 2012 Karl Stenerud. All rights reserved.
 //
@@ -22,17 +22,17 @@
 // THE SOFTWARE.
 //
 
-#include "KSCrashMonitor_CPPException.h"
-#include "KSCrashMonitorContext.h"
-#include "KSID.h"
-#include "KSThread.h"
-#include "KSMachineContext.h"
-#include "KSStackCursor_SelfThread.h"
+#include "RollbarCrashMonitor_CPPException.h"
+#include "RollbarCrashMonitorContext.h"
+#include "RollbarCrashID.h"
+#include "RollbarCrashThread.h"
+#include "RollbarCrashMachineContext.h"
+#include "RollbarCrashStackCursor_SelfThread.h"
 
-//#define KSLogger_LocalLevel TRACE
-#include "KSLogger.h"
+//#define RollbarCrashLogger_LocalLevel TRACE
+#include "RollbarCrashLogger.h"
 
-#include "KSCxaThrowSwapper.h"
+#include "RollbarCrashCxaThrowSwapper.h"
 
 #include <cxxabi.h>
 #include <dlfcn.h>
@@ -67,11 +67,11 @@ static std::terminate_handler g_originalTerminateHandler;
 
 static char g_eventID[37];
 
-static KSCrash_MonitorContext g_monitorContext;
+static RollbarCrash_MonitorContext g_monitorContext;
 
 // TODO: Thread local storage is not supported < ios 9.
 // Find some other way to do thread local. Maybe storage with lookup by tid?
-static KSStackCursor g_stackCursor;
+static RollbarCrashStackCursor g_stackCursor;
 
 // ============================================================================
 #pragma mark - Callbacks -
@@ -112,7 +112,7 @@ static void CPPExceptionTerminate(void)
     thread_act_array_t threads = NULL;
     mach_msg_type_number_t numThreads = 0;
     ksmc_suspendEnvironment(&threads, &numThreads);
-    KSLOG_DEBUG("Trapped c++ exception");
+    RollbarCrashLOG_DEBUG("Trapped c++ exception");
     const char* name = NULL;
     std::type_info* tinfo = __cxxabiv1::__cxa_current_exception_type();
     if(tinfo != NULL)
@@ -123,14 +123,14 @@ static void CPPExceptionTerminate(void)
     if(name == NULL || strcmp(name, "NSException") != 0)
     {
         kscm_notifyFatalExceptionCaptured(false);
-        KSCrash_MonitorContext* crashContext = &g_monitorContext;
+        RollbarCrash_MonitorContext* crashContext = &g_monitorContext;
         memset(crashContext, 0, sizeof(*crashContext));
 
         char descriptionBuff[DESCRIPTION_BUFFER_LENGTH];
         const char* description = descriptionBuff;
         descriptionBuff[0] = 0;
 
-        KSLOG_DEBUG("Discovering what kind of exception was thrown.");
+        RollbarCrashLOG_DEBUG("Discovering what kind of exception was thrown.");
         g_captureNextStackTrace = false;
         try
         {
@@ -166,11 +166,11 @@ catch(TYPE value)\
         g_captureNextStackTrace = g_isEnabled;
 
         // TODO: Should this be done here? Maybe better in the exception handler?
-        KSMC_NEW_CONTEXT(machineContext);
+        RollbarCrashMC_NEW_CONTEXT(machineContext);
         ksmc_getContextForThread(ksthread_self(), machineContext, true);
 
-        KSLOG_DEBUG("Filling out context.");
-        crashContext->crashType = KSCrashMonitorTypeCPPException;
+        RollbarCrashLOG_DEBUG("Filling out context.");
+        crashContext->crashType = RollbarCrashMonitorTypeCPPException;
         crashContext->eventID = g_eventID;
         crashContext->registersAreValid = false;
         crashContext->stackCursor = &g_stackCursor;
@@ -183,11 +183,11 @@ catch(TYPE value)\
     }
     else
     {
-        KSLOG_DEBUG("Detected NSException. Letting the current NSException handler deal with it.");
+        RollbarCrashLOG_DEBUG("Detected NSException. Letting the current NSException handler deal with it.");
     }
     ksmc_resumeEnvironment(threads, numThreads);
 
-    KSLOG_DEBUG("Calling original terminate handler.");
+    RollbarCrashLOG_DEBUG("Calling original terminate handler.");
     g_originalTerminateHandler();
 }
 
@@ -240,9 +240,9 @@ extern "C" void kscm_enableSwapCxaThrow(void)
     }
 }
 
-extern "C" KSCrashMonitorAPI* kscm_cppexception_getAPI()
+extern "C" RollbarCrashMonitorAPI* kscm_cppexception_getAPI()
 {
-    static KSCrashMonitorAPI api =
+    static RollbarCrashMonitorAPI api =
     {
         .setEnabled = setEnabled,
         .isEnabled = isEnabled

@@ -1,5 +1,5 @@
 //
-//  KSCrashMonitor_User.c
+//  RollbarCrashMonitor_User.c
 //
 //  Copyright (c) 2012 Karl Stenerud. All rights reserved.
 //
@@ -22,14 +22,14 @@
 // THE SOFTWARE.
 //
 
-#include "KSCrashMonitor_User.h"
-#include "KSCrashMonitorContext.h"
-#include "KSID.h"
-#include "KSThread.h"
-#include "KSStackCursor_SelfThread.h"
+#include "RollbarCrashMonitor_User.h"
+#include "RollbarCrashMonitorContext.h"
+#include "RollbarCrashID.h"
+#include "RollbarCrashThread.h"
+#include "RollbarCrashStackCursor_SelfThread.h"
 
-//#define KSLogger_LocalLevel TRACE
-#include "KSLogger.h"
+//#define RollbarCrashLogger_LocalLevel TRACE
+#include "RollbarCrashLogger.h"
 
 #include <memory.h>
 #include <stdlib.h>
@@ -50,7 +50,7 @@ void kscm_reportUserException(const char* name,
 {
     if(!g_isEnabled)
     {
-        KSLOG_WARN("User-reported exception monitor is not installed. Exception has not been recorded.");
+        RollbarCrashLOG_WARN("User-reported exception monitor is not installed. Exception has not been recorded.");
     }
     else
     {
@@ -67,16 +67,16 @@ void kscm_reportUserException(const char* name,
 
         char eventID[37];
         ksid_generate(eventID);
-        KSMC_NEW_CONTEXT(machineContext);
+        RollbarCrashMC_NEW_CONTEXT(machineContext);
         ksmc_getContextForThread(ksthread_self(), machineContext, true);
-        KSStackCursor stackCursor;
+        RollbarCrashStackCursor stackCursor;
         kssc_initSelfThread(&stackCursor, 0);
 
 
-        KSLOG_DEBUG("Filling out context.");
-        KSCrash_MonitorContext context;
+        RollbarCrashLOG_DEBUG("Filling out context.");
+        RollbarCrash_MonitorContext context;
         memset(&context, 0, sizeof(context));
-        context.crashType = KSCrashMonitorTypeUserReported;
+        context.crashType = RollbarCrashMonitorTypeUserReported;
         context.eventID = eventID;
         context.offendingMachineContext = machineContext;
         context.registersAreValid = false;
@@ -110,9 +110,9 @@ static bool isEnabled()
     return g_isEnabled;
 }
 
-KSCrashMonitorAPI* kscm_user_getAPI()
+RollbarCrashMonitorAPI* kscm_user_getAPI()
 {
-    static KSCrashMonitorAPI api =
+    static RollbarCrashMonitorAPI api =
     {
         .setEnabled = setEnabled,
         .isEnabled = isEnabled

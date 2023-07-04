@@ -1,5 +1,5 @@
 //
-//  KSStackCursor_MachineContext.c
+//  RollbarCrashStackCursor_MachineContext.c
 //
 //  Copyright (c) 2016 Karl Stenerud. All rights reserved.
 //
@@ -23,15 +23,15 @@
 //
 
 
-#include "KSStackCursor_MachineContext.h"
+#include "RollbarCrashStackCursor_MachineContext.h"
 
-#include "KSCPU.h"
-#include "KSMemory.h"
+#include "RollbarCrashCPU.h"
+#include "RollbarCrashMemory.h"
 
 #include <stdlib.h>
 
-#define KSLogger_LocalLevel TRACE
-#include "KSLogger.h"
+#define RollbarCrashLogger_LocalLevel TRACE
+#include "RollbarCrashLogger.h"
 
 
 /** Represents an entry in a frame list.
@@ -90,7 +90,7 @@ typedef struct FrameEntry
 
 typedef struct
 {
-    const struct KSMachineContext* machineContext;
+    const struct RollbarCrashMachineContext* machineContext;
     int maxStackDepth;
     FrameEntry currentFrame;
     uintptr_t instructionAddress;
@@ -98,7 +98,7 @@ typedef struct
     bool isPastFramePointer;
 } MachineContextCursor;
 
-static bool advanceCursor(KSStackCursor *cursor)
+static bool advanceCursor(RollbarCrashStackCursor *cursor)
 {
     MachineContextCursor* context = (MachineContextCursor*)cursor->context;
     uintptr_t nextAddress = 0;
@@ -154,7 +154,7 @@ successfulExit:
     return true;
 }
 
-static void resetCursor(KSStackCursor* cursor)
+static void resetCursor(RollbarCrashStackCursor* cursor)
 {
     kssc_resetCursor(cursor);
     MachineContextCursor* context = (MachineContextCursor*)cursor->context;
@@ -165,7 +165,7 @@ static void resetCursor(KSStackCursor* cursor)
     context->isPastFramePointer = 0;
 }
 
-void kssc_initWithMachineContext(KSStackCursor *cursor, int maxStackDepth, const struct KSMachineContext* machineContext)
+void kssc_initWithMachineContext(RollbarCrashStackCursor *cursor, int maxStackDepth, const struct RollbarCrashMachineContext* machineContext)
 {
     kssc_initCursor(cursor, resetCursor, advanceCursor);
     MachineContextCursor* context = (MachineContextCursor*)cursor->context;

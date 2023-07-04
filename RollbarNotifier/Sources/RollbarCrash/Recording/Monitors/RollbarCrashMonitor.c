@@ -1,5 +1,5 @@
 //
-//  KSCrashMonitor.c
+//  RollbarCrashMonitor.c
 //
 //  Created by Karl Stenerud on 2012-02-12.
 //
@@ -25,27 +25,27 @@
 //
 
 
-#include "KSCrashMonitor.h"
-#include "KSCrashMonitorContext.h"
-#include "KSCrashMonitorType.h"
+#include "RollbarCrashMonitor.h"
+#include "RollbarCrashMonitorContext.h"
+#include "RollbarCrashMonitorType.h"
 
-#include "KSCrashMonitor_Deadlock.h"
-#include "KSCrashMonitor_MachException.h"
-#include "KSCrashMonitor_CPPException.h"
-#include "KSCrashMonitor_NSException.h"
-#include "KSCrashMonitor_Signal.h"
-#include "KSCrashMonitor_System.h"
-#include "KSCrashMonitor_User.h"
-#include "KSCrashMonitor_AppState.h"
-#include "KSCrashMonitor_Zombie.h"
-#include "KSDebug.h"
-#include "KSThread.h"
-#include "KSSystemCapabilities.h"
+#include "RollbarCrashMonitor_Deadlock.h"
+#include "RollbarCrashMonitor_MachException.h"
+#include "RollbarCrashMonitor_CPPException.h"
+#include "RollbarCrashMonitor_NSException.h"
+#include "RollbarCrashMonitor_Signal.h"
+#include "RollbarCrashMonitor_System.h"
+#include "RollbarCrashMonitor_User.h"
+#include "RollbarCrashMonitor_AppState.h"
+#include "RollbarCrashMonitor_Zombie.h"
+#include "RollbarCrashDebug.h"
+#include "RollbarCrashThread.h"
+#include "RollbarCrashSystemCapabilities.h"
 
 #include <memory.h>
 
-//#define KSLogger_LocalLevel TRACE
-#include "KSLogger.h"
+//#define RollbarCrashLogger_LocalLevel TRACE
+#include "RollbarCrashLogger.h"
 
 
 // ============================================================================
@@ -54,70 +54,70 @@
 
 typedef struct
 {
-    KSCrashMonitorType monitorType;
-    KSCrashMonitorAPI* (*getAPI)(void);
+    RollbarCrashMonitorType monitorType;
+    RollbarCrashMonitorAPI* (*getAPI)(void);
 } Monitor;
 
 static Monitor g_monitors[] =
 {
-#if KSCRASH_HAS_MACH
+#if RollbarCrashCRASH_HAS_MACH
     {
-        .monitorType = KSCrashMonitorTypeMachException,
+        .monitorType = RollbarCrashMonitorTypeMachException,
         .getAPI = kscm_machexception_getAPI,
     },
 #endif
-#if KSCRASH_HAS_SIGNAL
+#if RollbarCrashCRASH_HAS_SIGNAL
     {
-        .monitorType = KSCrashMonitorTypeSignal,
+        .monitorType = RollbarCrashMonitorTypeSignal,
         .getAPI = kscm_signal_getAPI,
     },
 #endif
-#if KSCRASH_HAS_OBJC
+#if RollbarCrashCRASH_HAS_OBJC
     {
-        .monitorType = KSCrashMonitorTypeNSException,
+        .monitorType = RollbarCrashMonitorTypeNSException,
         .getAPI = kscm_nsexception_getAPI,
     },
     {
-        .monitorType = KSCrashMonitorTypeMainThreadDeadlock,
+        .monitorType = RollbarCrashMonitorTypeMainThreadDeadlock,
         .getAPI = kscm_deadlock_getAPI,
     },
     {
-        .monitorType = KSCrashMonitorTypeZombie,
+        .monitorType = RollbarCrashMonitorTypeZombie,
         .getAPI = kscm_zombie_getAPI,
     },
 #endif
     {
-        .monitorType = KSCrashMonitorTypeCPPException,
+        .monitorType = RollbarCrashMonitorTypeCPPException,
         .getAPI = kscm_cppexception_getAPI,
     },
     {
-        .monitorType = KSCrashMonitorTypeUserReported,
+        .monitorType = RollbarCrashMonitorTypeUserReported,
         .getAPI = kscm_user_getAPI,
     },
     {
-        .monitorType = KSCrashMonitorTypeSystem,
+        .monitorType = RollbarCrashMonitorTypeSystem,
         .getAPI = kscm_system_getAPI,
     },
     {
-        .monitorType = KSCrashMonitorTypeApplicationState,
+        .monitorType = RollbarCrashMonitorTypeApplicationState,
         .getAPI = kscm_appstate_getAPI,
     },
 };
 static int g_monitorsCount = sizeof(g_monitors) / sizeof(*g_monitors);
 
-static KSCrashMonitorType g_activeMonitors = KSCrashMonitorTypeNone;
+static RollbarCrashMonitorType g_activeMonitors = RollbarCrashMonitorTypeNone;
 
 static bool g_handlingFatalException = false;
 static bool g_crashedDuringExceptionHandling = false;
 static bool g_requiresAsyncSafety = false;
 
-static void (*g_onExceptionEvent)(struct KSCrash_MonitorContext* monitorContext);
+static void (*g_onExceptionEvent)(struct RollbarCrash_MonitorContext* monitorContext);
 
 // ============================================================================
 #pragma mark - API -
 // ============================================================================
 
-static inline KSCrashMonitorAPI* getAPI(Monitor* monitor)
+static inline RollbarCrashMonitorAPI* getAPI(Monitor* monitor)
 {
     if(monitor != NULL && monitor->getAPI != NULL)
     {
@@ -128,7 +128,7 @@ static inline KSCrashMonitorAPI* getAPI(Monitor* monitor)
 
 static inline void setMonitorEnabled(Monitor* monitor, bool isEnabled)
 {
-    KSCrashMonitorAPI* api = getAPI(monitor);
+    RollbarCrashMonitorAPI* api = getAPI(monitor);
     if(api != NULL && api->setEnabled != NULL)
     {
         api->setEnabled(isEnabled);
@@ -137,7 +137,7 @@ static inline void setMonitorEnabled(Monitor* monitor, bool isEnabled)
 
 static inline bool isMonitorEnabled(Monitor* monitor)
 {
-    KSCrashMonitorAPI* api = getAPI(monitor);
+    RollbarCrashMonitorAPI* api = getAPI(monitor);
     if(api != NULL && api->isEnabled != NULL)
     {
         return api->isEnabled();
@@ -145,44 +145,44 @@ static inline bool isMonitorEnabled(Monitor* monitor)
     return false;
 }
 
-static inline void addContextualInfoToEvent(Monitor* monitor, struct KSCrash_MonitorContext* eventContext)
+static inline void addContextualInfoToEvent(Monitor* monitor, struct RollbarCrash_MonitorContext* eventContext)
 {
-    KSCrashMonitorAPI* api = getAPI(monitor);
+    RollbarCrashMonitorAPI* api = getAPI(monitor);
     if(api != NULL && api->addContextualInfoToEvent != NULL)
     {
         api->addContextualInfoToEvent(eventContext);
     }
 }
 
-void kscm_setEventCallback(void (*onEvent)(struct KSCrash_MonitorContext* monitorContext))
+void kscm_setEventCallback(void (*onEvent)(struct RollbarCrash_MonitorContext* monitorContext))
 {
     g_onExceptionEvent = onEvent;
 }
 
-void kscm_setActiveMonitors(KSCrashMonitorType monitorTypes)
+void kscm_setActiveMonitors(RollbarCrashMonitorType monitorTypes)
 {
-    if(ksdebug_isBeingTraced() && (monitorTypes & KSCrashMonitorTypeDebuggerUnsafe))
+    if(ksdebug_isBeingTraced() && (monitorTypes & RollbarCrashMonitorTypeDebuggerUnsafe))
     {
         static bool hasWarned = false;
         if(!hasWarned)
         {
             hasWarned = true;
-            KSLOGBASIC_WARN("    ************************ Crash Handler Notice ************************");
-            KSLOGBASIC_WARN("    *     App is running in a debugger. Masking out unsafe monitors.     *");
-            KSLOGBASIC_WARN("    * This means that most crashes WILL NOT BE RECORDED while debugging! *");
-            KSLOGBASIC_WARN("    **********************************************************************");
+            RollbarCrashLOGBASIC_WARN("    ************************ Crash Handler Notice ************************");
+            RollbarCrashLOGBASIC_WARN("    *     App is running in a debugger. Masking out unsafe monitors.     *");
+            RollbarCrashLOGBASIC_WARN("    * This means that most crashes WILL NOT BE RECORDED while debugging! *");
+            RollbarCrashLOGBASIC_WARN("    **********************************************************************");
         }
-        monitorTypes &= KSCrashMonitorTypeDebuggerSafe;
+        monitorTypes &= RollbarCrashMonitorTypeDebuggerSafe;
     }
-    if(g_requiresAsyncSafety && (monitorTypes & KSCrashMonitorTypeAsyncUnsafe))
+    if(g_requiresAsyncSafety && (monitorTypes & RollbarCrashMonitorTypeAsyncUnsafe))
     {
-        KSLOG_DEBUG("Async-safe environment detected. Masking out unsafe monitors.");
-        monitorTypes &= KSCrashMonitorTypeAsyncSafe;
+        RollbarCrashLOG_DEBUG("Async-safe environment detected. Masking out unsafe monitors.");
+        monitorTypes &= RollbarCrashMonitorTypeAsyncSafe;
     }
 
-    KSLOG_DEBUG("Changing active monitors from 0x%x tp 0x%x.", g_activeMonitors, monitorTypes);
+    RollbarCrashLOG_DEBUG("Changing active monitors from 0x%x tp 0x%x.", g_activeMonitors, monitorTypes);
 
-    KSCrashMonitorType activeMonitors = KSCrashMonitorTypeNone;
+    RollbarCrashMonitorType activeMonitors = RollbarCrashMonitorTypeNone;
     for(int i = 0; i < g_monitorsCount; i++)
     {
         Monitor* monitor = &g_monitors[i];
@@ -198,11 +198,11 @@ void kscm_setActiveMonitors(KSCrashMonitorType monitorTypes)
         }
     }
 
-    KSLOG_DEBUG("Active monitors are now 0x%x.", activeMonitors);
+    RollbarCrashLOG_DEBUG("Active monitors are now 0x%x.", activeMonitors);
     g_activeMonitors = activeMonitors;
 }
 
-KSCrashMonitorType kscm_getActiveMonitors()
+RollbarCrashMonitorType kscm_getActiveMonitors()
 {
     return g_activeMonitors;
 }
@@ -222,13 +222,13 @@ bool kscm_notifyFatalExceptionCaptured(bool isAsyncSafeEnvironment)
     g_handlingFatalException = true;
     if(g_crashedDuringExceptionHandling)
     {
-        KSLOG_INFO("Detected crash in the crash reporter. Uninstalling KSCrash.");
-        kscm_setActiveMonitors(KSCrashMonitorTypeNone);
+        RollbarCrashLOG_INFO("Detected crash in the crash reporter. Uninstalling RollbarCrash.");
+        kscm_setActiveMonitors(RollbarCrashMonitorTypeNone);
     }
     return g_crashedDuringExceptionHandling;
 }
 
-void kscm_handleException(struct KSCrash_MonitorContext* context)
+void kscm_handleException(struct RollbarCrash_MonitorContext* context)
 {
     context->requiresAsyncSafety = g_requiresAsyncSafety;
     if(g_crashedDuringExceptionHandling)
@@ -250,8 +250,8 @@ void kscm_handleException(struct KSCrash_MonitorContext* context)
         g_handlingFatalException = false;
     } else {
         if(g_handlingFatalException && !g_crashedDuringExceptionHandling) {
-            KSLOG_DEBUG("Exception is fatal. Restoring original handlers.");
-            kscm_setActiveMonitors(KSCrashMonitorTypeNone);
+            RollbarCrashLOG_DEBUG("Exception is fatal. Restoring original handlers.");
+            kscm_setActiveMonitors(RollbarCrashMonitorTypeNone);
         }
     }
 }

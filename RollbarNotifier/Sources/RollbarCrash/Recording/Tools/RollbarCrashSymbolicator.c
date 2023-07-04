@@ -1,5 +1,5 @@
 //
-//  KSSymbolicator.c
+//  RollbarCrashSymbolicator.c
 //
 //  Copyright (c) 2016 Karl Stenerud. All rights reserved.
 //
@@ -23,8 +23,8 @@
 //
 
 
-#include "KSSymbolicator.h"
-#include "KSDynamicLinker.h"
+#include "RollbarCrashSymbolicator.h"
+#include "RollbarCrashDynamicLinker.h"
 
 
 /** Remove any pointer tagging from an instruction address
@@ -57,7 +57,7 @@ uintptr_t kssymbolicator_callInstructionAddress(const uintptr_t returnAddress)
     return CALL_INSTRUCTION_FROM_RETURN_ADDRESS(returnAddress);
 }
 
-bool kssymbolicator_symbolicate(KSStackCursor *cursor)
+bool kssymbolicator_symbolicate(RollbarCrashStackCursor *cursor)
 {
     Dl_info symbolsBuffer;
     if(ksdl_dladdr(CALL_INSTRUCTION_FROM_RETURN_ADDRESS(cursor->stackEntry.address), &symbolsBuffer))

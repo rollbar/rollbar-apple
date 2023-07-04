@@ -1,5 +1,5 @@
 //
-//  KSCPU_Apple.h
+//  RollbarCrashCPU_Apple.h
 //
 //  Created by Karl Stenerud on 2012-01-29.
 //
@@ -24,8 +24,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef HDR_KSCPU_Apple_h
-#define HDR_KSCPU_Apple_h
+#ifndef HDR_RollbarCrashCPU_Apple_h
+#define HDR_RollbarCrashCPU_Apple_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -55,4 +55,4 @@ bool kscpu_i_fillState(thread_t thread,
 }
 #endif
 
-#endif // HDR_KSCPU_Apple_h
+#endif // HDR_RollbarCrashCPU_Apple_h

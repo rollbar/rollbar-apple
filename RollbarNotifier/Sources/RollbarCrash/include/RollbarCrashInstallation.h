@@ -1,5 +1,5 @@
 //
-//  KSCrashInstallation.h
+//  RollbarCrashInstallation.h
 //
 //  Created by Karl Stenerud on 2013-02-10.
 //
@@ -26,8 +26,8 @@
 
 
 #import <Foundation/Foundation.h>
-#import "KSCrashReportFilter.h"
-#import "KSCrashReportWriter.h"
+#import "RollbarCrashReportFilter.h"
+#import "RollbarCrashReportWriter.h"
 
 
 /**
@@ -37,7 +37,7 @@
  *
  * This is an abstract class.
  */
-@interface KSCrashInstallation : NSObject
+@interface RollbarCrashInstallation : NSObject
 
 /** C Function to call during a crash report to give the callee an opportunity to
  * add to the report. NULL = ignore.
@@ -45,27 +45,27 @@
  * WARNING: Only call async-safe functions from this function! DO NOT call
  * Objective-C methods!!!
  */
-@property(atomic,readwrite,assign) KSReportWriteCallback onCrash;
+@property(atomic,readwrite,assign) RollbarCrashReportWriteCallback onCrash;
 
-/** Install this installation. Call this instead of -[KSCrash install] to install
+/** Install this installation. Call this instead of -[RollbarCrash install] to install
  * with everything needed for your particular backend.
  */
 - (void) install;
 
-/** Convenience method to call -[KSCrash sendAllReportsWithCompletion:].
- * This method will set the KSCrash sink and then send all outstanding reports.
+/** Convenience method to call -[RollbarCrash sendAllReportsWithCompletion:].
+ * This method will set the RollbarCrash sink and then send all outstanding reports.
  *
- * Note: Pay special attention to KSCrash's "deleteBehaviorAfterSendAll" property.
+ * Note: Pay special attention to RollbarCrash's "deleteBehaviorAfterSendAll" property.
  *
  * @param onCompletion Called when sending is complete (nil = ignore).
  */
-- (void) sendAllReportsWithCompletion:(KSCrashReportFilterCompletion) onCompletion;
+- (void) sendAllReportsWithCompletion:(RollbarCrashReportFilterCompletion) onCompletion;
 
 /** Add a filter that gets executed before all normal filters.
  * Prepended filters will be executed in the order in which they were added.
  *
  * @param filter the filter to prepend.
  */
-- (void) addPreFilter:(id<KSCrashReportFilter>) filter;
+- (void) addPreFilter:(id<RollbarCrashReportFilter>) filter;
 
 @end

@@ -1,5 +1,5 @@
 //
-// KSDate.h
+// RollbarCrashDate.h
 //
 // Copyright 2016 Karl Stenerud.
 //
@@ -22,8 +22,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef KSDate_h
-#define KSDate_h
+#ifndef RollbarCrashDate_h
+#define RollbarCrashDate_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -52,4 +52,4 @@ void ksdate_utcStringFromMicroseconds(int64_t microseconds, char* buffer28Chars)
 }
 #endif
 
-#endif /* KSDate_h */
+#endif /* RollbarCrashDate_h */

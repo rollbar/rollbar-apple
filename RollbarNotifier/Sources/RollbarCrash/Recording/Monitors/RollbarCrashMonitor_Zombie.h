@@ -1,5 +1,5 @@
 //
-//  KSCrashMonitor_Zombie.h
+//  RollbarCrashMonitor_Zombie.h
 //
 //  Created by Karl Stenerud on 2012-09-15.
 //
@@ -34,18 +34,18 @@
  * Limitations:
  * - Not guaranteed to catch all zombies.
  * - Can generate false positives or incorrect class names.
- * - KSZombie itself must be compiled with ARC disabled. You can enable ARC in
- *   your app, but KSZombie must be compiled in a separate library if you do.
+ * - RollbarCrashZombie itself must be compiled with ARC disabled. You can enable ARC in
+ *   your app, but RollbarCrashZombie must be compiled in a separate library if you do.
  */
 
-#ifndef HDR_KSZombie_h
-#define HDR_KSZombie_h
+#ifndef HDR_RollbarCrashZombie_h
+#define HDR_RollbarCrashZombie_h
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "KSCrashMonitor.h"
+#include "RollbarCrashMonitor.h"
 #include <stdbool.h>
 
 
@@ -59,11 +59,11 @@ const char* kszombie_className(const void* object);
 
 /** Access the Monitor API.
  */
-KSCrashMonitorAPI* kscm_zombie_getAPI(void);
+RollbarCrashMonitorAPI* kscm_zombie_getAPI(void);
 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // HDR_KSZombie_h
+#endif // HDR_RollbarCrashZombie_h

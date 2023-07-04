@@ -1,5 +1,5 @@
 //
-//  KSgetsect.c
+//  RollbarCrashgetsect.c
 //
 //  Copyright (c) 2019 YANDEX LLC. All rights reserved.
 //
@@ -45,7 +45,7 @@
 // @APPLE_LICENSE_HEADER_END@
 //
 
-#include "KSgetsect.h"
+#include "RollbarCrashgetsect.h"
 #include <string.h>
 
 const segment_command_t *ksgs_getsegbynamefromheader(const mach_header_t *header, const char *seg_name)

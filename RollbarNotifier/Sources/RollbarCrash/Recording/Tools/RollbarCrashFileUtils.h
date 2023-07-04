@@ -1,5 +1,5 @@
 //
-//  KSFileUtils.h
+//  RollbarCrashFileUtils.h
 //
 //  Created by Karl Stenerud on 2012-01-28.
 //
@@ -29,8 +29,8 @@
  */
 
 
-#ifndef HDR_KSFileUtils_h
-#define HDR_KSFileUtils_h
+#ifndef HDR_RollbarCrashFileUtils_h
+#define HDR_RollbarCrashFileUtils_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -41,7 +41,7 @@ extern "C" {
 #include <stdarg.h>
 
 
-#define KSFU_MAX_PATH_LENGTH 500
+#define RollbarCrashFU_MAX_PATH_LENGTH 500
 
 /** Get the last entry in a file path. Assumes UNIX style separators.
  *
@@ -168,7 +168,7 @@ typedef struct
     int bufferLength;
     int position;
     int fd;
-} KSBufferedWriter;
+} RollbarCrashBufferedWriter;
 
 /** Open a file for buffered writing.
  *
@@ -182,13 +182,13 @@ typedef struct
  *
  * @return True if the file was successfully opened.
  */
-bool ksfu_openBufferedWriter(KSBufferedWriter* writer, const char* const path, char* writeBuffer, int writeBufferLength);
+bool ksfu_openBufferedWriter(RollbarCrashBufferedWriter* writer, const char* const path, char* writeBuffer, int writeBufferLength);
 
 /** Close a buffered writer.
  *
  * @param writer The writer to close.
  */
-void ksfu_closeBufferedWriter(KSBufferedWriter* writer);
+void ksfu_closeBufferedWriter(RollbarCrashBufferedWriter* writer);
 
 /** Write to a buffered writer.
  *
@@ -200,7 +200,7 @@ void ksfu_closeBufferedWriter(KSBufferedWriter* writer);
  *
  * @return True if the data was successfully written.
  */
-bool ksfu_writeBufferedWriter(KSBufferedWriter* writer, const char* restrict const data, const int length);
+bool ksfu_writeBufferedWriter(RollbarCrashBufferedWriter* writer, const char* restrict const data, const int length);
 
 /** Flush a buffered writer, writing all uncommitted data to disk.
  *
@@ -208,7 +208,7 @@ bool ksfu_writeBufferedWriter(KSBufferedWriter* writer, const char* restrict con
  *
  * @return True if the buffer was successfully flushed.
  */
-bool ksfu_flushBufferedWriter(KSBufferedWriter* writer);
+bool ksfu_flushBufferedWriter(RollbarCrashBufferedWriter* writer);
 
 /** Buffered reader structure. Everything inside should be considered internal use only. */
 typedef struct
@@ -218,7 +218,7 @@ typedef struct
     int dataStartPos;
     int dataEndPos;
     int fd;
-} KSBufferedReader;
+} RollbarCrashBufferedReader;
 
 /** Open a file for buffered reading.
  *
@@ -232,13 +232,13 @@ typedef struct
  *
  * @return True if the file was successfully opened.
  */
-bool ksfu_openBufferedReader(KSBufferedReader* reader, const char* const path, char* readBuffer, int readBufferLength);
+bool ksfu_openBufferedReader(RollbarCrashBufferedReader* reader, const char* const path, char* readBuffer, int readBufferLength);
 
 /** Close a buffered reader.
  *
  * @param reader The reader to close.
  */
-void ksfu_closeBufferedReader(KSBufferedReader* reader);
+void ksfu_closeBufferedReader(RollbarCrashBufferedReader* reader);
 
 /** Read from a buffered reader.
  *
@@ -250,7 +250,7 @@ void ksfu_closeBufferedReader(KSBufferedReader* reader);
  *
  * @return The number of bytes actually read.
  */
-int ksfu_readBufferedReader(KSBufferedReader* reader, char* dstBuffer, int byteCount);
+int ksfu_readBufferedReader(RollbarCrashBufferedReader* reader, char* dstBuffer, int byteCount);
 
 /** Read from a buffered reader until the specified character is encountered.
  * All bytes up to and including the character will be read.
@@ -266,11 +266,11 @@ int ksfu_readBufferedReader(KSBufferedReader* reader, char* dstBuffer, int byteC
  *
  * @return True if the character was found before giving up.
  */
-bool ksfu_readBufferedReaderUntilChar(KSBufferedReader* reader, int ch, char* dstBuffer, int* length);
+bool ksfu_readBufferedReaderUntilChar(RollbarCrashBufferedReader* reader, int ch, char* dstBuffer, int* length);
 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // HDR_KSFileUtils_h
+#endif // HDR_RollbarCrashFileUtils_h

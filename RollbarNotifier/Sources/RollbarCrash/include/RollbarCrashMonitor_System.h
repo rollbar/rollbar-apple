@@ -1,5 +1,5 @@
 //
-//  KSCrashMonitor_System.h
+//  RollbarCrashMonitor_System.h
 //
 //  Created by Karl Stenerud on 2012-02-05.
 //
@@ -24,20 +24,20 @@
 // THE SOFTWARE.
 //
 
-#ifndef KSCrashMonitor_System_h
-#define KSCrashMonitor_System_h
+#ifndef RollbarCrashMonitor_System_h
+#define RollbarCrashMonitor_System_h
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
-#include "KSCrashMonitor.h"
+#include "RollbarCrashMonitor.h"
 
 
 /** Access the Monitor API.
  */
-    KSCrashMonitorAPI* kscm_system_getAPI(void);
+    RollbarCrashMonitorAPI* kscm_system_getAPI(void);
 
 
 #ifdef __cplusplus

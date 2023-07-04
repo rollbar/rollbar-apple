@@ -1,5 +1,5 @@
 //
-//  KSThread.h
+//  RollbarCrashThread.h
 //
 //  Created by Karl Stenerud on 2012-01-29.
 //
@@ -24,8 +24,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef HDR_KSThread_h
-#define HDR_KSThread_h
+#ifndef HDR_RollbarCrashThread_h
+#define HDR_RollbarCrashThread_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -36,7 +36,7 @@ extern "C" {
 #include <stdbool.h>
 
 
-typedef uintptr_t KSThread;
+typedef uintptr_t RollbarCrashThread;
 
 /** Get a thread's name. Internally, a thread name will
  * never be more than 64 characters long.
@@ -49,7 +49,7 @@ typedef uintptr_t KSThread;
  *
  * @return true if a name was found.
  */
-bool ksthread_getThreadName(const KSThread thread, char* const buffer, int bufLength);
+bool ksthread_getThreadName(const RollbarCrashThread thread, char* const buffer, int bufLength);
 
 /** Get the name of a thread's dispatch queue. Internally, a queue name will
  * never be more than 64 characters long.
@@ -62,7 +62,7 @@ bool ksthread_getThreadName(const KSThread thread, char* const buffer, int bufLe
  *
  * @return true if a name or label was found.
  */
-bool ksthread_getQueueName(KSThread thread, char* buffer, int bufLength);
+bool ksthread_getQueueName(RollbarCrashThread thread, char* buffer, int bufLength);
 
 /* Get the current mach thread ID.
  * mach_thread_self() receives a send right for the thread port which needs to
@@ -71,11 +71,11 @@ bool ksthread_getQueueName(KSThread thread, char* buffer, int bufLength);
  *
  * @return The current thread ID.
  */
-KSThread ksthread_self(void);
+RollbarCrashThread ksthread_self(void);
 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // HDR_KSThread_h
+#endif // HDR_RollbarCrashThread_h

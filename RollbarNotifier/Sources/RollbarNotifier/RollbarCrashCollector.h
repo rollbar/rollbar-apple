@@ -8,7 +8,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /// Rollbar crash report collector
-@interface RollbarCrashCollector: KSCrashInstallation
+@interface RollbarCrashCollector: RollbarCrashInstallation
 
 - (void)sendAllReports;
 

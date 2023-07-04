@@ -1,5 +1,5 @@
 //
-//  KSCrashC.h
+//  RollbarCrashC.h
 //
 //  Created by Karl Stenerud on 2012-01-28.
 //
@@ -29,16 +29,16 @@
  */
 
 
-#ifndef HDR_KSCrashC_h
-#define HDR_KSCrashC_h
+#ifndef HDR_RollbarCrashC_h
+#define HDR_RollbarCrashC_h
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
-#include "KSCrashMonitorType.h"
-#include "KSCrashReportWriter.h"
+#include "RollbarCrashMonitorType.h"
+#include "RollbarCrashReportWriter.h"
 
 #include <stdbool.h>
 
@@ -50,7 +50,7 @@ extern "C" {
  *
  * @return The crash types that are being handled.
  */
-KSCrashMonitorType kscrash_install(const char* appName, const char* const installPath);
+RollbarCrashMonitorType kscrash_install(const char* appName, const char* const installPath);
 
 /** Set the crash types that will be handled.
  * Some crash types may not be enabled depending on circumstances (e.g. running
@@ -58,12 +58,12 @@ KSCrashMonitorType kscrash_install(const char* appName, const char* const instal
  *
  * @param monitors The monitors to install.
  *
- * @return The monitors that were installed. If KSCrash has been
+ * @return The monitors that were installed. If RollbarCrash has been
  *         installed, the return value represents the monitors that were
  *         successfully installed. Otherwise it represents which monitors it
- *         will attempt to activate when KSCrash installs.
+ *         will attempt to activate when RollbarCrash installs.
  */
-KSCrashMonitorType kscrash_setMonitoring(KSCrashMonitorType monitors);
+RollbarCrashMonitorType kscrash_setMonitoring(RollbarCrashMonitorType monitors);
 
 /** Set the user-supplied data in JSON format.
  *
@@ -127,9 +127,9 @@ void kscrash_setDoNotIntrospectClasses(const char** doNotIntrospectClasses, int 
  *
  * Default: NULL
  */
-void kscrash_setCrashNotifyCallback(const KSReportWriteCallback onCrashNotify);
+void kscrash_setCrashNotifyCallback(const RollbarCrashReportWriteCallback onCrashNotify);
 
-typedef void (*KSReportWrittenCallback)(int64_t reportID);
+typedef void (*RollbarCrashReportWrittenCallback)(int64_t reportID);
 
 /** Set the callback to invoke upon finishing writing a crash report. Default is @c NULL .
  *
@@ -140,15 +140,15 @@ typedef void (*KSReportWrittenCallback)(int64_t reportID);
  *                      give the callee an opportunity to react to the report.
  *                      NULL = ignore.
  */
-void kscrash_setReportWrittenCallback(const KSReportWrittenCallback onReportWrittenNotify);
+void kscrash_setReportWrittenCallback(const RollbarCrashReportWrittenCallback onReportWrittenNotify);
 
-/** Set if KSLOG console messages should be appended to the report.
+/** Set if RollbarCrashLOG console messages should be appended to the report.
  *
  * @param shouldAddConsoleLogToReport If true, add the log to the report.
  */
 void kscrash_setAddConsoleLogToReport(bool shouldAddConsoleLogToReport);
 
-/** Set if KSCrash should print the previous log to the console on startup.
+/** Set if RollbarCrash should print the previous log to the console on startup.
  *  This is for debugging purposes.
  */
 void kscrash_setPrintPreviousLog(bool shouldPrintPreviousLog);
@@ -198,7 +198,7 @@ void enableSwapCxaThrow(void);
     
 #pragma mark -- Notifications --
 
-/** Notify the crash reporter of KSCrash being added to Objective-C runtime system.
+/** Notify the crash reporter of RollbarCrash being added to Objective-C runtime system.
  */
 void kscrash_notifyObjCLoad(void);
 
@@ -272,4 +272,4 @@ void kscrash_deleteReportWithID(int64_t reportID);
 }
 #endif
 
-#endif // HDR_KSCrashC_h
+#endif // HDR_RollbarCrashC_h

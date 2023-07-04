@@ -1,5 +1,5 @@
 //
-//  KSCrashReportFields.h
+//  RollbarCrashReportFields.h
 //
 //  Created by Karl Stenerud on 2012-10-07.
 //
@@ -25,205 +25,205 @@
 //
 
 
-#ifndef HDR_KSCrashReportFields_h
-#define HDR_KSCrashReportFields_h
+#ifndef HDR_RollbarCrashReportFields_h
+#define HDR_RollbarCrashReportFields_h
 
 
 #pragma mark - Report Types -
 
-#define KSCrashReportType_Minimal          "minimal"
-#define KSCrashReportType_Standard         "standard"
-#define KSCrashReportType_Custom           "custom"
+#define RollbarCrashReportType_Minimal          "minimal"
+#define RollbarCrashReportType_Standard         "standard"
+#define RollbarCrashReportType_Custom           "custom"
 
 
 #pragma mark - Memory Types -
 
-#define KSCrashMemType_Block               "objc_block"
-#define KSCrashMemType_Class               "objc_class"
-#define KSCrashMemType_NullPointer         "null_pointer"
-#define KSCrashMemType_Object              "objc_object"
-#define KSCrashMemType_String              "string"
-#define KSCrashMemType_Unknown             "unknown"
+#define RollbarCrashMemType_Block               "objc_block"
+#define RollbarCrashMemType_Class               "objc_class"
+#define RollbarCrashMemType_NullPointer         "null_pointer"
+#define RollbarCrashMemType_Object              "objc_object"
+#define RollbarCrashMemType_String              "string"
+#define RollbarCrashMemType_Unknown             "unknown"
 
 
 #pragma mark - Exception Types -
 
-#define KSCrashExcType_CPPException        "cpp_exception"
-#define KSCrashExcType_Deadlock            "deadlock"
-#define KSCrashExcType_Mach                "mach"
-#define KSCrashExcType_NSException         "nsexception"
-#define KSCrashExcType_Signal              "signal"
-#define KSCrashExcType_User                "user"
+#define RollbarCrashExcType_CPPException        "cpp_exception"
+#define RollbarCrashExcType_Deadlock            "deadlock"
+#define RollbarCrashExcType_Mach                "mach"
+#define RollbarCrashExcType_NSException         "nsexception"
+#define RollbarCrashExcType_Signal              "signal"
+#define RollbarCrashExcType_User                "user"
 
 
 #pragma mark - Common -
 
-#define KSCrashField_Address               "address"
-#define KSCrashField_Contents              "contents"
-#define KSCrashField_Exception             "exception"
-#define KSCrashField_FirstObject           "first_object"
-#define KSCrashField_Index                 "index"
-#define KSCrashField_Ivars                 "ivars"
-#define KSCrashField_Language              "language"
-#define KSCrashField_Name                  "name"
-#define KSCrashField_UserInfo              "userInfo"
-#define KSCrashField_ReferencedObject      "referenced_object"
-#define KSCrashField_Type                  "type"
-#define KSCrashField_UUID                  "uuid"
-#define KSCrashField_Value                 "value"
+#define RollbarCrashField_Address               "address"
+#define RollbarCrashField_Contents              "contents"
+#define RollbarCrashField_Exception             "exception"
+#define RollbarCrashField_FirstObject           "first_object"
+#define RollbarCrashField_Index                 "index"
+#define RollbarCrashField_Ivars                 "ivars"
+#define RollbarCrashField_Language              "language"
+#define RollbarCrashField_Name                  "name"
+#define RollbarCrashField_UserInfo              "userInfo"
+#define RollbarCrashField_ReferencedObject      "referenced_object"
+#define RollbarCrashField_Type                  "type"
+#define RollbarCrashField_UUID                  "uuid"
+#define RollbarCrashField_Value                 "value"
 
-#define KSCrashField_Error                 "error"
-#define KSCrashField_JSONData              "json_data"
+#define RollbarCrashField_Error                 "error"
+#define RollbarCrashField_JSONData              "json_data"
 
 
 #pragma mark - Notable Address -
 
-#define KSCrashField_Class                 "class"
-#define KSCrashField_LastDeallocObject     "last_deallocated_obj"
+#define RollbarCrashField_Class                 "class"
+#define RollbarCrashField_LastDeallocObject     "last_deallocated_obj"
 
 
 #pragma mark - Backtrace -
 
-#define KSCrashField_InstructionAddr       "instruction_addr"
-#define KSCrashField_LineOfCode            "line_of_code"
-#define KSCrashField_ObjectAddr            "object_addr"
-#define KSCrashField_ObjectName            "object_name"
-#define KSCrashField_SymbolAddr            "symbol_addr"
-#define KSCrashField_SymbolName            "symbol_name"
+#define RollbarCrashField_InstructionAddr       "instruction_addr"
+#define RollbarCrashField_LineOfCode            "line_of_code"
+#define RollbarCrashField_ObjectAddr            "object_addr"
+#define RollbarCrashField_ObjectName            "object_name"
+#define RollbarCrashField_SymbolAddr            "symbol_addr"
+#define RollbarCrashField_SymbolName            "symbol_name"
 
 
 #pragma mark - Stack Dump -
 
-#define KSCrashField_DumpEnd               "dump_end"
-#define KSCrashField_DumpStart             "dump_start"
-#define KSCrashField_GrowDirection         "grow_direction"
-#define KSCrashField_Overflow              "overflow"
-#define KSCrashField_StackPtr              "stack_pointer"
+#define RollbarCrashField_DumpEnd               "dump_end"
+#define RollbarCrashField_DumpStart             "dump_start"
+#define RollbarCrashField_GrowDirection         "grow_direction"
+#define RollbarCrashField_Overflow              "overflow"
+#define RollbarCrashField_StackPtr              "stack_pointer"
 
 
 #pragma mark - Thread Dump -
 
-#define KSCrashField_Backtrace             "backtrace"
-#define KSCrashField_Basic                 "basic"
-#define KSCrashField_Crashed               "crashed"
-#define KSCrashField_CurrentThread         "current_thread"
-#define KSCrashField_DispatchQueue         "dispatch_queue"
-#define KSCrashField_NotableAddresses      "notable_addresses"
-#define KSCrashField_Registers             "registers"
-#define KSCrashField_Skipped               "skipped"
-#define KSCrashField_Stack                 "stack"
+#define RollbarCrashField_Backtrace             "backtrace"
+#define RollbarCrashField_Basic                 "basic"
+#define RollbarCrashField_Crashed               "crashed"
+#define RollbarCrashField_CurrentThread         "current_thread"
+#define RollbarCrashField_DispatchQueue         "dispatch_queue"
+#define RollbarCrashField_NotableAddresses      "notable_addresses"
+#define RollbarCrashField_Registers             "registers"
+#define RollbarCrashField_Skipped               "skipped"
+#define RollbarCrashField_Stack                 "stack"
 
 
 #pragma mark - Binary Image -
 
-#define KSCrashField_CPUSubType            "cpu_subtype"
-#define KSCrashField_CPUType               "cpu_type"
-#define KSCrashField_ImageAddress          "image_addr"
-#define KSCrashField_ImageVmAddress        "image_vmaddr"
-#define KSCrashField_ImageSize             "image_size"
-#define KSCrashField_ImageMajorVersion     "major_version"
-#define KSCrashField_ImageMinorVersion     "minor_version"
-#define KSCrashField_ImageRevisionVersion  "revision_version"
-#define KSCrashField_ImageCrashInfoMessage    "crash_info_message"
-#define KSCrashField_ImageCrashInfoMessage2   "crash_info_message2"
+#define RollbarCrashField_CPUSubType            "cpu_subtype"
+#define RollbarCrashField_CPUType               "cpu_type"
+#define RollbarCrashField_ImageAddress          "image_addr"
+#define RollbarCrashField_ImageVmAddress        "image_vmaddr"
+#define RollbarCrashField_ImageSize             "image_size"
+#define RollbarCrashField_ImageMajorVersion     "major_version"
+#define RollbarCrashField_ImageMinorVersion     "minor_version"
+#define RollbarCrashField_ImageRevisionVersion  "revision_version"
+#define RollbarCrashField_ImageCrashInfoMessage    "crash_info_message"
+#define RollbarCrashField_ImageCrashInfoMessage2   "crash_info_message2"
 
 
 #pragma mark - Memory -
 
-#define KSCrashField_Free                  "free"
-#define KSCrashField_Usable                "usable"
+#define RollbarCrashField_Free                  "free"
+#define RollbarCrashField_Usable                "usable"
 
 
 #pragma mark - Error -
 
-#define KSCrashField_Backtrace             "backtrace"
-#define KSCrashField_Code                  "code"
-#define KSCrashField_CodeName              "code_name"
-#define KSCrashField_CPPException          "cpp_exception"
-#define KSCrashField_ExceptionName         "exception_name"
-#define KSCrashField_Mach                  "mach"
-#define KSCrashField_NSException           "nsexception"
-#define KSCrashField_Reason                "reason"
-#define KSCrashField_Signal                "signal"
-#define KSCrashField_Subcode               "subcode"
-#define KSCrashField_UserReported          "user_reported"
+#define RollbarCrashField_Backtrace             "backtrace"
+#define RollbarCrashField_Code                  "code"
+#define RollbarCrashField_CodeName              "code_name"
+#define RollbarCrashField_CPPException          "cpp_exception"
+#define RollbarCrashField_ExceptionName         "exception_name"
+#define RollbarCrashField_Mach                  "mach"
+#define RollbarCrashField_NSException           "nsexception"
+#define RollbarCrashField_Reason                "reason"
+#define RollbarCrashField_Signal                "signal"
+#define RollbarCrashField_Subcode               "subcode"
+#define RollbarCrashField_UserReported          "user_reported"
 
 
 #pragma mark - Process State -
 
-#define KSCrashField_LastDeallocedNSException "last_dealloced_nsexception"
-#define KSCrashField_ProcessState             "process"
+#define RollbarCrashField_LastDeallocedNSException "last_dealloced_nsexception"
+#define RollbarCrashField_ProcessState             "process"
 
 
 #pragma mark - App Stats -
 
-#define KSCrashField_ActiveTimeSinceCrash  "active_time_since_last_crash"
-#define KSCrashField_ActiveTimeSinceLaunch "active_time_since_launch"
-#define KSCrashField_AppActive             "application_active"
-#define KSCrashField_AppInFG               "application_in_foreground"
-#define KSCrashField_BGTimeSinceCrash      "background_time_since_last_crash"
-#define KSCrashField_BGTimeSinceLaunch     "background_time_since_launch"
-#define KSCrashField_LaunchesSinceCrash    "launches_since_last_crash"
-#define KSCrashField_SessionsSinceCrash    "sessions_since_last_crash"
-#define KSCrashField_SessionsSinceLaunch   "sessions_since_launch"
+#define RollbarCrashField_ActiveTimeSinceCrash  "active_time_since_last_crash"
+#define RollbarCrashField_ActiveTimeSinceLaunch "active_time_since_launch"
+#define RollbarCrashField_AppActive             "application_active"
+#define RollbarCrashField_AppInFG               "application_in_foreground"
+#define RollbarCrashField_BGTimeSinceCrash      "background_time_since_last_crash"
+#define RollbarCrashField_BGTimeSinceLaunch     "background_time_since_launch"
+#define RollbarCrashField_LaunchesSinceCrash    "launches_since_last_crash"
+#define RollbarCrashField_SessionsSinceCrash    "sessions_since_last_crash"
+#define RollbarCrashField_SessionsSinceLaunch   "sessions_since_launch"
 
 
 #pragma mark - Report -
 
-#define KSCrashField_Crash                 "crash"
-#define KSCrashField_Debug                 "debug"
-#define KSCrashField_Diagnosis             "diagnosis"
-#define KSCrashField_ID                    "id"
-#define KSCrashField_ProcessName           "process_name"
-#define KSCrashField_Report                "report"
-#define KSCrashField_Timestamp             "timestamp"
-#define KSCrashField_Version               "version"
+#define RollbarCrashField_Crash                 "crash"
+#define RollbarCrashField_Debug                 "debug"
+#define RollbarCrashField_Diagnosis             "diagnosis"
+#define RollbarCrashField_ID                    "id"
+#define RollbarCrashField_ProcessName           "process_name"
+#define RollbarCrashField_Report                "report"
+#define RollbarCrashField_Timestamp             "timestamp"
+#define RollbarCrashField_Version               "version"
 
 #pragma mark Minimal
-#define KSCrashField_CrashedThread         "crashed_thread"
+#define RollbarCrashField_CrashedThread         "crashed_thread"
 
 #pragma mark Standard
-#define KSCrashField_AppStats              "application_stats"
-#define KSCrashField_BinaryImages          "binary_images"
-#define KSCrashField_System                "system"
-#define KSCrashField_Memory                "memory"
-#define KSCrashField_Threads               "threads"
-#define KSCrashField_User                  "user"
-#define KSCrashField_ConsoleLog            "console_log"
+#define RollbarCrashField_AppStats              "application_stats"
+#define RollbarCrashField_BinaryImages          "binary_images"
+#define RollbarCrashField_System                "system"
+#define RollbarCrashField_Memory                "memory"
+#define RollbarCrashField_Threads               "threads"
+#define RollbarCrashField_User                  "user"
+#define RollbarCrashField_ConsoleLog            "console_log"
 
 #pragma mark Incomplete
-#define KSCrashField_Incomplete            "incomplete"
-#define KSCrashField_RecrashReport         "recrash_report"
+#define RollbarCrashField_Incomplete            "incomplete"
+#define RollbarCrashField_RecrashReport         "recrash_report"
 
 #pragma mark System
-#define KSCrashField_AppStartTime          "app_start_time"
-#define KSCrashField_AppUUID               "app_uuid"
-#define KSCrashField_BootTime              "boot_time"
-#define KSCrashField_BundleID              "CFBundleIdentifier"
-#define KSCrashField_BundleName            "CFBundleName"
-#define KSCrashField_BundleShortVersion    "CFBundleShortVersionString"
-#define KSCrashField_BundleVersion         "CFBundleVersion"
-#define KSCrashField_CPUArch               "cpu_arch"
-#define KSCrashField_CPUType               "cpu_type"
-#define KSCrashField_CPUSubType            "cpu_subtype"
-#define KSCrashField_BinaryCPUType         "binary_cpu_type"
-#define KSCrashField_BinaryCPUSubType      "binary_cpu_subtype"
-#define KSCrashField_DeviceAppHash         "device_app_hash"
-#define KSCrashField_Executable            "CFBundleExecutable"
-#define KSCrashField_ExecutablePath        "CFBundleExecutablePath"
-#define KSCrashField_Jailbroken            "jailbroken"
-#define KSCrashField_KernelVersion         "kernel_version"
-#define KSCrashField_Machine               "machine"
-#define KSCrashField_Model                 "model"
-#define KSCrashField_OSVersion             "os_version"
-#define KSCrashField_ParentProcessID       "parent_process_id"
-#define KSCrashField_ProcessID             "process_id"
-#define KSCrashField_ProcessName           "process_name"
-#define KSCrashField_Size                  "size"
-#define KSCrashField_Storage               "storage"
-#define KSCrashField_SystemName            "system_name"
-#define KSCrashField_SystemVersion         "system_version"
-#define KSCrashField_TimeZone              "time_zone"
-#define KSCrashField_BuildType             "build_type"
+#define RollbarCrashField_AppStartTime          "app_start_time"
+#define RollbarCrashField_AppUUID               "app_uuid"
+#define RollbarCrashField_BootTime              "boot_time"
+#define RollbarCrashField_BundleID              "CFBundleIdentifier"
+#define RollbarCrashField_BundleName            "CFBundleName"
+#define RollbarCrashField_BundleShortVersion    "CFBundleShortVersionString"
+#define RollbarCrashField_BundleVersion         "CFBundleVersion"
+#define RollbarCrashField_CPUArch               "cpu_arch"
+#define RollbarCrashField_CPUType               "cpu_type"
+#define RollbarCrashField_CPUSubType            "cpu_subtype"
+#define RollbarCrashField_BinaryCPUType         "binary_cpu_type"
+#define RollbarCrashField_BinaryCPUSubType      "binary_cpu_subtype"
+#define RollbarCrashField_DeviceAppHash         "device_app_hash"
+#define RollbarCrashField_Executable            "CFBundleExecutable"
+#define RollbarCrashField_ExecutablePath        "CFBundleExecutablePath"
+#define RollbarCrashField_Jailbroken            "jailbroken"
+#define RollbarCrashField_KernelVersion         "kernel_version"
+#define RollbarCrashField_Machine               "machine"
+#define RollbarCrashField_Model                 "model"
+#define RollbarCrashField_OSVersion             "os_version"
+#define RollbarCrashField_ParentProcessID       "parent_process_id"
+#define RollbarCrashField_ProcessID             "process_id"
+#define RollbarCrashField_ProcessName           "process_name"
+#define RollbarCrashField_Size                  "size"
+#define RollbarCrashField_Storage               "storage"
+#define RollbarCrashField_SystemName            "system_name"
+#define RollbarCrashField_SystemVersion         "system_version"
+#define RollbarCrashField_TimeZone              "time_zone"
+#define RollbarCrashField_BuildType             "build_type"
 
 #endif

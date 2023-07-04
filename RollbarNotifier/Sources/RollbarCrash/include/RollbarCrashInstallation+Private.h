@@ -1,5 +1,5 @@
 //
-//  KSCrashReportFieldProperties.h
+//  RollbarCrashReportFieldProperties.h
 //
 //  Created by Karl Stenerud on 2013-02-10.
 //
@@ -25,7 +25,7 @@
 //
 
 
-#import "KSCrashInstallation.h"
+#import "RollbarCrashInstallation.h"
 
 
 /** Implement a property to be used as a "key". */
@@ -54,7 +54,7 @@ IMPLEMENT_REPORT_VALUE_PROPERTY(NAME, NAMEUPPER, TYPE) \
 IMPLEMENT_REPORT_KEY_PROPERTY(NAME, NAMEUPPER)
 
 
-@interface KSCrashInstallation ()
+@interface RollbarCrashInstallation ()
 
 /** Initializer.
  *
@@ -78,7 +78,7 @@ IMPLEMENT_REPORT_KEY_PROPERTY(NAME, NAMEUPPER)
 
 /** Create a new sink. Subclasses must implement this.
  */
-- (id<KSCrashReportFilter>) sink;
+- (id<RollbarCrashReportFilter>) sink;
 
 /** Make an absolute key path if the specified path is not already absolute. */
 - (NSString*) makeKeyPath:(NSString*) keyPath;

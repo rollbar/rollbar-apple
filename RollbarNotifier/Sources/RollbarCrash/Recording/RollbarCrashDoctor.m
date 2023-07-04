@@ -1,14 +1,14 @@
 //
-//  KSCrashDoctor.m
-//  KSCrash
+//  RollbarCrashDoctor.m
+//  RollbarCrash
 //
 //  Created by Karl Stenerud on 2012-11-10.
 //  Copyright (c) 2012 Karl Stenerud. All rights reserved.
 //
 
-#import "KSCrashDoctor.h"
-#import "KSCrashReportFields.h"
-#import "KSCrashMonitor_System.h"
+#import "RollbarCrashDoctor.h"
+#import "RollbarCrashReportFields.h"
+#import "RollbarCrashMonitor_System.h"
 
 
 typedef enum
@@ -19,7 +19,7 @@ typedef enum
     CPUFamilyX86_64
 } CPUFamily;
 
-@interface  KSCrashDoctorParam: NSObject
+@interface  RollbarCrashDoctorParam: NSObject
 
 @property(nonatomic, readwrite, retain) NSString* className;
 @property(nonatomic, readwrite, retain) NSString* previousClassName;
@@ -30,7 +30,7 @@ typedef enum
 
 @end
 
-@implementation KSCrashDoctorParam
+@implementation RollbarCrashDoctorParam
 
 @synthesize className = _className;
 @synthesize previousClassName = _previousClassName;
@@ -41,14 +41,14 @@ typedef enum
 
 @end
 
-@interface KSCrashDoctorFunctionCall: NSObject
+@interface RollbarCrashDoctorFunctionCall: NSObject
 
 @property(nonatomic, readwrite, retain) NSString* name;
 @property(nonatomic, readwrite, retain) NSArray* params;
 
 @end
 
-@implementation KSCrashDoctorFunctionCall
+@implementation RollbarCrashDoctorFunctionCall
 
 @synthesize name = _name;
 @synthesize params = _params;
@@ -59,7 +59,7 @@ typedef enum
     {
         return nil;
     }
-    KSCrashDoctorParam* receiverParam = [self.params objectAtIndex:0];
+    RollbarCrashDoctorParam* receiverParam = [self.params objectAtIndex:0];
     NSString* receiver = receiverParam.previousClassName;
     if(receiver == nil)
     {
@@ -70,8 +70,8 @@ typedef enum
         }
     }
 
-    KSCrashDoctorParam* selectorParam = [self.params objectAtIndex:1];
-    if(![selectorParam.type isEqualToString:@KSCrashMemType_String])
+    RollbarCrashDoctorParam* selectorParam = [self.params objectAtIndex:1];
+    if(![selectorParam.type isEqualToString:@RollbarCrashMemType_String])
     {
         return nil;
     }
@@ -84,10 +84,10 @@ typedef enum
         [string appendString:@":"];
         if(paramNum < 2)
         {
-            KSCrashDoctorParam* param = [self.params objectAtIndex:(NSUInteger)paramNum + 2];
+            RollbarCrashDoctorParam* param = [self.params objectAtIndex:(NSUInteger)paramNum + 2];
             if(param.value != nil)
             {
-                if([param.type isEqualToString:@KSCrashMemType_String])
+                if([param.type isEqualToString:@RollbarCrashMemType_String])
                 {
                     [string appendFormat:@"\"%@\"", param.value];
                 }
@@ -139,7 +139,7 @@ typedef enum
     [str appendFormat:@"Function: %@\n", self.name];
     for(int i = 0; i < paramCount; i++)
     {
-        KSCrashDoctorParam* param = [self.params objectAtIndex:(NSUInteger)i];
+        RollbarCrashDoctorParam* param = [self.params objectAtIndex:(NSUInteger)i];
         [str appendFormat:@"Param %d:  ", i + 1];
         if(param.className != nil)
         {
@@ -165,42 +165,42 @@ typedef enum
 
 
 
-@implementation KSCrashDoctor
+@implementation RollbarCrashDoctor
 
-+ (KSCrashDoctor*) doctor
++ (RollbarCrashDoctor*) doctor
 {
     return [[self alloc] init];
 }
 
 - (NSDictionary*) recrashReport:(NSDictionary*) report
 {
-    return [report objectForKey:@KSCrashField_RecrashReport];
+    return [report objectForKey:@RollbarCrashField_RecrashReport];
 }
 
 - (NSDictionary*) systemReport:(NSDictionary*) report
 {
-    return [report objectForKey:@KSCrashField_System];
+    return [report objectForKey:@RollbarCrashField_System];
 }
 
 - (NSDictionary*) crashReport:(NSDictionary*) report
 {
-    return [report objectForKey:@KSCrashField_Crash];
+    return [report objectForKey:@RollbarCrashField_Crash];
 }
 
 - (NSDictionary*) infoReport:(NSDictionary*) report
 {
-    return [report objectForKey:@KSCrashField_Report];
+    return [report objectForKey:@RollbarCrashField_Report];
 }
 
 - (NSDictionary*) errorReport:(NSDictionary*) report
 {
-    return [[self crashReport:report] objectForKey:@KSCrashField_Error];
+    return [[self crashReport:report] objectForKey:@RollbarCrashField_Error];
 }
 
 - (CPUFamily) cpuFamily:(NSDictionary*) report
 {
     NSDictionary* system = [self systemReport:report];
-    NSString* cpuArch = [system objectForKey:@KSCrashField_CPUArch];
+    NSString* cpuArch = [system objectForKey:@RollbarCrashField_CPUArch];
     if([cpuArch rangeOfString:@"arm"].location == 0)
     {
         return CPUFamilyArm;
@@ -270,21 +270,21 @@ typedef enum
 - (NSString*) mainExecutableNameForReport:(NSDictionary*) report
 {
     NSDictionary* info = [self infoReport:report];
-    return [info objectForKey:@KSCrashField_ProcessName];
+    return [info objectForKey:@RollbarCrashField_ProcessName];
 }
 
 - (NSDictionary*) crashedThreadReport:(NSDictionary*) report
 {
     NSDictionary* crashReport = [self crashReport:report];
-    NSDictionary* crashedThread = [crashReport objectForKey:@KSCrashField_CrashedThread];
+    NSDictionary* crashedThread = [crashReport objectForKey:@RollbarCrashField_CrashedThread];
     if(crashedThread != nil)
     {
         return crashedThread;
     }
 
-    for(NSDictionary* thread in [crashReport objectForKey:@KSCrashField_Threads])
+    for(NSDictionary* thread in [crashReport objectForKey:@RollbarCrashField_Threads])
     {
-        if([[thread objectForKey:@KSCrashField_Crashed] boolValue])
+        if([[thread objectForKey:@RollbarCrashField_Crashed] boolValue])
         {
             return thread;
         }
@@ -294,14 +294,14 @@ typedef enum
 
 - (NSArray*) backtraceFromThreadReport:(NSDictionary*) threadReport
 {
-    NSDictionary* backtrace = [threadReport objectForKey:@KSCrashField_Backtrace];
-    return [backtrace objectForKey:@KSCrashField_Contents];
+    NSDictionary* backtrace = [threadReport objectForKey:@RollbarCrashField_Backtrace];
+    return [backtrace objectForKey:@RollbarCrashField_Contents];
 }
 
 - (NSDictionary*) basicRegistersFromThreadReport:(NSDictionary*) threadReport
 {
-    NSDictionary* registers = [threadReport objectForKey:@KSCrashField_Registers];
-    NSDictionary* basic = [registers objectForKey:@KSCrashField_Basic];
+    NSDictionary* registers = [threadReport objectForKey:@RollbarCrashField_Registers];
+    NSDictionary* basic = [registers objectForKey:@RollbarCrashField_Basic];
     return basic;
 }
 
@@ -312,7 +312,7 @@ typedef enum
     NSArray* backtrace = [self backtraceFromThreadReport:crashedThread];
     for(NSDictionary* entry in backtrace)
     {
-        NSString* objectName = [entry objectForKey:@KSCrashField_ObjectName];
+        NSString* objectName = [entry objectForKey:@RollbarCrashField_ObjectName];
         if([objectName isEqualToString:executableName])
         {
             return entry;
@@ -334,40 +334,40 @@ typedef enum
 
 - (BOOL) isInvalidAddress:(NSDictionary*) errorReport
 {
-    NSDictionary* machError = [errorReport objectForKey:@KSCrashField_Mach];
+    NSDictionary* machError = [errorReport objectForKey:@RollbarCrashField_Mach];
     if(machError != nil)
     {
-        NSString* exceptionName = [machError objectForKey:@KSCrashField_ExceptionName];
+        NSString* exceptionName = [machError objectForKey:@RollbarCrashField_ExceptionName];
         return [exceptionName isEqualToString:@"EXC_BAD_ACCESS"];
     }
-    NSDictionary* signal = [errorReport objectForKey:@KSCrashField_Signal];
-    NSString* sigName = [signal objectForKey:@KSCrashField_Name];
+    NSDictionary* signal = [errorReport objectForKey:@RollbarCrashField_Signal];
+    NSString* sigName = [signal objectForKey:@RollbarCrashField_Name];
     return [sigName isEqualToString:@"SIGSEGV"];
 }
 
 - (BOOL) isMathError:(NSDictionary*) errorReport
 {
-    NSDictionary* machError = [errorReport objectForKey:@KSCrashField_Mach];
+    NSDictionary* machError = [errorReport objectForKey:@RollbarCrashField_Mach];
     if(machError != nil)
     {
-        NSString* exceptionName = [machError objectForKey:@KSCrashField_ExceptionName];
+        NSString* exceptionName = [machError objectForKey:@RollbarCrashField_ExceptionName];
         return [exceptionName isEqualToString:@"EXC_ARITHMETIC"];
     }
-    NSDictionary* signal = [errorReport objectForKey:@KSCrashField_Signal];
-    NSString* sigName = [signal objectForKey:@KSCrashField_Name];
+    NSDictionary* signal = [errorReport objectForKey:@RollbarCrashField_Signal];
+    NSString* sigName = [signal objectForKey:@RollbarCrashField_Name];
     return [sigName isEqualToString:@"SIGFPE"];
 }
 
 - (BOOL) isMemoryCorruption:(NSDictionary*) report
 {
     NSDictionary* crashedThread = [self crashedThreadReport:report];
-    NSArray* notableAddresses = [crashedThread objectForKey:@KSCrashField_NotableAddresses];
+    NSArray* notableAddresses = [crashedThread objectForKey:@RollbarCrashField_NotableAddresses];
     for(NSDictionary* address in [notableAddresses objectEnumerator])
     {
-        NSString* type = [address objectForKey:@KSCrashField_Type];
+        NSString* type = [address objectForKey:@RollbarCrashField_Type];
         if([type isEqualToString:@"string"])
         {
-            NSString* value = [address objectForKey:@KSCrashField_Value];
+            NSString* value = [address objectForKey:@RollbarCrashField_Value];
             if([value rangeOfString:@"autorelease pool page"].location != NSNotFound &&
                [value rangeOfString:@"corrupted"].location != NSNotFound)
             {
@@ -383,8 +383,8 @@ typedef enum
     NSArray* backtrace = [self backtraceFromThreadReport:crashedThread];
     for(NSDictionary* entry in backtrace)
     {
-        NSString* objectName = [entry objectForKey:@KSCrashField_ObjectName];
-        NSString* symbolName = [entry objectForKey:@KSCrashField_SymbolName];
+        NSString* objectName = [entry objectForKey:@RollbarCrashField_ObjectName];
+        NSString* symbolName = [entry objectForKey:@RollbarCrashField_SymbolName];
         if([symbolName isEqualToString:@"objc_autoreleasePoolPush"])
         {
             return YES;
@@ -406,14 +406,14 @@ typedef enum
     return NO;
 }
 
-- (KSCrashDoctorFunctionCall*) lastFunctionCall:(NSDictionary*) report
+- (RollbarCrashDoctorFunctionCall*) lastFunctionCall:(NSDictionary*) report
 {
-    KSCrashDoctorFunctionCall* function = [[KSCrashDoctorFunctionCall alloc] init];
+    RollbarCrashDoctorFunctionCall* function = [[RollbarCrashDoctorFunctionCall alloc] init];
     NSDictionary* lastStackEntry = [self lastStackEntry:report];
-    function.name = [lastStackEntry objectForKey:@KSCrashField_SymbolName];
+    function.name = [lastStackEntry objectForKey:@RollbarCrashField_SymbolName];
 
     NSDictionary* crashedThread = [self crashedThreadReport:report];
-    NSDictionary* notableAddresses = [crashedThread objectForKey:@KSCrashField_NotableAddresses];
+    NSDictionary* notableAddresses = [crashedThread objectForKey:@RollbarCrashField_NotableAddresses];
     CPUFamily family = [self cpuFamily:report];
     NSDictionary* registers = [self basicRegistersFromThreadReport:crashedThread];
     NSArray* regNames = [NSArray arrayWithObjects:
@@ -425,7 +425,7 @@ typedef enum
     NSMutableArray* params = [NSMutableArray arrayWithCapacity:4];
     for(NSString* regName in regNames)
     {
-        KSCrashDoctorParam* param = [[KSCrashDoctorParam alloc] init];
+        RollbarCrashDoctorParam* param = [[RollbarCrashDoctorParam alloc] init];
         param.address = (uintptr_t)[[registers objectForKey:regName] unsignedLongLongValue];
         NSDictionary* notableAddress = [notableAddresses objectForKey:regName];
         if(notableAddress == nil)
@@ -434,21 +434,21 @@ typedef enum
         }
         else
         {
-            param.type = [notableAddress objectForKey:@KSCrashField_Type];
-            NSString* className = [notableAddress objectForKey:@KSCrashField_Class];
-            NSString* previousClass = [notableAddress objectForKey:@KSCrashField_LastDeallocObject];
-            NSString* value = [notableAddress objectForKey:@KSCrashField_Value];
+            param.type = [notableAddress objectForKey:@RollbarCrashField_Type];
+            NSString* className = [notableAddress objectForKey:@RollbarCrashField_Class];
+            NSString* previousClass = [notableAddress objectForKey:@RollbarCrashField_LastDeallocObject];
+            NSString* value = [notableAddress objectForKey:@RollbarCrashField_Value];
 
-            if([param.type isEqualToString:@KSCrashMemType_String])
+            if([param.type isEqualToString:@RollbarCrashMemType_String])
             {
                 param.value = value;
             }
-            else if([param.type isEqualToString:@KSCrashMemType_Object])
+            else if([param.type isEqualToString:@RollbarCrashMemType_Object])
             {
                 param.className = className;
                 param.isInstance = YES;
             }
-            else if([param.type isEqualToString:@KSCrashMemType_Class])
+            else if([param.type isEqualToString:@RollbarCrashMemType_Class])
             {
                 param.className = className;
                 param.isInstance = NO;
@@ -463,7 +463,7 @@ typedef enum
     return function;
 }
 
-- (NSString*) zombieCall:(KSCrashDoctorFunctionCall*) functionCall
+- (NSString*) zombieCall:(RollbarCrashDoctorFunctionCall*) functionCall
 {
     if([functionCall.name isEqualToString:@"objc_msgSend"] && functionCall.params.count > 0 && [[functionCall.params objectAtIndex:0] previousClassName] != nil)
     {
@@ -478,15 +478,15 @@ typedef enum
 
 - (BOOL) isStackOverflow:(NSDictionary*) crashedThreadReport
 {
-    NSDictionary* stack = [crashedThreadReport objectForKey:@KSCrashField_Stack];
-    return [[stack objectForKey:@KSCrashField_Overflow] boolValue];
+    NSDictionary* stack = [crashedThreadReport objectForKey:@RollbarCrashField_Stack];
+    return [[stack objectForKey:@RollbarCrashField_Overflow] boolValue];
 }
 
 - (BOOL) isDeadlock:(NSDictionary*) report
 {
     NSDictionary* errorReport = [self errorReport:report];
-    NSString* crashType = [errorReport objectForKey:@KSCrashField_Type];
-    return [@KSCrashExcType_Deadlock isEqualToString:crashType];
+    NSString* crashType = [errorReport objectForKey:@RollbarCrashField_Type];
+    return [@RollbarCrashExcType_Deadlock isEqualToString:crashType];
 }
 
 - (NSString*) appendOriginatingCall:(NSString*) string callName:(NSString*) callName
@@ -502,7 +502,7 @@ typedef enum
 {
     @try
     {
-        NSString* lastFunctionName = [[self lastInAppStackEntry:report] objectForKey:@KSCrashField_SymbolName];
+        NSString* lastFunctionName = [[self lastInAppStackEntry:report] objectForKey:@RollbarCrashField_SymbolName];
         NSDictionary* crashedThreadReport = [self crashedThreadReport:report];
         NSDictionary* errorReport = [self errorReport:report];
 
@@ -516,12 +516,12 @@ typedef enum
             return [NSString stringWithFormat:@"Stack overflow in %@", lastFunctionName];
         }
 
-        NSString* crashType = [errorReport objectForKey:@KSCrashField_Type];
-        if([crashType isEqualToString:@KSCrashExcType_NSException])
+        NSString* crashType = [errorReport objectForKey:@RollbarCrashField_Type];
+        if([crashType isEqualToString:@RollbarCrashExcType_NSException])
         {
-            NSDictionary* exception = [errorReport objectForKey:@KSCrashField_NSException];
-            NSString* name = [exception objectForKey:@KSCrashField_Name];
-            NSString* reason = [exception objectForKey:@KSCrashField_Reason]? [exception objectForKey:@KSCrashField_Reason]:[errorReport objectForKey:@KSCrashField_Reason];
+            NSDictionary* exception = [errorReport objectForKey:@RollbarCrashField_NSException];
+            NSString* name = [exception objectForKey:@RollbarCrashField_Name];
+            NSString* reason = [exception objectForKey:@RollbarCrashField_Reason]? [exception objectForKey:@RollbarCrashField_Reason]:[errorReport objectForKey:@RollbarCrashField_Reason];
             return [self appendOriginatingCall:[NSString stringWithFormat:@"Application threw exception %@: %@",
                                                 name, reason]
                                       callName:lastFunctionName];
@@ -538,7 +538,7 @@ typedef enum
                                       callName:lastFunctionName];
         }
 
-        KSCrashDoctorFunctionCall* functionCall = [self lastFunctionCall:report];
+        RollbarCrashDoctorFunctionCall* functionCall = [self lastFunctionCall:report];
         NSString* zombieCall = [self zombieCall:functionCall];
         if(zombieCall != nil)
         {
@@ -548,7 +548,7 @@ typedef enum
 
         if([self isInvalidAddress:errorReport])
         {
-            uintptr_t address = (uintptr_t)[[errorReport objectForKey:@KSCrashField_Address] unsignedLongLongValue];
+            uintptr_t address = (uintptr_t)[[errorReport objectForKey:@RollbarCrashField_Address] unsignedLongLongValue];
             if(address == 0)
             {
                 return [self appendOriginatingCall:@"Attempted to dereference null pointer."
@@ -565,9 +565,9 @@ typedef enum
         NSArray* symbols = [e callStackSymbols];
         if(symbols)
         {
-            return [NSString stringWithFormat:@"No diagnosis due to exception %@:\n%@\nPlease file a bug report to the KSCrash project.", e, symbols];
+            return [NSString stringWithFormat:@"No diagnosis due to exception %@:\n%@\nPlease file a bug report to the RollbarCrash project.", e, symbols];
         }
-        return [NSString stringWithFormat:@"No diagnosis due to exception %@\nPlease file a bug report to the KSCrash project.", e];
+        return [NSString stringWithFormat:@"No diagnosis due to exception %@\nPlease file a bug report to the RollbarCrash project.", e];
     }
 }
 

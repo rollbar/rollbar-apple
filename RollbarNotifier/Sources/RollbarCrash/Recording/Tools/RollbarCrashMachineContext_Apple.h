@@ -1,5 +1,5 @@
 //
-//  KSMachineContext_Apple.h
+//  RollbarCrashMachineContext_Apple.h
 //
 //  Created by Karl Stenerud on 2016-12-02.
 //
@@ -25,8 +25,8 @@
 //
 
 
-#ifndef HDR_KSMachineContext_Apple_h
-#define HDR_KSMachineContext_Apple_h
+#ifndef HDR_RollbarCrashMachineContext_Apple_h
+#define HDR_RollbarCrashMachineContext_Apple_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -42,7 +42,7 @@ extern "C" {
     #define STRUCT_MCONTEXT_L _STRUCT_MCONTEXT
 #endif
 
-typedef struct KSMachineContext
+typedef struct RollbarCrashMachineContext
 {
     thread_t thisThread;
     thread_t allThreads[100];
@@ -52,11 +52,11 @@ typedef struct KSMachineContext
     bool isStackOverflow;
     bool isSignalContext;
     STRUCT_MCONTEXT_L machineContext;
-} KSMachineContext;
+} RollbarCrashMachineContext;
     
     
 #ifdef __cplusplus
 }
 #endif
 
-#endif // HDR_KSMachineContext_Apple_h
+#endif // HDR_RollbarCrashMachineContext_Apple_h

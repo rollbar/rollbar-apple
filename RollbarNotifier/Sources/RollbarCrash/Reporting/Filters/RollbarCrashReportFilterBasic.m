@@ -1,5 +1,5 @@
 //
-//  KSCrashReportFilterBasic.m
+//  RollbarCrashReportFilterBasic.m
 //
 //  Created by Karl Stenerud on 2012-05-11.
 //
@@ -25,24 +25,24 @@
 //
 
 
-#import "KSCrashReportFilterBasic.h"
+#import "RollbarCrashReportFilterBasic.h"
 #import "NSError+SimpleConstructor.h"
 #import "Container+DeepSearch.h"
-#import "KSVarArgs.h"
+#import "RollbarCrashVarArgs.h"
 
-//#define KSLogger_LocalLevel TRACE
-#import "KSLogger.h"
+//#define RollbarCrashLogger_LocalLevel TRACE
+#import "RollbarCrashLogger.h"
 
 
-@implementation KSCrashReportFilterPassthrough
+@implementation RollbarCrashReportFilterPassthrough
 
-+ (KSCrashReportFilterPassthrough*) filter
++ (RollbarCrashReportFilterPassthrough*) filter
 {
     return [[self alloc] init];
 }
 
 - (void) filterReports:(NSArray*) reports
-          onCompletion:(KSCrashReportFilterCompletion) onCompletion
+          onCompletion:(RollbarCrashReportFilterCompletion) onCompletion
 {
     kscrash_callCompletion(onCompletion, reports, YES, nil);
 }
@@ -50,7 +50,7 @@
 @end
 
 
-@interface KSCrashReportFilterCombine ()
+@interface RollbarCrashReportFilterCombine ()
 
 @property(nonatomic,readwrite,retain) NSArray* filters;
 @property(nonatomic,readwrite,retain) NSArray* keys;
@@ -60,7 +60,7 @@
 @end
 
 
-@implementation KSCrashReportFilterCombine
+@implementation RollbarCrashReportFilterCombine
 
 @synthesize filters = _filters;
 @synthesize keys = _keys;
@@ -75,16 +75,16 @@
     return self;
 }
 
-+ (KSVA_Block) argBlockWithFilters:(NSMutableArray*) filters andKeys:(NSMutableArray*) keys
++ (RollbarCrashVA_Block) argBlockWithFilters:(NSMutableArray*) filters andKeys:(NSMutableArray*) keys
 {
     __block BOOL isKey = FALSE;
-    KSVA_Block block = ^(id entry)
+    RollbarCrashVA_Block block = ^(id entry)
     {
         if(isKey)
         {
             if(entry == nil)
             {
-                KSLOG_ERROR(@"key entry was nil");
+                RollbarCrashLOG_ERROR(@"key entry was nil");
             }
             else
             {
@@ -95,11 +95,11 @@
         {
             if([entry isKindOfClass:[NSArray class]])
             {
-                entry = [KSCrashReportFilterPipeline filterWithFilters:entry, nil];
+                entry = [RollbarCrashReportFilterPipeline filterWithFilters:entry, nil];
             }
-            if(![entry conformsToProtocol:@protocol(KSCrashReportFilter)])
+            if(![entry conformsToProtocol:@protocol(RollbarCrashReportFilter)])
             {
-                KSLOG_ERROR(@"Not a filter: %@", entry);
+                RollbarCrashLOG_ERROR(@"Not a filter: %@", entry);
                 // Cause next key entry to fail as well.
                 return;
             }
@@ -113,7 +113,7 @@
     return [block copy];
 }
 
-+ (KSCrashReportFilterCombine*) filterWithFiltersAndKeys:(id) firstFilter, ...
++ (RollbarCrashReportFilterCombine*) filterWithFiltersAndKeys:(id) firstFilter, ...
 {
     NSMutableArray* filters = [NSMutableArray array];
     NSMutableArray* keys = [NSMutableArray array];
@@ -130,7 +130,7 @@
 }
 
 - (void) filterReports:(NSArray*) reports
-          onCompletion:(KSCrashReportFilterCompletion) onCompletion
+          onCompletion:(RollbarCrashReportFilterCompletion) onCompletion
 {
     NSArray* filters = self.filters;
     NSArray* keys = self.keys;
@@ -155,8 +155,8 @@
     NSMutableArray* reportSets = [NSMutableArray arrayWithCapacity:filterCount];
     
     __block NSUInteger iFilter = 0;
-    __block KSCrashReportFilterCompletion filterCompletion = nil;
-    __block __weak KSCrashReportFilterCompletion weakFilterCompletion = nil;
+    __block RollbarCrashReportFilterCompletion filterCompletion = nil;
+    __block __weak RollbarCrashReportFilterCompletion weakFilterCompletion = nil;
     dispatch_block_t disposeOfCompletion = [^
                                             {
                                                 // Release self-reference on the main thread.
@@ -193,7 +193,7 @@
                             [reportSets addObject:filteredReports];
                             if(++iFilter < filterCount)
                             {
-                                id<KSCrashReportFilter> filter = [filters objectAtIndex:iFilter];
+                                id<RollbarCrashReportFilter> filter = [filters objectAtIndex:iFilter];
                                 [filter filterReports:reports onCompletion:weakFilterCompletion];
                                 return;
                             }
@@ -223,7 +223,7 @@
     weakFilterCompletion = filterCompletion;
     
     // Initial call with first filter to start everything going.
-    id<KSCrashReportFilter> filter = [filters objectAtIndex:iFilter];
+    id<RollbarCrashReportFilter> filter = [filters objectAtIndex:iFilter];
     [filter filterReports:reports onCompletion:filterCompletion];
 }
 
@@ -231,18 +231,18 @@
 @end
 
 
-@interface KSCrashReportFilterPipeline ()
+@interface RollbarCrashReportFilterPipeline ()
 
 @property(nonatomic,readwrite,retain) NSArray* filters;
 
 @end
 
 
-@implementation KSCrashReportFilterPipeline
+@implementation RollbarCrashReportFilterPipeline
 
 @synthesize filters = _filters;
 
-+ (KSCrashReportFilterPipeline*) filterWithFilters:(id) firstFilter, ...
++ (RollbarCrashReportFilterPipeline*) filterWithFilters:(id) firstFilter, ...
 {
     ksva_list_to_nsarray(firstFilter, filters);
     return [[self alloc] initWithFiltersArray:filters];
@@ -259,7 +259,7 @@
     if((self = [super init]))
     {
         NSMutableArray* expandedFilters = [NSMutableArray array];
-        for(id<KSCrashReportFilter> filter in filters)
+        for(id<RollbarCrashReportFilter> filter in filters)
         {
             if([filter isKindOfClass:[NSArray class]])
             {
@@ -275,14 +275,14 @@
     return self;
 }
 
-- (void) addFilter:(id<KSCrashReportFilter>) filter
+- (void) addFilter:(id<RollbarCrashReportFilter>) filter
 {
     NSMutableArray* mutableFilters = (NSMutableArray*)self.filters; // Shh! Don't tell anyone!
     [mutableFilters insertObject:filter atIndex:0];
 }
 
 - (void) filterReports:(NSArray*) reports
-          onCompletion:(KSCrashReportFilterCompletion) onCompletion
+          onCompletion:(RollbarCrashReportFilterCompletion) onCompletion
 {
     NSArray* filters = self.filters;
     NSUInteger filterCount = [filters count];
@@ -294,8 +294,8 @@
     }
     
     __block NSUInteger iFilter = 0;
-    __block KSCrashReportFilterCompletion filterCompletion;
-    __block __weak KSCrashReportFilterCompletion weakFilterCompletion = nil;
+    __block RollbarCrashReportFilterCompletion filterCompletion;
+    __block __weak RollbarCrashReportFilterCompletion weakFilterCompletion = nil;
     dispatch_block_t disposeOfCompletion = [^
                                             {
                                                 // Release self-reference on the main thread.
@@ -332,7 +332,7 @@
                             // filter fails to complete.
                             if(++iFilter < filterCount)
                             {
-                                id<KSCrashReportFilter> filter = [filters objectAtIndex:iFilter];
+                                id<RollbarCrashReportFilter> filter = [filters objectAtIndex:iFilter];
                                 [filter filterReports:filteredReports onCompletion:weakFilterCompletion];
                                 return;
                             }
@@ -344,26 +344,26 @@
     weakFilterCompletion = filterCompletion;
     
     // Initial call with first filter to start everything going.
-    id<KSCrashReportFilter> filter = [filters objectAtIndex:iFilter];
+    id<RollbarCrashReportFilter> filter = [filters objectAtIndex:iFilter];
     [filter filterReports:reports onCompletion:filterCompletion];
 }
 
 @end
 
 
-@interface KSCrashReportFilterObjectForKey ()
+@interface RollbarCrashReportFilterObjectForKey ()
 
 @property(nonatomic, readwrite, retain) id key;
 @property(nonatomic, readwrite, assign) BOOL allowNotFound;
 
 @end
 
-@implementation KSCrashReportFilterObjectForKey
+@implementation RollbarCrashReportFilterObjectForKey
 
 @synthesize key = _key;
 @synthesize allowNotFound = _allowNotFound;
 
-+ (KSCrashReportFilterObjectForKey*) filterWithKey:(id)key
++ (RollbarCrashReportFilterObjectForKey*) filterWithKey:(id)key
                                      allowNotFound:(BOOL) allowNotFound
 {
     return [[self alloc] initWithKey:key allowNotFound:allowNotFound];
@@ -381,7 +381,7 @@
 }
 
 - (void) filterReports:(NSArray*) reports
-          onCompletion:(KSCrashReportFilterCompletion) onCompletion
+          onCompletion:(RollbarCrashReportFilterCompletion) onCompletion
 {
     NSMutableArray* filteredReports = [NSMutableArray arrayWithCapacity:[reports count]];
     for(NSDictionary* report in reports)
@@ -418,19 +418,19 @@
 @end
 
 
-@interface KSCrashReportFilterConcatenate ()
+@interface RollbarCrashReportFilterConcatenate ()
 
 @property(nonatomic, readwrite, retain) NSString* separatorFmt;
 @property(nonatomic, readwrite, retain) NSArray* keys;
 
 @end
 
-@implementation KSCrashReportFilterConcatenate
+@implementation RollbarCrashReportFilterConcatenate
 
 @synthesize separatorFmt = _separatorFmt;
 @synthesize keys = _keys;
 
-+ (KSCrashReportFilterConcatenate*) filterWithSeparatorFmt:(NSString*) separatorFmt keys:(id) firstKey, ...
++ (RollbarCrashReportFilterConcatenate*) filterWithSeparatorFmt:(NSString*) separatorFmt keys:(id) firstKey, ...
 {
     ksva_list_to_nsarray(firstKey, keys);
     return [[self alloc] initWithSeparatorFmt:separatorFmt keysArray:keys];
@@ -466,7 +466,7 @@
 }
 
 - (void) filterReports:(NSArray*) reports
-          onCompletion:(KSCrashReportFilterCompletion) onCompletion
+          onCompletion:(RollbarCrashReportFilterCompletion) onCompletion
 {
     NSMutableArray* filteredReports = [NSMutableArray arrayWithCapacity:[reports count]];
     for(NSDictionary* report in reports)
@@ -494,17 +494,17 @@
 @end
 
 
-@interface KSCrashReportFilterSubset ()
+@interface RollbarCrashReportFilterSubset ()
 
 @property(nonatomic, readwrite, retain) NSArray* keyPaths;
 
 @end
 
-@implementation KSCrashReportFilterSubset
+@implementation RollbarCrashReportFilterSubset
 
 @synthesize keyPaths = _keyPaths;
 
-+ (KSCrashReportFilterSubset*) filterWithKeys:(id) firstKeyPath, ...
++ (RollbarCrashReportFilterSubset*) filterWithKeys:(id) firstKeyPath, ...
 {
     ksva_list_to_nsarray(firstKeyPath, keyPaths);
     return [[self alloc] initWithKeysArray:keyPaths];
@@ -539,7 +539,7 @@
 }
 
 - (void) filterReports:(NSArray*) reports
-          onCompletion:(KSCrashReportFilterCompletion) onCompletion
+          onCompletion:(RollbarCrashReportFilterCompletion) onCompletion
 {
     NSMutableArray* filteredReports = [NSMutableArray arrayWithCapacity:[reports count]];
     for(NSDictionary* report in reports)
@@ -566,15 +566,15 @@
 @end
 
 
-@implementation KSCrashReportFilterDataToString
+@implementation RollbarCrashReportFilterDataToString
 
-+ (KSCrashReportFilterDataToString*) filter
++ (RollbarCrashReportFilterDataToString*) filter
 {
     return [[self alloc] init];
 }
 
 - (void) filterReports:(NSArray*) reports
-          onCompletion:(KSCrashReportFilterCompletion)onCompletion
+          onCompletion:(RollbarCrashReportFilterCompletion)onCompletion
 {
     NSMutableArray* filteredReports = [NSMutableArray arrayWithCapacity:[reports count]];
     for(NSData* report in reports)
@@ -589,15 +589,15 @@
 @end
 
 
-@implementation KSCrashReportFilterStringToData
+@implementation RollbarCrashReportFilterStringToData
 
-+ (KSCrashReportFilterStringToData*) filter
++ (RollbarCrashReportFilterStringToData*) filter
 {
     return [[self alloc] init];
 }
 
 - (void) filterReports:(NSArray*) reports
-          onCompletion:(KSCrashReportFilterCompletion)onCompletion
+          onCompletion:(RollbarCrashReportFilterCompletion)onCompletion
 {
     NSMutableArray* filteredReports = [NSMutableArray arrayWithCapacity:[reports count]];
     for(NSString* report in reports)

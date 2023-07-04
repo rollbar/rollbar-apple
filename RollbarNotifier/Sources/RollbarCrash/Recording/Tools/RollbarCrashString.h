@@ -1,5 +1,5 @@
 //
-//  KSString.h
+//  RollbarCrashString.h
 //
 //  Created by Karl Stenerud on 2012-09-15.
 //
@@ -24,8 +24,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef HDR_KSString_h
-#define HDR_KSString_h
+#ifndef HDR_RollbarCrashString_h
+#define HDR_RollbarCrashString_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -63,4 +63,4 @@ bool ksstring_extractHexValue(const char* string, int stringLength, uint64_t* re
 }
 #endif
 
-#endif // HDR_KSString_h
+#endif // HDR_RollbarCrashString_h

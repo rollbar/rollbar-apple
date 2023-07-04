@@ -1,5 +1,5 @@
 //
-//  KSCrashMonitor_CPPException.h
+//  RollbarCrashMonitor_CPPException.h
 //
 //  Copyright (c) 2012 Karl Stenerud. All rights reserved.
 //
@@ -22,14 +22,14 @@
 // THE SOFTWARE.
 //
 
-#ifndef HDR_KSCrashMonitor_CPPException_h
-#define HDR_KSCrashMonitor_CPPException_h
+#ifndef HDR_RollbarCrashMonitor_CPPException_h
+#define HDR_RollbarCrashMonitor_CPPException_h
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "KSCrashMonitor.h"
+#include "RollbarCrashMonitor.h"
 
 /** Enable swapping of __cxa_trow symbol with lazy symbols table
  */
@@ -37,11 +37,11 @@ void kscm_enableSwapCxaThrow(void);
 
 /** Access the Monitor API.
  */
-KSCrashMonitorAPI* kscm_cppexception_getAPI(void);
+RollbarCrashMonitorAPI* kscm_cppexception_getAPI(void);
 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // HDR_KSCrashMonitor_CPPException_h
+#endif // HDR_RollbarCrashMonitor_CPPException_h

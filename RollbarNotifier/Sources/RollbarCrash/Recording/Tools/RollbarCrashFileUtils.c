@@ -1,5 +1,5 @@
 //
-//  KSFileUtils.c
+//  RollbarCrashFileUtils.c
 //
 //  Created by Karl Stenerud on 2012-01-28.
 //
@@ -25,10 +25,10 @@
 //
 
 
-#include "KSFileUtils.h"
+#include "RollbarCrashFileUtils.h"
 
-//#define KSLogger_LocalLevel TRACE
-#include "KSLogger.h"
+//#define RollbarCrashLogger_LocalLevel TRACE
+#include "RollbarCrashLogger.h"
 
 #include <dirent.h>
 #include <errno.h>
@@ -43,8 +43,8 @@
 /** Buffer size to use in the "writeFmt" functions.
  * If the formatted output length would exceed this value, it is truncated.
  */
-#ifndef KSFU_WriteFmtBufferSize
-    #define KSFU_WriteFmtBufferSize 1024
+#ifndef RollbarCrashFU_WriteFmtBufferSize
+    #define RollbarCrashFU_WriteFmtBufferSize 1024
 #endif
 
 
@@ -80,7 +80,7 @@ static int dirContentsCount(const char* path)
     DIR* dir = opendir(path);
     if(dir == NULL)
     {
-        KSLOG_ERROR("Error reading directory %s: %s", path, strerror(errno));
+        RollbarCrashLOG_ERROR("Error reading directory %s: %s", path, strerror(errno));
         return 0;
     }
 
@@ -106,7 +106,7 @@ static void dirContents(const char* path, char*** entries, int* count)
     dir = opendir(path);
     if(dir == NULL)
     {
-        KSLOG_ERROR("Error reading directory %s: %s", path, strerror(errno));
+        RollbarCrashLOG_ERROR("Error reading directory %s: %s", path, strerror(errno));
         goto done;
     }
 
@@ -117,7 +117,7 @@ static void dirContents(const char* path, char*** entries, int* count)
     {
         if(index >= entryCount)
         {
-            KSLOG_ERROR("Contents of %s have been mutated", path);
+            RollbarCrashLOG_ERROR("Contents of %s have been mutated", path);
             goto done;
         }
         entryList[index] = strdup(ent->d_name);
@@ -158,7 +158,7 @@ static bool deletePathContents(const char* path, bool deleteTopLevelPathAlso)
     struct stat statStruct = {0};
     if(stat(path, &statStruct) != 0)
     {
-        KSLOG_ERROR("Could not stat %s: %s", path, strerror(errno));
+        RollbarCrashLOG_ERROR("Could not stat %s: %s", path, strerror(errno));
         return false;
     }
     if(S_ISDIR(statStruct.st_mode))
@@ -167,7 +167,7 @@ static bool deletePathContents(const char* path, bool deleteTopLevelPathAlso)
         int entryCount = 0;
         dirContents(path, &entries, &entryCount);
 
-        int bufferLength = KSFU_MAX_PATH_LENGTH;
+        int bufferLength = RollbarCrashFU_MAX_PATH_LENGTH;
         char* pathBuffer = malloc((unsigned)bufferLength);
         snprintf(pathBuffer, bufferLength, "%s/", path);
         char* pathPtr = pathBuffer + strlen(pathBuffer);
@@ -196,7 +196,7 @@ static bool deletePathContents(const char* path, bool deleteTopLevelPathAlso)
     }
     else
     {
-        KSLOG_ERROR("Could not delete %s: Not a regular file.", path);
+        RollbarCrashLOG_ERROR("Could not delete %s: Not a regular file.", path);
         return false;
     }
     return true;
@@ -225,7 +225,7 @@ bool ksfu_writeBytesToFD(const int fd, const char* const bytes, int length)
         int bytesWritten = (int)write(fd, pos, (unsigned)length);
         if(bytesWritten == -1)
         {
-            KSLOG_ERROR("Could not write to fd %d: %s", fd, strerror(errno));
+            RollbarCrashLOG_ERROR("Could not write to fd %d: %s", fd, strerror(errno));
             return false;
         }
         length -= bytesWritten;
@@ -242,7 +242,7 @@ bool ksfu_readBytesFromFD(const int fd, char* const bytes, int length)
         int bytesRead = (int)read(fd, pos, (unsigned)length);
         if(bytesRead == -1)
         {
-            KSLOG_ERROR("Could not write to fd %d: %s", fd, strerror(errno));
+            RollbarCrashLOG_ERROR("Could not write to fd %d: %s", fd, strerror(errno));
             return false;
         }
         length -= bytesRead;
@@ -262,14 +262,14 @@ bool ksfu_readEntireFile(const char* const path, char** data, int* length, int m
     struct stat st;
     if(stat(path, &st) < 0)
     {
-        KSLOG_ERROR("Could not stat %s: %s", path, strerror(errno));
+        RollbarCrashLOG_ERROR("Could not stat %s: %s", path, strerror(errno));
         goto done;
     }
 
     fd = open(path, O_RDONLY);
     if(fd < 0)
     {
-        KSLOG_ERROR("Could not open %s: %s", path, strerror(errno));
+        RollbarCrashLOG_ERROR("Could not open %s: %s", path, strerror(errno));
         goto done;
     }
 
@@ -281,7 +281,7 @@ bool ksfu_readEntireFile(const char* const path, char** data, int* length, int m
     {
         if(lseek(fd, -bytesToRead, SEEK_END) < 0)
         {
-            KSLOG_ERROR("Could not seek to %d from end of %s: %s", -bytesToRead, path, strerror(errno));
+            RollbarCrashLOG_ERROR("Could not seek to %d from end of %s: %s", -bytesToRead, path, strerror(errno));
             goto done;
         }
     }
@@ -289,7 +289,7 @@ bool ksfu_readEntireFile(const char* const path, char** data, int* length, int m
     mem = malloc((unsigned)bytesToRead + 1);
     if(mem == NULL)
     {
-        KSLOG_ERROR("Out of memory");
+        RollbarCrashLOG_ERROR("Out of memory");
         goto done;
     }
 
@@ -333,7 +333,7 @@ bool ksfu_writeStringToFD(const int fd, const char* const string)
             int bytesWritten = (int)write(fd, pos, (unsigned)bytesToWrite);
             if(bytesWritten == -1)
             {
-                KSLOG_ERROR("Could not write to fd %d: %s",
+                RollbarCrashLOG_ERROR("Could not write to fd %d: %s",
                             fd, strerror(errno));
                 return false;
             }
@@ -364,7 +364,7 @@ bool ksfu_writeFmtArgsToFD(const int fd,
 {
     if(*fmt != 0)
     {
-        char buffer[KSFU_WriteFmtBufferSize];
+        char buffer[RollbarCrashFU_WriteFmtBufferSize];
         vsnprintf(buffer, sizeof(buffer), fmt, args);
         return ksfu_writeStringToFD(fd, buffer);
     }
@@ -381,7 +381,7 @@ int ksfu_readLineFromFD(const int fd, char* const buffer, const int maxLength)
         int bytesRead = (int)read(fd, ch, 1);
         if(bytesRead < 0)
         {
-            KSLOG_ERROR("Could not read from fd %d: %s", fd, strerror(errno));
+            RollbarCrashLOG_ERROR("Could not read from fd %d: %s", fd, strerror(errno));
             return -1;
         }
         else if(bytesRead == 0 || *ch == '\n')
@@ -404,7 +404,7 @@ bool ksfu_makePath(const char* absolutePath)
             *ptr = '\0';
             if(mkdir(pathCopy, S_IRWXU) < 0 && errno != EEXIST)
             {
-                KSLOG_ERROR("Could not create directory %s: %s", pathCopy, strerror(errno));
+                RollbarCrashLOG_ERROR("Could not create directory %s: %s", pathCopy, strerror(errno));
                 goto done;
             }
             *ptr = '/';
@@ -412,7 +412,7 @@ bool ksfu_makePath(const char* absolutePath)
     }
     if(mkdir(pathCopy, S_IRWXU) < 0 && errno != EEXIST)
     {
-        KSLOG_ERROR("Could not create directory %s: %s", pathCopy, strerror(errno));
+        RollbarCrashLOG_ERROR("Could not create directory %s: %s", pathCopy, strerror(errno));
         goto done;
     }
     isSuccessful = true;
@@ -428,7 +428,7 @@ bool ksfu_removeFile(const char* path, bool mustExist)
     {
         if(mustExist || errno != ENOENT)
         {
-            KSLOG_ERROR("Could not delete %s: %s", path, strerror(errno));
+            RollbarCrashLOG_ERROR("Could not delete %s: %s", path, strerror(errno));
         }
         return false;
     }
@@ -449,7 +449,7 @@ bool ksfu_deleteContentsOfPath(const char* path)
     return deletePathContents(path, false);
 }
 
-bool ksfu_openBufferedWriter(KSBufferedWriter* writer, const char* const path, char* writeBuffer, int writeBufferLength)
+bool ksfu_openBufferedWriter(RollbarCrashBufferedWriter* writer, const char* const path, char* writeBuffer, int writeBufferLength)
 {
     writer->buffer = writeBuffer;
     writer->bufferLength = writeBufferLength;
@@ -457,13 +457,13 @@ bool ksfu_openBufferedWriter(KSBufferedWriter* writer, const char* const path, c
     writer->fd = open(path, O_RDWR | O_CREAT | O_EXCL, 0644);
     if(writer->fd < 0)
     {
-        KSLOG_ERROR("Could not open crash report file %s: %s", path, strerror(errno));
+        RollbarCrashLOG_ERROR("Could not open crash report file %s: %s", path, strerror(errno));
         return false;
     }
     return true;
 }
 
-void ksfu_closeBufferedWriter(KSBufferedWriter* writer)
+void ksfu_closeBufferedWriter(RollbarCrashBufferedWriter* writer)
 {
     if(writer->fd > 0)
     {
@@ -473,7 +473,7 @@ void ksfu_closeBufferedWriter(KSBufferedWriter* writer)
     }
 }
 
-bool ksfu_writeBufferedWriter(KSBufferedWriter* writer, const char* restrict const data, const int length)
+bool ksfu_writeBufferedWriter(RollbarCrashBufferedWriter* writer, const char* restrict const data, const int length)
 {
     if(length > writer->bufferLength - writer->position)
     {
@@ -488,7 +488,7 @@ bool ksfu_writeBufferedWriter(KSBufferedWriter* writer, const char* restrict con
     return true;
 }
 
-bool ksfu_flushBufferedWriter(KSBufferedWriter* writer)
+bool ksfu_flushBufferedWriter(RollbarCrashBufferedWriter* writer)
 {
     if(writer->fd > 0 && writer->position > 0)
     {
@@ -501,12 +501,12 @@ bool ksfu_flushBufferedWriter(KSBufferedWriter* writer)
     return true;
 }
 
-static inline bool isReadBufferEmpty(KSBufferedReader* reader)
+static inline bool isReadBufferEmpty(RollbarCrashBufferedReader* reader)
 {
     return reader->dataEndPos == reader->dataStartPos;
 }
 
-static bool fillReadBuffer(KSBufferedReader* reader)
+static bool fillReadBuffer(RollbarCrashBufferedReader* reader)
 {
     if(reader->dataStartPos > 0)
     {
@@ -523,7 +523,7 @@ static bool fillReadBuffer(KSBufferedReader* reader)
     int bytesRead = (int)read(reader->fd, reader->buffer + reader->dataEndPos, (size_t)bytesToRead);
     if(bytesRead < 0)
     {
-        KSLOG_ERROR("Could not read: %s", strerror(errno));
+        RollbarCrashLOG_ERROR("Could not read: %s", strerror(errno));
         return false;
     }
     else
@@ -534,7 +534,7 @@ static bool fillReadBuffer(KSBufferedReader* reader)
     return true;
 }
 
-int ksfu_readBufferedReader(KSBufferedReader* reader, char* dstBuffer, int byteCount)
+int ksfu_readBufferedReader(RollbarCrashBufferedReader* reader, char* dstBuffer, int byteCount)
 {
     int bytesRemaining = byteCount;
     int bytesConsumed = 0;
@@ -566,7 +566,7 @@ int ksfu_readBufferedReader(KSBufferedReader* reader, char* dstBuffer, int byteC
     return bytesConsumed;
 }
 
-bool ksfu_readBufferedReaderUntilChar(KSBufferedReader* reader, int ch, char* dstBuffer, int* length)
+bool ksfu_readBufferedReaderUntilChar(RollbarCrashBufferedReader* reader, int ch, char* dstBuffer, int* length)
 {
     int bytesRemaining = *length;
     int bytesConsumed = 0;
@@ -610,7 +610,7 @@ bool ksfu_readBufferedReaderUntilChar(KSBufferedReader* reader, int ch, char* ds
     return false;
 }
 
-bool ksfu_openBufferedReader(KSBufferedReader* reader, const char* const path, char* readBuffer, int readBufferLength)
+bool ksfu_openBufferedReader(RollbarCrashBufferedReader* reader, const char* const path, char* readBuffer, int readBufferLength)
 {
     readBuffer[0] = '\0';
     readBuffer[readBufferLength - 1] = '\0';
@@ -621,14 +621,14 @@ bool ksfu_openBufferedReader(KSBufferedReader* reader, const char* const path, c
     reader->fd = open(path, O_RDONLY);
     if(reader->fd < 0)
     {
-        KSLOG_ERROR("Could not open file %s: %s", path, strerror(errno));
+        RollbarCrashLOG_ERROR("Could not open file %s: %s", path, strerror(errno));
         return false;
     }
     fillReadBuffer(reader);
     return true;
 }
 
-void ksfu_closeBufferedReader(KSBufferedReader* reader)
+void ksfu_closeBufferedReader(RollbarCrashBufferedReader* reader)
 {
     if(reader->fd > 0)
     {

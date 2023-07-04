@@ -1,5 +1,5 @@
 //
-//  KSStackCursor.h
+//  RollbarCrashStackCursor.h
 //
 //  Copyright (c) 2016 Karl Stenerud. All rights reserved.
 //
@@ -23,20 +23,20 @@
 //
 
 
-#include "KSStackCursor.h"
-#include "KSSymbolicator.h"
+#include "RollbarCrashStackCursor.h"
+#include "RollbarCrashSymbolicator.h"
 #include <stdlib.h>
 
-//#define KSLogger_LocalLevel TRACE
-#include "KSLogger.h"
+//#define RollbarCrashLogger_LocalLevel TRACE
+#include "RollbarCrashLogger.h"
 
-static bool g_advanceCursor(__unused KSStackCursor *cursor)
+static bool g_advanceCursor(__unused RollbarCrashStackCursor *cursor)
 {
-    KSLOG_WARN("No stack cursor has been set. For C++, this means that hooking __cxa_throw() failed for some reason. Embedded frameworks can cause this: https://github.com/kstenerud/KSCrash/issues/205");
+    RollbarCrashLOG_WARN("No stack cursor has been set. For C++, this means that hooking __cxa_throw() failed for some reason. Embedded frameworks can cause this: https://github.com/kstenerud/RollbarCrash/issues/205");
     return false;
 }
 
-void kssc_resetCursor(KSStackCursor *cursor)
+void kssc_resetCursor(RollbarCrashStackCursor *cursor)
 {
     cursor->state.currentDepth = 0;
     cursor->state.hasGivenUp = false;
@@ -47,9 +47,9 @@ void kssc_resetCursor(KSStackCursor *cursor)
     cursor->stackEntry.symbolName = NULL;
 }
 
-void kssc_initCursor(KSStackCursor *cursor,
-                     void (*resetCursor)(KSStackCursor*),
-                     bool (*advanceCursor)(KSStackCursor*))
+void kssc_initCursor(RollbarCrashStackCursor *cursor,
+                     void (*resetCursor)(RollbarCrashStackCursor*),
+                     bool (*advanceCursor)(RollbarCrashStackCursor*))
 {
     cursor->symbolicate = kssymbolicator_symbolicate;
     cursor->advanceCursor = advanceCursor != NULL ? advanceCursor : g_advanceCursor;

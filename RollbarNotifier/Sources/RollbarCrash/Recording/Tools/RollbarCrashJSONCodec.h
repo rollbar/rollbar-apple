@@ -1,5 +1,5 @@
 //
-//  KSJSONCodec.h
+//  RollbarCrashJSONCodec.h
 //
 //  Created by Karl Stenerud on 2012-01-07.
 //
@@ -29,8 +29,8 @@
  */
 
 
-#ifndef HDR_KSJSONCodec_h
-#define HDR_KSJSONCodec_h
+#ifndef HDR_RollbarCrashJSONCodec_h
+#define HDR_RollbarCrashJSONCodec_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,34 +43,34 @@ extern "C" {
 /* Tells the encoder to automatically determine the length of a field value.
  * Currently, this is done using strlen().
  */
-#define KSJSON_SIZE_AUTOMATIC -1
+#define RollbarCrashJSON_SIZE_AUTOMATIC -1
 
 enum
 {
     /** Encoding or decoding: Everything completed without error */
-    KSJSON_OK = 0,
+    RollbarCrashJSON_OK = 0,
 
     /** Encoding or decoding: Encountered an unexpected or invalid character */
-    KSJSON_ERROR_INVALID_CHARACTER = 1,
+    RollbarCrashJSON_ERROR_INVALID_CHARACTER = 1,
 
     /** Decoding: Source data was too long. */
-    KSJSON_ERROR_DATA_TOO_LONG = 2,
+    RollbarCrashJSON_ERROR_DATA_TOO_LONG = 2,
 
     /** Encoding: addJSONData could not handle the data.
      * This code is not used by the decoder, but is meant to be returned by
      * the addJSONData callback method if it couldn't handle the data.
      */
-    KSJSON_ERROR_CANNOT_ADD_DATA = 3,
+    RollbarCrashJSON_ERROR_CANNOT_ADD_DATA = 3,
 
     /** Decoding: Source data appears to be truncated. */
-    KSJSON_ERROR_INCOMPLETE = 4,
+    RollbarCrashJSON_ERROR_INCOMPLETE = 4,
 
     /** Decoding: Parsing failed due to bad data structure/type/contents.
      * This code is not used by the decoder, but is meant to be returned
      * by the user callback methods if the decoded data is incorrect for
      * semantic or structural reasons.
      */
-    KSJSON_ERROR_INVALID_DATA = 5,
+    RollbarCrashJSON_ERROR_INVALID_DATA = 5,
 };
 
 /** Get a description for an error code.
@@ -94,15 +94,15 @@ const char* ksjson_stringForError(const int error);
  *
  * @param userData user-specified contextual data.
  *
- * @return KSJSON_OK if the data was handled.
- *         otherwise KSJSON_ERROR_CANNOT_ADD_DATA.
+ * @return RollbarCrashJSON_OK if the data was handled.
+ *         otherwise RollbarCrashJSON_ERROR_CANNOT_ADD_DATA.
  */
-typedef int (*KSJSONAddDataFunc)(const char* data, int length, void* userData);
+typedef int (*RollbarCrashJSONAddDataFunc)(const char* data, int length, void* userData);
 
 typedef struct
 {
     /** Function to call to add more encoded JSON data. */
-    KSJSONAddDataFunc addJSONData;
+    RollbarCrashJSONAddDataFunc addJSONData;
 
     /** User-specified data */
     void* userData;
@@ -118,7 +118,7 @@ typedef struct
 
     bool prettyPrint;
 
-} KSJSONEncodeContext;
+} RollbarCrashJSONEncodeContext;
 
 
 /** Begin a new encoding process.
@@ -131,16 +131,16 @@ typedef struct
  *
  * @param userData User-specified data which gets passed to addJSONData.
  */
-void ksjson_beginEncode(KSJSONEncodeContext* context,
+void ksjson_beginEncode(RollbarCrashJSONEncodeContext* context,
                         bool prettyPrint,
-                        KSJSONAddDataFunc addJSONData,
+                        RollbarCrashJSONAddDataFunc addJSONData,
                         void* userData);
 
 /** End the encoding process, ending any remaining open containers.
  *
- * @return KSJSON_OK if the process was successful.
+ * @return RollbarCrashJSON_OK if the process was successful.
  */
-int ksjson_endEncode(KSJSONEncodeContext* context);
+int ksjson_endEncode(RollbarCrashJSONEncodeContext* context);
 
 /** Add a boolean element.
  *
@@ -150,9 +150,9 @@ int ksjson_endEncode(KSJSONEncodeContext* context);
  *
  * @param value The element's value.
  *
- * @return KSJSON_OK if the process was successful.
+ * @return RollbarCrashJSON_OK if the process was successful.
  */
-int ksjson_addBooleanElement(KSJSONEncodeContext* context,
+int ksjson_addBooleanElement(RollbarCrashJSONEncodeContext* context,
                              const char* name,
                              bool value);
 
@@ -164,9 +164,9 @@ int ksjson_addBooleanElement(KSJSONEncodeContext* context,
  *
  * @param value The element's value.
  *
- * @return KSJSON_OK if the process was successful.
+ * @return RollbarCrashJSON_OK if the process was successful.
  */
-int ksjson_addIntegerElement(KSJSONEncodeContext* context,
+int ksjson_addIntegerElement(RollbarCrashJSONEncodeContext* context,
                              const char* name,
                              int64_t value);
 
@@ -178,9 +178,9 @@ int ksjson_addIntegerElement(KSJSONEncodeContext* context,
  *
  * @param value The element's value.
  *
- * @return KSJSON_OK if the process was successful.
+ * @return RollbarCrashJSON_OK if the process was successful.
  */
-int ksjson_addUIntegerElement(KSJSONEncodeContext* const context,
+int ksjson_addUIntegerElement(RollbarCrashJSONEncodeContext* const context,
                               const char* const name,
                               uint64_t value);
     
@@ -192,9 +192,9 @@ int ksjson_addUIntegerElement(KSJSONEncodeContext* const context,
  *
  * @param value The element's value.
  *
- * @return KSJSON_OK if the process was successful.
+ * @return RollbarCrashJSON_OK if the process was successful.
  */
-int ksjson_addFloatingPointElement(KSJSONEncodeContext* context,
+int ksjson_addFloatingPointElement(RollbarCrashJSONEncodeContext* context,
                                    const char* name,
                                    double value);
 
@@ -204,9 +204,9 @@ int ksjson_addFloatingPointElement(KSJSONEncodeContext* context,
  *
  * @param name The element's name.
  *
- * @return KSJSON_OK if the process was successful.
+ * @return RollbarCrashJSON_OK if the process was successful.
  */
-int ksjson_addNullElement(KSJSONEncodeContext* context,
+int ksjson_addNullElement(RollbarCrashJSONEncodeContext* context,
                           const char* name);
 
 /** Add a string element.
@@ -217,11 +217,11 @@ int ksjson_addNullElement(KSJSONEncodeContext* context,
  *
  * @param value The element's value.
  *
- * @param length the length of the string, or KSJSON_SIZE_AUTOMATIC.
+ * @param length the length of the string, or RollbarCrashJSON_SIZE_AUTOMATIC.
  *
- * @return KSJSON_OK if the process was successful.
+ * @return RollbarCrashJSON_OK if the process was successful.
  */
-int ksjson_addStringElement(KSJSONEncodeContext* context,
+int ksjson_addStringElement(RollbarCrashJSONEncodeContext* context,
                             const char* name,
                             const char* value,
                             int length);
@@ -234,9 +234,9 @@ int ksjson_addStringElement(KSJSONEncodeContext* context,
  *
  * @param name The element's name.
  *
- * @return KSJSON_OK if the process was successful.
+ * @return RollbarCrashJSON_OK if the process was successful.
  */
-int ksjson_beginStringElement(KSJSONEncodeContext* context,
+int ksjson_beginStringElement(RollbarCrashJSONEncodeContext* context,
                               const char* name);
 
 /** Add a string fragment to an incrementally-built string element.
@@ -247,9 +247,9 @@ int ksjson_beginStringElement(KSJSONEncodeContext* context,
  *
  * @param length the length of the string fragment.
  *
- * @return KSJSON_OK if the process was successful.
+ * @return RollbarCrashJSON_OK if the process was successful.
  */
-int ksjson_appendStringElement(KSJSONEncodeContext* context,
+int ksjson_appendStringElement(RollbarCrashJSONEncodeContext* context,
                                const char* value,
                                int length);
 
@@ -257,9 +257,9 @@ int ksjson_appendStringElement(KSJSONEncodeContext* context,
  *
  * @param context The encoding context.
  *
- * @return KSJSON_OK if the process was successful.
+ * @return RollbarCrashJSON_OK if the process was successful.
  */
-int ksjson_endStringElement(KSJSONEncodeContext* context);
+int ksjson_endStringElement(RollbarCrashJSONEncodeContext* context);
 
 /** Add a string element. The element will be converted to string-coded hex.
  *
@@ -271,9 +271,9 @@ int ksjson_endStringElement(KSJSONEncodeContext* context);
  *
  * @param length The length of the data.
  *
- * @return KSJSON_OK if the process was successful.
+ * @return RollbarCrashJSON_OK if the process was successful.
  */
-int ksjson_addDataElement(KSJSONEncodeContext* const context,
+int ksjson_addDataElement(RollbarCrashJSONEncodeContext* const context,
                           const char* name,
                           const char* value,
                           int length);
@@ -287,9 +287,9 @@ int ksjson_addDataElement(KSJSONEncodeContext* const context,
  *
  * @param name The element's name.
  *
- * @return KSJSON_OK if the process was successful.
+ * @return RollbarCrashJSON_OK if the process was successful.
  */
-int ksjson_beginDataElement(KSJSONEncodeContext* const context,
+int ksjson_beginDataElement(RollbarCrashJSONEncodeContext* const context,
                             const char* const name);
 
 /** Add a data fragment to an incrementally-built data element.
@@ -300,9 +300,9 @@ int ksjson_beginDataElement(KSJSONEncodeContext* const context,
  *
  * @param length the length of the data fragment.
  *
- * @return KSJSON_OK if the process was successful.
+ * @return RollbarCrashJSON_OK if the process was successful.
  */
-int ksjson_appendDataElement(KSJSONEncodeContext* const context,
+int ksjson_appendDataElement(RollbarCrashJSONEncodeContext* const context,
                              const char* const value,
                              int length);
 
@@ -310,9 +310,9 @@ int ksjson_appendDataElement(KSJSONEncodeContext* const context,
  *
  * @param context The encoding context.
  *
- * @return KSJSON_OK if the process was successful.
+ * @return RollbarCrashJSON_OK if the process was successful.
  */
-int ksjson_endDataElement(KSJSONEncodeContext* const context);
+int ksjson_endDataElement(RollbarCrashJSONEncodeContext* const context);
 
 /** Add a pre-formatted JSON element.
  *
@@ -326,9 +326,9 @@ int ksjson_endDataElement(KSJSONEncodeContext* const context);
  *
  * @param closeLastContainer If false, do not close the last container.
  *
- * @return KSJSON_OK if the process was successful.
+ * @return RollbarCrashJSON_OK if the process was successful.
  */
-int ksjson_addJSONElement(KSJSONEncodeContext* const encodeContext,
+int ksjson_addJSONElement(RollbarCrashJSONEncodeContext* const encodeContext,
                           const char* restrict const name,
                           const char* restrict const jsonData,
                           const int jsonDataLength,
@@ -340,9 +340,9 @@ int ksjson_addJSONElement(KSJSONEncodeContext* const encodeContext,
  *
  * @param name The object's name.
  *
- * @return KSJSON_OK if the process was successful.
+ * @return RollbarCrashJSON_OK if the process was successful.
  */
-int ksjson_beginObject(KSJSONEncodeContext* context,
+int ksjson_beginObject(RollbarCrashJSONEncodeContext* context,
                        const char* name);
 
 /** Begin a new array container.
@@ -351,9 +351,9 @@ int ksjson_beginObject(KSJSONEncodeContext* context,
  *
  * @param name The array's name.
  *
- * @return KSJSON_OK if the process was successful.
+ * @return RollbarCrashJSON_OK if the process was successful.
  */
-int ksjson_beginArray(KSJSONEncodeContext* context,
+int ksjson_beginArray(RollbarCrashJSONEncodeContext* context,
                       const char* name);
 
 /** Begin a generic JSON element, adding any necessary JSON preamble text,
@@ -364,7 +364,7 @@ int ksjson_beginArray(KSJSONEncodeContext* context,
  *
  * @param name The name of the next element (only needed if parent is a dictionary).
  */
-int ksjson_beginElement(KSJSONEncodeContext* const context,
+int ksjson_beginElement(RollbarCrashJSONEncodeContext* const context,
                         const char* const name);
 
 /** Add JSON data manually.
@@ -376,9 +376,9 @@ int ksjson_beginElement(KSJSONEncodeContext* const context,
  *
  * @param length The length of the data.
  *
- * @return KSJSON_OK if the process was successful.
+ * @return RollbarCrashJSON_OK if the process was successful.
  */
-int ksjson_addRawJSONData(KSJSONEncodeContext* const context,
+int ksjson_addRawJSONData(RollbarCrashJSONEncodeContext* const context,
                           const char* const data,
                           const int length);
 
@@ -386,9 +386,9 @@ int ksjson_addRawJSONData(KSJSONEncodeContext* const context,
  *
  * @param context The encoding context.
  *
- * @return KSJSON_OK if the process was successful.
+ * @return RollbarCrashJSON_OK if the process was successful.
  */
-int ksjson_endContainer(KSJSONEncodeContext* context);
+int ksjson_endContainer(RollbarCrashJSONEncodeContext* context);
 
 /** Decode and add JSON data from a file.
  *
@@ -400,7 +400,7 @@ int ksjson_endContainer(KSJSONEncodeContext* context);
  *
  * @param closeLastContainer If false, do not close the last container.
  */
-int ksjson_addJSONFromFile(KSJSONEncodeContext* const context,
+int ksjson_addJSONFromFile(RollbarCrashJSONEncodeContext* const context,
                            const char* restrict const name,
                            const char* restrict const filename,
                            const bool closeLastContainer);
@@ -415,7 +415,7 @@ int ksjson_addJSONFromFile(KSJSONEncodeContext* const context,
  * Callbacks called during a JSON decode process.
  * All function pointers must point to valid functions.
  */
-typedef struct KSJSONDecodeCallbacks
+typedef struct RollbarCrashJSONDecodeCallbacks
 {
     /** Called when a boolean element is decoded.
      *
@@ -425,7 +425,7 @@ typedef struct KSJSONDecodeCallbacks
      *
      * @param userData Data that was specified when calling ksjson_decode().
      *
-     * @return KSJSON_OK if decoding should continue.
+     * @return RollbarCrashJSON_OK if decoding should continue.
      */
     int (*onBooleanElement)(const char* name,
                             bool value,
@@ -439,7 +439,7 @@ typedef struct KSJSONDecodeCallbacks
      *
      * @param userData Data that was specified when calling ksjson_decode().
      *
-     * @return KSJSON_OK if decoding should continue.
+     * @return RollbarCrashJSON_OK if decoding should continue.
      */
     int (*onFloatingPointElement)(const char* name,
                                   double value,
@@ -453,7 +453,7 @@ typedef struct KSJSONDecodeCallbacks
      *
      * @param userData Data that was specified when calling ksjson_decode().
      *
-     * @return KSJSON_OK if decoding should continue.
+     * @return RollbarCrashJSON_OK if decoding should continue.
      */
     int (*onIntegerElement)(const char* name,
                             int64_t value,
@@ -465,7 +465,7 @@ typedef struct KSJSONDecodeCallbacks
      *
      * @param userData Data that was specified when calling ksjson_decode().
      *
-     * @return KSJSON_OK if decoding should continue.
+     * @return RollbarCrashJSON_OK if decoding should continue.
      */
     int (*onNullElement)(const char* name,
                          void* userData);
@@ -478,7 +478,7 @@ typedef struct KSJSONDecodeCallbacks
      *
      * @param userData Data that was specified when calling ksjson_decode().
      *
-     * @return KSJSON_OK if decoding should continue.
+     * @return RollbarCrashJSON_OK if decoding should continue.
      */
     int (*onStringElement)(const char* name,
                            const char* value,
@@ -490,7 +490,7 @@ typedef struct KSJSONDecodeCallbacks
      *
      * @param userData Data that was specified when calling ksjson_decode().
      *
-     * @return KSJSON_OK if decoding should continue.
+     * @return RollbarCrashJSON_OK if decoding should continue.
      */
     int (*onBeginObject)(const char* name,
                          void* userData);
@@ -501,7 +501,7 @@ typedef struct KSJSONDecodeCallbacks
      *
      * @param userData Data that was specified when calling ksjson_decode().
      *
-     * @return KSJSON_OK if decoding should continue.
+     * @return RollbarCrashJSON_OK if decoding should continue.
      */
     int (*onBeginArray)(const char* name,
                         void* userData);
@@ -511,7 +511,7 @@ typedef struct KSJSONDecodeCallbacks
      *
      * @param userData Data that was specified when calling ksjson_decode().
      *
-     * @return KSJSON_OK if decoding should continue.
+     * @return RollbarCrashJSON_OK if decoding should continue.
      */
     int (*onEndContainer)(void* userData);
 
@@ -519,11 +519,11 @@ typedef struct KSJSONDecodeCallbacks
      *
      * @param userData Data that was specified when calling ksjson_decode().
      *
-     * @return KSJSON_OK if decoding should continue.
+     * @return RollbarCrashJSON_OK if decoding should continue.
      */
     int (*onEndData)(void* userData);
 
-} KSJSONDecodeCallbacks;
+} RollbarCrashJSONDecodeCallbacks;
 
 
 /** Read a JSON encoded file from the specified FD.
@@ -544,13 +544,13 @@ typedef struct KSJSONDecodeCallbacks
  * @oaram errorOffset If not null, will contain the offset into the data
  *                    where the error (if any) occurred.
  *
- * @return KSJSON_OK if succesful. An error code otherwise.
+ * @return RollbarCrashJSON_OK if succesful. An error code otherwise.
  */
 int ksjson_decode(const char* data,
                   int length,
                   char* stringBuffer,
                   int stringBufferLength,
-                  KSJSONDecodeCallbacks* callbacks,
+                  RollbarCrashJSONDecodeCallbacks* callbacks,
                   void* userData,
                   int* errorOffset);
 
@@ -559,4 +559,4 @@ int ksjson_decode(const char* data,
 }
 #endif
 
-#endif // HDR_KSJSONCodec_h
+#endif // HDR_RollbarCrashJSONCodec_h

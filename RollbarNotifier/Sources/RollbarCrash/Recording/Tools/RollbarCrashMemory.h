@@ -1,5 +1,5 @@
 //
-//  KSMemory.h
+//  RollbarCrashMemory.h
 //
 //  Created by Karl Stenerud on 2012-01-29.
 //

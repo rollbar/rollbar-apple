@@ -1,5 +1,5 @@
 //
-//  KSCString.m
+//  RollbarCrashCString.m
 //
 //  Created by Karl Stenerud on 2013-02-23.
 //
@@ -24,29 +24,29 @@
 // THE SOFTWARE.
 //
 
-#import "KSCString.h"
+#import "RollbarCrashCString.h"
 
-@implementation KSCString
+@implementation RollbarCrashCString
 
 @synthesize length = _length;
 @synthesize bytes = _bytes;
 
-+ (KSCString*) stringWithString:(NSString*) string
++ (RollbarCrashCString*) stringWithString:(NSString*) string
 {
     return [[self alloc] initWithString:string];
 }
 
-+ (KSCString*) stringWithCString:(const char*) string
++ (RollbarCrashCString*) stringWithCString:(const char*) string
 {
     return [[self alloc] initWithCString:string];
 }
 
-+ (KSCString*) stringWithData:(NSData*) data
++ (RollbarCrashCString*) stringWithData:(NSData*) data
 {
     return [[self alloc] initWithData:data];
 }
 
-+ (KSCString*) stringWithData:(const char*) data length:(NSUInteger) length
++ (RollbarCrashCString*) stringWithData:(const char*) data length:(NSUInteger) length
 {
     return [[self alloc] initWithData:data length:length];
 }

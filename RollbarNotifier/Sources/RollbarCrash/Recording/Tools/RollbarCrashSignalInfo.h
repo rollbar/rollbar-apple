@@ -1,5 +1,5 @@
 //
-//  KSSignalInfo.h
+//  RollbarCrashSignalInfo.h
 //
 //  Created by Karl Stenerud on 2012-02-03.
 //
@@ -29,8 +29,8 @@
  */
 
 
-#ifndef HDR_KSSignalInfo_h
-#define HDR_KSSignalInfo_h
+#ifndef HDR_RollbarCrashSignalInfo_h
+#define HDR_RollbarCrashSignalInfo_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -75,4 +75,4 @@ int kssignal_numFatalSignals(void);
 }
 #endif
 
-#endif // HDR_KSSignalInfo_h
+#endif // HDR_RollbarCrashSignalInfo_h

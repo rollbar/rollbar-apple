@@ -1,5 +1,5 @@
 //
-//  KSCrashMonitor_Signal.c
+//  RollbarCrashMonitor_Signal.c
 //
 //  Created by Karl Stenerud on 2012-01-28.
 //
@@ -24,18 +24,18 @@
 // THE SOFTWARE.
 //
 
-#include "KSCrashMonitor_Signal.h"
-#include "KSCrashMonitorContext.h"
-#include "KSID.h"
-#include "KSSignalInfo.h"
-#include "KSMachineContext.h"
-#include "KSSystemCapabilities.h"
-#include "KSStackCursor_MachineContext.h"
+#include "RollbarCrashMonitor_Signal.h"
+#include "RollbarCrashMonitorContext.h"
+#include "RollbarCrashID.h"
+#include "RollbarCrashSignalInfo.h"
+#include "RollbarCrashMachineContext.h"
+#include "RollbarCrashSystemCapabilities.h"
+#include "RollbarCrashStackCursor_MachineContext.h"
 
-//#define KSLogger_LocalLevel TRACE
-#include "KSLogger.h"
+//#define RollbarCrashLogger_LocalLevel TRACE
+#include "RollbarCrashLogger.h"
 
-#if KSCRASH_HAS_SIGNAL
+#if RollbarCrashCRASH_HAS_SIGNAL
 
 #include <errno.h>
 #include <signal.h>
@@ -50,10 +50,10 @@
 
 static volatile bool g_isEnabled = false;
 
-static KSCrash_MonitorContext g_monitorContext;
-static KSStackCursor g_stackCursor;
+static RollbarCrash_MonitorContext g_monitorContext;
+static RollbarCrashStackCursor g_stackCursor;
 
-#if KSCRASH_HAS_SIGNAL_STACK
+#if RollbarCrashCRASH_HAS_SIGNAL_STACK
 /** Our custom signal stack. The signal handler will use this as its stack. */
 static stack_t g_signalStack = {0};
 #endif
@@ -81,7 +81,7 @@ static char g_eventID[37];
  */
 static void handleSignal(int sigNum, siginfo_t* signalInfo, void* userContext)
 {
-    KSLOG_DEBUG("Trapped signal %d", sigNum);
+    RollbarCrashLOG_DEBUG("Trapped signal %d", sigNum);
     if(g_isEnabled)
     {
         thread_act_array_t threads = NULL;
@@ -89,14 +89,14 @@ static void handleSignal(int sigNum, siginfo_t* signalInfo, void* userContext)
         ksmc_suspendEnvironment(&threads, &numThreads);
         kscm_notifyFatalExceptionCaptured(false);
 
-        KSLOG_DEBUG("Filling out context.");
-        KSMC_NEW_CONTEXT(machineContext);
+        RollbarCrashLOG_DEBUG("Filling out context.");
+        RollbarCrashMC_NEW_CONTEXT(machineContext);
         ksmc_getContextForSignal(userContext, machineContext);
-        kssc_initWithMachineContext(&g_stackCursor, KSSC_MAX_STACK_DEPTH, machineContext);
+        kssc_initWithMachineContext(&g_stackCursor, RollbarCrashSC_MAX_STACK_DEPTH, machineContext);
 
-        KSCrash_MonitorContext* crashContext = &g_monitorContext;
+        RollbarCrash_MonitorContext* crashContext = &g_monitorContext;
         memset(crashContext, 0, sizeof(*crashContext));
-        crashContext->crashType = KSCrashMonitorTypeSignal;
+        crashContext->crashType = RollbarCrashMonitorTypeSignal;
         crashContext->eventID = g_eventID;
         crashContext->offendingMachineContext = machineContext;
         crashContext->registersAreValid = true;
@@ -110,7 +110,7 @@ static void handleSignal(int sigNum, siginfo_t* signalInfo, void* userContext)
         ksmc_resumeEnvironment(threads, numThreads);
     }
 
-    KSLOG_DEBUG("Re-raising signal for regular handlers to catch.");
+    RollbarCrashLOG_DEBUG("Re-raising signal for regular handlers to catch.");
     raise(sigNum);
 }
 
@@ -121,21 +121,21 @@ static void handleSignal(int sigNum, siginfo_t* signalInfo, void* userContext)
 
 static bool installSignalHandler()
 {
-    KSLOG_DEBUG("Installing signal handler.");
+    RollbarCrashLOG_DEBUG("Installing signal handler.");
 
-#if KSCRASH_HAS_SIGNAL_STACK
+#if RollbarCrashCRASH_HAS_SIGNAL_STACK
 
     if(g_signalStack.ss_size == 0)
     {
-        KSLOG_DEBUG("Allocating signal stack area.");
+        RollbarCrashLOG_DEBUG("Allocating signal stack area.");
         g_signalStack.ss_size = SIGSTKSZ;
         g_signalStack.ss_sp = malloc(g_signalStack.ss_size);
     }
 
-    KSLOG_DEBUG("Setting signal stack area.");
+    RollbarCrashLOG_DEBUG("Setting signal stack area.");
     if(sigaltstack(&g_signalStack, NULL) != 0)
     {
-        KSLOG_ERROR("signalstack: %s", strerror(errno));
+        RollbarCrashLOG_ERROR("signalstack: %s", strerror(errno));
         goto failed;
     }
 #endif
@@ -145,14 +145,14 @@ static bool installSignalHandler()
 
     if(g_previousSignalHandlers == NULL)
     {
-        KSLOG_DEBUG("Allocating memory to store previous signal handlers.");
+        RollbarCrashLOG_DEBUG("Allocating memory to store previous signal handlers.");
         g_previousSignalHandlers = malloc(sizeof(*g_previousSignalHandlers)
                                           * (unsigned)fatalSignalsCount);
     }
 
     struct sigaction action = {{0}};
     action.sa_flags = SA_SIGINFO | SA_ONSTACK;
-#if KSCRASH_HOST_APPLE && defined(__LP64__)
+#if RollbarCrashCRASH_HOST_APPLE && defined(__LP64__)
     action.sa_flags |= SA_64REGSET;
 #endif
     sigemptyset(&action.sa_mask);
@@ -160,7 +160,7 @@ static bool installSignalHandler()
 
     for(int i = 0; i < fatalSignalsCount; i++)
     {
-        KSLOG_DEBUG("Assigning handler for signal %d", fatalSignals[i]);
+        RollbarCrashLOG_DEBUG("Assigning handler for signal %d", fatalSignals[i]);
         if(sigaction(fatalSignals[i], &action, &g_previousSignalHandlers[i]) != 0)
         {
             char sigNameBuff[30];
@@ -170,7 +170,7 @@ static bool installSignalHandler()
                 snprintf(sigNameBuff, sizeof(sigNameBuff), "%d", fatalSignals[i]);
                 sigName = sigNameBuff;
             }
-            KSLOG_ERROR("sigaction (%s): %s", sigName, strerror(errno));
+            RollbarCrashLOG_ERROR("sigaction (%s): %s", sigName, strerror(errno));
             // Try to reverse the damage
             for(i--;i >= 0; i--)
             {
@@ -179,31 +179,31 @@ static bool installSignalHandler()
             goto failed;
         }
     }
-    KSLOG_DEBUG("Signal handlers installed.");
+    RollbarCrashLOG_DEBUG("Signal handlers installed.");
     return true;
 
 failed:
-    KSLOG_DEBUG("Failed to install signal handlers.");
+    RollbarCrashLOG_DEBUG("Failed to install signal handlers.");
     return false;
 }
 
 static void uninstallSignalHandler(void)
 {
-    KSLOG_DEBUG("Uninstalling signal handlers.");
+    RollbarCrashLOG_DEBUG("Uninstalling signal handlers.");
 
     const int* fatalSignals = kssignal_fatalSignals();
     int fatalSignalsCount = kssignal_numFatalSignals();
 
     for(int i = 0; i < fatalSignalsCount; i++)
     {
-        KSLOG_DEBUG("Restoring original handler for signal %d", fatalSignals[i]);
+        RollbarCrashLOG_DEBUG("Restoring original handler for signal %d", fatalSignals[i]);
         sigaction(fatalSignals[i], &g_previousSignalHandlers[i], NULL);
     }
     
-#if KSCRASH_HAS_SIGNAL_STACK
+#if RollbarCrashCRASH_HAS_SIGNAL_STACK
     g_signalStack = (stack_t){0};
 #endif
-    KSLOG_DEBUG("Signal handlers uninstalled.");
+    RollbarCrashLOG_DEBUG("Signal handlers uninstalled.");
 }
 
 static void setEnabled(bool isEnabled)
@@ -231,9 +231,9 @@ static bool isEnabled()
     return g_isEnabled;
 }
 
-static void addContextualInfoToEvent(struct KSCrash_MonitorContext* eventContext)
+static void addContextualInfoToEvent(struct RollbarCrash_MonitorContext* eventContext)
 {
-    if(!(eventContext->crashType & (KSCrashMonitorTypeSignal | KSCrashMonitorTypeMachException)))
+    if(!(eventContext->crashType & (RollbarCrashMonitorTypeSignal | RollbarCrashMonitorTypeMachException)))
     {
         eventContext->signal.signum = SIGABRT;
     }
@@ -241,11 +241,11 @@ static void addContextualInfoToEvent(struct KSCrash_MonitorContext* eventContext
 
 #endif
 
-KSCrashMonitorAPI* kscm_signal_getAPI()
+RollbarCrashMonitorAPI* kscm_signal_getAPI()
 {
-    static KSCrashMonitorAPI api =
+    static RollbarCrashMonitorAPI api =
     {
-#if KSCRASH_HAS_SIGNAL
+#if RollbarCrashCRASH_HAS_SIGNAL
         .setEnabled = setEnabled,
         .isEnabled = isEnabled,
         .addContextualInfoToEvent = addContextualInfoToEvent

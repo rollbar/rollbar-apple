@@ -1,5 +1,5 @@
 //
-//  KSCrashMonitor.h
+//  RollbarCrashMonitor.h
 //
 //  Created by Karl Stenerud on 2012-02-12.
 //
@@ -29,20 +29,20 @@
  */
 
 
-#ifndef HDR_KSCrashMonitor_h
-#define HDR_KSCrashMonitor_h
+#ifndef HDR_RollbarCrashMonitor_h
+#define HDR_RollbarCrashMonitor_h
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
-#include "KSCrashMonitorType.h"
-#include "KSThread.h"
+#include "RollbarCrashMonitorType.h"
+#include "RollbarCrashThread.h"
     
 #include <stdbool.h>
 
-struct KSCrash_MonitorContext;
+struct RollbarCrash_MonitorContext;
 
 
 // ============================================================================
@@ -53,17 +53,17 @@ struct KSCrash_MonitorContext;
  *
  * @param monitorTypes Which monitors should be active.
  */
-void kscm_setActiveMonitors(KSCrashMonitorType monitorTypes);
+void kscm_setActiveMonitors(RollbarCrashMonitorType monitorTypes);
 
 /** Get the currently active monitors.
  */
-KSCrashMonitorType kscm_getActiveMonitors(void);
+RollbarCrashMonitorType kscm_getActiveMonitors(void);
 
 /** Set the callback to call when an event is captured.
  *
  * @param onEvent Called whenever an event is captured.
  */
-void kscm_setEventCallback(void (*onEvent)(struct KSCrash_MonitorContext* monitorContext));
+void kscm_setEventCallback(void (*onEvent)(struct RollbarCrash_MonitorContext* monitorContext));
 
 
 // ============================================================================
@@ -74,8 +74,8 @@ typedef struct
 {
     void (*setEnabled)(bool isEnabled);
     bool (*isEnabled)(void);
-    void (*addContextualInfoToEvent)(struct KSCrash_MonitorContext* eventContext);
-} KSCrashMonitorAPI;
+    void (*addContextualInfoToEvent)(struct RollbarCrash_MonitorContext* eventContext);
+} RollbarCrashMonitorAPI;
 
 /** Notify that a fatal exception has been captured.
  *  This allows the system to take appropriate steps in preparation.
@@ -88,11 +88,11 @@ bool kscm_notifyFatalExceptionCaptured(bool isAsyncSafeEnvironment);
  *
  * @oaram context Contextual information about the exception.
  */
-void kscm_handleException(struct KSCrash_MonitorContext* context);
+void kscm_handleException(struct RollbarCrash_MonitorContext* context);
 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // HDR_KSCrashMonitor_h
+#endif // HDR_RollbarCrashMonitor_h

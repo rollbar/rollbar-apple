@@ -1,5 +1,5 @@
 //
-//  KSCString.h
+//  RollbarCrashCString.h
 //
 //  Created by Karl Stenerud on 2013-02-23.
 //
@@ -29,7 +29,7 @@
 /**
  * A string, stored C style with null termination.
  */
-@interface KSCString : NSObject
+@interface RollbarCrashCString : NSObject
 
 /** Length of the string in bytes (not characters!). Length does not include null terminator. */
 @property(nonatomic,readonly,assign) NSUInteger length;
@@ -38,16 +38,16 @@
 @property(nonatomic,readonly,assign) const char* bytes;
 
 /** Constructor for NSString */
-+ (KSCString*) stringWithString:(NSString*) string;
++ (RollbarCrashCString*) stringWithString:(NSString*) string;
 
 /** Constructor for null-terminated C string (assumes UTF-8 encoding). */
-+ (KSCString*) stringWithCString:(const char*) string;
++ (RollbarCrashCString*) stringWithCString:(const char*) string;
 
 /** Constructor for string contained in NSData (assumes UTF-8 encoding). */
-+ (KSCString*) stringWithData:(NSData*) data;
++ (RollbarCrashCString*) stringWithData:(NSData*) data;
 
 /** Constructor for non-terminated string (assumes UTF-8 encoding). */
-+ (KSCString*) stringWithData:(const char*) data length:(NSUInteger) length;
++ (RollbarCrashCString*) stringWithData:(const char*) data length:(NSUInteger) length;
 
 - (id) initWithString:(NSString*) string;
 - (id) initWithCString:(const char*) string;

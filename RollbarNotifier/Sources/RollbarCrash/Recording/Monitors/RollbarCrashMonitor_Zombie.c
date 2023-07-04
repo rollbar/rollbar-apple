@@ -1,5 +1,5 @@
 //
-//  KSZombie.m
+//  RollbarCrashZombie.m
 //
 //  Created by Karl Stenerud on 2012-09-15.
 //
@@ -25,10 +25,10 @@
 //
 
 
-#include "KSCrashMonitor_Zombie.h"
-#include "KSCrashMonitorContext.h"
-#include "KSObjC.h"
-#include "KSLogger.h"
+#include "RollbarCrashMonitor_Zombie.h"
+#include "RollbarCrashMonitorContext.h"
+#include "RollbarCrashObjC.h"
+#include "RollbarCrashLogger.h"
 
 #include <objc/runtime.h>
 #include <stdlib.h>
@@ -70,7 +70,7 @@ static inline unsigned hashIndex(const void* object)
 static bool copyStringIvar(const void* self, const char* ivarName, char* buffer, int bufferLength)
 {
     Class class = object_getClass((id)self);
-    KSObjCIvar ivar = {0};
+    RollbarCrashObjCIvar ivar = {0};
     likely_if(ksobjc_ivarNamed(class, ivarName, &ivar))
     {
         void* pointer;
@@ -84,22 +84,22 @@ static bool copyStringIvar(const void* self, const char* ivarName, char* buffer,
                 }
                 else
                 {
-                    KSLOG_DEBUG("ksobjc_copyStringContents %s failed", ivarName);
+                    RollbarCrashLOG_DEBUG("ksobjc_copyStringContents %s failed", ivarName);
                 }
             }
             else
             {
-                KSLOG_DEBUG("ksobjc_isValidObject %s failed", ivarName);
+                RollbarCrashLOG_DEBUG("ksobjc_isValidObject %s failed", ivarName);
             }
         }
         else
         {
-            KSLOG_DEBUG("ksobjc_ivarValue %s failed", ivarName);
+            RollbarCrashLOG_DEBUG("ksobjc_ivarValue %s failed", ivarName);
         }
     }
     else
     {
-        KSLOG_DEBUG("ksobjc_ivarNamed %s failed", ivarName);
+        RollbarCrashLOG_DEBUG("ksobjc_ivarNamed %s failed", ivarName);
     }
     return false;
 }
@@ -161,7 +161,7 @@ static void install()
     g_zombieCache = calloc(cacheSize, sizeof(*g_zombieCache));
     if(g_zombieCache == NULL)
     {
-        KSLOG_ERROR("Error: Could not allocate %u bytes of memory. KSZombie NOT installed!",
+        RollbarCrashLOG_ERROR("Error: Could not allocate %u bytes of memory. RollbarCrashZombie NOT installed!",
               cacheSize * sizeof(*g_zombieCache));
         return;
     }
@@ -229,7 +229,7 @@ static bool isEnabled()
     return g_isEnabled;
 }
 
-static void addContextualInfoToEvent(KSCrash_MonitorContext* eventContext)
+static void addContextualInfoToEvent(RollbarCrash_MonitorContext* eventContext)
 {
     if(g_isEnabled)
     {
@@ -239,9 +239,9 @@ static void addContextualInfoToEvent(KSCrash_MonitorContext* eventContext)
     }
 }
 
-KSCrashMonitorAPI* kscm_zombie_getAPI()
+RollbarCrashMonitorAPI* kscm_zombie_getAPI()
 {
-    static KSCrashMonitorAPI api =
+    static RollbarCrashMonitorAPI api =
     {
         .setEnabled = setEnabled,
         .isEnabled = isEnabled,

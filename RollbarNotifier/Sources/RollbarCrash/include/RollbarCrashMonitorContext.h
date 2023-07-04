@@ -1,5 +1,5 @@
 //
-//  KSCrashMonitorContext.h
+//  RollbarCrashMonitorContext.h
 //
 //  Created by Karl Stenerud on 2012-02-12.
 //
@@ -25,20 +25,20 @@
 //
 
 
-#ifndef HDR_KSCrashMonitorContext_h
-#define HDR_KSCrashMonitorContext_h
+#ifndef HDR_RollbarCrashMonitorContext_h
+#define HDR_RollbarCrashMonitorContext_h
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "KSCrashMonitorType.h"
-#include "KSMachineContext.h"
+#include "RollbarCrashMonitorType.h"
+#include "RollbarCrashMachineContext.h"
 
 #include <stdbool.h>
 #include <stdint.h>
 
-typedef struct KSCrash_MonitorContext
+typedef struct RollbarCrash_MonitorContext
 {
     /** Unique identifier for this event. */
     const char* eventID;
@@ -67,14 +67,14 @@ typedef struct KSCrash_MonitorContext
     bool isStackOverflow;
     
     /** The machine context that generated the event. */
-    struct KSMachineContext* offendingMachineContext;
+    struct RollbarCrashMachineContext* offendingMachineContext;
     
     /** Address that caused the fault. */
     uintptr_t faultAddress;
     
     /** The type of crash that occurred.
      * This determines which other fields are valid. */
-    KSCrashMonitorType crashType;
+    RollbarCrashMonitorType crashType;
     
     /** The name of the exception that caused the crash, if any. */
     const char* exceptionName;
@@ -83,7 +83,7 @@ typedef struct KSCrash_MonitorContext
     const char* crashReason;
 
     /** The stack cursor for the trace leading up to the crash.
-     *  Note: Actual type is KSStackCursor*
+     *  Note: Actual type is RollbarCrashStackCursor*
      */
     void* stackCursor;
     
@@ -230,11 +230,11 @@ typedef struct KSCrash_MonitorContext
     /** Full path to the console log, if any. */
     const char* consoleLogPath;
 
-} KSCrash_MonitorContext;
+} RollbarCrash_MonitorContext;
     
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // HDR_KSCrashMonitorContext_h
+#endif // HDR_RollbarCrashMonitorContext_h
