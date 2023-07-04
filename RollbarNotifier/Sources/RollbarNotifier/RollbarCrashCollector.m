@@ -68,7 +68,6 @@ NS_ASSUME_NONNULL_BEGIN
             | KSCrashMonitorTypeUserReported);
 
     [KSCrash.sharedInstance setDeleteBehaviorAfterSendAll:KSCDeleteOnSucess];
-    [KSCrash.sharedInstance setDemangleLanguages:KSCrashDemangleLanguageAll];
     [KSCrash.sharedInstance setMonitoring:monitoring];
     [KSCrash.sharedInstance setAddConsoleLogToReport:NO];
     [KSCrash.sharedInstance setCatchZombies:NO];

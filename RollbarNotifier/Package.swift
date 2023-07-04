@@ -13,7 +13,11 @@ let package = Package(
     products: [
         .library(
             name: "RollbarNotifier",
-            targets: ["RollbarCrash", "RollbarNotifier", "RollbarCrashReport"]
+            targets: [
+                "RollbarCrash",
+                "RollbarNotifier",
+                "RollbarCrashReport"
+            ]
         ),
     ],
     dependencies: [
@@ -29,13 +33,15 @@ let package = Package(
             cxxSettings: [
                 .define("GCC_ENABLE_CPP_EXCEPTIONS", to: "YES"),
                 .headerSearchPath("./**")
+            ],
+            linkerSettings: [
+                .linkedLibrary("c++"),
+                .linkedLibrary("z")
             ]
         ),
         .target(
             name: "RollbarCrashReport",
-            dependencies: [
-                "RollbarCrash"
-            ],
+            dependencies: ["RollbarCrash"],
             path: "Sources/RollbarCrashReport"
         ),
         .target(
@@ -45,9 +51,10 @@ let package = Package(
                 "RollbarCrash",
                 "RollbarCrashReport"
             ],
+            path: "Sources/RollbarNotifier",
             publicHeadersPath: "include",
             cSettings: [
-                .headerSearchPath("Sources/RollbarNotifier/**"),
+                .headerSearchPath("./**"),
             ]
         ),
         .testTarget(
@@ -68,8 +75,9 @@ let package = Package(
                 "UnitTesting",
                 "RollbarNotifier",
             ],
+            path: "Tests/RollbarNotifierTests-ObjC",
             cSettings: [
-                .headerSearchPath("Tests/RollbarNotifierTests-ObjC/**"),
+                .headerSearchPath("./**")
             ]
         ),
     ],
