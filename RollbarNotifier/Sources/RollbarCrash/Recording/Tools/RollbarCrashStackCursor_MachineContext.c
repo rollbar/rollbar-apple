@@ -111,7 +111,7 @@ static bool advanceCursor(RollbarCrashStackCursor *cursor)
     
     if(context->instructionAddress == 0 && cursor->state.currentDepth == 0)
     {
-        context->instructionAddress = kscpu_instructionAddress(context->machineContext);
+        context->instructionAddress = rccpu_instructionAddress(context->machineContext);
         nextAddress = context->instructionAddress;
         goto successfulExit;
     }
@@ -119,7 +119,7 @@ static bool advanceCursor(RollbarCrashStackCursor *cursor)
     if(context->linkRegister == 0 && !context->isPastFramePointer)
     {
         // Link register, if available, is the second address in the trace.
-        context->linkRegister = kscpu_linkRegister(context->machineContext);
+        context->linkRegister = rccpu_linkRegister(context->machineContext);
         if(context->linkRegister != 0)
         {
             nextAddress = context->linkRegister;
@@ -133,11 +133,11 @@ static bool advanceCursor(RollbarCrashStackCursor *cursor)
         {
             return false;
         }
-        context->currentFrame.previous = (struct FrameEntry*)kscpu_framePointer(context->machineContext);
+        context->currentFrame.previous = (struct FrameEntry*)rccpu_framePointer(context->machineContext);
         context->isPastFramePointer = true;
     }
 
-    if(!ksmem_copySafely(context->currentFrame.previous, &context->currentFrame, sizeof(context->currentFrame)))
+    if(!rcmem_copySafely(context->currentFrame.previous, &context->currentFrame, sizeof(context->currentFrame)))
     {
         return false;
     }
@@ -149,14 +149,14 @@ static bool advanceCursor(RollbarCrashStackCursor *cursor)
     nextAddress = context->currentFrame.return_address;
     
 successfulExit:
-    cursor->stackEntry.address = kscpu_normaliseInstructionPointer(nextAddress);
+    cursor->stackEntry.address = rccpu_normaliseInstructionPointer(nextAddress);
     cursor->state.currentDepth++;
     return true;
 }
 
 static void resetCursor(RollbarCrashStackCursor* cursor)
 {
-    kssc_resetCursor(cursor);
+    rcsc_resetCursor(cursor);
     MachineContextCursor* context = (MachineContextCursor*)cursor->context;
     context->currentFrame.previous = 0;
     context->currentFrame.return_address = 0;
@@ -165,9 +165,9 @@ static void resetCursor(RollbarCrashStackCursor* cursor)
     context->isPastFramePointer = 0;
 }
 
-void kssc_initWithMachineContext(RollbarCrashStackCursor *cursor, int maxStackDepth, const struct RollbarCrashMachineContext* machineContext)
+void rcsc_initWithMachineContext(RollbarCrashStackCursor *cursor, int maxStackDepth, const struct RollbarCrashMachineContext* machineContext)
 {
-    kssc_initCursor(cursor, resetCursor, advanceCursor);
+    rcsc_initCursor(cursor, resetCursor, advanceCursor);
     MachineContextCursor* context = (MachineContextCursor*)cursor->context;
     context->machineContext = machineContext;
     context->maxStackDepth = maxStackDepth;

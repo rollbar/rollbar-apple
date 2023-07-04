@@ -29,14 +29,14 @@
  * easier in Objective-C. All macros assume that the varargs list contains only
  * objective-c objects or object-like structures (assignable to type id).
  *
- * The base macro ksva_iterate_list() iterates over the variable arguments,
+ * The base macro rcva_iterate_list() iterates over the variable arguments,
  * invoking a block for each argument, until it encounters a terminating nil.
  *
  * The other macros are for convenience when converting to common collections.
  */
 
 
-/** Block type used by ksva_iterate_list.
+/** Block type used by rcva_iterate_list.
  *
  * @param entry The current argument in the vararg list.
  */
@@ -49,16 +49,16 @@ typedef void (^RollbarCrashVA_Block)(id entry);
  * @param FIRST_ARG_NAME The name of the first argument in the vararg list.
  * @param BLOCK A code block of type RollbarCrashVA_Block.
  */
-#define ksva_iterate_list(FIRST_ARG_NAME, BLOCK) \
+#define rcva_iterate_list(FIRST_ARG_NAME, BLOCK) \
 { \
-    RollbarCrashVA_Block ksva_block = BLOCK; \
-    va_list ksva_args; \
-    va_start(ksva_args,FIRST_ARG_NAME); \
-    for(id ksva_arg = FIRST_ARG_NAME; ksva_arg != nil; ksva_arg = va_arg(ksva_args, id)) \
+    RollbarCrashVA_Block rcva_block = BLOCK; \
+    va_list rcva_args; \
+    va_start(rcva_args,FIRST_ARG_NAME); \
+    for(id rcva_arg = FIRST_ARG_NAME; rcva_arg != nil; rcva_arg = va_arg(rcva_args, id)) \
     { \
-        ksva_block(ksva_arg); \
+        rcva_block(rcva_arg); \
     } \
-    va_end(ksva_args); \
+    va_end(rcva_args); \
 }
 
 /**
@@ -68,9 +68,9 @@ typedef void (^RollbarCrashVA_Block)(id entry);
  * @param FIRST_ARG_NAME The name of the first argument in the vararg list.
  * @param ARRAY_NAME The name of the array to create in the current scope.
  */
-#define ksva_list_to_nsarray(FIRST_ARG_NAME, ARRAY_NAME) \
+#define rcva_list_to_nsarray(FIRST_ARG_NAME, ARRAY_NAME) \
     NSMutableArray* ARRAY_NAME = [NSMutableArray array]; \
-    ksva_iterate_list(FIRST_ARG_NAME, ^(id entry) \
+    rcva_iterate_list(FIRST_ARG_NAME, ^(id entry) \
     { \
         [ARRAY_NAME addObject:entry]; \
     })
@@ -84,20 +84,20 @@ typedef void (^RollbarCrashVA_Block)(id entry);
  * @param FIRST_ARG_NAME The name of the first argument in the vararg list.
  * @param DICT_NAME The name of the dictionary to create in the current scope.
  */
-#define ksva_list_to_nsdictionary(FIRST_ARG_NAME, DICT_NAME) \
+#define rcva_list_to_nsdictionary(FIRST_ARG_NAME, DICT_NAME) \
     NSMutableDictionary* DICT_NAME = [NSMutableDictionary dictionary]; \
     { \
-        __block id ksva_object = nil; \
-        ksva_iterate_list(FIRST_ARG_NAME, ^(id entry) \
+        __block id rcva_object = nil; \
+        rcva_iterate_list(FIRST_ARG_NAME, ^(id entry) \
         { \
-            if(ksva_object == nil) \
+            if(rcva_object == nil) \
             { \
-                ksva_object = entry; \
+                rcva_object = entry; \
             } \
             else \
             { \
-                [DICT_NAME setObject:ksva_object forKey:entry]; \
-                ksva_object = nil; \
+                [DICT_NAME setObject:rcva_object forKey:entry]; \
+                rcva_object = nil; \
             } \
         }); \
     }

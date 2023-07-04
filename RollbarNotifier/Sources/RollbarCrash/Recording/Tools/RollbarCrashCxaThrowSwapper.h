@@ -36,7 +36,7 @@ typedef void (*cxa_throw_type)(void *, std::type_info *, void (*)(void *));
 typedef void (*cxa_throw_type)(void *, void *, void (*)(void *));
 #endif
 
-int ksct_swap(const cxa_throw_type handler);
+int rcct_swap(const cxa_throw_type handler);
 
 #ifdef __cplusplus
 }

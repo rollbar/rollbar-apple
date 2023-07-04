@@ -40,7 +40,7 @@ extern "C" {
  *
  * @return Call address of the function.
  */
-uintptr_t kssymbolicator_callInstructionAddress(const uintptr_t returnAddress);
+uintptr_t rcsymbolicator_callInstructionAddress(const uintptr_t returnAddress);
 
 /** Symbolicate a stack cursor.
  *
@@ -48,7 +48,7 @@ uintptr_t kssymbolicator_callInstructionAddress(const uintptr_t returnAddress);
  *
  * @return True if successful.
  */
-bool kssymbolicator_symbolicate(RollbarCrashStackCursor *cursor);
+bool rcsymbolicator_symbolicate(RollbarCrashStackCursor *cursor);
 
     
 #ifdef __cplusplus

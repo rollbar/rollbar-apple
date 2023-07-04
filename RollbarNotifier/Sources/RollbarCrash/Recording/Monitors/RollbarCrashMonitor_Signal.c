@@ -86,13 +86,13 @@ static void handleSignal(int sigNum, siginfo_t* signalInfo, void* userContext)
     {
         thread_act_array_t threads = NULL;
         mach_msg_type_number_t numThreads = 0;
-        ksmc_suspendEnvironment(&threads, &numThreads);
-        kscm_notifyFatalExceptionCaptured(false);
+        rcmc_suspendEnvironment(&threads, &numThreads);
+        rcm_notifyFatalExceptionCaptured(false);
 
         RollbarCrashLOG_DEBUG("Filling out context.");
         RollbarCrashMC_NEW_CONTEXT(machineContext);
-        ksmc_getContextForSignal(userContext, machineContext);
-        kssc_initWithMachineContext(&g_stackCursor, RollbarCrashSC_MAX_STACK_DEPTH, machineContext);
+        rcmc_getContextForSignal(userContext, machineContext);
+        rcsc_initWithMachineContext(&g_stackCursor, RollbarCrashSC_MAX_STACK_DEPTH, machineContext);
 
         RollbarCrash_MonitorContext* crashContext = &g_monitorContext;
         memset(crashContext, 0, sizeof(*crashContext));
@@ -106,8 +106,8 @@ static void handleSignal(int sigNum, siginfo_t* signalInfo, void* userContext)
         crashContext->signal.sigcode = signalInfo->si_code;
         crashContext->stackCursor = &g_stackCursor;
 
-        kscm_handleException(crashContext);
-        ksmc_resumeEnvironment(threads, numThreads);
+        rcm_handleException(crashContext);
+        rcmc_resumeEnvironment(threads, numThreads);
     }
 
     RollbarCrashLOG_DEBUG("Re-raising signal for regular handlers to catch.");
@@ -140,8 +140,8 @@ static bool installSignalHandler()
     }
 #endif
 
-    const int* fatalSignals = kssignal_fatalSignals();
-    int fatalSignalsCount = kssignal_numFatalSignals();
+    const int* fatalSignals = rcsignal_fatalSignals();
+    int fatalSignalsCount = rcsignal_numFatalSignals();
 
     if(g_previousSignalHandlers == NULL)
     {
@@ -164,7 +164,7 @@ static bool installSignalHandler()
         if(sigaction(fatalSignals[i], &action, &g_previousSignalHandlers[i]) != 0)
         {
             char sigNameBuff[30];
-            const char* sigName = kssignal_signalName(fatalSignals[i]);
+            const char* sigName = rcsignal_signalName(fatalSignals[i]);
             if(sigName == NULL)
             {
                 snprintf(sigNameBuff, sizeof(sigNameBuff), "%d", fatalSignals[i]);
@@ -191,8 +191,8 @@ static void uninstallSignalHandler(void)
 {
     RollbarCrashLOG_DEBUG("Uninstalling signal handlers.");
 
-    const int* fatalSignals = kssignal_fatalSignals();
-    int fatalSignalsCount = kssignal_numFatalSignals();
+    const int* fatalSignals = rcsignal_fatalSignals();
+    int fatalSignalsCount = rcsignal_numFatalSignals();
 
     for(int i = 0; i < fatalSignalsCount; i++)
     {
@@ -213,7 +213,7 @@ static void setEnabled(bool isEnabled)
         g_isEnabled = isEnabled;
         if(isEnabled)
         {
-            ksid_generate(g_eventID);
+            rcid_generate(g_eventID);
             if(!installSignalHandler())
             {
                 return;
@@ -241,7 +241,7 @@ static void addContextualInfoToEvent(struct RollbarCrash_MonitorContext* eventCo
 
 #endif
 
-RollbarCrashMonitorAPI* kscm_signal_getAPI()
+RollbarCrashMonitorAPI* rcm_signal_getAPI()
 {
     static RollbarCrashMonitorAPI api =
     {

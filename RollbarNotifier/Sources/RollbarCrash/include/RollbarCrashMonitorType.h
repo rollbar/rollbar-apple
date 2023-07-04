@@ -127,13 +127,13 @@ typedef enum
 #define RollbarCrashMonitorTypeRequired (RollbarCrashMonitorTypeSystem | RollbarCrashMonitorTypeApplicationState)
 
 /** Effectively disables automatica reporting. The only way to generate a report
- * in this mode is by manually calling kscrash_reportUserException().
+ * in this mode is by manually calling rc_reportUserException().
  */
 #define RollbarCrashMonitorTypeManual (RollbarCrashMonitorTypeRequired | RollbarCrashMonitorTypeUserReported)
 
 #define RollbarCrashMonitorTypeNone 0
 
-const char* kscrashmonitortype_name(RollbarCrashMonitorType monitorType);
+const char* rcmonitortype_name(RollbarCrashMonitorType monitorType);
 
 
 #ifdef __cplusplus

@@ -187,12 +187,12 @@ static bool deletePathContents(const char* path, bool deleteTopLevelPathAlso)
         freeDirListing(entries, entryCount);
         if(deleteTopLevelPathAlso)
         {
-            ksfu_removeFile(path, false);
+            rcfu_removeFile(path, false);
         }
     }
     else if(S_ISREG(statStruct.st_mode))
     {
-        ksfu_removeFile(path, false);
+        rcfu_removeFile(path, false);
     }
     else
     {
@@ -206,7 +206,7 @@ static bool deletePathContents(const char* path, bool deleteTopLevelPathAlso)
 #pragma mark - API -
 // ============================================================================
 
-const char* ksfu_lastPathEntry(const char* const path)
+const char* rcfu_lastPathEntry(const char* const path)
 {
     if(path == NULL)
     {
@@ -217,7 +217,7 @@ const char* ksfu_lastPathEntry(const char* const path)
     return lastFile == NULL ? path : lastFile + 1;
 }
 
-bool ksfu_writeBytesToFD(const int fd, const char* const bytes, int length)
+bool rcfu_writeBytesToFD(const int fd, const char* const bytes, int length)
 {
     const char* pos = bytes;
     while(length > 0)
@@ -234,7 +234,7 @@ bool ksfu_writeBytesToFD(const int fd, const char* const bytes, int length)
     return true;
 }
 
-bool ksfu_readBytesFromFD(const int fd, char* const bytes, int length)
+bool rcfu_readBytesFromFD(const int fd, char* const bytes, int length)
 {
     char* pos = bytes;
     while(length > 0)
@@ -251,7 +251,7 @@ bool ksfu_readBytesFromFD(const int fd, char* const bytes, int length)
     return true;
 }
 
-bool ksfu_readEntireFile(const char* const path, char** data, int* length, int maxLength)
+bool rcfu_readEntireFile(const char* const path, char** data, int* length, int maxLength)
 {
     bool isSuccessful = false;
     int bytesRead = 0;
@@ -293,7 +293,7 @@ bool ksfu_readEntireFile(const char* const path, char** data, int* length, int m
         goto done;
     }
 
-    if(!ksfu_readBytesFromFD(fd, mem, bytesToRead))
+    if(!rcfu_readBytesFromFD(fd, mem, bytesToRead))
     {
         goto done;
     }
@@ -322,7 +322,7 @@ done:
     return isSuccessful;
 }
 
-bool ksfu_writeStringToFD(const int fd, const char* const string)
+bool rcfu_writeStringToFD(const int fd, const char* const string)
 {
     if(*string != 0)
     {
@@ -345,20 +345,20 @@ bool ksfu_writeStringToFD(const int fd, const char* const string)
     return false;
 }
 
-bool ksfu_writeFmtToFD(const int fd, const char* const fmt, ...)
+bool rcfu_writeFmtToFD(const int fd, const char* const fmt, ...)
 {
     if(*fmt != 0)
     {
         va_list args;
         va_start(args,fmt);
-        bool result = ksfu_writeFmtArgsToFD(fd, fmt, args);
+        bool result = rcfu_writeFmtArgsToFD(fd, fmt, args);
         va_end(args);
         return result;
     }
     return false;
 }
 
-bool ksfu_writeFmtArgsToFD(const int fd,
+bool rcfu_writeFmtArgsToFD(const int fd,
                            const char* const fmt,
                            va_list args)
 {
@@ -366,12 +366,12 @@ bool ksfu_writeFmtArgsToFD(const int fd,
     {
         char buffer[RollbarCrashFU_WriteFmtBufferSize];
         vsnprintf(buffer, sizeof(buffer), fmt, args);
-        return ksfu_writeStringToFD(fd, buffer);
+        return rcfu_writeStringToFD(fd, buffer);
     }
     return false;
 }
 
-int ksfu_readLineFromFD(const int fd, char* const buffer, const int maxLength)
+int rcfu_readLineFromFD(const int fd, char* const buffer, const int maxLength)
 {
     char* end = buffer + maxLength - 1;
     *end = 0;
@@ -393,7 +393,7 @@ int ksfu_readLineFromFD(const int fd, char* const buffer, const int maxLength)
     return (int)(ch - buffer);
 }
 
-bool ksfu_makePath(const char* absolutePath)
+bool rcfu_makePath(const char* absolutePath)
 {
     bool isSuccessful = false;
     char* pathCopy = strdup(absolutePath);
@@ -422,7 +422,7 @@ done:
     return isSuccessful;
 }
 
-bool ksfu_removeFile(const char* path, bool mustExist)
+bool rcfu_removeFile(const char* path, bool mustExist)
 {
     if(remove(path) < 0)
     {
@@ -435,7 +435,7 @@ bool ksfu_removeFile(const char* path, bool mustExist)
     return true;
 }
 
-bool ksfu_deleteContentsOfPath(const char* path)
+bool rcfu_deleteContentsOfPath(const char* path)
 {
     if(path == NULL)
     {
@@ -449,7 +449,7 @@ bool ksfu_deleteContentsOfPath(const char* path)
     return deletePathContents(path, false);
 }
 
-bool ksfu_openBufferedWriter(RollbarCrashBufferedWriter* writer, const char* const path, char* writeBuffer, int writeBufferLength)
+bool rcfu_openBufferedWriter(RollbarCrashBufferedWriter* writer, const char* const path, char* writeBuffer, int writeBufferLength)
 {
     writer->buffer = writeBuffer;
     writer->bufferLength = writeBufferLength;
@@ -463,36 +463,36 @@ bool ksfu_openBufferedWriter(RollbarCrashBufferedWriter* writer, const char* con
     return true;
 }
 
-void ksfu_closeBufferedWriter(RollbarCrashBufferedWriter* writer)
+void rcfu_closeBufferedWriter(RollbarCrashBufferedWriter* writer)
 {
     if(writer->fd > 0)
     {
-        ksfu_flushBufferedWriter(writer);
+        rcfu_flushBufferedWriter(writer);
         close(writer->fd);
         writer->fd = -1;
     }
 }
 
-bool ksfu_writeBufferedWriter(RollbarCrashBufferedWriter* writer, const char* restrict const data, const int length)
+bool rcfu_writeBufferedWriter(RollbarCrashBufferedWriter* writer, const char* restrict const data, const int length)
 {
     if(length > writer->bufferLength - writer->position)
     {
-        ksfu_flushBufferedWriter(writer);
+        rcfu_flushBufferedWriter(writer);
     }
     if(length > writer->bufferLength)
     {
-        return ksfu_writeBytesToFD(writer->fd, data, length);
+        return rcfu_writeBytesToFD(writer->fd, data, length);
     }
     memcpy(writer->buffer + writer->position, data, length);
     writer->position += length;
     return true;
 }
 
-bool ksfu_flushBufferedWriter(RollbarCrashBufferedWriter* writer)
+bool rcfu_flushBufferedWriter(RollbarCrashBufferedWriter* writer)
 {
     if(writer->fd > 0 && writer->position > 0)
     {
-        if(!ksfu_writeBytesToFD(writer->fd, writer->buffer, writer->position))
+        if(!rcfu_writeBytesToFD(writer->fd, writer->buffer, writer->position))
         {
             return false;
         }
@@ -534,7 +534,7 @@ static bool fillReadBuffer(RollbarCrashBufferedReader* reader)
     return true;
 }
 
-int ksfu_readBufferedReader(RollbarCrashBufferedReader* reader, char* dstBuffer, int byteCount)
+int rcfu_readBufferedReader(RollbarCrashBufferedReader* reader, char* dstBuffer, int byteCount)
 {
     int bytesRemaining = byteCount;
     int bytesConsumed = 0;
@@ -566,7 +566,7 @@ int ksfu_readBufferedReader(RollbarCrashBufferedReader* reader, char* dstBuffer,
     return bytesConsumed;
 }
 
-bool ksfu_readBufferedReaderUntilChar(RollbarCrashBufferedReader* reader, int ch, char* dstBuffer, int* length)
+bool rcfu_readBufferedReaderUntilChar(RollbarCrashBufferedReader* reader, int ch, char* dstBuffer, int* length)
 {
     int bytesRemaining = *length;
     int bytesConsumed = 0;
@@ -610,7 +610,7 @@ bool ksfu_readBufferedReaderUntilChar(RollbarCrashBufferedReader* reader, int ch
     return false;
 }
 
-bool ksfu_openBufferedReader(RollbarCrashBufferedReader* reader, const char* const path, char* readBuffer, int readBufferLength)
+bool rcfu_openBufferedReader(RollbarCrashBufferedReader* reader, const char* const path, char* readBuffer, int readBufferLength)
 {
     readBuffer[0] = '\0';
     readBuffer[readBufferLength - 1] = '\0';
@@ -628,7 +628,7 @@ bool ksfu_openBufferedReader(RollbarCrashBufferedReader* reader, const char* con
     return true;
 }
 
-void ksfu_closeBufferedReader(RollbarCrashBufferedReader* reader)
+void rcfu_closeBufferedReader(RollbarCrashBufferedReader* reader)
 {
     if(reader->fd > 0)
     {

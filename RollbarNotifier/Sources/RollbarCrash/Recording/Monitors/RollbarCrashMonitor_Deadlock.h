@@ -46,11 +46,11 @@ extern "C" {
  *
  * @param value The number of seconds between checks (0 = disabled).
  */
-void kscm_setDeadlockHandlerWatchdogInterval(double value);
+void rcm_setDeadlockHandlerWatchdogInterval(double value);
 
 /** Access the Monitor API.
  */
-RollbarCrashMonitorAPI* kscm_deadlock_getAPI(void);
+RollbarCrashMonitorAPI* rcm_deadlock_getAPI(void);
 
 
 #ifdef __cplusplus

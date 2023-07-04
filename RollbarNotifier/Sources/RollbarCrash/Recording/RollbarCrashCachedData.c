@@ -89,7 +89,7 @@ static void updateThreadList()
         {
             allThreadNames[i] = strdup(buffer);
         }
-        if(g_searchQueueNames && ksthread_getQueueName((RollbarCrashThread)thread, buffer, sizeof(buffer)) && buffer[0] != 0)
+        if(g_searchQueueNames && rcthread_getQueueName((RollbarCrashThread)thread, buffer, sizeof(buffer)) && buffer[0] != 0)
         {
             allQueueNames[i] = strdup(buffer);
         }
@@ -164,7 +164,7 @@ static void* monitorCachedData(__unused void* const userData)
     return NULL;
 }
 
-void ksccd_init(int pollingIntervalInSeconds)
+void rcccd_init(int pollingIntervalInSeconds)
 {
     if (g_hasThreadStarted == true) {
         return ;
@@ -185,7 +185,7 @@ void ksccd_init(int pollingIntervalInSeconds)
     pthread_attr_destroy(&attr);
 }
 
-void ksccd_freeze()
+void rcccd_freeze()
 {
     if(g_semaphoreCount++ <= 0)
     {
@@ -194,7 +194,7 @@ void ksccd_freeze()
     }
 }
 
-void ksccd_unfreeze()
+void rcccd_unfreeze()
 {
     if(--g_semaphoreCount < 0)
     {
@@ -203,12 +203,12 @@ void ksccd_unfreeze()
     }
 }
 
-void ksccd_setSearchQueueNames(bool searchQueueNames)
+void rcccd_setSearchQueueNames(bool searchQueueNames)
 {
     g_searchQueueNames = searchQueueNames;
 }
 
-RollbarCrashThread* ksccd_getAllThreads(int* threadCount)
+RollbarCrashThread* rcccd_getAllThreads(int* threadCount)
 {
     if(threadCount != NULL)
     {
@@ -217,7 +217,7 @@ RollbarCrashThread* ksccd_getAllThreads(int* threadCount)
     return g_allMachThreads;
 }
 
-const char* ksccd_getThreadName(RollbarCrashThread thread)
+const char* rcccd_getThreadName(RollbarCrashThread thread)
 {
     if(g_allThreadNames != NULL)
     {
@@ -232,7 +232,7 @@ const char* ksccd_getThreadName(RollbarCrashThread thread)
     return NULL;
 }
 
-const char* ksccd_getQueueName(RollbarCrashThread thread)
+const char* rcccd_getQueueName(RollbarCrashThread thread)
 {
     if(g_allQueueNames != NULL)
     {

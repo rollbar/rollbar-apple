@@ -53,17 +53,17 @@ struct RollbarCrash_MonitorContext;
  *
  * @param monitorTypes Which monitors should be active.
  */
-void kscm_setActiveMonitors(RollbarCrashMonitorType monitorTypes);
+void rcm_setActiveMonitors(RollbarCrashMonitorType monitorTypes);
 
 /** Get the currently active monitors.
  */
-RollbarCrashMonitorType kscm_getActiveMonitors(void);
+RollbarCrashMonitorType rcm_getActiveMonitors(void);
 
 /** Set the callback to call when an event is captured.
  *
  * @param onEvent Called whenever an event is captured.
  */
-void kscm_setEventCallback(void (*onEvent)(struct RollbarCrash_MonitorContext* monitorContext));
+void rcm_setEventCallback(void (*onEvent)(struct RollbarCrash_MonitorContext* monitorContext));
 
 
 // ============================================================================
@@ -82,13 +82,13 @@ typedef struct
  *
  * @oaram isAsyncSafeEnvironment If true, only async-safe functions are allowed from now on.
  */
-bool kscm_notifyFatalExceptionCaptured(bool isAsyncSafeEnvironment);
+bool rcm_notifyFatalExceptionCaptured(bool isAsyncSafeEnvironment);
 
 /** Start general exception processing.
  *
  * @oaram context Contextual information about the exception.
  */
-void kscm_handleException(struct RollbarCrash_MonitorContext* context);
+void rcm_handleException(struct RollbarCrash_MonitorContext* context);
 
 
 #ifdef __cplusplus

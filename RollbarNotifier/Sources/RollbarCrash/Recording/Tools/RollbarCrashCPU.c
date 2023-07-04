@@ -36,14 +36,14 @@
 #include "RollbarCrashLogger.h"
 
 
-const char* kscpu_currentArch(void)
+const char* rccpu_currentArch(void)
 {
     const NXArchInfo* archInfo = NXGetLocalArchInfo();
     return archInfo == NULL ? NULL : archInfo->name;
 }
 
 #if RollbarCrashCRASH_HAS_THREADS_API
-bool kscpu_i_fillState(const thread_t thread,
+bool rccpu_i_fillState(const thread_t thread,
                        const thread_state_t state,
                        const thread_state_flavor_t flavor,
                        const mach_msg_type_number_t stateCount)
@@ -61,7 +61,7 @@ bool kscpu_i_fillState(const thread_t thread,
     return true;
 }
 #else
-bool kscpu_i_fillState(__unused const thread_t thread,
+bool rccpu_i_fillState(__unused const thread_t thread,
                        __unused const thread_state_t state,
                        __unused const thread_state_flavor_t flavor,
                        __unused const mach_msg_type_number_t stateCount)

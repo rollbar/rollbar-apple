@@ -148,7 +148,7 @@ static int onBooleanElement(const char* const name,
                             void* const userData)
 {
     FixupContext* context = (FixupContext*)userData;
-    return ksjson_addBooleanElement(context->encodeContext, name, value);
+    return rcjson_addBooleanElement(context->encodeContext, name, value);
 }
 
 static int onFloatingPointElement(const char* const name,
@@ -156,7 +156,7 @@ static int onFloatingPointElement(const char* const name,
                                   void* const userData)
 {
     FixupContext* context = (FixupContext*)userData;
-    return ksjson_addFloatingPointElement(context->encodeContext, name, value);
+    return rcjson_addFloatingPointElement(context->encodeContext, name, value);
 }
 
 static int onIntegerElement(const char* const name,
@@ -171,18 +171,18 @@ static int onIntegerElement(const char* const name,
 
         if(matchesMinVersion(context, 3, 3, 0))
         {
-            ksdate_utcStringFromMicroseconds(value, buffer);
+            rcdate_utcStringFromMicroseconds(value, buffer);
         }
         else
         {
-            ksdate_utcStringFromTimestamp((time_t)value, buffer);
+            rcdate_utcStringFromTimestamp((time_t)value, buffer);
         }
 
-        result = ksjson_addStringElement(context->encodeContext, name, buffer, (int)strlen(buffer));
+        result = rcjson_addStringElement(context->encodeContext, name, buffer, (int)strlen(buffer));
     }
     else
     {
-        result = ksjson_addIntegerElement(context->encodeContext, name, value);
+        result = rcjson_addIntegerElement(context->encodeContext, name, value);
     }
     return result;
 }
@@ -191,7 +191,7 @@ static int onNullElement(const char* const name,
                          void* const userData)
 {
     FixupContext* context = (FixupContext*)userData;
-    return ksjson_addNullElement(context->encodeContext, name);
+    return rcjson_addNullElement(context->encodeContext, name);
 }
 
 static int onStringElement(const char* const name,
@@ -200,7 +200,7 @@ static int onStringElement(const char* const name,
 {
     FixupContext* context = (FixupContext*)userData;
     const char* stringValue = value;
-    int result = ksjson_addStringElement(context->encodeContext, name, stringValue, (int)strlen(stringValue));
+    int result = rcjson_addStringElement(context->encodeContext, name, stringValue, (int)strlen(stringValue));
     if(shouldSaveVersion(context, name))
     {
         memset(context->reportVersionComponents, 0, sizeof(context->reportVersionComponents));
@@ -221,7 +221,7 @@ static int onBeginObject(const char* const name,
                          void* const userData)
 {
     FixupContext* context = (FixupContext*)userData;
-    int result = ksjson_beginObject(context->encodeContext, name);
+    int result = rcjson_beginObject(context->encodeContext, name);
     if(!increaseDepth(context, name))
     {
         return RollbarCrashJSON_ERROR_DATA_TOO_LONG;
@@ -233,7 +233,7 @@ static int onBeginArray(const char* const name,
                         void* const userData)
 {
     FixupContext* context = (FixupContext*)userData;
-    int result = ksjson_beginArray(context->encodeContext, name);
+    int result = rcjson_beginArray(context->encodeContext, name);
     if(!increaseDepth(context, name))
     {
         return RollbarCrashJSON_ERROR_DATA_TOO_LONG;
@@ -244,7 +244,7 @@ static int onBeginArray(const char* const name,
 static int onEndContainer(void* const userData)
 {
     FixupContext* context = (FixupContext*)userData;
-    int result = ksjson_endContainer(context->encodeContext);
+    int result = rcjson_endContainer(context->encodeContext);
     if(!decreaseDepth(context))
     {
         // Do something;
@@ -255,7 +255,7 @@ static int onEndContainer(void* const userData)
 static int onEndData(__unused void* const userData)
 {
     FixupContext* context = (FixupContext*)userData;
-    return ksjson_endEncode(context->encodeContext);
+    return rcjson_endEncode(context->encodeContext);
 }
 
 static int addJSONData(const char* data, int length, void* userData)
@@ -272,7 +272,7 @@ static int addJSONData(const char* data, int length, void* userData)
     return RollbarCrashJSON_OK;
 }
 
-char* kscrf_fixupCrashReport(const char* crashReport)
+char* rccrf_fixupCrashReport(const char* crashReport)
 {
     if(crashReport == NULL)
     {
@@ -306,15 +306,15 @@ char* kscrf_fixupCrashReport(const char* crashReport)
         .outputBytesLeft = fixedReportLength,
     };
     
-    ksjson_beginEncode(&encodeContext, true, addJSONData, &fixupContext);
+    rcjson_beginEncode(&encodeContext, true, addJSONData, &fixupContext);
     
     int errorOffset = 0;
-    int result = ksjson_decode(crashReport, (int)strlen(crashReport), stringBuffer, stringBufferLength, &callbacks, &fixupContext, &errorOffset);
+    int result = rcjson_decode(crashReport, (int)strlen(crashReport), stringBuffer, stringBufferLength, &callbacks, &fixupContext, &errorOffset);
     *fixupContext.outputPtr = '\0';
     free(stringBuffer);
     if(result != RollbarCrashJSON_OK)
     {
-        RollbarCrashLOG_ERROR("Could not decode report: %s", ksjson_stringForError(result));
+        RollbarCrashLOG_ERROR("Could not decode report: %s", rcjson_stringForError(result));
         free(fixedReport);
         return NULL;
     }

@@ -36,7 +36,7 @@ static bool g_advanceCursor(__unused RollbarCrashStackCursor *cursor)
     return false;
 }
 
-void kssc_resetCursor(RollbarCrashStackCursor *cursor)
+void rcsc_resetCursor(RollbarCrashStackCursor *cursor)
 {
     cursor->state.currentDepth = 0;
     cursor->state.hasGivenUp = false;
@@ -47,12 +47,12 @@ void kssc_resetCursor(RollbarCrashStackCursor *cursor)
     cursor->stackEntry.symbolName = NULL;
 }
 
-void kssc_initCursor(RollbarCrashStackCursor *cursor,
+void rcsc_initCursor(RollbarCrashStackCursor *cursor,
                      void (*resetCursor)(RollbarCrashStackCursor*),
                      bool (*advanceCursor)(RollbarCrashStackCursor*))
 {
-    cursor->symbolicate = kssymbolicator_symbolicate;
+    cursor->symbolicate = rcsymbolicator_symbolicate;
     cursor->advanceCursor = advanceCursor != NULL ? advanceCursor : g_advanceCursor;
-    cursor->resetCursor = resetCursor != NULL ? resetCursor : kssc_resetCursor;
+    cursor->resetCursor = resetCursor != NULL ? resetCursor : rcsc_resetCursor;
     cursor->resetCursor(cursor);
 }

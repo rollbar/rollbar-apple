@@ -48,7 +48,7 @@
 #include "RollbarCrashgetsect.h"
 #include <string.h>
 
-const segment_command_t *ksgs_getsegbynamefromheader(const mach_header_t *header, const char *seg_name)
+const segment_command_t *rcgs_getsegbynamefromheader(const mach_header_t *header, const char *seg_name)
 {
     segment_command_t *sgp;
     unsigned long i;

@@ -40,7 +40,7 @@
  *
  * @return true if we're being traced.
  */
-bool ksdebug_isBeingTraced(void)
+bool rcdebug_isBeingTraced(void)
 {
     struct kinfo_proc procInfo;
     size_t structSize = sizeof(procInfo);

@@ -40,7 +40,7 @@
 static volatile bool g_isEnabled = false;
 
 
-void kscm_reportUserException(const char* name,
+void rcm_reportUserException(const char* name,
                               const char* reason,
                               const char* language,
                               const char* lineOfCode,
@@ -58,19 +58,19 @@ void kscm_reportUserException(const char* name,
         mach_msg_type_number_t numThreads = 0;
         if(logAllThreads)
         {
-            ksmc_suspendEnvironment(&threads, &numThreads);
+            rcmc_suspendEnvironment(&threads, &numThreads);
         }
         if(terminateProgram)
         {
-            kscm_notifyFatalExceptionCaptured(false);
+            rcm_notifyFatalExceptionCaptured(false);
         }
 
         char eventID[37];
-        ksid_generate(eventID);
+        rcid_generate(eventID);
         RollbarCrashMC_NEW_CONTEXT(machineContext);
-        ksmc_getContextForThread(ksthread_self(), machineContext, true);
+        rcmc_getContextForThread(rcthread_self(), machineContext, true);
         RollbarCrashStackCursor stackCursor;
-        kssc_initSelfThread(&stackCursor, 0);
+        rcsc_initSelfThread(&stackCursor, 0);
 
 
         RollbarCrashLOG_DEBUG("Filling out context.");
@@ -87,11 +87,11 @@ void kscm_reportUserException(const char* name,
         context.userException.customStackTrace = stackTrace;
         context.stackCursor = &stackCursor;
 
-        kscm_handleException(&context);
+        rcm_handleException(&context);
 
         if(logAllThreads)
         {
-            ksmc_resumeEnvironment(threads, numThreads);
+            rcmc_resumeEnvironment(threads, numThreads);
         }
         if(terminateProgram)
         {
@@ -110,7 +110,7 @@ static bool isEnabled()
     return g_isEnabled;
 }
 
-RollbarCrashMonitorAPI* kscm_user_getAPI()
+RollbarCrashMonitorAPI* rcm_user_getAPI()
 {
     static RollbarCrashMonitorAPI api =
     {

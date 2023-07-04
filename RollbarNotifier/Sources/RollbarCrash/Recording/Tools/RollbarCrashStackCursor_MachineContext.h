@@ -41,7 +41,7 @@ extern "C" {
  *
  * @param machineContext The machine context whose stack to walk.
  */
-void kssc_initWithMachineContext(RollbarCrashStackCursor *cursor, int maxStackDepth, const struct RollbarCrashMachineContext* machineContext);
+void rcsc_initWithMachineContext(RollbarCrashStackCursor *cursor, int maxStackDepth, const struct RollbarCrashMachineContext* machineContext);
     
     
 #ifdef __cplusplus

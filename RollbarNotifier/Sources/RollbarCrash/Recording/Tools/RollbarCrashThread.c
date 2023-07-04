@@ -39,14 +39,14 @@
 #include <sys/sysctl.h>
 
 
-RollbarCrashThread ksthread_self()
+RollbarCrashThread rcthread_self()
 {
     thread_t thread_self = mach_thread_self();
     mach_port_deallocate(mach_task_self(), thread_self);
     return (RollbarCrashThread)thread_self;
 }
 
-bool ksthread_getThreadName(const RollbarCrashThread thread, char* const buffer, int bufLength)
+bool rcthread_getThreadName(const RollbarCrashThread thread, char* const buffer, int bufLength)
 {
     // WARNING: This implementation is no longer async-safe!
     
@@ -54,7 +54,7 @@ bool ksthread_getThreadName(const RollbarCrashThread thread, char* const buffer,
     return pthread_getname_np(pthread, buffer, (unsigned)bufLength) == 0;
 }
 
-bool ksthread_getQueueName(const RollbarCrashThread thread, char* const buffer, int bufLength)
+bool rcthread_getQueueName(const RollbarCrashThread thread, char* const buffer, int bufLength)
 {
     // WARNING: This implementation is no longer async-safe!
     
@@ -71,13 +71,13 @@ bool ksthread_getQueueName(const RollbarCrashThread thread, char* const buffer, 
     }
     
     thread_identifier_info_t idInfo = (thread_identifier_info_t)info;
-    if(!ksmem_isMemoryReadable(idInfo, sizeof(*idInfo)))
+    if(!rcmem_isMemoryReadable(idInfo, sizeof(*idInfo)))
     {
         RollbarCrashLOG_DEBUG("Thread %p has an invalid thread identifier info %p", thread, idInfo);
         return false;
     }
     dispatch_queue_t* dispatch_queue_ptr = (dispatch_queue_t*)idInfo->dispatch_qaddr;
-    if(!ksmem_isMemoryReadable(dispatch_queue_ptr, sizeof(*dispatch_queue_ptr)))
+    if(!rcmem_isMemoryReadable(dispatch_queue_ptr, sizeof(*dispatch_queue_ptr)))
     {
         RollbarCrashLOG_DEBUG("Thread %p has an invalid dispatch queue pointer %p", thread, dispatch_queue_ptr);
         return false;

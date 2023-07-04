@@ -26,7 +26,7 @@
 #include <stdio.h>
 #include <time.h>
 
-void ksdate_utcStringFromTimestamp(time_t timestamp, char* buffer21Chars)
+void rcdate_utcStringFromTimestamp(time_t timestamp, char* buffer21Chars)
 {
     struct tm result = {0};
     gmtime_r(&timestamp, &result);
@@ -39,7 +39,7 @@ void ksdate_utcStringFromTimestamp(time_t timestamp, char* buffer21Chars)
              result.tm_sec);
 }
 
-void ksdate_utcStringFromMicroseconds(int64_t microseconds, char* buffer28Chars)
+void rcdate_utcStringFromMicroseconds(int64_t microseconds, char* buffer28Chars)
 {
     struct tm result = {0};
     time_t curtime = (time_t)(microseconds / 1000000);

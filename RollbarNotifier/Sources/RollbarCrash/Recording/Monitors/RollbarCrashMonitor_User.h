@@ -55,7 +55,7 @@ extern "C" {
  *
  * @param terminateProgram If true, do not return from this function call. Terminate the program instead.
  */
-void kscm_reportUserException(const char* name,
+void rcm_reportUserException(const char* name,
                               const char* reason,
                               const char* language,
                               const char* lineOfCode,
@@ -65,7 +65,7 @@ void kscm_reportUserException(const char* name,
 
 /** Access the Monitor API.
  */
-RollbarCrashMonitorAPI* kscm_user_getAPI(void);
+RollbarCrashMonitorAPI* rcm_user_getAPI(void);
 
 
 #ifdef __cplusplus

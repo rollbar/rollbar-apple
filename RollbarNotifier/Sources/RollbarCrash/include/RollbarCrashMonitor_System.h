@@ -37,7 +37,7 @@ extern "C" {
 
 /** Access the Monitor API.
  */
-    RollbarCrashMonitorAPI* kscm_system_getAPI(void);
+    RollbarCrashMonitorAPI* rcm_system_getAPI(void);
 
 
 #ifdef __cplusplus

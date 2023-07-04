@@ -58,50 +58,50 @@ static const int g_exceptionRegisterNamesCount =
 sizeof(g_exceptionRegisterNames) / sizeof(*g_exceptionRegisterNames);
 
 
-uintptr_t kscpu_framePointer(const RollbarCrashMachineContext* const context)
+uintptr_t rccpu_framePointer(const RollbarCrashMachineContext* const context)
 {
     return context->machineContext.__ss.__ebp;
 }
 
-uintptr_t kscpu_stackPointer(const RollbarCrashMachineContext* const context)
+uintptr_t rccpu_stackPointer(const RollbarCrashMachineContext* const context)
 {
     return context->machineContext.__ss.__esp;
 }
 
-uintptr_t kscpu_instructionAddress(const RollbarCrashMachineContext* const context)
+uintptr_t rccpu_instructionAddress(const RollbarCrashMachineContext* const context)
 {
     return context->machineContext.__ss.__eip;
 }
 
-uintptr_t kscpu_linkRegister(__unused const RollbarCrashMachineContext* const context)
+uintptr_t rccpu_linkRegister(__unused const RollbarCrashMachineContext* const context)
 {
     return 0;
 }
 
-void kscpu_getState(RollbarCrashMachineContext* context)
+void rccpu_getState(RollbarCrashMachineContext* context)
 {
     thread_t thread = context->thisThread;
     STRUCT_MCONTEXT_L* const machineContext = &context->machineContext;
 
-    kscpu_i_fillState(thread, (thread_state_t)&machineContext->__ss, x86_THREAD_STATE32, x86_THREAD_STATE32_COUNT);
-    kscpu_i_fillState(thread, (thread_state_t)&machineContext->__es, x86_EXCEPTION_STATE32, x86_EXCEPTION_STATE32_COUNT);
+    rccpu_i_fillState(thread, (thread_state_t)&machineContext->__ss, x86_THREAD_STATE32, x86_THREAD_STATE32_COUNT);
+    rccpu_i_fillState(thread, (thread_state_t)&machineContext->__es, x86_EXCEPTION_STATE32, x86_EXCEPTION_STATE32_COUNT);
 }
 
-int kscpu_numRegisters(void)
+int rccpu_numRegisters(void)
 {
     return g_registerNamesCount;
 }
 
-const char* kscpu_registerName(const int regNumber)
+const char* rccpu_registerName(const int regNumber)
 {
-    if(regNumber < kscpu_numRegisters())
+    if(regNumber < rccpu_numRegisters())
     {
         return g_registerNames[regNumber];
     }
     return NULL;
 }
 
-uint64_t kscpu_registerValue(const RollbarCrashMachineContext* const context, const int regNumber)
+uint64_t rccpu_registerValue(const RollbarCrashMachineContext* const context, const int regNumber)
 {
     switch(regNumber)
     {
@@ -143,14 +143,14 @@ uint64_t kscpu_registerValue(const RollbarCrashMachineContext* const context, co
     return 0;
 }
 
-int kscpu_numExceptionRegisters(void)
+int rccpu_numExceptionRegisters(void)
 {
     return g_exceptionRegisterNamesCount;
 }
 
-const char* kscpu_exceptionRegisterName(const int regNumber)
+const char* rccpu_exceptionRegisterName(const int regNumber)
 {
-    if(regNumber < kscpu_numExceptionRegisters())
+    if(regNumber < rccpu_numExceptionRegisters())
     {
         return g_exceptionRegisterNames[regNumber];
     }
@@ -158,7 +158,7 @@ const char* kscpu_exceptionRegisterName(const int regNumber)
     return NULL;
 }
 
-uint64_t kscpu_exceptionRegisterValue(const RollbarCrashMachineContext* const context, const int regNumber)
+uint64_t rccpu_exceptionRegisterValue(const RollbarCrashMachineContext* const context, const int regNumber)
 {
     switch(regNumber)
     {
@@ -174,17 +174,17 @@ uint64_t kscpu_exceptionRegisterValue(const RollbarCrashMachineContext* const co
     return 0;
 }
 
-uintptr_t kscpu_faultAddress(const RollbarCrashMachineContext* const context)
+uintptr_t rccpu_faultAddress(const RollbarCrashMachineContext* const context)
 {
     return context->machineContext.__es.__faultvaddr;
 }
 
-int kscpu_stackGrowDirection(void)
+int rccpu_stackGrowDirection(void)
 {
     return -1;
 }
 
-uintptr_t kscpu_normaliseInstructionPointer(uintptr_t ip)
+uintptr_t rccpu_normaliseInstructionPointer(uintptr_t ip)
 {
     return ip;
 }

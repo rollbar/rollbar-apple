@@ -166,7 +166,7 @@ static int onEndData(__unused void* const userData)
 static int addJSONData(const char* const data, const int length, void* const userData)
 {
     const int fd = *((int*)userData);
-    const bool success = ksfu_writeBytesToFD(fd, data, length);
+    const bool success = rcfu_writeBytesToFD(fd, data, length);
     return success ? RollbarCrashJSON_OK : RollbarCrashJSON_ERROR_CANNOT_ADD_DATA;
 }
 
@@ -206,7 +206,7 @@ static bool loadState(const char* const path)
 
     char* data;
     int length;
-    if(!ksfu_readEntireFile(path, &data, &length, 50000))
+    if(!rcfu_readEntireFile(path, &data, &length, 50000))
     {
         RollbarCrashLOG_ERROR("%s: Could not load file", path);
         return false;
@@ -226,7 +226,7 @@ static bool loadState(const char* const path)
     int errorOffset = 0;
 
     char stringBuffer[1000];
-    const int result = ksjson_decode(data,
+    const int result = rcjson_decode(data,
                                      (int)length,
                                      stringBuffer,
                                      sizeof(stringBuffer),
@@ -237,7 +237,7 @@ static bool loadState(const char* const path)
     if(result != RollbarCrashJSON_OK)
     {
         RollbarCrashLOG_ERROR("%s, offset %d: %s",
-                    path, errorOffset, ksjson_stringForError(result));
+                    path, errorOffset, rcjson_stringForError(result));
         return false;
     }
     return true;
@@ -261,61 +261,61 @@ static bool saveState(const char* const path)
     }
 
     RollbarCrashJSONEncodeContext JSONContext;
-    ksjson_beginEncode(&JSONContext,
+    rcjson_beginEncode(&JSONContext,
                        true,
                        addJSONData,
                        &fd);
 
     int result;
-    if((result = ksjson_beginObject(&JSONContext, NULL)) != RollbarCrashJSON_OK)
+    if((result = rcjson_beginObject(&JSONContext, NULL)) != RollbarCrashJSON_OK)
     {
         goto done;
     }
-    if((result = ksjson_addIntegerElement(&JSONContext,
+    if((result = rcjson_addIntegerElement(&JSONContext,
                                           kKeyFormatVersion,
                                           kFormatVersion)) != RollbarCrashJSON_OK)
     {
         goto done;
     }
     // Record this launch crashed state into "crashed last launch" field.
-    if((result = ksjson_addBooleanElement(&JSONContext,
+    if((result = rcjson_addBooleanElement(&JSONContext,
                                           kKeyCrashedLastLaunch,
                                           g_state.crashedThisLaunch)) != RollbarCrashJSON_OK)
     {
         goto done;
     }
-    if((result = ksjson_addFloatingPointElement(&JSONContext,
+    if((result = rcjson_addFloatingPointElement(&JSONContext,
                                                 kKeyActiveDurationSinceLastCrash,
                                                 g_state.activeDurationSinceLastCrash)) != RollbarCrashJSON_OK)
     {
         goto done;
     }
-    if((result = ksjson_addFloatingPointElement(&JSONContext,
+    if((result = rcjson_addFloatingPointElement(&JSONContext,
                                                 kKeyBackgroundDurationSinceLastCrash,
                                                 g_state.backgroundDurationSinceLastCrash)) != RollbarCrashJSON_OK)
     {
         goto done;
     }
-    if((result = ksjson_addIntegerElement(&JSONContext,
+    if((result = rcjson_addIntegerElement(&JSONContext,
                                           kKeyLaunchesSinceLastCrash,
                                           g_state.launchesSinceLastCrash)) != RollbarCrashJSON_OK)
     {
         goto done;
     }
-    if((result = ksjson_addIntegerElement(&JSONContext,
+    if((result = rcjson_addIntegerElement(&JSONContext,
                                           kKeySessionsSinceLastCrash,
                                           g_state.sessionsSinceLastCrash)) != RollbarCrashJSON_OK)
     {
         goto done;
     }
-    result = ksjson_endEncode(&JSONContext);
+    result = rcjson_endEncode(&JSONContext);
 
 done:
     close(fd);
     if(result != RollbarCrashJSON_OK)
     {
         RollbarCrashLOG_ERROR("%s: %s",
-                    path, ksjson_stringForError(result));
+                    path, rcjson_stringForError(result));
         return false;
     }
     return true;
@@ -346,13 +346,13 @@ static void updateAppState(void)
 #pragma mark - API -
 // ============================================================================
 
-void kscrashstate_initialize(const char* const stateFilePath)
+void rcstate_initialize(const char* const stateFilePath)
 {
     g_stateFilePath = strdup(stateFilePath);
     loadState(g_stateFilePath);
 }
 
-bool kscrashstate_reset()
+bool rcstate_reset()
 {
     if(g_isEnabled)
     {
@@ -378,7 +378,7 @@ bool kscrashstate_reset()
     return false;
 }
 
-void kscrashstate_notifyObjCLoad(void)
+void rcstate_notifyObjCLoad(void)
 {
     RollbarCrashLOG_TRACE("RollbarCrash has been loaded!");
     memset(&g_state, 0, sizeof(g_state));
@@ -387,7 +387,7 @@ void kscrashstate_notifyObjCLoad(void)
     g_state.appStateTransitionTime = getCurrentTime();
 }
 
-void kscrashstate_notifyAppActive(const bool isActive)
+void rcstate_notifyAppActive(const bool isActive)
 {
     if(g_isEnabled)
     {
@@ -408,7 +408,7 @@ void kscrashstate_notifyAppActive(const bool isActive)
     }
 }
 
-void kscrashstate_notifyAppInForeground(const bool isInForeground)
+void rcstate_notifyAppInForeground(const bool isInForeground)
 {
     if(g_isEnabled)
     {
@@ -433,7 +433,7 @@ void kscrashstate_notifyAppInForeground(const bool isInForeground)
     }
 }
 
-void kscrashstate_notifyAppTerminate(void)
+void rcstate_notifyAppTerminate(void)
 {
     if(g_isEnabled)
     {
@@ -443,7 +443,7 @@ void kscrashstate_notifyAppTerminate(void)
     }
 }
 
-void kscrashstate_notifyAppCrash(void)
+void rcstate_notifyAppCrash(void)
 {
     RollbarCrashLOG_TRACE("Trying to update AppState. g_isEnabled: %d", g_isEnabled);
     if(g_isEnabled)
@@ -455,7 +455,7 @@ void kscrashstate_notifyAppCrash(void)
     }
 }
 
-const RollbarCrash_AppState* const kscrashstate_currentState(void)
+const RollbarCrash_AppState* const rcstate_currentState(void)
 {
     return &g_state;
 }
@@ -467,7 +467,7 @@ static void setEnabled(bool isEnabled)
         g_isEnabled = isEnabled;
         if(isEnabled)
         {
-            kscrashstate_reset();
+            rcstate_reset();
         }
     }
 }
@@ -498,7 +498,7 @@ static void addContextualInfoToEvent(RollbarCrash_MonitorContext* eventContext)
     }
 }
 
-RollbarCrashMonitorAPI* kscm_appstate_getAPI()
+RollbarCrashMonitorAPI* rcm_appstate_getAPI()
 {
     static RollbarCrashMonitorAPI api =
     {

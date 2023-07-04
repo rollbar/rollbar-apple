@@ -92,44 +92,44 @@ typedef struct
  *
  * @param stateFilePath Where to store on-disk representation of state.
  */
-void kscrashstate_initialize(const char* stateFilePath);
+void rcstate_initialize(const char* stateFilePath);
 
 /** Reset the crash state.
  */
-bool kscrashstate_reset(void);
+bool rcstate_reset(void);
 
 /** Notify the crash reporter of RollbarCrash being added to Objective-C runtime system.
  */
-void kscrashstate_notifyObjCLoad(void);
+void rcstate_notifyObjCLoad(void);
 
 /** Notify the crash reporter of the application active state.
  *
  * @param isActive true if the application is active, otherwise false.
  */
-void kscrashstate_notifyAppActive(bool isActive);
+void rcstate_notifyAppActive(bool isActive);
 
 /** Notify the crash reporter of the application foreground/background state.
  *
  * @param isInForeground true if the application is in the foreground, false if
  *                 it is in the background.
  */
-void kscrashstate_notifyAppInForeground(bool isInForeground);
+void rcstate_notifyAppInForeground(bool isInForeground);
 
 /** Notify the crash reporter that the application is terminating.
  */
-void kscrashstate_notifyAppTerminate(void);
+void rcstate_notifyAppTerminate(void);
 
 /** Notify the crash reporter that the application has crashed.
  */
-void kscrashstate_notifyAppCrash(void);
+void rcstate_notifyAppCrash(void);
 
 /** Read-only access into the current state.
  */
-const RollbarCrash_AppState* const kscrashstate_currentState(void);
+const RollbarCrash_AppState* const rcstate_currentState(void);
 
 /** Access the Monitor API.
  */
-RollbarCrashMonitorAPI* kscm_appstate_getAPI(void);
+RollbarCrashMonitorAPI* rcm_appstate_getAPI(void);
 
 
 #ifdef __cplusplus

@@ -42,7 +42,7 @@ extern "C" {
 
 /** Access the Monitor API.
  */
-RollbarCrashMonitorAPI* kscm_nsexception_getAPI(void);
+RollbarCrashMonitorAPI* rcm_nsexception_getAPI(void);
 
 
 #ifdef __cplusplus

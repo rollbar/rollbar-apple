@@ -38,7 +38,7 @@ extern "C" {
  *
  * @return The exception's name or NULL if not found.
  */
-const char* ksmach_exceptionName(int64_t exceptionType);
+const char* rcmach_exceptionName(int64_t exceptionType);
 
 /** Get the name of a mach kernel return code.
  *
@@ -46,7 +46,7 @@ const char* ksmach_exceptionName(int64_t exceptionType);
  *
  * @return The code's name or NULL if not found.
  */
-const char* ksmach_kernelReturnCodeName(int64_t returnCode);
+const char* rcmach_kernelReturnCodeName(int64_t returnCode);
 
 /** Get the signal equivalent of a mach exception.
  *
@@ -56,7 +56,7 @@ const char* ksmach_kernelReturnCodeName(int64_t returnCode);
  *
  * @return The matching signal, or 0 if not found.
  */
-int ksmach_signalForMachException(int exception, int64_t code);
+int rcmach_signalForMachException(int exception, int64_t code);
 
 /** Get the mach exception equivalent of a signal.
  *
@@ -64,7 +64,7 @@ int ksmach_signalForMachException(int exception, int64_t code);
  *
  * @return The matching mach exception, or 0 if not found.
  */
-int ksmach_machExceptionForSignal(int signal);
+int rcmach_machExceptionForSignal(int signal);
 
 
 #ifdef __cplusplus

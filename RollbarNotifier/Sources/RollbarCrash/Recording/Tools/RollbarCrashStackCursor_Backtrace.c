@@ -40,7 +40,7 @@ static bool advanceCursor(RollbarCrashStackCursor *cursor)
         // Bug: The system sometimes gives a backtrace with an extra 0x00000001 at the end.
         if(nextAddress > 1)
         {
-            cursor->stackEntry.address = kscpu_normaliseInstructionPointer(nextAddress);
+            cursor->stackEntry.address = rccpu_normaliseInstructionPointer(nextAddress);
             cursor->state.currentDepth++;
             return true;
         }
@@ -48,9 +48,9 @@ static bool advanceCursor(RollbarCrashStackCursor *cursor)
     return false;
 }
 
-void kssc_initWithBacktrace(RollbarCrashStackCursor *cursor, const uintptr_t* backtrace, int backtraceLength, int skipEntries)
+void rcsc_initWithBacktrace(RollbarCrashStackCursor *cursor, const uintptr_t* backtrace, int backtraceLength, int skipEntries)
 {
-    kssc_initCursor(cursor, kssc_resetCursor, advanceCursor);
+    rcsc_initCursor(cursor, rcsc_resetCursor, advanceCursor);
     RollbarCrashStackCursor_Backtrace_Context* context = (RollbarCrashStackCursor_Backtrace_Context*)cursor->context;
     context->skippedEntries = skipEntries;
     context->backtraceLength = backtraceLength;

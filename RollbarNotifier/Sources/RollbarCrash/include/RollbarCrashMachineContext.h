@@ -38,11 +38,11 @@ extern "C" {
 
 /** Suspend the runtime environment.
  */
-void ksmc_suspendEnvironment(thread_act_array_t *suspendedThreads, mach_msg_type_number_t *numSuspendedThreads);
+void rcmc_suspendEnvironment(thread_act_array_t *suspendedThreads, mach_msg_type_number_t *numSuspendedThreads);
 
 /** Resume the runtime environment.
  */
-void ksmc_resumeEnvironment(thread_act_array_t threads, mach_msg_type_number_t numThreads);
+void rcmc_resumeEnvironment(thread_act_array_t threads, mach_msg_type_number_t numThreads);
 
 /** Create a new machine context on the stack.
  * This macro creates a storage object on the stack, as well as a pointer of type
@@ -55,14 +55,14 @@ void ksmc_resumeEnvironment(thread_act_array_t threads, mach_msg_type_number_t n
  * @param NAME The C identifier to give the pointer.
  */
 #define RollbarCrashMC_NEW_CONTEXT(NAME) \
-    char ksmc_##NAME##_storage[ksmc_contextSize()]; \
-    struct RollbarCrashMachineContext* NAME = (struct RollbarCrashMachineContext*)ksmc_##NAME##_storage
+    char rcmc_##NAME##_storage[rcmc_contextSize()]; \
+    struct RollbarCrashMachineContext* NAME = (struct RollbarCrashMachineContext*)rcmc_##NAME##_storage
 
 struct RollbarCrashMachineContext;
 
 /** Get the internal size of a machine context.
  */
-int ksmc_contextSize(void);
+int rcmc_contextSize(void);
 
 /** Fill in a machine context from a thread.
  *
@@ -72,7 +72,7 @@ int ksmc_contextSize(void);
  *
  * @return true if successful.
  */
-bool ksmc_getContextForThread(RollbarCrashThread thread, struct RollbarCrashMachineContext* destinationContext, bool isCrashedContext);
+bool rcmc_getContextForThread(RollbarCrashThread thread, struct RollbarCrashMachineContext* destinationContext, bool isCrashedContext);
 
 /** Fill in a machine context from a signal handler.
  * A signal handler context is always assumed to be a crashed context.
@@ -82,7 +82,7 @@ bool ksmc_getContextForThread(RollbarCrashThread thread, struct RollbarCrashMach
  *
  * @return true if successful.
  */
-bool ksmc_getContextForSignal(void* signalUserContext, struct RollbarCrashMachineContext* destinationContext);
+bool rcmc_getContextForSignal(void* signalUserContext, struct RollbarCrashMachineContext* destinationContext);
 
 /** Get the thread associated with a machine context.
  *
@@ -90,7 +90,7 @@ bool ksmc_getContextForSignal(void* signalUserContext, struct RollbarCrashMachin
  *
  * @return The associated thread.
  */
-RollbarCrashThread ksmc_getThreadFromContext(const struct RollbarCrashMachineContext* const context);
+RollbarCrashThread rcmc_getThreadFromContext(const struct RollbarCrashMachineContext* const context);
 
 /** Get the number of threads stored in a machine context.
  *
@@ -98,7 +98,7 @@ RollbarCrashThread ksmc_getThreadFromContext(const struct RollbarCrashMachineCon
  *
  * @return The number of threads.
  */
-int ksmc_getThreadCount(const struct RollbarCrashMachineContext* const context);
+int rcmc_getThreadCount(const struct RollbarCrashMachineContext* const context);
 
 /** Get a thread from a machine context.
  *
@@ -107,7 +107,7 @@ int ksmc_getThreadCount(const struct RollbarCrashMachineContext* const context);
  *
  * @return The thread.
  */
-RollbarCrashThread ksmc_getThreadAtIndex(const struct RollbarCrashMachineContext* const context, int index);
+RollbarCrashThread rcmc_getThreadAtIndex(const struct RollbarCrashMachineContext* const context, int index);
 
 /** Get the index of a thread.
  *
@@ -116,25 +116,25 @@ RollbarCrashThread ksmc_getThreadAtIndex(const struct RollbarCrashMachineContext
  *
  * @return The thread's index, or -1 if it couldn't be determined.
  */
-int ksmc_indexOfThread(const struct RollbarCrashMachineContext* const context, RollbarCrashThread thread);
+int rcmc_indexOfThread(const struct RollbarCrashMachineContext* const context, RollbarCrashThread thread);
 
 /** Check if this is a crashed context.
  */
-bool ksmc_isCrashedContext(const struct RollbarCrashMachineContext* const context);
+bool rcmc_isCrashedContext(const struct RollbarCrashMachineContext* const context);
 
 /** Check if this context can have stored CPU state.
  */
-bool ksmc_canHaveCPUState(const struct RollbarCrashMachineContext* const context);
+bool rcmc_canHaveCPUState(const struct RollbarCrashMachineContext* const context);
 
 /** Check if this context has valid exception registers.
  */
-bool ksmc_hasValidExceptionRegisters(const struct RollbarCrashMachineContext* const context);
+bool rcmc_hasValidExceptionRegisters(const struct RollbarCrashMachineContext* const context);
 
 /** Add a thread to the reserved threads list.
  *
  * @param thread The thread to add to the list.
  */
-void ksmc_addReservedThread(RollbarCrashThread thread);
+void rcmc_addReservedThread(RollbarCrashThread thread);
 
 
 #ifdef __cplusplus

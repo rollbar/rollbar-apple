@@ -38,7 +38,7 @@ extern "C" {
  *
  * @param buffer21Chars A buffer of at least 21 chars to hold the RFC3339 date string.
  */
-void ksdate_utcStringFromTimestamp(time_t timestamp, char* buffer21Chars);
+void rcdate_utcStringFromTimestamp(time_t timestamp, char* buffer21Chars);
 
 /** Convert microseconds returned from `gettimeofday` to an RFC3339 string representation.
  *
@@ -46,7 +46,7 @@ void ksdate_utcStringFromTimestamp(time_t timestamp, char* buffer21Chars);
  *
  * @param buffer28Chars A buffer of at least 28 chars to hold the RFC3339 date string with milliseconds precision.
  */
-void ksdate_utcStringFromMicroseconds(int64_t microseconds, char* buffer28Chars);
+void rcdate_utcStringFromMicroseconds(int64_t microseconds, char* buffer28Chars);
 
 #ifdef __cplusplus
 }

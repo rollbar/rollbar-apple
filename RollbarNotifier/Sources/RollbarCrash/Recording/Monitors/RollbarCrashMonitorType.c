@@ -48,7 +48,7 @@ static const struct
 static const int g_monitorTypesCount = sizeof(g_monitorTypes) / sizeof(*g_monitorTypes);
 
 
-const char* kscrashmonitortype_name(const RollbarCrashMonitorType monitorType)
+const char* rcmonitortype_name(const RollbarCrashMonitorType monitorType)
 {
     for(int i = 0; i < g_monitorTypesCount; i++)
     {

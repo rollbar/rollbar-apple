@@ -54,7 +54,7 @@ typedef struct
 
 /** Get the number of loaded binary images.
  */
-int ksdl_imageCount(void);
+int rcdl_imageCount(void);
 
 /** Get information about a binary image.
  *
@@ -64,7 +64,7 @@ int ksdl_imageCount(void);
  *
  * @return True if the image was successfully queried.
  */
-bool ksdl_getBinaryImage(int index, RollbarCrashBinaryImage* buffer);
+bool rcdl_getBinaryImage(int index, RollbarCrashBinaryImage* buffer);
 
 /** Get information about a binary image based on mach_header.
  *
@@ -76,7 +76,7 @@ bool ksdl_getBinaryImage(int index, RollbarCrashBinaryImage* buffer);
  *
  * @return True if the image was successfully queried.
  */
-bool ksdl_getBinaryImageForHeader(const void* const header_ptr, const char* const image_name, RollbarCrashBinaryImage* buffer);
+bool rcdl_getBinaryImageForHeader(const void* const header_ptr, const char* const image_name, RollbarCrashBinaryImage* buffer);
 
 /** Find a loaded binary image with the specified name.
  *
@@ -86,7 +86,7 @@ bool ksdl_getBinaryImageForHeader(const void* const header_ptr, const char* cons
  *
  * @return the index of the matched image, or UINT32_MAX if not found.
  */
-uint32_t ksdl_imageNamed(const char* const imageName, bool exactMatch);
+uint32_t rcdl_imageNamed(const char* const imageName, bool exactMatch);
 
 /** Get the UUID of a loaded binary image with the specified name.
  *
@@ -97,7 +97,7 @@ uint32_t ksdl_imageNamed(const char* const imageName, bool exactMatch);
  * @return A pointer to the binary (16 byte) UUID of the image, or NULL if it
  *         wasn't found.
  */
-const uint8_t* ksdl_imageUUID(const char* const imageName, bool exactMatch);
+const uint8_t* rcdl_imageUUID(const char* const imageName, bool exactMatch);
 
 /** async-safe version of dladdr.
  *
@@ -113,7 +113,7 @@ const uint8_t* ksdl_imageUUID(const char* const imageName, bool exactMatch);
  * @param info Gets filled out by this function.
  * @return true if at least some information was found.
  */
-bool ksdl_dladdr(const uintptr_t address, Dl_info* const info);
+bool rcdl_dladdr(const uintptr_t address, Dl_info* const info);
 
 
 #ifdef __cplusplus

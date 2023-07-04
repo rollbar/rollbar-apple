@@ -148,7 +148,7 @@ static void pruneReports()
         
         for(int i = 0; i < reportCount - g_maxReportCount; i++)
         {
-            kscrs_deleteReportWithID(reportIDs[i]);
+            rccrs_deleteReportWithID(reportIDs[i]);
         }
     }
 }
@@ -173,18 +173,18 @@ static void initializeIDs()
 
 // Public API
 
-void kscrs_initialize(const char* appName, const char* reportsPath)
+void rccrs_initialize(const char* appName, const char* reportsPath)
 {
     pthread_mutex_lock(&g_mutex);
     g_appName = strdup(appName);
     g_reportsPath = strdup(reportsPath);
-    ksfu_makePath(reportsPath);
+    rcfu_makePath(reportsPath);
     pruneReports();
     initializeIDs();
     pthread_mutex_unlock(&g_mutex);
 }
 
-int64_t kscrs_getNextCrashReport(char* crashReportPathBuffer)
+int64_t rccrs_getNextCrashReport(char* crashReportPathBuffer)
 {
     int64_t nextID = getNextUniqueID();
     if(crashReportPathBuffer)
@@ -194,7 +194,7 @@ int64_t kscrs_getNextCrashReport(char* crashReportPathBuffer)
     return nextID;
 }
 
-int kscrs_getReportCount()
+int rccrs_getReportCount()
 {
     pthread_mutex_lock(&g_mutex);
     int count = getReportCount();
@@ -202,7 +202,7 @@ int kscrs_getReportCount()
     return count;
 }
 
-int kscrs_getReportIDs(int64_t* reportIDs, int count)
+int rccrs_getReportIDs(int64_t* reportIDs, int count)
 {
     pthread_mutex_lock(&g_mutex);
     count = getReportIDs(reportIDs, count);
@@ -210,18 +210,18 @@ int kscrs_getReportIDs(int64_t* reportIDs, int count)
     return count;
 }
 
-char* kscrs_readReport(int64_t reportID)
+char* rccrs_readReport(int64_t reportID)
 {
     pthread_mutex_lock(&g_mutex);
     char path[RollbarCrashCRS_MAX_PATH_LENGTH];
     getCrashReportPathByID(reportID, path);
     char* result;
-    ksfu_readEntireFile(path, &result, NULL, 2000000);
+    rcfu_readEntireFile(path, &result, NULL, 2000000);
     pthread_mutex_unlock(&g_mutex);
     return result;
 }
 
-int64_t kscrs_addUserReport(const char* report, int reportLength)
+int64_t rccrs_addUserReport(const char* report, int reportLength)
 {
     pthread_mutex_lock(&g_mutex);
     int64_t currentID = getNextUniqueID();
@@ -256,21 +256,21 @@ done:
     return currentID;
 }
 
-void kscrs_deleteAllReports()
+void rccrs_deleteAllReports()
 {
     pthread_mutex_lock(&g_mutex);
-    ksfu_deleteContentsOfPath(g_reportsPath);
+    rcfu_deleteContentsOfPath(g_reportsPath);
     pthread_mutex_unlock(&g_mutex);
 }
 
-void kscrs_deleteReportWithID(int64_t reportID)
+void rccrs_deleteReportWithID(int64_t reportID)
 {
     char path[RollbarCrashCRS_MAX_PATH_LENGTH];
     getCrashReportPathByID(reportID, path);
-    ksfu_removeFile(path, true);
+    rcfu_removeFile(path, true);
 }
 
-void kscrs_setMaxReportCount(int maxReportCount)
+void rccrs_setMaxReportCount(int maxReportCount)
 {
     g_maxReportCount = maxReportCount;
 }

@@ -41,7 +41,7 @@ extern "C" {
  *
  * @param skipEntries The number of stack entries to skip.
  */
-void kssc_initSelfThread(RollbarCrashStackCursor *cursor, int skipEntries);
+void rcsc_initSelfThread(RollbarCrashStackCursor *cursor, int skipEntries);
     
     
 #ifdef __cplusplus

@@ -53,7 +53,7 @@ if(0 != (CALL)) \
     return 0; \
 }
 
-int32_t kssysctl_int32(const int major_cmd, const int minor_cmd)
+int32_t rcsysctl_int32(const int major_cmd, const int minor_cmd)
 {
     int cmd[2] = {major_cmd, minor_cmd};
     int32_t value = 0;
@@ -69,7 +69,7 @@ int32_t kssysctl_int32(const int major_cmd, const int minor_cmd)
     return value;
 }
 
-int32_t kssysctl_int32ForName(const char* const name)
+int32_t rcsysctl_int32ForName(const char* const name)
 {
     int32_t value = 0;
     size_t size = sizeof(value);
@@ -79,7 +79,7 @@ int32_t kssysctl_int32ForName(const char* const name)
     return value;
 }
 
-uint32_t kssysctl_uint32(const int major_cmd, const int minor_cmd)
+uint32_t rcsysctl_uint32(const int major_cmd, const int minor_cmd)
 {
     int cmd[2] = {major_cmd, minor_cmd};
     uint32_t value = 0;
@@ -95,7 +95,7 @@ uint32_t kssysctl_uint32(const int major_cmd, const int minor_cmd)
     return value;
 }
 
-uint32_t kssysctl_uint32ForName(const char* const name)
+uint32_t rcsysctl_uint32ForName(const char* const name)
 {
     uint32_t value = 0;
     size_t size = sizeof(value);
@@ -105,7 +105,7 @@ uint32_t kssysctl_uint32ForName(const char* const name)
     return value;
 }
 
-int64_t kssysctl_int64(const int major_cmd, const int minor_cmd)
+int64_t rcsysctl_int64(const int major_cmd, const int minor_cmd)
 {
     int cmd[2] = {major_cmd, minor_cmd};
     int64_t value = 0;
@@ -121,7 +121,7 @@ int64_t kssysctl_int64(const int major_cmd, const int minor_cmd)
     return value;
 }
 
-int64_t kssysctl_int64ForName(const char* const name)
+int64_t rcsysctl_int64ForName(const char* const name)
 {
     int64_t value = 0;
     size_t size = sizeof(value);
@@ -131,7 +131,7 @@ int64_t kssysctl_int64ForName(const char* const name)
     return value;
 }
 
-uint64_t kssysctl_uint64(const int major_cmd, const int minor_cmd)
+uint64_t rcsysctl_uint64(const int major_cmd, const int minor_cmd)
 {
     int cmd[2] = {major_cmd, minor_cmd};
     uint64_t value = 0;
@@ -147,7 +147,7 @@ uint64_t kssysctl_uint64(const int major_cmd, const int minor_cmd)
     return value;
 }
 
-uint64_t kssysctl_uint64ForName(const char* const name)
+uint64_t rcsysctl_uint64ForName(const char* const name)
 {
     uint64_t value = 0;
     size_t size = sizeof(value);
@@ -157,7 +157,7 @@ uint64_t kssysctl_uint64ForName(const char* const name)
     return value;
 }
 
-int kssysctl_string(const int major_cmd,
+int rcsysctl_string(const int major_cmd,
                        const int minor_cmd,
                        char*const value,
                        const int maxSize)
@@ -175,7 +175,7 @@ int kssysctl_string(const int major_cmd,
     return (int)size;
 }
 
-int kssysctl_stringForName(const char* const  name,
+int rcsysctl_stringForName(const char* const  name,
                               char* const value,
                               const int maxSize)
 {
@@ -186,7 +186,7 @@ int kssysctl_stringForName(const char* const  name,
     return (int)size;
 }
 
-struct timeval kssysctl_timeval(const int major_cmd, const int minor_cmd)
+struct timeval rcsysctl_timeval(const int major_cmd, const int minor_cmd)
 {
     int cmd[2] = {major_cmd, minor_cmd};
     struct timeval value = {0};
@@ -201,7 +201,7 @@ struct timeval kssysctl_timeval(const int major_cmd, const int minor_cmd)
     return value;
 }
 
-struct timeval kssysctl_timevalForName(const char* const name)
+struct timeval rcsysctl_timevalForName(const char* const name)
 {
     struct timeval value = {0};
     size_t size = sizeof(value);
@@ -215,7 +215,7 @@ struct timeval kssysctl_timevalForName(const char* const name)
     return value;
 }
 
-bool kssysctl_getProcessInfo(const int pid,
+bool rcsysctl_getProcessInfo(const int pid,
                              struct kinfo_proc* const procInfo)
 {
     int cmd[4] = {CTL_KERN, KERN_PROC, KERN_PROC_PID, pid};
@@ -230,7 +230,7 @@ bool kssysctl_getProcessInfo(const int pid,
     return true;
 }
 
-bool kssysctl_getMacAddress(const char* const name,
+bool rcsysctl_getMacAddress(const char* const name,
                             char* const macAddressBuffer)
 {
     // Based off http://iphonedevelopertips.com/device/determine-mac-address.html

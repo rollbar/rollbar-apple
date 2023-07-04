@@ -277,7 +277,7 @@ static void* handleExceptions(void* const userData)
     if(threadName == kThreadSecondary)
     {
         RollbarCrashLOG_DEBUG("This is the secondary thread. Suspending.");
-        thread_suspend((thread_t)ksthread_self());
+        thread_suspend((thread_t)rcthread_self());
         eventID = g_secondaryEventID;
     }
 
@@ -308,16 +308,16 @@ static void* handleExceptions(void* const userData)
     {
         thread_act_array_t threads = NULL;
         mach_msg_type_number_t numThreads = 0;
-        ksmc_suspendEnvironment(&threads, &numThreads);
+        rcmc_suspendEnvironment(&threads, &numThreads);
         g_isHandlingCrash = true;
-        kscm_notifyFatalExceptionCaptured(true);
+        rcm_notifyFatalExceptionCaptured(true);
 
         RollbarCrashLOG_DEBUG("Exception handler is installed. Continuing exception handling.");
 
 
         // Switch to the secondary thread if necessary, or uninstall the handler
         // to avoid a death loop.
-        if(ksthread_self() == g_primaryMachThread)
+        if(rcthread_self() == g_primaryMachThread)
         {
             RollbarCrashLOG_DEBUG("This is the primary exception thread. Activating secondary thread.");
 // TODO: This was put here to avoid a freeze. Does secondary thread ever fire?
@@ -338,19 +338,19 @@ static void* handleExceptions(void* const userData)
         RollbarCrashMC_NEW_CONTEXT(machineContext);
         RollbarCrash_MonitorContext* crashContext = &g_monitorContext;
         crashContext->offendingMachineContext = machineContext;
-        kssc_initCursor(&g_stackCursor, NULL, NULL);
-        if(ksmc_getContextForThread(exceptionMessage.thread.name, machineContext, true))
+        rcsc_initCursor(&g_stackCursor, NULL, NULL);
+        if(rcmc_getContextForThread(exceptionMessage.thread.name, machineContext, true))
         {
-            kssc_initWithMachineContext(&g_stackCursor, RollbarCrashSC_MAX_STACK_DEPTH, machineContext);
+            rcsc_initWithMachineContext(&g_stackCursor, RollbarCrashSC_MAX_STACK_DEPTH, machineContext);
             RollbarCrashLOG_TRACE("Fault address %p, instruction address %p",
-                        kscpu_faultAddress(machineContext), kscpu_instructionAddress(machineContext));
+                        rccpu_faultAddress(machineContext), rccpu_instructionAddress(machineContext));
             if(exceptionMessage.exception == EXC_BAD_ACCESS)
             {
-                crashContext->faultAddress = kscpu_faultAddress(machineContext);
+                crashContext->faultAddress = rccpu_faultAddress(machineContext);
             }
             else
             {
-                crashContext->faultAddress = kscpu_instructionAddress(machineContext);
+                crashContext->faultAddress = rccpu_instructionAddress(machineContext);
             }
         }
 
@@ -371,11 +371,11 @@ static void* handleExceptions(void* const userData)
         crashContext->signal.signum = signalForMachException(crashContext->mach.type, crashContext->mach.code);
         crashContext->stackCursor = &g_stackCursor;
 
-        kscm_handleException(crashContext);
+        rcm_handleException(crashContext);
 
         RollbarCrashLOG_DEBUG("Crash handling complete. Restoring original handlers.");
         g_isHandlingCrash = false;
-        ksmc_resumeEnvironment(threads, numThreads);
+        rcmc_resumeEnvironment(threads, numThreads);
     }
 
     RollbarCrashLOG_DEBUG("Replying to mach exception message.");
@@ -409,7 +409,7 @@ static void uninstallExceptionHandler()
     
     restoreExceptionPorts();
     
-    thread_t thread_self = (thread_t)ksthread_self();
+    thread_t thread_self = (thread_t)rcthread_self();
     
     if(g_primaryPThread != 0 && g_primaryMachThread != thread_self)
     {
@@ -525,7 +525,7 @@ static bool installExceptionHandler()
         goto failed;
     }
     g_secondaryMachThread = pthread_mach_thread_np(g_secondaryPThread);
-    ksmc_addReservedThread(g_secondaryMachThread);
+    rcmc_addReservedThread(g_secondaryMachThread);
 
     RollbarCrashLOG_DEBUG("Creating primary exception thread.");
     error = pthread_create(&g_primaryPThread,
@@ -539,7 +539,7 @@ static bool installExceptionHandler()
     }
     pthread_attr_destroy(&attr);
     g_primaryMachThread = pthread_mach_thread_np(g_primaryPThread);
-    ksmc_addReservedThread(g_primaryMachThread);
+    rcmc_addReservedThread(g_primaryMachThread);
 
     RollbarCrashLOG_DEBUG("Mach exception handler installed.");
     return true;
@@ -562,8 +562,8 @@ static void setEnabled(bool isEnabled)
         g_isEnabled = isEnabled;
         if(isEnabled)
         {
-            ksid_generate(g_primaryEventID);
-            ksid_generate(g_secondaryEventID);
+            rcid_generate(g_primaryEventID);
+            rcid_generate(g_secondaryEventID);
             if(!installExceptionHandler())
             {
                 return;
@@ -595,7 +595,7 @@ static void addContextualInfoToEvent(struct RollbarCrash_MonitorContext* eventCo
 
 #endif
 
-RollbarCrashMonitorAPI* kscm_machexception_getAPI()
+RollbarCrashMonitorAPI* rcm_machexception_getAPI()
 {
     static RollbarCrashMonitorAPI api =
     {

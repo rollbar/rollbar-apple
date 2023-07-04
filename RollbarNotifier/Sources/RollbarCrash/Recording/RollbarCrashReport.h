@@ -50,21 +50,21 @@ extern "C" {
  *
  * @param userInfoJSON The user information, in JSON format.
  */
-void kscrashreport_setUserInfoJSON(const char* const userInfoJSON);
+void rcreport_setUserInfoJSON(const char* const userInfoJSON);
 
 /** Configure whether to introspect any interesting memory locations.
  *  This can find things like strings or Objective-C classes.
  *
  * @param shouldIntrospectMemory If true, introspect memory.
  */
-void kscrashreport_setIntrospectMemory(bool shouldIntrospectMemory);
+void rcreport_setIntrospectMemory(bool shouldIntrospectMemory);
 
 /** Specify which objective-c classes should not be introspected.
  *
  * @param doNotIntrospectClasses Array of class names.
  * @param length Length of the array.
  */
-void kscrashreport_setDoNotIntrospectClasses(const char** doNotIntrospectClasses, int length);
+void rcreport_setDoNotIntrospectClasses(const char** doNotIntrospectClasses, int length);
 
 /** Set the function to call when writing the user section of the report.
  *  This allows the user to add more fields to the user section at the time of the crash.
@@ -72,7 +72,7 @@ void kscrashreport_setDoNotIntrospectClasses(const char** doNotIntrospectClasses
  *
  * @param userSectionWriteCallback The user section write callback.
  */
-void kscrashreport_setUserSectionWriteCallback(const RollbarCrashReportWriteCallback userSectionWriteCallback);
+void rcreport_setUserSectionWriteCallback(const RollbarCrashReportWriteCallback userSectionWriteCallback);
 
 
 // ============================================================================
@@ -86,7 +86,7 @@ void kscrashreport_setUserSectionWriteCallback(const RollbarCrashReportWriteCall
  *
  * @param path The file to write to.
  */
-void kscrashreport_writeStandardReport(const struct RollbarCrash_MonitorContext* const monitorContext,
+void rcreport_writeStandardReport(const struct RollbarCrash_MonitorContext* const monitorContext,
                                        const char* path);
 
 /** Write a minimal crash report to a file.
@@ -96,7 +96,7 @@ void kscrashreport_writeStandardReport(const struct RollbarCrash_MonitorContext*
  *
  * @param path The file to write to.
  */
-void kscrashreport_writeRecrashReport(const struct RollbarCrash_MonitorContext* const monitorContext,
+void rcreport_writeRecrashReport(const struct RollbarCrash_MonitorContext* const monitorContext,
                                       const char* path);
 
 

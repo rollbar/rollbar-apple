@@ -53,7 +53,7 @@ typedef struct
  *
  * @param skipEntries The number of stack entries to skip.
  */
-void kssc_initWithBacktrace(RollbarCrashStackCursor *cursor, const uintptr_t* backtrace, int backtraceLength, int skipEntries);
+void rcsc_initWithBacktrace(RollbarCrashStackCursor *cursor, const uintptr_t* backtrace, int backtraceLength, int skipEntries);
     
     
 #ifdef __cplusplus

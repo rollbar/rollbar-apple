@@ -46,7 +46,7 @@ extern "C" {
  *
  * @return true if state fetching was successful.
  */
-bool kscpu_i_fillState(thread_t thread,
+bool rccpu_i_fillState(thread_t thread,
                        thread_state_t state,
                        thread_state_flavor_t flavor,
                        mach_msg_type_number_t stateCount);

@@ -96,7 +96,7 @@ static const char* cString(NSString* str)
 static NSString* nsstringSysctl(NSString* name)
 {
     NSString* str = nil;
-    int size = (int)kssysctl_stringForName(name.UTF8String, NULL, 0);
+    int size = (int)rcsysctl_stringForName(name.UTF8String, NULL, 0);
     
     if(size <= 0)
     {
@@ -105,7 +105,7 @@ static NSString* nsstringSysctl(NSString* name)
     
     NSMutableData* value = [NSMutableData dataWithLength:(unsigned)size];
     
-    if(kssysctl_stringForName(name.UTF8String, value.mutableBytes, size) != 0)
+    if(rcsysctl_stringForName(name.UTF8String, value.mutableBytes, size) != 0)
     {
         str = [NSString stringWithCString:value.mutableBytes encoding:NSUTF8StringEncoding];
     }
@@ -121,14 +121,14 @@ static NSString* nsstringSysctl(NSString* name)
  */
 static const char* stringSysctl(const char* name)
 {
-    int size = (int)kssysctl_stringForName(name, NULL, 0);
+    int size = (int)rcsysctl_stringForName(name, NULL, 0);
     if(size <= 0)
     {
         return NULL;
     }
 
     char* value = malloc((size_t)size);
-    if(kssysctl_stringForName(name, value, size) <= 0)
+    if(rcsysctl_stringForName(name, value, size) <= 0)
     {
         free(value);
         return NULL;
@@ -140,7 +140,7 @@ static const char* stringSysctl(const char* name)
 static const char* dateString(time_t date)
 {
     char* buffer = malloc(21);
-    ksdate_utcStringFromTimestamp(date, buffer);
+    rcdate_utcStringFromTimestamp(date, buffer);
     return buffer;
 }
 
@@ -152,7 +152,7 @@ static const char* dateString(time_t date)
  */
 static const char* dateSysctl(const char* name)
 {
-    struct timeval value = kssysctl_timevalForName(name);
+    struct timeval value = rcsysctl_timevalForName(name);
     return dateString(value.tv_sec);
 }
 
@@ -254,11 +254,11 @@ static const char* getAppUUID()
     
     if(exePath != nil)
     {
-        const uint8_t* uuidBytes = ksdl_imageUUID(exePath.UTF8String, true);
+        const uint8_t* uuidBytes = rcdl_imageUUID(exePath.UTF8String, true);
         if(uuidBytes == NULL)
         {
             // OSX app image path is a lie.
-            uuidBytes = ksdl_imageUUID(exePath.lastPathComponent.UTF8String, false);
+            uuidBytes = rcdl_imageUUID(exePath.lastPathComponent.UTF8String, false);
         }
         if(uuidBytes != NULL)
         {
@@ -320,12 +320,12 @@ static const char* getCPUArchForCPUType(cpu_type_t cpuType, cpu_subtype_t subTyp
 
 static const char* getCurrentCPUArch()
 {
-    const char* result = getCPUArchForCPUType(kssysctl_int32ForName("hw.cputype"),
-                                            kssysctl_int32ForName("hw.cpusubtype"));
+    const char* result = getCPUArchForCPUType(rcsysctl_int32ForName("hw.cputype"),
+                                            rcsysctl_int32ForName("hw.cpusubtype"));
 
     if(result == NULL)
     {
-        result = kscpu_currentArch();
+        result = rccpu_currentArch();
     }
     return result;
 }
@@ -336,7 +336,7 @@ static const char* getCurrentCPUArch()
  */
 static bool isJailbroken()
 {
-    return ksdl_imageNamed("MobileSubstrate", false) != UINT32_MAX;
+    return rcdl_imageNamed("MobileSubstrate", false) != UINT32_MAX;
 }
 
 /** Check if the current build is a debug build.
@@ -407,7 +407,7 @@ static const char* getDeviceAndAppHash()
 #endif
     {
         data = [NSMutableData dataWithLength:6];
-        kssysctl_getMacAddress("en0", [data mutableBytes]);
+        rcsysctl_getMacAddress("en0", [data mutableBytes]);
     }
     
     // Append some device-specific data.
@@ -561,8 +561,8 @@ static void initialize()
         g_systemData.bundleShortVersion = cString(infoDict[@"CFBundleShortVersionString"]);
         g_systemData.appID = getAppUUID();
         g_systemData.cpuArchitecture = getCurrentCPUArch();
-        g_systemData.cpuType = kssysctl_int32ForName("hw.cputype");
-        g_systemData.cpuSubType = kssysctl_int32ForName("hw.cpusubtype");
+        g_systemData.cpuType = rcsysctl_int32ForName("hw.cputype");
+        g_systemData.cpuSubType = rcsysctl_int32ForName("hw.cpusubtype");
         g_systemData.binaryCPUType = header->cputype;
         g_systemData.binaryCPUSubType = header->cpusubtype;
         g_systemData.timezone = cString([NSTimeZone localTimeZone].abbreviation);
@@ -572,7 +572,7 @@ static void initialize()
         g_systemData.deviceAppHash = getDeviceAndAppHash();
         g_systemData.buildType = getBuildType();
         g_systemData.storageSize = getStorageSize();
-        g_systemData.memorySize = kssysctl_uint64ForName("hw.memsize");
+        g_systemData.memorySize = rcsysctl_uint64ForName("hw.memsize");
     }
 }
 
@@ -632,7 +632,7 @@ static void addContextualInfoToEvent(RollbarCrash_MonitorContext* eventContext)
     }
 }
 
-RollbarCrashMonitorAPI* kscm_system_getAPI()
+RollbarCrashMonitorAPI* rcm_system_getAPI()
 {
     static RollbarCrashMonitorAPI api =
     {

@@ -50,7 +50,7 @@ extern "C" {
  *
  * @return The value returned by sysctl.
  */
-int32_t kssysctl_int32(int major_cmd, int minor_cmd);
+int32_t rcsysctl_int32(int major_cmd, int minor_cmd);
 
 /** Get an int32 value via sysctl by name.
  *
@@ -58,7 +58,7 @@ int32_t kssysctl_int32(int major_cmd, int minor_cmd);
  *
  * @return The value returned by sysctl.
  */
-int32_t kssysctl_int32ForName(const char* name);
+int32_t rcsysctl_int32ForName(const char* name);
 
 /** Get a uint32 value via sysctl.
  *
@@ -68,7 +68,7 @@ int32_t kssysctl_int32ForName(const char* name);
  *
  * @return The value returned by sysctl.
  */
-uint32_t kssysctl_uint32(int major_cmd, int minor_cmd);
+uint32_t rcsysctl_uint32(int major_cmd, int minor_cmd);
 
 /** Get a uint32 value via sysctl by name.
  *
@@ -76,7 +76,7 @@ uint32_t kssysctl_uint32(int major_cmd, int minor_cmd);
  *
  * @return The value returned by sysctl.
  */
-uint32_t kssysctl_uint32ForName(const char* name);
+uint32_t rcsysctl_uint32ForName(const char* name);
 
 /** Get an int64 value via sysctl.
  *
@@ -86,7 +86,7 @@ uint32_t kssysctl_uint32ForName(const char* name);
  *
  * @return The value returned by sysctl.
  */
-int64_t kssysctl_int64(int major_cmd, int minor_cmd);
+int64_t rcsysctl_int64(int major_cmd, int minor_cmd);
 
 /** Get an int64 value via sysctl by name.
  *
@@ -94,7 +94,7 @@ int64_t kssysctl_int64(int major_cmd, int minor_cmd);
  *
  * @return The value returned by sysctl.
  */
-int64_t kssysctl_int64ForName(const char* name);
+int64_t rcsysctl_int64ForName(const char* name);
 
 /** Get a uint64 value via sysctl.
  *
@@ -104,7 +104,7 @@ int64_t kssysctl_int64ForName(const char* name);
  *
  * @return The value returned by sysctl.
  */
-uint64_t kssysctl_uint64(int major_cmd, int minor_cmd);
+uint64_t rcsysctl_uint64(int major_cmd, int minor_cmd);
 
 /** Get a uint64 value via sysctl by name.
  *
@@ -112,7 +112,7 @@ uint64_t kssysctl_uint64(int major_cmd, int minor_cmd);
  *
  * @return The value returned by sysctl.
  */
-uint64_t kssysctl_uint64ForName(const char* name);
+uint64_t rcsysctl_uint64ForName(const char* name);
 
 /** Get a string value via sysctl.
  *
@@ -128,7 +128,7 @@ uint64_t kssysctl_uint64ForName(const char* name);
  * @return The number of bytes written (or that would have been written if
  *         value is NULL).
  */
-int kssysctl_string(int major_cmd, int minor_cmd, char* value, int maxSize);
+int rcsysctl_string(int major_cmd, int minor_cmd, char* value, int maxSize);
 
 /** Get a string value via sysctl by name.
  *
@@ -142,7 +142,7 @@ int kssysctl_string(int major_cmd, int minor_cmd, char* value, int maxSize);
  * @return The number of bytes written (or that would have been written if
  *         value is NULL).
  */
-int kssysctl_stringForName(const char* name, char* value, int maxSize);
+int rcsysctl_stringForName(const char* name, char* value, int maxSize);
 
 /** Get a timeval value via sysctl.
  *
@@ -152,7 +152,7 @@ int kssysctl_stringForName(const char* name, char* value, int maxSize);
  *
  * @return The value returned by sysctl.
  */
-struct timeval kssysctl_timeval(int major_cmd, int minor_cmd);
+struct timeval rcsysctl_timeval(int major_cmd, int minor_cmd);
 
 /** Get a timeval value via sysctl by name.
  *
@@ -160,7 +160,7 @@ struct timeval kssysctl_timeval(int major_cmd, int minor_cmd);
  *
  * @return The value returned by sysctl.
  */
-struct timeval kssysctl_timevalForName(const char* name);
+struct timeval rcsysctl_timevalForName(const char* name);
 
 /** Get information about a process.
  *
@@ -170,7 +170,7 @@ struct timeval kssysctl_timevalForName(const char* name);
  *
  * @return true if the operation was successful.
  */
-bool kssysctl_getProcessInfo(int pid, struct kinfo_proc* procInfo);
+bool rcsysctl_getProcessInfo(int pid, struct kinfo_proc* procInfo);
 
 /** Get the MAC address of the specified interface.
  * Note: As of iOS 7 this will always return a fixed value of 02:00:00:00:00:00.
@@ -181,7 +181,7 @@ bool kssysctl_getProcessInfo(int pid, struct kinfo_proc* procInfo);
  *
  * @return true if the address was successfully retrieved.
  */
-bool kssysctl_getMacAddress(const char* name, char* macAddressBuffer);
+bool rcsysctl_getMacAddress(const char* name, char* macAddressBuffer);
 
 
 #ifdef __cplusplus

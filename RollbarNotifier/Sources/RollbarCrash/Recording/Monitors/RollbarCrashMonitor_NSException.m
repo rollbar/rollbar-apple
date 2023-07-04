@@ -64,8 +64,8 @@ static void handleException(NSException* exception, BOOL currentSnapshotUserRepo
     {
         thread_act_array_t threads = NULL;
         mach_msg_type_number_t numThreads = 0;
-        ksmc_suspendEnvironment(&threads, &numThreads);
-        kscm_notifyFatalExceptionCaptured(false);
+        rcmc_suspendEnvironment(&threads, &numThreads);
+        rcm_notifyFatalExceptionCaptured(false);
 
         RollbarCrashLOG_DEBUG(@"Filling out context.");
         NSArray* addresses = [exception callStackReturnAddresses];
@@ -77,11 +77,11 @@ static void handleException(NSException* exception, BOOL currentSnapshotUserRepo
         }
 
         char eventID[37];
-        ksid_generate(eventID);
+        rcid_generate(eventID);
         RollbarCrashMC_NEW_CONTEXT(machineContext);
-        ksmc_getContextForThread(ksthread_self(), machineContext, true);
+        rcmc_getContextForThread(rcthread_self(), machineContext, true);
         RollbarCrashStackCursor cursor;
-        kssc_initWithBacktrace(&cursor, callstack, (int)numFrames, 0);
+        rcsc_initWithBacktrace(&cursor, callstack, (int)numFrames, 0);
 
         RollbarCrash_MonitorContext* crashContext = &g_monitorContext;
         memset(crashContext, 0, sizeof(*crashContext));
@@ -97,11 +97,11 @@ static void handleException(NSException* exception, BOOL currentSnapshotUserRepo
         crashContext->currentSnapshotUserReported = currentSnapshotUserReported;
 
         RollbarCrashLOG_DEBUG(@"Calling main crash handler.");
-        kscm_handleException(crashContext);
+        rcm_handleException(crashContext);
 
         free(callstack);
         if (currentSnapshotUserReported) {
-            ksmc_resumeEnvironment(threads, numThreads);
+            rcmc_resumeEnvironment(threads, numThreads);
         }
         if (g_previousUncaughtExceptionHandler != NULL)
         {
@@ -151,7 +151,7 @@ static bool isEnabled()
     return g_isEnabled;
 }
 
-RollbarCrashMonitorAPI* kscm_nsexception_getAPI()
+RollbarCrashMonitorAPI* rcm_nsexception_getAPI()
 {
     static RollbarCrashMonitorAPI api =
     {

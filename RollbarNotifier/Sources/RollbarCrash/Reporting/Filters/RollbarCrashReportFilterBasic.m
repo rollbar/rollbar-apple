@@ -44,7 +44,7 @@
 - (void) filterReports:(NSArray*) reports
           onCompletion:(RollbarCrashReportFilterCompletion) onCompletion
 {
-    kscrash_callCompletion(onCompletion, reports, YES, nil);
+    rc_callCompletion(onCompletion, reports, YES, nil);
 }
 
 @end
@@ -117,7 +117,7 @@
 {
     NSMutableArray* filters = [NSMutableArray array];
     NSMutableArray* keys = [NSMutableArray array];
-    ksva_iterate_list(firstFilter, [self argBlockWithFilters:filters andKeys:keys]);
+    rcva_iterate_list(firstFilter, [self argBlockWithFilters:filters andKeys:keys]);
     return [[self alloc] initWithFilters:filters keys:keys];
 }
 
@@ -125,7 +125,7 @@
 {
     NSMutableArray* filters = [NSMutableArray array];
     NSMutableArray* keys = [NSMutableArray array];
-    ksva_iterate_list(firstFilter, [[self class] argBlockWithFilters:filters andKeys:keys]);
+    rcva_iterate_list(firstFilter, [[self class] argBlockWithFilters:filters andKeys:keys]);
     return [self initWithFilters:filters keys:keys];
 }
 
@@ -138,13 +138,13 @@
     
     if(filterCount == 0)
     {
-        kscrash_callCompletion(onCompletion, reports, YES, nil);
+        rc_callCompletion(onCompletion, reports, YES, nil);
         return;
     }
     
     if(filterCount != [keys count])
     {
-        kscrash_callCompletion(onCompletion, reports, NO,
+        rc_callCompletion(onCompletion, reports, NO,
                                  [NSError errorWithDomain:[[self class] description]
                                                      code:0
                                               description:@"Key/filter mismatch (%d keys, %d filters",
@@ -173,14 +173,14 @@
                             {
                                 if(!completed)
                                 {
-                                    kscrash_callCompletion(onCompletion,
+                                    rc_callCompletion(onCompletion,
                                                              filteredReports,
                                                              completed,
                                                              filterError);
                                 }
                                 else if(filteredReports == nil)
                                 {
-                                    kscrash_callCompletion(onCompletion, filteredReports, NO,
+                                    rc_callCompletion(onCompletion, filteredReports, NO,
                                                              [NSError errorWithDomain:[[self class] description]
                                                                                  code:0
                                                                           description:@"filteredReports was nil"]);
@@ -217,7 +217,7 @@
                                 [combinedReports addObject:dict];
                             }
                             
-                            kscrash_callCompletion(onCompletion, combinedReports, completed, filterError);
+                            rc_callCompletion(onCompletion, combinedReports, completed, filterError);
                             disposeOfCompletion();
                         } copy];
     weakFilterCompletion = filterCompletion;
@@ -244,13 +244,13 @@
 
 + (RollbarCrashReportFilterPipeline*) filterWithFilters:(id) firstFilter, ...
 {
-    ksva_list_to_nsarray(firstFilter, filters);
+    rcva_list_to_nsarray(firstFilter, filters);
     return [[self alloc] initWithFiltersArray:filters];
 }
 
 - (id) initWithFilters:(id) firstFilter, ...
 {
-    ksva_list_to_nsarray(firstFilter, filters);
+    rcva_list_to_nsarray(firstFilter, filters);
     return [self initWithFiltersArray:filters];
 }
 
@@ -289,7 +289,7 @@
     
     if(filterCount == 0)
     {
-        kscrash_callCompletion(onCompletion, reports, YES,  nil);
+        rc_callCompletion(onCompletion, reports, YES,  nil);
         return;
     }
     
@@ -312,14 +312,14 @@
                             {
                                 if(!completed)
                                 {
-                                    kscrash_callCompletion(onCompletion,
+                                    rc_callCompletion(onCompletion,
                                                              filteredReports,
                                                              completed,
                                                              filterError);
                                 }
                                 else if(filteredReports == nil)
                                 {
-                                    kscrash_callCompletion(onCompletion, filteredReports, NO,
+                                    rc_callCompletion(onCompletion, filteredReports, NO,
                                                              [NSError errorWithDomain:[[self class] description]
                                                                                  code:0
                                                                           description:@"filteredReports was nil"]);
@@ -338,7 +338,7 @@
                             }
                             
                             // All filters complete, or a filter failed.
-                            kscrash_callCompletion(onCompletion, filteredReports, completed, filterError);
+                            rc_callCompletion(onCompletion, filteredReports, completed, filterError);
                             disposeOfCompletion();
                         } copy];
     weakFilterCompletion = filterCompletion;
@@ -399,7 +399,7 @@
         {
             if(!self.allowNotFound)
             {
-                kscrash_callCompletion(onCompletion, filteredReports, NO,
+                rc_callCompletion(onCompletion, filteredReports, NO,
                                          [NSError errorWithDomain:[[self class] description]
                                                              code:0
                                                       description:@"Key not found: %@", self.key]);
@@ -412,7 +412,7 @@
             [filteredReports addObject:object];
         }
     }
-    kscrash_callCompletion(onCompletion, filteredReports, YES, nil);
+    rc_callCompletion(onCompletion, filteredReports, YES, nil);
 }
 
 @end
@@ -432,13 +432,13 @@
 
 + (RollbarCrashReportFilterConcatenate*) filterWithSeparatorFmt:(NSString*) separatorFmt keys:(id) firstKey, ...
 {
-    ksva_list_to_nsarray(firstKey, keys);
+    rcva_list_to_nsarray(firstKey, keys);
     return [[self alloc] initWithSeparatorFmt:separatorFmt keysArray:keys];
 }
 
 - (id) initWithSeparatorFmt:(NSString*) separatorFmt keys:(id) firstKey, ...
 {
-    ksva_list_to_nsarray(firstKey, keys);
+    rcva_list_to_nsarray(firstKey, keys);
     return [self initWithSeparatorFmt:separatorFmt keysArray:keys];
 }
 
@@ -488,7 +488,7 @@
         }
         [filteredReports addObject:concatenated];
     }
-    kscrash_callCompletion(onCompletion, filteredReports, YES, nil);
+    rc_callCompletion(onCompletion, filteredReports, YES, nil);
 }
 
 @end
@@ -506,13 +506,13 @@
 
 + (RollbarCrashReportFilterSubset*) filterWithKeys:(id) firstKeyPath, ...
 {
-    ksva_list_to_nsarray(firstKeyPath, keyPaths);
+    rcva_list_to_nsarray(firstKeyPath, keyPaths);
     return [[self alloc] initWithKeysArray:keyPaths];
 }
 
 - (id) initWithKeys:(id) firstKeyPath, ...
 {
-    ksva_list_to_nsarray(firstKeyPath, keyPaths);
+    rcva_list_to_nsarray(firstKeyPath, keyPaths);
     return [self initWithKeysArray:keyPaths];
 }
 
@@ -550,7 +550,7 @@
             id object = [report objectForKeyPath:keyPath];
             if(object == nil)
             {
-                kscrash_callCompletion(onCompletion, filteredReports, NO,
+                rc_callCompletion(onCompletion, filteredReports, NO,
                                          [NSError errorWithDomain:[[self class] description]
                                                              code:0
                                                       description:@"Report did not have key path %@", keyPath]);
@@ -560,7 +560,7 @@
         }
         [filteredReports addObject:subset];
     }
-    kscrash_callCompletion(onCompletion, filteredReports, YES, nil);
+    rc_callCompletion(onCompletion, filteredReports, YES, nil);
 }
 
 @end
@@ -583,7 +583,7 @@
         [filteredReports addObject:converted];
     }
 
-    kscrash_callCompletion(onCompletion, filteredReports, YES, nil);
+    rc_callCompletion(onCompletion, filteredReports, YES, nil);
 }
 
 @end
@@ -605,7 +605,7 @@
         NSData* converted = [report dataUsingEncoding:NSUTF8StringEncoding];
         if(converted == nil)
         {
-            kscrash_callCompletion(onCompletion, filteredReports, NO,
+            rc_callCompletion(onCompletion, filteredReports, NO,
                                      [NSError errorWithDomain:[[self class] description]
                                                          code:0
                                                   description:@"Could not convert report to UTF-8"]);
@@ -617,7 +617,7 @@
         }
     }
 
-    kscrash_callCompletion(onCompletion, filteredReports, YES, nil);
+    rc_callCompletion(onCompletion, filteredReports, YES, nil);
 }
 
 @end

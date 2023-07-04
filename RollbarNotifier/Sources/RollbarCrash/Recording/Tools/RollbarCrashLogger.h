@@ -159,29 +159,29 @@ extern "C" {
 
 #import <CoreFoundation/CoreFoundation.h>
 
-void i_kslog_logObjC(const char* level,
+void i_rclog_logObjC(const char* level,
                      const char* file,
                      int line,
                      const char* function,
                      CFStringRef fmt, ...);
 
-void i_kslog_logObjCBasic(CFStringRef fmt, ...);
+void i_rclog_logObjCBasic(CFStringRef fmt, ...);
 
-#define i_RollbarCrashLOG_FULL(LEVEL,FILE,LINE,FUNCTION,FMT,...) i_kslog_logObjC(LEVEL,FILE,LINE,FUNCTION,(__bridge CFStringRef)FMT,##__VA_ARGS__)
-#define i_RollbarCrashLOG_BASIC(FMT, ...) i_kslog_logObjCBasic((__bridge CFStringRef)FMT,##__VA_ARGS__)
+#define i_RollbarCrashLOG_FULL(LEVEL,FILE,LINE,FUNCTION,FMT,...) i_rclog_logObjC(LEVEL,FILE,LINE,FUNCTION,(__bridge CFStringRef)FMT,##__VA_ARGS__)
+#define i_RollbarCrashLOG_BASIC(FMT, ...) i_rclog_logObjCBasic((__bridge CFStringRef)FMT,##__VA_ARGS__)
 
 #else // __OBJC__
 
-void i_kslog_logC(const char* level,
+void i_rclog_logC(const char* level,
                   const char* file,
                   int line,
                   const char* function,
                   const char* fmt, ...);
 
-void i_kslog_logCBasic(const char* fmt, ...);
+void i_rclog_logCBasic(const char* fmt, ...);
 
-#define i_RollbarCrashLOG_FULL i_kslog_logC
-#define i_RollbarCrashLOG_BASIC i_kslog_logCBasic
+#define i_RollbarCrashLOG_FULL i_rclog_logC
+#define i_RollbarCrashLOG_BASIC i_rclog_logCBasic
 
 #endif // __OBJC__
 
@@ -256,10 +256,10 @@ void i_kslog_logCBasic(const char* fmt, ...);
  *
  * @param overwrite If true, overwrite the log file.
  */
-bool kslog_setLogFilename(const char* filename, bool overwrite);
+bool rclog_setLogFilename(const char* filename, bool overwrite);
 
 /** Clear the log file. */
-bool kslog_clearLogFile(void);
+bool rclog_clearLogFile(void);
 
 /** Tests if the logger would print at the specified level.
  *

@@ -315,7 +315,7 @@ static int encodeObject(RollbarCrashJSONCodec* codec, id object, NSString* name,
     if([object isKindOfClass:[NSString class]])
     {
         NSData* data = [object dataUsingEncoding:NSUTF8StringEncoding];
-        result = ksjson_addStringElement(context, cName, data.bytes, (int)data.length);
+        result = rcjson_addStringElement(context, cName, data.bytes, (int)data.length);
         if(result == RollbarCrashJSON_ERROR_INVALID_CHARACTER)
         {
             codec.error = [NSError errorWithDomain:@"RollbarCrashJSONCodecObjC"
@@ -334,17 +334,17 @@ static int encodeObject(RollbarCrashJSONCodec* codec, id object, NSString* name,
             case kCFNumberFloatType:
             case kCFNumberCGFloatType:
             case kCFNumberDoubleType:
-                return ksjson_addFloatingPointElement(context, cName, [object doubleValue]);
+                return rcjson_addFloatingPointElement(context, cName, [object doubleValue]);
             case kCFNumberCharType:
-                return ksjson_addBooleanElement(context, cName, [object boolValue]);
+                return rcjson_addBooleanElement(context, cName, [object boolValue]);
             default:
-                return ksjson_addIntegerElement(context, cName, [object longLongValue]);
+                return rcjson_addIntegerElement(context, cName, [object longLongValue]);
         }
     }
 
     if([object isKindOfClass:[NSArray class]])
     {
-        if((result = ksjson_beginArray(context, cName)) != RollbarCrashJSON_OK)
+        if((result = rcjson_beginArray(context, cName)) != RollbarCrashJSON_OK)
         {
             return result;
         }
@@ -355,12 +355,12 @@ static int encodeObject(RollbarCrashJSONCodec* codec, id object, NSString* name,
                 return result;
             }
         }
-        return ksjson_endContainer(context);
+        return rcjson_endContainer(context);
     }
 
     if([object isKindOfClass:[NSDictionary class]])
     {
-        if((result = ksjson_beginObject(context, cName)) != RollbarCrashJSON_OK)
+        if((result = rcjson_beginObject(context, cName)) != RollbarCrashJSON_OK)
         {
             return result;
         }
@@ -376,27 +376,27 @@ static int encodeObject(RollbarCrashJSONCodec* codec, id object, NSString* name,
                 return result;
             }
         }
-        return ksjson_endContainer(context);
+        return rcjson_endContainer(context);
     }
 
     if([object isKindOfClass:[NSNull class]])
     {
-        return ksjson_addNullElement(context, cName);
+        return rcjson_addNullElement(context, cName);
     }
 
     if([object isKindOfClass:[NSDate class]])
     {
         char string[21];
         time_t timestamp = (time_t)((NSDate*)object).timeIntervalSince1970;
-        ksdate_utcStringFromTimestamp(timestamp, string);
+        rcdate_utcStringFromTimestamp(timestamp, string);
         NSData* data = [NSData dataWithBytes:string length:strnlen(string, 20)];
-        return ksjson_addStringElement(context, cName, data.bytes, (int)data.length);
+        return rcjson_addStringElement(context, cName, data.bytes, (int)data.length);
     }
 
     if([object isKindOfClass:[NSData class]])
     {
         NSData* data = (NSData*)object;
-        return ksjson_addDataElement(context, cName, data.bytes, (int)data.length);
+        return rcjson_addDataElement(context, cName, data.bytes, (int)data.length);
     }
 
     codec.error = [NSError errorWithDomain:@"RollbarCrashJSONCodecObjC"
@@ -414,7 +414,7 @@ static int encodeObject(RollbarCrashJSONCodec* codec, id object, NSString* name,
 {
     NSMutableData* data = [NSMutableData data];
     RollbarCrashJSONEncodeContext JSONContext;
-    ksjson_beginEncode(&JSONContext,
+    rcjson_beginEncode(&JSONContext,
                        encodeOptions & RollbarCrashJSONEncodeOptionPretty,
                        addJSONData,
                        (__bridge void*)data);
@@ -437,7 +437,7 @@ static int encodeObject(RollbarCrashJSONCodec* codec, id object, NSString* name,
                                         decodeOptions:decodeOptions];
     NSMutableData* stringData = [NSMutableData dataWithLength:10001];
     int errorOffset;
-    int result = ksjson_decode(JSONData.bytes,
+    int result = rcjson_decode(JSONData.bytes,
                                (int)JSONData.length,
                                stringData.mutableBytes,
                                (int)stringData.length,
@@ -448,7 +448,7 @@ static int encodeObject(RollbarCrashJSONCodec* codec, id object, NSString* name,
         codec.error = [NSError errorWithDomain:@"RollbarCrashJSONCodecObjC"
                                           code:0
                                    description:@"%s (offset %d)",
-                       ksjson_stringForError(result),
+                       rcjson_stringForError(result),
                        errorOffset];
     }
     if(error != nil)

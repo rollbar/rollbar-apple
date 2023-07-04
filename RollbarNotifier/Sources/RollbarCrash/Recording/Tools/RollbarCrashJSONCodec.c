@@ -75,7 +75,7 @@ static char g_hexNybbles[] =
     '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
 };
 
-const char* ksjson_stringForError(const int error)
+const char* rcjson_stringForError(const int error)
 {
     switch (error)
     {
@@ -249,7 +249,7 @@ static int addQuotedEscapedString(RollbarCrashJSONEncodeContext* const context,
     return result || closeResult;
 }
 
-int ksjson_beginElement(RollbarCrashJSONEncodeContext* const context, const char* const name)
+int rcjson_beginElement(RollbarCrashJSONEncodeContext* const context, const char* const name)
 {
     int result = RollbarCrashJSON_OK;
 
@@ -312,18 +312,18 @@ int ksjson_beginElement(RollbarCrashJSONEncodeContext* const context, const char
     return result;
 }
 
-int ksjson_addRawJSONData(RollbarCrashJSONEncodeContext* const context,
+int rcjson_addRawJSONData(RollbarCrashJSONEncodeContext* const context,
                           const char* const data,
                           const int length)
 {
     return addJSONData(context, data, length);
 }
 
-int ksjson_addBooleanElement(RollbarCrashJSONEncodeContext* const context,
+int rcjson_addBooleanElement(RollbarCrashJSONEncodeContext* const context,
                              const char* const name,
                              const bool value)
 {
-    int result = ksjson_beginElement(context, name);
+    int result = rcjson_beginElement(context, name);
     unlikely_if(result != RollbarCrashJSON_OK)
     {
         return result;
@@ -338,11 +338,11 @@ int ksjson_addBooleanElement(RollbarCrashJSONEncodeContext* const context,
     }
 }
 
-int ksjson_addFloatingPointElement(RollbarCrashJSONEncodeContext* const context,
+int rcjson_addFloatingPointElement(RollbarCrashJSONEncodeContext* const context,
                                    const char* const name,
                                    double value)
 {
-    int result = ksjson_beginElement(context, name);
+    int result = rcjson_beginElement(context, name);
     unlikely_if(result != RollbarCrashJSON_OK)
     {
         return result;
@@ -352,11 +352,11 @@ int ksjson_addFloatingPointElement(RollbarCrashJSONEncodeContext* const context,
     return addJSONData(context, buff, (int)strlen(buff));
 }
 
-int ksjson_addIntegerElement(RollbarCrashJSONEncodeContext* const context,
+int rcjson_addIntegerElement(RollbarCrashJSONEncodeContext* const context,
                              const char* const name,
                              int64_t value)
 {
-    int result = ksjson_beginElement(context, name);
+    int result = rcjson_beginElement(context, name);
     unlikely_if(result != RollbarCrashJSON_OK)
     {
         return result;
@@ -366,11 +366,11 @@ int ksjson_addIntegerElement(RollbarCrashJSONEncodeContext* const context,
     return addJSONData(context, buff, (int)strlen(buff));
 }
 
-int ksjson_addUIntegerElement(RollbarCrashJSONEncodeContext* const context,
+int rcjson_addUIntegerElement(RollbarCrashJSONEncodeContext* const context,
                              const char* const name,
                              uint64_t value)
 {
-    int result = ksjson_beginElement(context, name);
+    int result = rcjson_beginElement(context, name);
     unlikely_if(result != RollbarCrashJSON_OK)
     {
         return result;
@@ -380,10 +380,10 @@ int ksjson_addUIntegerElement(RollbarCrashJSONEncodeContext* const context,
     return addJSONData(context, buff, (int)strlen(buff));
 }
 
-int ksjson_addNullElement(RollbarCrashJSONEncodeContext* const context,
+int rcjson_addNullElement(RollbarCrashJSONEncodeContext* const context,
                           const char* const name)
 {
-    int result = ksjson_beginElement(context, name);
+    int result = rcjson_beginElement(context, name);
     unlikely_if(result != RollbarCrashJSON_OK)
     {
         return result;
@@ -391,16 +391,16 @@ int ksjson_addNullElement(RollbarCrashJSONEncodeContext* const context,
     return addJSONData(context, "null", 4);
 }
 
-int ksjson_addStringElement(RollbarCrashJSONEncodeContext* const context,
+int rcjson_addStringElement(RollbarCrashJSONEncodeContext* const context,
                             const char* const name,
                             const char* const value,
                             int length)
 {
     unlikely_if(value == NULL)
     {
-        return ksjson_addNullElement(context, name);
+        return rcjson_addNullElement(context, name);
     }
-    int result = ksjson_beginElement(context, name);
+    int result = rcjson_beginElement(context, name);
     unlikely_if(result != RollbarCrashJSON_OK)
     {
         return result;
@@ -412,10 +412,10 @@ int ksjson_addStringElement(RollbarCrashJSONEncodeContext* const context,
     return addQuotedEscapedString(context, value, length);
 }
 
-int ksjson_beginStringElement(RollbarCrashJSONEncodeContext* const context,
+int rcjson_beginStringElement(RollbarCrashJSONEncodeContext* const context,
                               const char* const name)
 {
-    int result = ksjson_beginElement(context, name);
+    int result = rcjson_beginElement(context, name);
     unlikely_if(result != RollbarCrashJSON_OK)
     {
         return result;
@@ -423,43 +423,43 @@ int ksjson_beginStringElement(RollbarCrashJSONEncodeContext* const context,
     return addJSONData(context, "\"", 1);
 }
 
-int ksjson_appendStringElement(RollbarCrashJSONEncodeContext* const context,
+int rcjson_appendStringElement(RollbarCrashJSONEncodeContext* const context,
                                const char* const value,
                                int length)
 {
     return addEscapedString(context, value, length);
 }
 
-int ksjson_endStringElement(RollbarCrashJSONEncodeContext* const context)
+int rcjson_endStringElement(RollbarCrashJSONEncodeContext* const context)
 {
     return addJSONData(context, "\"", 1);
 }
 
-int ksjson_addDataElement(RollbarCrashJSONEncodeContext* const context,
+int rcjson_addDataElement(RollbarCrashJSONEncodeContext* const context,
                           const char* name,
                           const char* value,
                           int length)
 {
     int result = RollbarCrashJSON_OK;
-    result = ksjson_beginDataElement(context, name);
+    result = rcjson_beginDataElement(context, name);
     if(result == RollbarCrashJSON_OK)
     {
-        result = ksjson_appendDataElement(context, value, length);
+        result = rcjson_appendDataElement(context, value, length);
     }
     if(result == RollbarCrashJSON_OK)
     {
-        result = ksjson_endDataElement(context);
+        result = rcjson_endDataElement(context);
     }
     return result;
 }
 
-int ksjson_beginDataElement(RollbarCrashJSONEncodeContext* const context,
+int rcjson_beginDataElement(RollbarCrashJSONEncodeContext* const context,
                             const char* const name)
 {
-    return ksjson_beginStringElement(context, name);
+    return rcjson_beginStringElement(context, name);
 }
 
-int ksjson_appendDataElement(RollbarCrashJSONEncodeContext* const context,
+int rcjson_appendDataElement(RollbarCrashJSONEncodeContext* const context,
                              const char* const value,
                              int length)
 {
@@ -481,17 +481,17 @@ int ksjson_appendDataElement(RollbarCrashJSONEncodeContext* const context,
     return result;
 }
 
-int ksjson_endDataElement(RollbarCrashJSONEncodeContext* const context)
+int rcjson_endDataElement(RollbarCrashJSONEncodeContext* const context)
 {
-    return ksjson_endStringElement(context);
+    return rcjson_endStringElement(context);
 }
 
-int ksjson_beginArray(RollbarCrashJSONEncodeContext* const context,
+int rcjson_beginArray(RollbarCrashJSONEncodeContext* const context,
                       const char* const name)
 {
     likely_if(context->containerLevel >= 0)
     {
-        int result = ksjson_beginElement(context, name);
+        int result = rcjson_beginElement(context, name);
         unlikely_if(result != RollbarCrashJSON_OK)
         {
             return result;
@@ -505,12 +505,12 @@ int ksjson_beginArray(RollbarCrashJSONEncodeContext* const context,
     return addJSONData(context, "[", 1);
 }
 
-int ksjson_beginObject(RollbarCrashJSONEncodeContext* const context,
+int rcjson_beginObject(RollbarCrashJSONEncodeContext* const context,
                        const char* const name)
 {
     likely_if(context->containerLevel >= 0)
     {
-        int result = ksjson_beginElement(context, name);
+        int result = rcjson_beginElement(context, name);
         unlikely_if(result != RollbarCrashJSON_OK)
         {
             return result;
@@ -524,7 +524,7 @@ int ksjson_beginObject(RollbarCrashJSONEncodeContext* const context,
     return addJSONData(context, "{", 1);
 }
 
-int ksjson_endContainer(RollbarCrashJSONEncodeContext* const context)
+int rcjson_endContainer(RollbarCrashJSONEncodeContext* const context)
 {
     unlikely_if(context->containerLevel <= 0)
     {
@@ -554,7 +554,7 @@ int ksjson_endContainer(RollbarCrashJSONEncodeContext* const context)
     return addJSONData(context, isObject ? "}" : "]", 1);
 }
 
-void ksjson_beginEncode(RollbarCrashJSONEncodeContext* const context,
+void rcjson_beginEncode(RollbarCrashJSONEncodeContext* const context,
                         bool prettyPrint,
                         RollbarCrashJSONAddDataFunc addJSONDataFunc,
                         void* const userData)
@@ -566,12 +566,12 @@ void ksjson_beginEncode(RollbarCrashJSONEncodeContext* const context,
     context->containerFirstEntry = true;
 }
 
-int ksjson_endEncode(RollbarCrashJSONEncodeContext* const context)
+int rcjson_endEncode(RollbarCrashJSONEncodeContext* const context)
 {
     int result = RollbarCrashJSON_OK;
     while(context->containerLevel > 0)
     {
-        unlikely_if((result = ksjson_endContainer(context)) != RollbarCrashJSON_OK)
+        unlikely_if((result = rcjson_endContainer(context)) != RollbarCrashJSON_OK)
         {
             return result;
         }
@@ -602,7 +602,7 @@ typedef struct
     int stringBufferLength;
     /** The callbacks to call while decoding. */
     RollbarCrashJSONDecodeCallbacks* const callbacks;
-    /** Data that was specified when calling ksjson_decode(). */
+    /** Data that was specified when calling rcjson_decode(). */
     void* userData;
 } RollbarCrashJSONDecodeContext;
 
@@ -1133,7 +1133,7 @@ static int decodeElement(const char* const name, RollbarCrashJSONDecodeContext* 
     return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
 }
 
-int ksjson_decode(const char* const data,
+int rcjson_decode(const char* const data,
                   int length,
                   char* stringBuffer,
                   int stringBufferLength,
@@ -1224,7 +1224,7 @@ static int addJSONFromFile_onBooleanElement(const char* const name,
                                             void* const userData)
 {
     JSONFromFileContext* context = (JSONFromFileContext*)userData;
-    int result = ksjson_addBooleanElement(context->encodeContext, name, value);
+    int result = rcjson_addBooleanElement(context->encodeContext, name, value);
     context->updateDecoderCallback(context);
     return result;
 }
@@ -1234,7 +1234,7 @@ static int addJSONFromFile_onFloatingPointElement(const char* const name,
                                                   void* const userData)
 {
     JSONFromFileContext* context = (JSONFromFileContext*)userData;
-    int result = ksjson_addFloatingPointElement(context->encodeContext, name, value);
+    int result = rcjson_addFloatingPointElement(context->encodeContext, name, value);
     context->updateDecoderCallback(context);
     return result;
 }
@@ -1244,7 +1244,7 @@ static int addJSONFromFile_onIntegerElement(const char* const name,
                                             void* const userData)
 {
     JSONFromFileContext* context = (JSONFromFileContext*)userData;
-    int result = ksjson_addIntegerElement(context->encodeContext, name, value);
+    int result = rcjson_addIntegerElement(context->encodeContext, name, value);
     context->updateDecoderCallback(context);
     return result;
 }
@@ -1253,7 +1253,7 @@ static int addJSONFromFile_onNullElement(const char* const name,
                                          void* const userData)
 {
     JSONFromFileContext* context = (JSONFromFileContext*)userData;
-    int result = ksjson_addNullElement(context->encodeContext, name);
+    int result = rcjson_addNullElement(context->encodeContext, name);
     context->updateDecoderCallback(context);
     return result;
 }
@@ -1263,7 +1263,7 @@ static int addJSONFromFile_onStringElement(const char* const name,
                                            void* const userData)
 {
     JSONFromFileContext* context = (JSONFromFileContext*)userData;
-    int result = ksjson_addStringElement(context->encodeContext, name, value, (int)strlen(value));
+    int result = rcjson_addStringElement(context->encodeContext, name, value, (int)strlen(value));
     context->updateDecoderCallback(context);
     return result;
 }
@@ -1272,7 +1272,7 @@ static int addJSONFromFile_onBeginObject(const char* const name,
                                          void* const userData)
 {
     JSONFromFileContext* context = (JSONFromFileContext*)userData;
-    int result = ksjson_beginObject(context->encodeContext, name);
+    int result = rcjson_beginObject(context->encodeContext, name);
     context->updateDecoderCallback(context);
     return result;
 }
@@ -1281,7 +1281,7 @@ static int addJSONFromFile_onBeginArray(const char* const name,
                                         void* const userData)
 {
     JSONFromFileContext* context = (JSONFromFileContext*)userData;
-    int result = ksjson_beginArray(context->encodeContext, name);
+    int result = rcjson_beginArray(context->encodeContext, name);
     context->updateDecoderCallback(context);
     return result;
 }
@@ -1292,7 +1292,7 @@ static int addJSONFromFile_onEndContainer(void* const userData)
     int result = RollbarCrashJSON_OK;
     if(context->closeLastContainer || context->encodeContext->containerLevel > 2)
     {
-        result = ksjson_endContainer(context->encodeContext);
+        result = rcjson_endContainer(context->encodeContext);
     }
     context->updateDecoderCallback(context);
     return result;
@@ -1303,7 +1303,7 @@ static int addJSONFromFile_onEndData(__unused void* const userData)
     return RollbarCrashJSON_OK;
 }
 
-int ksjson_addJSONFromFile(RollbarCrashJSONEncodeContext* const encodeContext,
+int rcjson_addJSONFromFile(RollbarCrashJSONEncodeContext* const encodeContext,
                            const char* restrict const name,
                            const char* restrict const filename,
                            const bool closeLastContainer)
@@ -1358,13 +1358,13 @@ int ksjson_addJSONFromFile(RollbarCrashJSONEncodeContext* const encodeContext,
     close(fd);
     while(closeLastContainer && encodeContext->containerLevel > containerLevel)
     {
-        ksjson_endContainer(encodeContext);
+        rcjson_endContainer(encodeContext);
     }
 
     return result;
 }
 
-int ksjson_addJSONElement(RollbarCrashJSONEncodeContext* const encodeContext,
+int rcjson_addJSONElement(RollbarCrashJSONEncodeContext* const encodeContext,
                           const char* restrict const name,
                           const char* restrict const jsonData,
                           const int jsonDataLength,
@@ -1413,7 +1413,7 @@ int ksjson_addJSONElement(RollbarCrashJSONEncodeContext* const encodeContext,
     int result = decodeElement(name, &decodeContext);
     while(closeLastContainer && encodeContext->containerLevel > containerLevel)
     {
-        ksjson_endContainer(encodeContext);
+        rcjson_endContainer(encodeContext);
     }
     
     return result;

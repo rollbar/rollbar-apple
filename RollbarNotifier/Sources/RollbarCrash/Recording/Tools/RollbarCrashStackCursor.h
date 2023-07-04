@@ -95,7 +95,7 @@ typedef struct RollbarCrashStackCursor
  *
  * @param advanceCursor Function to advance the cursor (NULL = default: Do nothing and return false).
  */
-void kssc_initCursor(RollbarCrashStackCursor *cursor,
+void rcsc_initCursor(RollbarCrashStackCursor *cursor,
                      void (*resetCursor)(RollbarCrashStackCursor*),
                      bool (*advanceCursor)(RollbarCrashStackCursor*));
 
@@ -104,7 +104,7 @@ void kssc_initCursor(RollbarCrashStackCursor *cursor,
  *
  * @param cursor The cursor to reset.
  */
-void kssc_resetCursor(RollbarCrashStackCursor *cursor);
+void rcsc_resetCursor(RollbarCrashStackCursor *cursor);
 
     
 #ifdef __cplusplus

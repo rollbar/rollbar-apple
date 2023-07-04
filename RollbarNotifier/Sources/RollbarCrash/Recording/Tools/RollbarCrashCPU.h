@@ -41,7 +41,7 @@ extern "C" {
  *
  * @return The current architecture.
  */
-const char* kscpu_currentArch(void);
+const char* rccpu_currentArch(void);
 
 /** Get the frame pointer for a machine context.
  * The frame pointer marks the top of the call stack.
@@ -50,7 +50,7 @@ const char* kscpu_currentArch(void);
  *
  * @return The context's frame pointer.
  */
-uintptr_t kscpu_framePointer(const struct RollbarCrashMachineContext* const context);
+uintptr_t rccpu_framePointer(const struct RollbarCrashMachineContext* const context);
 
 /** Get the current stack pointer for a machine context.
  *
@@ -58,7 +58,7 @@ uintptr_t kscpu_framePointer(const struct RollbarCrashMachineContext* const cont
  *
  * @return The context's stack pointer.
  */
-uintptr_t kscpu_stackPointer(const struct RollbarCrashMachineContext* const context);
+uintptr_t rccpu_stackPointer(const struct RollbarCrashMachineContext* const context);
 
 /** Get the address of the instruction about to be, or being executed by a
  * machine context.
@@ -67,7 +67,7 @@ uintptr_t kscpu_stackPointer(const struct RollbarCrashMachineContext* const cont
  *
  * @return The context's next instruction address.
  */
-uintptr_t kscpu_instructionAddress(const struct RollbarCrashMachineContext* const context);
+uintptr_t rccpu_instructionAddress(const struct RollbarCrashMachineContext* const context);
 
 /** Get the address stored in the link register (arm only). This may
  * contain the first return address of the stack.
@@ -76,7 +76,7 @@ uintptr_t kscpu_instructionAddress(const struct RollbarCrashMachineContext* cons
  *
  * @return The link register value.
  */
-uintptr_t kscpu_linkRegister(const struct RollbarCrashMachineContext* const context);
+uintptr_t rccpu_linkRegister(const struct RollbarCrashMachineContext* const context);
 
 /** Get the address whose access caused the last fault.
  *
@@ -84,14 +84,14 @@ uintptr_t kscpu_linkRegister(const struct RollbarCrashMachineContext* const cont
  *
  * @return The faulting address.
  */
-uintptr_t kscpu_faultAddress(const struct RollbarCrashMachineContext* const context);
+uintptr_t rccpu_faultAddress(const struct RollbarCrashMachineContext* const context);
 
 /** Get the number of normal (not floating point or exception) registers the
  *  currently running CPU has.
  *
  * @return The number of registers.
  */
-int kscpu_numRegisters(void);
+int rccpu_numRegisters(void);
 
 /** Get the name of a normal register.
  *
@@ -99,7 +99,7 @@ int kscpu_numRegisters(void);
  *
  * @return The register's name or NULL if not found.
  */
-const char* kscpu_registerName(int regNumber);
+const char* rccpu_registerName(int regNumber);
 
 /** Get the value stored in a normal register.
  *
@@ -107,13 +107,13 @@ const char* kscpu_registerName(int regNumber);
  *
  * @return The register's current value.
  */
-uint64_t kscpu_registerValue(const struct RollbarCrashMachineContext* const context, int regNumber);
+uint64_t rccpu_registerValue(const struct RollbarCrashMachineContext* const context, int regNumber);
 
 /** Get the number of exception registers the currently running CPU has.
  *
  * @return The number of registers.
  */
-int kscpu_numExceptionRegisters(void);
+int rccpu_numExceptionRegisters(void);
 
 /** Get the name of an exception register.
  *
@@ -121,7 +121,7 @@ int kscpu_numExceptionRegisters(void);
  *
  * @return The register's name or NULL if not found.
  */
-const char* kscpu_exceptionRegisterName(int regNumber);
+const char* rccpu_exceptionRegisterName(int regNumber);
 
 /** Get the value stored in an exception register.
  *
@@ -129,19 +129,19 @@ const char* kscpu_exceptionRegisterName(int regNumber);
  *
  * @return The register's current value.
  */
-uint64_t kscpu_exceptionRegisterValue(const struct RollbarCrashMachineContext* const context, int regNumber);
+uint64_t rccpu_exceptionRegisterValue(const struct RollbarCrashMachineContext* const context, int regNumber);
 
 /** Get the direction in which the stack grows on the current architecture.
  *
  * @return 1 or -1, depending on which direction the stack grows in.
  */
-int kscpu_stackGrowDirection(void);
+int rccpu_stackGrowDirection(void);
 
 /** Fetch the CPU state for this context and store it in the context.
  *
  * @param destinationContext The context to fill.
  */
-void kscpu_getState(struct RollbarCrashMachineContext* destinationContext);
+void rccpu_getState(struct RollbarCrashMachineContext* destinationContext);
 
 /** Strip PAC from an instruction pointer.
  *
@@ -149,7 +149,7 @@ void kscpu_getState(struct RollbarCrashMachineContext* destinationContext);
  *
  * @return Instruction pointer without PAC.
  */
-uintptr_t kscpu_normaliseInstructionPointer(uintptr_t ip);
+uintptr_t rccpu_normaliseInstructionPointer(uintptr_t ip);
     
 #ifdef __cplusplus
 }

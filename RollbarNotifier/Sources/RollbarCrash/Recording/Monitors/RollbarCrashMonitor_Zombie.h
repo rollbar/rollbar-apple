@@ -55,11 +55,11 @@ extern "C" {
  *
  * @return The object's class name, or NULL if it wasn't found.
  */
-const char* kszombie_className(const void* object);
+const char* rczombie_className(const void* object);
 
 /** Access the Monitor API.
  */
-RollbarCrashMonitorAPI* kscm_zombie_getAPI(void);
+RollbarCrashMonitorAPI* rcm_zombie_getAPI(void);
 
 
 #ifdef __cplusplus

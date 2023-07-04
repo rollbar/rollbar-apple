@@ -133,7 +133,7 @@ static const int g_fatalSignals[] =
     SIGTRAP,
 };
 
-const char* kssignal_signalName(const int sigNum)
+const char* rcsignal_signalName(const int sigNum)
 {
     for(int i = 0; i < g_fatalSignalsCount; i++)
     {
@@ -145,7 +145,7 @@ const char* kssignal_signalName(const int sigNum)
     return NULL;
 }
 
-const char* kssignal_signalCodeName(const int sigNum, const int code)
+const char* rcsignal_signalCodeName(const int sigNum, const int code)
 {
     for(int si = 0; si < g_fatalSignalsCount; si++)
     {
@@ -163,12 +163,12 @@ const char* kssignal_signalCodeName(const int sigNum, const int code)
     return NULL;
 }
 
-const int* kssignal_fatalSignals(void)
+const int* rcsignal_fatalSignals(void)
 {
     return g_fatalSignals;
 }
 
-int kssignal_numFatalSignals(void)
+int rcsignal_numFatalSignals(void)
 {
     return g_fatalSignalsCount;
 }

@@ -53,7 +53,7 @@ static int g_reservedThreadsCount = 0;
 static inline bool isStackOverflow(const RollbarCrashMachineContext* const context)
 {
     RollbarCrashStackCursor stackCursor;
-    kssc_initWithMachineContext(&stackCursor, RollbarCrashSC_STACK_OVERFLOW_THRESHOLD, context);
+    rcsc_initWithMachineContext(&stackCursor, RollbarCrashSC_STACK_OVERFLOW_THRESHOLD, context);
     while(stackCursor.advanceCursor(&stackCursor))
     {
     }
@@ -96,29 +96,29 @@ static inline bool getThreadList(RollbarCrashMachineContext* context)
     return true;
 }
 
-int ksmc_contextSize()
+int rcmc_contextSize()
 {
     return sizeof(RollbarCrashMachineContext);
 }
 
-RollbarCrashThread ksmc_getThreadFromContext(const RollbarCrashMachineContext* const context)
+RollbarCrashThread rcmc_getThreadFromContext(const RollbarCrashMachineContext* const context)
 {
     return context->thisThread;
 }
 
-bool ksmc_getContextForThread(RollbarCrashThread thread, RollbarCrashMachineContext* destinationContext, bool isCrashedContext)
+bool rcmc_getContextForThread(RollbarCrashThread thread, RollbarCrashMachineContext* destinationContext, bool isCrashedContext)
 {
     RollbarCrashLOG_DEBUG("Fill thread 0x%x context into %p. is crashed = %d", thread, destinationContext, isCrashedContext);
     memset(destinationContext, 0, sizeof(*destinationContext));
     destinationContext->thisThread = (thread_t)thread;
-    destinationContext->isCurrentThread = thread == ksthread_self();
+    destinationContext->isCurrentThread = thread == rcthread_self();
     destinationContext->isCrashedContext = isCrashedContext;
     destinationContext->isSignalContext = false;
-    if(ksmc_canHaveCPUState(destinationContext))
+    if(rcmc_canHaveCPUState(destinationContext))
     {
-        kscpu_getState(destinationContext);
+        rccpu_getState(destinationContext);
     }
-    if(ksmc_isCrashedContext(destinationContext))
+    if(rcmc_isCrashedContext(destinationContext))
     {
         destinationContext->isStackOverflow = isStackOverflow(destinationContext);
         getThreadList(destinationContext);
@@ -127,12 +127,12 @@ bool ksmc_getContextForThread(RollbarCrashThread thread, RollbarCrashMachineCont
     return true;
 }
 
-bool ksmc_getContextForSignal(void* signalUserContext, RollbarCrashMachineContext* destinationContext)
+bool rcmc_getContextForSignal(void* signalUserContext, RollbarCrashMachineContext* destinationContext)
 {
     RollbarCrashLOG_DEBUG("Get context from signal user context and put into %p.", destinationContext);
     _STRUCT_MCONTEXT* sourceContext = ((SignalUserContext*)signalUserContext)->UC_MCONTEXT;
     memcpy(&destinationContext->machineContext, sourceContext, sizeof(destinationContext->machineContext));
-    destinationContext->thisThread = (thread_t)ksthread_self();
+    destinationContext->thisThread = (thread_t)rcthread_self();
     destinationContext->isCrashedContext = true;
     destinationContext->isSignalContext = true;
     destinationContext->isStackOverflow = isStackOverflow(destinationContext);
@@ -141,7 +141,7 @@ bool ksmc_getContextForSignal(void* signalUserContext, RollbarCrashMachineContex
     return true;
 }
 
-void ksmc_addReservedThread(RollbarCrashThread thread)
+void rcmc_addReservedThread(RollbarCrashThread thread)
 {
     int nextIndex = g_reservedThreadsCount;
     if(nextIndex > g_reservedThreadsMaxIndex)
@@ -166,13 +166,13 @@ static inline bool isThreadInList(thread_t thread, RollbarCrashThread* list, int
 }
 #endif
 
-void ksmc_suspendEnvironment(__unused thread_act_array_t *suspendedThreads, __unused mach_msg_type_number_t *numSuspendedThreads)
+void rcmc_suspendEnvironment(__unused thread_act_array_t *suspendedThreads, __unused mach_msg_type_number_t *numSuspendedThreads)
 {
 #if RollbarCrashCRASH_HAS_THREADS_API
     RollbarCrashLOG_DEBUG("Suspending environment.");
     kern_return_t kr;
     const task_t thisTask = mach_task_self();
-    const thread_t thisThread = (thread_t)ksthread_self();
+    const thread_t thisThread = (thread_t)rcthread_self();
     
     if((kr = task_threads(thisTask, suspendedThreads, numSuspendedThreads)) != KERN_SUCCESS)
     {
@@ -197,17 +197,17 @@ void ksmc_suspendEnvironment(__unused thread_act_array_t *suspendedThreads, __un
 #endif
 }
 
-void ksmc_resumeEnvironment(__unused thread_act_array_t threads, __unused mach_msg_type_number_t numThreads)
+void rcmc_resumeEnvironment(__unused thread_act_array_t threads, __unused mach_msg_type_number_t numThreads)
 {
 #if RollbarCrashCRASH_HAS_THREADS_API
     RollbarCrashLOG_DEBUG("Resuming environment.");
     kern_return_t kr;
     const task_t thisTask = mach_task_self();
-    const thread_t thisThread = (thread_t)ksthread_self();
+    const thread_t thisThread = (thread_t)rcthread_self();
     
     if(threads == NULL || numThreads == 0)
     {
-        RollbarCrashLOG_ERROR("we should call ksmc_suspendEnvironment() first");
+        RollbarCrashLOG_ERROR("we should call rcmc_suspendEnvironment() first");
         return;
     }
     
@@ -234,18 +234,18 @@ void ksmc_resumeEnvironment(__unused thread_act_array_t threads, __unused mach_m
 #endif
 }
 
-int ksmc_getThreadCount(const RollbarCrashMachineContext* const context)
+int rcmc_getThreadCount(const RollbarCrashMachineContext* const context)
 {
     return context->threadCount;
 }
 
-RollbarCrashThread ksmc_getThreadAtIndex(const RollbarCrashMachineContext* const context, int index)
+RollbarCrashThread rcmc_getThreadAtIndex(const RollbarCrashMachineContext* const context, int index)
 {
     return context->allThreads[index];
     
 }
 
-int ksmc_indexOfThread(const RollbarCrashMachineContext* const context, RollbarCrashThread thread)
+int rcmc_indexOfThread(const RollbarCrashMachineContext* const context, RollbarCrashThread thread)
 {
     RollbarCrashLOG_TRACE("check thread vs %d threads", context->threadCount);
     for(int i = 0; i < (int)context->threadCount; i++)
@@ -259,7 +259,7 @@ int ksmc_indexOfThread(const RollbarCrashMachineContext* const context, RollbarC
     return -1;
 }
 
-bool ksmc_isCrashedContext(const RollbarCrashMachineContext* const context)
+bool rcmc_isCrashedContext(const RollbarCrashMachineContext* const context)
 {
     return context->isCrashedContext;
 }
@@ -274,12 +274,12 @@ static inline bool isSignalContext(const RollbarCrashMachineContext* const conte
     return context->isSignalContext;
 }
 
-bool ksmc_canHaveCPUState(const RollbarCrashMachineContext* const context)
+bool rcmc_canHaveCPUState(const RollbarCrashMachineContext* const context)
 {
     return !isContextForCurrentThread(context) || isSignalContext(context);
 }
 
-bool ksmc_hasValidExceptionRegisters(const RollbarCrashMachineContext* const context)
+bool rcmc_hasValidExceptionRegisters(const RollbarCrashMachineContext* const context)
 {
-    return ksmc_canHaveCPUState(context) && ksmc_isCrashedContext(context);
+    return rcmc_canHaveCPUState(context) && rcmc_isCrashedContext(context);
 }

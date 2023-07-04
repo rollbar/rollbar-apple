@@ -113,7 +113,7 @@ static inline bool isMemoryReadable(const void* const memory, const int byteCoun
     return bytesRemaining == 0;
 }
 
-int ksmem_maxReadableBytes(const void* const memory, const int tryByteCount)
+int rcmem_maxReadableBytes(const void* const memory, const int tryByteCount)
 {
     const int testBufferSize = sizeof(g_memoryTestBuffer);
     const uint8_t* currentPosition = memory;
@@ -132,17 +132,17 @@ int ksmem_maxReadableBytes(const void* const memory, const int tryByteCount)
     return tryByteCount - bytesRemaining;
 }
 
-bool ksmem_isMemoryReadable(const void* const memory, const int byteCount)
+bool rcmem_isMemoryReadable(const void* const memory, const int byteCount)
 {
     return isMemoryReadable(memory, byteCount);
 }
 
-int ksmem_copyMaxPossible(const void* restrict const src, void* restrict const dst, const int byteCount)
+int rcmem_copyMaxPossible(const void* restrict const src, void* restrict const dst, const int byteCount)
 {
     return copyMaxPossible(src, dst, byteCount);
 }
 
-bool ksmem_copySafely(const void* restrict const src, void* restrict const dst, const int byteCount)
+bool rcmem_copySafely(const void* restrict const src, void* restrict const dst, const int byteCount)
 {
     return copySafely(src, dst, byteCount);
 }

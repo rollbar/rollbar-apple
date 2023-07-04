@@ -50,7 +50,7 @@ extern "C" {
  *
  * @return The crash types that are being handled.
  */
-RollbarCrashMonitorType kscrash_install(const char* appName, const char* const installPath);
+RollbarCrashMonitorType rc_install(const char* appName, const char* const installPath);
 
 /** Set the crash types that will be handled.
  * Some crash types may not be enabled depending on circumstances (e.g. running
@@ -63,14 +63,14 @@ RollbarCrashMonitorType kscrash_install(const char* appName, const char* const i
  *         successfully installed. Otherwise it represents which monitors it
  *         will attempt to activate when RollbarCrash installs.
  */
-RollbarCrashMonitorType kscrash_setMonitoring(RollbarCrashMonitorType monitors);
+RollbarCrashMonitorType rc_setMonitoring(RollbarCrashMonitorType monitors);
 
 /** Set the user-supplied data in JSON format.
  *
  * @param userInfoJSON Pre-baked JSON containing user-supplied information.
  *                     NULL = delete.
  */
-void kscrash_setUserInfoJSON(const char* const userInfoJSON);
+void rc_setUserInfoJSON(const char* const userInfoJSON);
 
 /** Set the maximum time to allow the main thread to run without returning.
  * If a task occupies the main thread for longer than this interval, the
@@ -87,17 +87,17 @@ void kscrash_setUserInfoJSON(const char* const userInfoJSON);
  *
  * Default: 0
  */
-void kscrash_setDeadlockWatchdogInterval(double deadlockWatchdogInterval);
+void rc_setDeadlockWatchdogInterval(double deadlockWatchdogInterval);
 
 /** If true, attempt to fetch dispatch queue names for each running thread.
  *
- * WARNING: There is a chance that this will crash on a ksthread_getQueueName() call!
+ * WARNING: There is a chance that this will crash on a rcthread_getQueueName() call!
  *
  * Enable at your own risk.
  *
  * Default: false
  */
-void kscrash_setSearchQueueNames(bool searchQueueNames);
+void rc_setSearchQueueNames(bool searchQueueNames);
 
 /** If true, introspect memory contents during a crash.
  * Any Objective-C objects or C strings near the stack pointer or referenced by
@@ -106,7 +106,7 @@ void kscrash_setSearchQueueNames(bool searchQueueNames);
  *
  * Default: false
  */
-void kscrash_setIntrospectMemory(bool introspectMemory);
+void rc_setIntrospectMemory(bool introspectMemory);
 
 /** List of Objective-C classes that should never be introspected.
  * Whenever a class in this list is encountered, only the class name will be recorded.
@@ -114,7 +114,7 @@ void kscrash_setIntrospectMemory(bool introspectMemory);
  *
  * Default: NULL
  */
-void kscrash_setDoNotIntrospectClasses(const char** doNotIntrospectClasses, int length);
+void rc_setDoNotIntrospectClasses(const char** doNotIntrospectClasses, int length);
 
 /** Set the callback to invoke upon a crash.
  *
@@ -127,7 +127,7 @@ void kscrash_setDoNotIntrospectClasses(const char** doNotIntrospectClasses, int 
  *
  * Default: NULL
  */
-void kscrash_setCrashNotifyCallback(const RollbarCrashReportWriteCallback onCrashNotify);
+void rc_setCrashNotifyCallback(const RollbarCrashReportWriteCallback onCrashNotify);
 
 typedef void (*RollbarCrashReportWrittenCallback)(int64_t reportID);
 
@@ -140,24 +140,24 @@ typedef void (*RollbarCrashReportWrittenCallback)(int64_t reportID);
  *                      give the callee an opportunity to react to the report.
  *                      NULL = ignore.
  */
-void kscrash_setReportWrittenCallback(const RollbarCrashReportWrittenCallback onReportWrittenNotify);
+void rc_setReportWrittenCallback(const RollbarCrashReportWrittenCallback onReportWrittenNotify);
 
 /** Set if RollbarCrashLOG console messages should be appended to the report.
  *
  * @param shouldAddConsoleLogToReport If true, add the log to the report.
  */
-void kscrash_setAddConsoleLogToReport(bool shouldAddConsoleLogToReport);
+void rc_setAddConsoleLogToReport(bool shouldAddConsoleLogToReport);
 
 /** Set if RollbarCrash should print the previous log to the console on startup.
  *  This is for debugging purposes.
  */
-void kscrash_setPrintPreviousLog(bool shouldPrintPreviousLog);
+void rc_setPrintPreviousLog(bool shouldPrintPreviousLog);
 
 /** Set the maximum number of reports allowed on disk before old ones get deleted.
  *
  * @param maxReportCount The maximum number of reports.
  */
-void kscrash_setMaxReportCount(int maxReportCount);
+void rc_setMaxReportCount(int maxReportCount);
 
 /** Report a custom, user defined exception.
  * This can be useful when dealing with scripting languages.
@@ -181,7 +181,7 @@ void kscrash_setMaxReportCount(int maxReportCount);
  *
  * @param terminateProgram If true, do not return from this function call. Terminate the program instead.
  */
-void kscrash_reportUserException(const char* name,
+void rc_reportUserException(const char* name,
                                  const char* reason,
                                  const char* language,
                                  const char* lineOfCode,
@@ -200,35 +200,35 @@ void enableSwapCxaThrow(void);
 
 /** Notify the crash reporter of RollbarCrash being added to Objective-C runtime system.
  */
-void kscrash_notifyObjCLoad(void);
+void rc_notifyObjCLoad(void);
 
 /** Notify the crash reporter of the application active state.
  *
  * @param isActive true if the application is active, otherwise false.
  */
-void kscrash_notifyAppActive(bool isActive);
+void rc_notifyAppActive(bool isActive);
 
 /** Notify the crash reporter of the application foreground/background state.
  *
  * @param isInForeground true if the application is in the foreground, false if
  *                 it is in the background.
  */
-void kscrash_notifyAppInForeground(bool isInForeground);
+void rc_notifyAppInForeground(bool isInForeground);
 
 /** Notify the crash reporter that the application is terminating.
  */
-void kscrash_notifyAppTerminate(void);
+void rc_notifyAppTerminate(void);
 
 /** Notify the crash reporter that the application has crashed.
  */
-void kscrash_notifyAppCrash(void);
+void rc_notifyAppCrash(void);
 
     
 #pragma mark -- Reporting --
 
 /** Get the number of reports on disk.
  */
-int kscrash_getReportCount(void);
+int rc_getReportCount(void);
 
 /** Get a list of IDs for all reports on disk.
  *
@@ -237,7 +237,7 @@ int kscrash_getReportCount(void);
  *
  * @return The number of report IDs that were placed in the array.
  */
-int kscrash_getReportIDs(int64_t* reportIDs, int count);
+int rc_getReportIDs(int64_t* reportIDs, int count);
 
 /** Read a report.
  *
@@ -246,7 +246,7 @@ int kscrash_getReportIDs(int64_t* reportIDs, int count);
  * @return The NULL terminated report, or NULL if not found.
  *         MEMORY MANAGEMENT WARNING: User is responsible for calling free() on the returned value.
  */
-char* kscrash_readReport(int64_t reportID);
+char* rc_readReport(int64_t reportID);
 
 /** Add a custom report to the store.
  *
@@ -255,17 +255,17 @@ char* kscrash_readReport(int64_t reportID);
  *
  * @return the new report's ID.
  */
-int64_t kscrash_addUserReport(const char* report, int reportLength);
+int64_t rc_addUserReport(const char* report, int reportLength);
 
 /** Delete all reports on disk.
  */
-void kscrash_deleteAllReports(void);
+void rc_deleteAllReports(void);
 
 /** Delete report.
  *
  * @param reportID An ID of report to delete.
  */
-void kscrash_deleteReportWithID(int64_t reportID);
+void rc_deleteReportWithID(int64_t reportID);
 
 
 #ifdef __cplusplus

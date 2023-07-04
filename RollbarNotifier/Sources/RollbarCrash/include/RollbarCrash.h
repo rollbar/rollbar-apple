@@ -101,7 +101,7 @@ typedef enum
 
 /** If YES, attempt to fetch dispatch queue names for each running thread.
  *
- * WARNING: There is a chance that this will crash on a ksthread_getQueueName() call!
+ * WARNING: There is a chance that this will crash on a rcthread_getQueueName() call!
  *
  * Enable at your own risk.
  *

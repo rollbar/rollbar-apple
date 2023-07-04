@@ -29,15 +29,15 @@
 
 #include "RollbarCrashThread.h"
 
-void ksccd_init(int pollingIntervalInSeconds);
+void rcccd_init(int pollingIntervalInSeconds);
 
-void ksccd_freeze(void);
-void ksccd_unfreeze(void);
+void rcccd_freeze(void);
+void rcccd_unfreeze(void);
 
-void ksccd_setSearchQueueNames(bool searchQueueNames);
+void rcccd_setSearchQueueNames(bool searchQueueNames);
 
-RollbarCrashThread* ksccd_getAllThreads(int* threadCount);
+RollbarCrashThread* rcccd_getAllThreads(int* threadCount);
 
-const char* ksccd_getThreadName(RollbarCrashThread thread);
+const char* rcccd_getThreadName(RollbarCrashThread thread);
 
-const char* ksccd_getQueueName(RollbarCrashThread thread);
+const char* rcccd_getQueueName(RollbarCrashThread thread);

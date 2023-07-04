@@ -49,7 +49,7 @@ typedef uintptr_t RollbarCrashThread;
  *
  * @return true if a name was found.
  */
-bool ksthread_getThreadName(const RollbarCrashThread thread, char* const buffer, int bufLength);
+bool rcthread_getThreadName(const RollbarCrashThread thread, char* const buffer, int bufLength);
 
 /** Get the name of a thread's dispatch queue. Internally, a queue name will
  * never be more than 64 characters long.
@@ -62,7 +62,7 @@ bool ksthread_getThreadName(const RollbarCrashThread thread, char* const buffer,
  *
  * @return true if a name or label was found.
  */
-bool ksthread_getQueueName(RollbarCrashThread thread, char* buffer, int bufLength);
+bool rcthread_getQueueName(RollbarCrashThread thread, char* buffer, int bufLength);
 
 /* Get the current mach thread ID.
  * mach_thread_self() receives a send right for the thread port which needs to
@@ -71,7 +71,7 @@ bool ksthread_getQueueName(RollbarCrashThread thread, char* buffer, int bufLengt
  *
  * @return The current thread ID.
  */
-RollbarCrashThread ksthread_self(void);
+RollbarCrashThread rcthread_self(void);
 
 
 #ifdef __cplusplus

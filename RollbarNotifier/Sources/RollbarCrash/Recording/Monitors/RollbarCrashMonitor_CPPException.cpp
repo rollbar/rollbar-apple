@@ -81,7 +81,7 @@ static void captureStackTrace(void*, std::type_info*, void (*)(void*))
 {
     if(g_captureNextStackTrace)
     {
-        kssc_initSelfThread(&g_stackCursor, 2);
+        rcsc_initSelfThread(&g_stackCursor, 2);
     }
 }
 
@@ -111,7 +111,7 @@ static void CPPExceptionTerminate(void)
 {
     thread_act_array_t threads = NULL;
     mach_msg_type_number_t numThreads = 0;
-    ksmc_suspendEnvironment(&threads, &numThreads);
+    rcmc_suspendEnvironment(&threads, &numThreads);
     RollbarCrashLOG_DEBUG("Trapped c++ exception");
     const char* name = NULL;
     std::type_info* tinfo = __cxxabiv1::__cxa_current_exception_type();
@@ -122,7 +122,7 @@ static void CPPExceptionTerminate(void)
     
     if(name == NULL || strcmp(name, "NSException") != 0)
     {
-        kscm_notifyFatalExceptionCaptured(false);
+        rcm_notifyFatalExceptionCaptured(false);
         RollbarCrash_MonitorContext* crashContext = &g_monitorContext;
         memset(crashContext, 0, sizeof(*crashContext));
 
@@ -167,7 +167,7 @@ catch(TYPE value)\
 
         // TODO: Should this be done here? Maybe better in the exception handler?
         RollbarCrashMC_NEW_CONTEXT(machineContext);
-        ksmc_getContextForThread(ksthread_self(), machineContext, true);
+        rcmc_getContextForThread(rcthread_self(), machineContext, true);
 
         RollbarCrashLOG_DEBUG("Filling out context.");
         crashContext->crashType = RollbarCrashMonitorTypeCPPException;
@@ -179,13 +179,13 @@ catch(TYPE value)\
         crashContext->crashReason = description;
         crashContext->offendingMachineContext = machineContext;
 
-        kscm_handleException(crashContext);
+        rcm_handleException(crashContext);
     }
     else
     {
         RollbarCrashLOG_DEBUG("Detected NSException. Letting the current NSException handler deal with it.");
     }
-    ksmc_resumeEnvironment(threads, numThreads);
+    rcmc_resumeEnvironment(threads, numThreads);
 
     RollbarCrashLOG_DEBUG("Calling original terminate handler.");
     g_originalTerminateHandler();
@@ -202,7 +202,7 @@ static void initialize()
     if(!isInitialized)
     {
         isInitialized = true;
-        kssc_initCursor(&g_stackCursor, NULL, NULL);
+        rcsc_initCursor(&g_stackCursor, NULL, NULL);
     }
 }
 
@@ -215,7 +215,7 @@ static void setEnabled(bool isEnabled)
         {
             initialize();
 
-            ksid_generate(g_eventID);
+            rcid_generate(g_eventID);
             g_originalTerminateHandler = std::set_terminate(CPPExceptionTerminate);
         }
         else
@@ -231,16 +231,16 @@ static bool isEnabled()
     return g_isEnabled;
 }
 
-extern "C" void kscm_enableSwapCxaThrow(void)
+extern "C" void rcm_enableSwapCxaThrow(void)
 {
     if (g_cxaSwapEnabled != true)
     {
-        ksct_swap(captureStackTrace);
+        rcct_swap(captureStackTrace);
         g_cxaSwapEnabled = true;
     }
 }
 
-extern "C" RollbarCrashMonitorAPI* kscm_cppexception_getAPI()
+extern "C" RollbarCrashMonitorAPI* rcm_cppexception_getAPI()
 {
     static RollbarCrashMonitorAPI api =
     {

@@ -34,7 +34,7 @@ extern "C" {
  *
  * @param destinationBuffer37Bytes Buffer of at least 37 bytes to hold the ID.
  */
-void ksid_generate(char* destinationBuffer37Bytes);
+void rcid_generate(char* destinationBuffer37Bytes);
     
     
 #ifdef __cplusplus

@@ -42,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
         [Rollbar logCrashReport:report];
     }
 
-    kscrash_callCompletion(completion, reports, YES, nil);
+    rc_callCompletion(completion, reports, YES, nil);
 }
 
 @end

@@ -38,9 +38,9 @@ typedef struct
     uintptr_t backtrace[0];
 } SelfThreadContext;
 
-void kssc_initSelfThread(RollbarCrashStackCursor *cursor, int skipEntries)
+void rcsc_initSelfThread(RollbarCrashStackCursor *cursor, int skipEntries)
 {
     SelfThreadContext* context = (SelfThreadContext*)cursor->context;
     int backtraceLength = backtrace((void**)context->backtrace, MAX_BACKTRACE_LENGTH);
-    kssc_initWithBacktrace(cursor, context->backtrace, backtraceLength, skipEntries + 1);
+    rcsc_initWithBacktrace(cursor, context->backtrace, backtraceLength, skipEntries + 1);
 }

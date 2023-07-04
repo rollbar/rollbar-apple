@@ -172,7 +172,7 @@ static uintptr_t segmentBaseOfImageIndex(const uint32_t idx)
     return 0;
 }
 
-uint32_t ksdl_imageNamed(const char* const imageName, bool exactMatch)
+uint32_t rcdl_imageNamed(const char* const imageName, bool exactMatch)
 {
     if(imageName != NULL)
     {
@@ -200,11 +200,11 @@ uint32_t ksdl_imageNamed(const char* const imageName, bool exactMatch)
     return UINT32_MAX;
 }
 
-const uint8_t* ksdl_imageUUID(const char* const imageName, bool exactMatch)
+const uint8_t* rcdl_imageUUID(const char* const imageName, bool exactMatch)
 {
     if(imageName != NULL)
     {
-        const uint32_t iImg = ksdl_imageNamed(imageName, exactMatch);
+        const uint32_t iImg = rcdl_imageNamed(imageName, exactMatch);
         if(iImg != UINT32_MAX)
         {
             const struct mach_header* header = _dyld_get_image_header(iImg);
@@ -230,7 +230,7 @@ const uint8_t* ksdl_imageUUID(const char* const imageName, bool exactMatch)
     return NULL;
 }
 
-bool ksdl_dladdr(const uintptr_t address, Dl_info* const info)
+bool rcdl_dladdr(const uintptr_t address, Dl_info* const info)
 {
     info->dli_fname = NULL;
     info->dli_fbase = NULL;
@@ -324,7 +324,7 @@ static bool isValidCrashInfoMessage(const char* str)
     {
         return false;
     }
-    int maxReadableBytes = ksmem_maxReadableBytes(str, RollbarCrashDL_MaxCrashInfoStringLength + 1);
+    int maxReadableBytes = rcmem_maxReadableBytes(str, RollbarCrashDL_MaxCrashInfoStringLength + 1);
     if(maxReadableBytes == 0)
     {
         return false;
@@ -355,7 +355,7 @@ static void getCrashInfo(const struct mach_header* header, RollbarCrashBinaryIma
         RollbarCrashLOG_TRACE("Skipped reading crash info: section is too small");
         return;
     }
-    if(!ksmem_isMemoryReadable(crashInfo, minimalSize))
+    if(!rcmem_isMemoryReadable(crashInfo, minimalSize))
     {
         RollbarCrashLOG_TRACE("Skipped reading crash info: section memory is not readable");
         return;
@@ -383,12 +383,12 @@ static void getCrashInfo(const struct mach_header* header, RollbarCrashBinaryIma
     }
 }
 
-int ksdl_imageCount()
+int rcdl_imageCount()
 {
     return (int)_dyld_image_count();
 }
 
-bool ksdl_getBinaryImage(int index, RollbarCrashBinaryImage* buffer)
+bool rcdl_getBinaryImage(int index, RollbarCrashBinaryImage* buffer)
 {
     const struct mach_header* header = _dyld_get_image_header((unsigned)index);
     if(header == NULL)
@@ -396,10 +396,10 @@ bool ksdl_getBinaryImage(int index, RollbarCrashBinaryImage* buffer)
         return false;
     }
     
-    return ksdl_getBinaryImageForHeader((const void*)header, _dyld_get_image_name((unsigned)index), buffer);
+    return rcdl_getBinaryImageForHeader((const void*)header, _dyld_get_image_name((unsigned)index), buffer);
 }
 
-bool ksdl_getBinaryImageForHeader(const void* const header_ptr, const char* const image_name, RollbarCrashBinaryImage* buffer)
+bool rcdl_getBinaryImageForHeader(const void* const header_ptr, const char* const image_name, RollbarCrashBinaryImage* buffer)
 {
     const struct mach_header* header = (const struct mach_header*)header_ptr;
     uintptr_t cmdPtr = firstCmdAfterHeader(header);

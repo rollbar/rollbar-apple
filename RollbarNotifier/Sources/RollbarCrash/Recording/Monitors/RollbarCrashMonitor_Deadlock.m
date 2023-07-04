@@ -109,15 +109,15 @@ static NSTimeInterval g_watchdogInterval = 0;
 {
     thread_act_array_t threads = NULL;
     mach_msg_type_number_t numThreads = 0;
-    ksmc_suspendEnvironment(&threads, &numThreads);
-    kscm_notifyFatalExceptionCaptured(false);
+    rcmc_suspendEnvironment(&threads, &numThreads);
+    rcm_notifyFatalExceptionCaptured(false);
 
     RollbarCrashMC_NEW_CONTEXT(machineContext);
-    ksmc_getContextForThread(g_mainQueueThread, machineContext, false);
+    rcmc_getContextForThread(g_mainQueueThread, machineContext, false);
     RollbarCrashStackCursor stackCursor;
-    kssc_initWithMachineContext(&stackCursor, RollbarCrashSC_MAX_STACK_DEPTH, machineContext);
+    rcsc_initWithMachineContext(&stackCursor, RollbarCrashSC_MAX_STACK_DEPTH, machineContext);
     char eventID[37];
-    ksid_generate(eventID);
+    rcid_generate(eventID);
 
     RollbarCrashLOG_DEBUG(@"Filling out context.");
     RollbarCrash_MonitorContext* crashContext = &g_monitorContext;
@@ -128,8 +128,8 @@ static NSTimeInterval g_watchdogInterval = 0;
     crashContext->offendingMachineContext = machineContext;
     crashContext->stackCursor = &stackCursor;
     
-    kscm_handleException(crashContext);
-    ksmc_resumeEnvironment(threads, numThreads);
+    rcm_handleException(crashContext);
+    rcmc_resumeEnvironment(threads, numThreads);
 
     RollbarCrashLOG_DEBUG(@"Calling abort()");
     abort();
@@ -178,7 +178,7 @@ static void initialize()
     if(!isInitialized)
     {
         isInitialized = true;
-        dispatch_async(dispatch_get_main_queue(), ^{g_mainQueueThread = ksthread_self();});
+        dispatch_async(dispatch_get_main_queue(), ^{g_mainQueueThread = rcthread_self();});
     }
 }
 
@@ -207,7 +207,7 @@ static bool isEnabled()
     return g_isEnabled;
 }
 
-RollbarCrashMonitorAPI* kscm_deadlock_getAPI()
+RollbarCrashMonitorAPI* rcm_deadlock_getAPI()
 {
     static RollbarCrashMonitorAPI api =
     {
@@ -217,7 +217,7 @@ RollbarCrashMonitorAPI* kscm_deadlock_getAPI()
     return &api;
 }
 
-void kscm_setDeadlockHandlerWatchdogInterval(double value)
+void rcm_setDeadlockHandlerWatchdogInterval(double value)
 {
     g_watchdogInterval = value;
 }

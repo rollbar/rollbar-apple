@@ -63,44 +63,44 @@ static Monitor g_monitors[] =
 #if RollbarCrashCRASH_HAS_MACH
     {
         .monitorType = RollbarCrashMonitorTypeMachException,
-        .getAPI = kscm_machexception_getAPI,
+        .getAPI = rcm_machexception_getAPI,
     },
 #endif
 #if RollbarCrashCRASH_HAS_SIGNAL
     {
         .monitorType = RollbarCrashMonitorTypeSignal,
-        .getAPI = kscm_signal_getAPI,
+        .getAPI = rcm_signal_getAPI,
     },
 #endif
 #if RollbarCrashCRASH_HAS_OBJC
     {
         .monitorType = RollbarCrashMonitorTypeNSException,
-        .getAPI = kscm_nsexception_getAPI,
+        .getAPI = rcm_nsexception_getAPI,
     },
     {
         .monitorType = RollbarCrashMonitorTypeMainThreadDeadlock,
-        .getAPI = kscm_deadlock_getAPI,
+        .getAPI = rcm_deadlock_getAPI,
     },
     {
         .monitorType = RollbarCrashMonitorTypeZombie,
-        .getAPI = kscm_zombie_getAPI,
+        .getAPI = rcm_zombie_getAPI,
     },
 #endif
     {
         .monitorType = RollbarCrashMonitorTypeCPPException,
-        .getAPI = kscm_cppexception_getAPI,
+        .getAPI = rcm_cppexception_getAPI,
     },
     {
         .monitorType = RollbarCrashMonitorTypeUserReported,
-        .getAPI = kscm_user_getAPI,
+        .getAPI = rcm_user_getAPI,
     },
     {
         .monitorType = RollbarCrashMonitorTypeSystem,
-        .getAPI = kscm_system_getAPI,
+        .getAPI = rcm_system_getAPI,
     },
     {
         .monitorType = RollbarCrashMonitorTypeApplicationState,
-        .getAPI = kscm_appstate_getAPI,
+        .getAPI = rcm_appstate_getAPI,
     },
 };
 static int g_monitorsCount = sizeof(g_monitors) / sizeof(*g_monitors);
@@ -154,14 +154,14 @@ static inline void addContextualInfoToEvent(Monitor* monitor, struct RollbarCras
     }
 }
 
-void kscm_setEventCallback(void (*onEvent)(struct RollbarCrash_MonitorContext* monitorContext))
+void rcm_setEventCallback(void (*onEvent)(struct RollbarCrash_MonitorContext* monitorContext))
 {
     g_onExceptionEvent = onEvent;
 }
 
-void kscm_setActiveMonitors(RollbarCrashMonitorType monitorTypes)
+void rcm_setActiveMonitors(RollbarCrashMonitorType monitorTypes)
 {
-    if(ksdebug_isBeingTraced() && (monitorTypes & RollbarCrashMonitorTypeDebuggerUnsafe))
+    if(rcdebug_isBeingTraced() && (monitorTypes & RollbarCrashMonitorTypeDebuggerUnsafe))
     {
         static bool hasWarned = false;
         if(!hasWarned)
@@ -202,7 +202,7 @@ void kscm_setActiveMonitors(RollbarCrashMonitorType monitorTypes)
     g_activeMonitors = activeMonitors;
 }
 
-RollbarCrashMonitorType kscm_getActiveMonitors()
+RollbarCrashMonitorType rcm_getActiveMonitors()
 {
     return g_activeMonitors;
 }
@@ -212,7 +212,7 @@ RollbarCrashMonitorType kscm_getActiveMonitors()
 #pragma mark - Private API -
 // ============================================================================
 
-bool kscm_notifyFatalExceptionCaptured(bool isAsyncSafeEnvironment)
+bool rcm_notifyFatalExceptionCaptured(bool isAsyncSafeEnvironment)
 {
     g_requiresAsyncSafety |= isAsyncSafeEnvironment; // Don't let it be unset.
     if(g_handlingFatalException)
@@ -223,12 +223,12 @@ bool kscm_notifyFatalExceptionCaptured(bool isAsyncSafeEnvironment)
     if(g_crashedDuringExceptionHandling)
     {
         RollbarCrashLOG_INFO("Detected crash in the crash reporter. Uninstalling RollbarCrash.");
-        kscm_setActiveMonitors(RollbarCrashMonitorTypeNone);
+        rcm_setActiveMonitors(RollbarCrashMonitorTypeNone);
     }
     return g_crashedDuringExceptionHandling;
 }
 
-void kscm_handleException(struct RollbarCrash_MonitorContext* context)
+void rcm_handleException(struct RollbarCrash_MonitorContext* context)
 {
     context->requiresAsyncSafety = g_requiresAsyncSafety;
     if(g_crashedDuringExceptionHandling)
@@ -251,7 +251,7 @@ void kscm_handleException(struct RollbarCrash_MonitorContext* context)
     } else {
         if(g_handlingFatalException && !g_crashedDuringExceptionHandling) {
             RollbarCrashLOG_DEBUG("Exception is fatal. Restoring original handlers.");
-            kscm_setActiveMonitors(RollbarCrashMonitorTypeNone);
+            rcm_setActiveMonitors(RollbarCrashMonitorTypeNone);
         }
     }
 }

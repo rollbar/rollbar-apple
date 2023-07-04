@@ -38,7 +38,7 @@ extern "C" {
  * It just looks through the load commands. Since these are mapped into the text
  * segment they are read only and thus const.
  */
-const segment_command_t *ksgs_getsegbynamefromheader(const mach_header_t *header, const char *seg_name);
+const segment_command_t *rcgs_getsegbynamefromheader(const mach_header_t *header, const char *seg_name);
 
 #ifdef __cplusplus
 }

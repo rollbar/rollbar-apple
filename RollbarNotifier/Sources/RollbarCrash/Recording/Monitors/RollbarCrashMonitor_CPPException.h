@@ -33,11 +33,11 @@ extern "C" {
 
 /** Enable swapping of __cxa_trow symbol with lazy symbols table
  */
-void kscm_enableSwapCxaThrow(void);
+void rcm_enableSwapCxaThrow(void);
 
 /** Access the Monitor API.
  */
-RollbarCrashMonitorAPI* kscm_cppexception_getAPI(void);
+RollbarCrashMonitorAPI* rcm_cppexception_getAPI(void);
 
 
 #ifdef __cplusplus

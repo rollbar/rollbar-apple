@@ -194,37 +194,37 @@ static NSString* getBasePath()
         }
         
         _userInfo = userInfo;
-        kscrash_setUserInfoJSON([userInfoJSON bytes]);
+        rc_setUserInfoJSON([userInfoJSON bytes]);
     }
 }
 
 - (void) setMonitoring:(RollbarCrashMonitorType)monitoring
 {
-    _monitoring = kscrash_setMonitoring(monitoring);
+    _monitoring = rc_setMonitoring(monitoring);
 }
 
 - (void) setDeadlockWatchdogInterval:(double) deadlockWatchdogInterval
 {
     _deadlockWatchdogInterval = deadlockWatchdogInterval;
-    kscrash_setDeadlockWatchdogInterval(deadlockWatchdogInterval);
+    rc_setDeadlockWatchdogInterval(deadlockWatchdogInterval);
 }
 
 - (void) setSearchQueueNames:(BOOL) searchQueueNames
 {
     _searchQueueNames = searchQueueNames;
-    kscrash_setSearchQueueNames(searchQueueNames);
+    rc_setSearchQueueNames(searchQueueNames);
 }
 
 - (void) setOnCrash:(RollbarCrashReportWriteCallback) onCrash
 {
     _onCrash = onCrash;
-    kscrash_setCrashNotifyCallback(onCrash);
+    rc_setCrashNotifyCallback(onCrash);
 }
 
 - (void) setIntrospectMemory:(BOOL) introspectMemory
 {
     _introspectMemory = introspectMemory;
-    kscrash_setIntrospectMemory(introspectMemory);
+    rc_setIntrospectMemory(introspectMemory);
 }
 
 - (BOOL) catchZombies
@@ -250,7 +250,7 @@ static NSString* getBasePath()
     NSUInteger count = [doNotIntrospectClasses count];
     if(count == 0)
     {
-        kscrash_setDoNotIntrospectClasses(nil, 0);
+        rc_setDoNotIntrospectClasses(nil, 0);
     }
     else
     {
@@ -260,20 +260,20 @@ static NSString* getBasePath()
         {
             classes[i] = [[doNotIntrospectClasses objectAtIndex:i] cStringUsingEncoding:NSUTF8StringEncoding];
         }
-        kscrash_setDoNotIntrospectClasses(classes, (int)count);
+        rc_setDoNotIntrospectClasses(classes, (int)count);
     }
 }
 
 - (void) setMaxReportCount:(int)maxReportCount
 {
     _maxReportCount = maxReportCount;
-    kscrash_setMaxReportCount(maxReportCount);
+    rc_setMaxReportCount(maxReportCount);
 }
 
 - (NSDictionary*) systemInfo
 {
     RollbarCrash_MonitorContext fakeEvent = {0};
-    kscm_system_getAPI()->addContextualInfoToEvent(&fakeEvent);
+    rcm_system_getAPI()->addContextualInfoToEvent(&fakeEvent);
     NSMutableDictionary* dict = [NSMutableDictionary new];
 
 #define COPY_STRING(A) if (fakeEvent.System.A) dict[@#A] = [NSString stringWithUTF8String:fakeEvent.System.A]
@@ -315,7 +315,7 @@ static NSString* getBasePath()
 
 - (BOOL) install
 {
-    _monitoring = kscrash_install(self.bundleName.UTF8String,
+    _monitoring = rc_install(self.bundleName.UTF8String,
                                           self.basePath.UTF8String);
     if(self.monitoring == 0)
     {
@@ -342,20 +342,20 @@ static NSString* getBasePath()
          if((self.deleteBehaviorAfterSendAll == RollbarCrashDeleteOnSucess && completed) ||
             self.deleteBehaviorAfterSendAll == RollbarCrashDeleteAlways)
          {
-             kscrash_deleteAllReports();
+             rc_deleteAllReports();
          }
-         kscrash_callCompletion(onCompletion, filteredReports, completed, error);
+         rc_callCompletion(onCompletion, filteredReports, completed, error);
      }];
 }
 
 - (void) deleteAllReports
 {
-    kscrash_deleteAllReports();
+    rc_deleteAllReports();
 }
 
 - (void) deleteReportWithID:(NSNumber*) reportID
 {
-    kscrash_deleteReportWithID([reportID longLongValue]);
+    rc_deleteReportWithID([reportID longLongValue]);
 }
 
 - (void) reportUserException:(NSString*) name
@@ -385,7 +385,7 @@ static NSString* getBasePath()
         cStackTrace = [jsonString cStringUsingEncoding:NSUTF8StringEncoding];
     }
     
-    kscrash_reportUserException(cName,
+    rc_reportUserException(cName,
                                 cReason,
                                 cLanguage,
                                 cLineOfCode,
@@ -406,7 +406,7 @@ static NSString* getBasePath()
 #define SYNTHESIZE_CRASH_STATE_PROPERTY(TYPE, NAME) \
 - (TYPE) NAME \
 { \
-    return kscrashstate_currentState()->NAME; \
+    return rcstate_currentState()->NAME; \
 }
 
 SYNTHESIZE_CRASH_STATE_PROPERTY(NSTimeInterval, activeDurationSinceLastCrash)
@@ -420,20 +420,20 @@ SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
 
 - (int) reportCount
 {
-    return kscrash_getReportCount();
+    return rc_getReportCount();
 }
 
 - (void) sendReports:(NSArray*) reports onCompletion:(RollbarCrashReportFilterCompletion) onCompletion
 {
     if([reports count] == 0)
     {
-        kscrash_callCompletion(onCompletion, reports, YES, nil);
+        rc_callCompletion(onCompletion, reports, YES, nil);
         return;
     }
     
     if(self.sink == nil)
     {
-        kscrash_callCompletion(onCompletion, reports, NO,
+        rc_callCompletion(onCompletion, reports, NO,
                                  [NSError errorWithDomain:[[self class] description]
                                                      code:0
                                               description:@"No sink set. Crash reports not sent."]);
@@ -443,13 +443,13 @@ SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
     [self.sink filterReports:reports
                 onCompletion:^(NSArray* filteredReports, BOOL completed, NSError* error)
      {
-         kscrash_callCompletion(onCompletion, filteredReports, completed, error);
+         rc_callCompletion(onCompletion, filteredReports, completed, error);
      }];
 }
 
 - (NSData*) loadCrashReportJSONWithID:(int64_t) reportID
 {
-    char* report = kscrash_readReport(reportID);
+    char* report = rc_readReport(reportID);
     if(report != NULL)
     {
         return [NSData dataWithBytesNoCopy:report length:strlen(report) freeWhenDone:YES];
@@ -473,9 +473,9 @@ SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
 
 - (NSArray*)reportIDs
 {
-    int reportCount = kscrash_getReportCount();
+    int reportCount = rc_getReportCount();
     int64_t reportIDsC[reportCount];
-    reportCount = kscrash_getReportIDs(reportIDsC, reportCount);
+    reportCount = rc_getReportIDs(reportIDsC, reportCount);
     NSMutableArray* reportIDs = [NSMutableArray arrayWithCapacity:(NSUInteger)reportCount];
     for(int i = 0; i < reportCount; i++)
     {
@@ -519,9 +519,9 @@ SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
 
 - (NSArray*) allReports
 {
-    int reportCount = kscrash_getReportCount();
+    int reportCount = rc_getReportCount();
     int64_t reportIDs[reportCount];
-    reportCount = kscrash_getReportIDs(reportIDs, reportCount);
+    reportCount = rc_getReportIDs(reportIDs, reportCount);
     NSMutableArray* reports = [NSMutableArray arrayWithCapacity:(NSUInteger)reportCount];
     for(int i = 0; i < reportCount; i++)
     {
@@ -538,13 +538,13 @@ SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
 - (void) setAddConsoleLogToReport:(BOOL) shouldAddConsoleLogToReport
 {
     _addConsoleLogToReport = shouldAddConsoleLogToReport;
-    kscrash_setAddConsoleLogToReport(shouldAddConsoleLogToReport);
+    rc_setAddConsoleLogToReport(shouldAddConsoleLogToReport);
 }
 
 - (void) setPrintPreviousLog:(BOOL) shouldPrintPreviousLog
 {
     _printPreviousLog = shouldPrintPreviousLog;
-    kscrash_setPrintPreviousLog(shouldPrintPreviousLog);
+    rc_setPrintPreviousLog(shouldPrintPreviousLog);
 }
 
 
@@ -616,32 +616,32 @@ SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
 
 + (void) classDidBecomeLoaded
 {
-    kscrash_notifyObjCLoad();
+    rc_notifyObjCLoad();
 }
 
 + (void) applicationDidBecomeActive
 {
-    kscrash_notifyAppActive(true);
+    rc_notifyAppActive(true);
 }
 
 + (void) applicationWillResignActive
 {
-    kscrash_notifyAppActive(false);
+    rc_notifyAppActive(false);
 }
 
 + (void) applicationDidEnterBackground
 {
-    kscrash_notifyAppInForeground(false);
+    rc_notifyAppInForeground(false);
 }
 
 + (void) applicationWillEnterForeground
 {
-    kscrash_notifyAppInForeground(true);
+    rc_notifyAppInForeground(true);
 }
 
 + (void) applicationWillTerminate
 {
-    kscrash_notifyAppTerminate();
+    rc_notifyAppTerminate();
 }
 
 @end

@@ -120,27 +120,27 @@ static RollbarCrashReportWriteCallback g_userSectionWriteCallback;
 
 static void addBooleanElement(const RollbarCrashReportWriter* const writer, const char* const key, const bool value)
 {
-    ksjson_addBooleanElement(getJsonContext(writer), key, value);
+    rcjson_addBooleanElement(getJsonContext(writer), key, value);
 }
 
 static void addFloatingPointElement(const RollbarCrashReportWriter* const writer, const char* const key, const double value)
 {
-    ksjson_addFloatingPointElement(getJsonContext(writer), key, value);
+    rcjson_addFloatingPointElement(getJsonContext(writer), key, value);
 }
 
 static void addIntegerElement(const RollbarCrashReportWriter* const writer, const char* const key, const int64_t value)
 {
-    ksjson_addIntegerElement(getJsonContext(writer), key, value);
+    rcjson_addIntegerElement(getJsonContext(writer), key, value);
 }
 
 static void addUIntegerElement(const RollbarCrashReportWriter* const writer, const char* const key, const uint64_t value)
 {
-    ksjson_addUIntegerElement(getJsonContext(writer), key, value);
+    rcjson_addUIntegerElement(getJsonContext(writer), key, value);
 }
 
 static void addStringElement(const RollbarCrashReportWriter* const writer, const char* const key, const char* const value)
 {
-    ksjson_addStringElement(getJsonContext(writer), key, value, RollbarCrashJSON_SIZE_AUTOMATIC);
+    rcjson_addStringElement(getJsonContext(writer), key, value, RollbarCrashJSON_SIZE_AUTOMATIC);
 }
 
 static void addTextFileElement(const RollbarCrashReportWriter* const writer, const char* const key, const char* const filePath)
@@ -152,7 +152,7 @@ static void addTextFileElement(const RollbarCrashReportWriter* const writer, con
         return;
     }
 
-    if(ksjson_beginStringElement(getJsonContext(writer), key) != RollbarCrashJSON_OK)
+    if(rcjson_beginStringElement(getJsonContext(writer), key) != RollbarCrashJSON_OK)
     {
         RollbarCrashLOG_ERROR("Could not start string element");
         goto done;
@@ -164,7 +164,7 @@ static void addTextFileElement(const RollbarCrashReportWriter* const writer, con
         bytesRead > 0;
         bytesRead = (int)read(fd, buffer, sizeof(buffer)))
     {
-        if(ksjson_appendStringElement(getJsonContext(writer), buffer, bytesRead) != RollbarCrashJSON_OK)
+        if(rcjson_appendStringElement(getJsonContext(writer), buffer, bytesRead) != RollbarCrashJSON_OK)
         {
             RollbarCrashLOG_ERROR("Could not append string element");
             goto done;
@@ -172,7 +172,7 @@ static void addTextFileElement(const RollbarCrashReportWriter* const writer, con
     }
 
 done:
-    ksjson_endStringElement(getJsonContext(writer));
+    rcjson_endStringElement(getJsonContext(writer));
     close(fd);
 }
 
@@ -181,29 +181,29 @@ static void addDataElement(const RollbarCrashReportWriter* const writer,
                            const char* const value,
                            const int length)
 {
-    ksjson_addDataElement(getJsonContext(writer), key, value, length);
+    rcjson_addDataElement(getJsonContext(writer), key, value, length);
 }
 
 static void beginDataElement(const RollbarCrashReportWriter* const writer, const char* const key)
 {
-    ksjson_beginDataElement(getJsonContext(writer), key);
+    rcjson_beginDataElement(getJsonContext(writer), key);
 }
 
 static void appendDataElement(const RollbarCrashReportWriter* const writer, const char* const value, const int length)
 {
-    ksjson_appendDataElement(getJsonContext(writer), value, length);
+    rcjson_appendDataElement(getJsonContext(writer), value, length);
 }
 
 static void endDataElement(const RollbarCrashReportWriter* const writer)
 {
-    ksjson_endDataElement(getJsonContext(writer));
+    rcjson_endDataElement(getJsonContext(writer));
 }
 
 static void addUUIDElement(const RollbarCrashReportWriter* const writer, const char* const key, const unsigned char* const value)
 {
     if(value == NULL)
     {
-        ksjson_addNullElement(getJsonContext(writer), key);
+        rcjson_addNullElement(getJsonContext(writer), key);
     }
     else
     {
@@ -240,7 +240,7 @@ static void addUUIDElement(const RollbarCrashReportWriter* const writer, const c
             *dst++ = g_hexNybbles[(*src++)&15];
         }
 
-        ksjson_addStringElement(getJsonContext(writer), key, uuidBuffer, (int)(dst - uuidBuffer));
+        rcjson_addStringElement(getJsonContext(writer), key, uuidBuffer, (int)(dst - uuidBuffer));
     }
 }
 
@@ -249,7 +249,7 @@ static void addJSONElement(const RollbarCrashReportWriter* const writer,
                            const char* const jsonElement,
                            bool closeLastContainer)
 {
-    int jsonResult = ksjson_addJSONElement(getJsonContext(writer),
+    int jsonResult = rcjson_addJSONElement(getJsonContext(writer),
                                            key,
                                            jsonElement,
                                            (int)strlen(jsonElement),
@@ -260,17 +260,17 @@ static void addJSONElement(const RollbarCrashReportWriter* const writer,
         snprintf(errorBuff,
                  sizeof(errorBuff),
                  "Invalid JSON data: %s",
-                 ksjson_stringForError(jsonResult));
-        ksjson_beginObject(getJsonContext(writer), key);
-        ksjson_addStringElement(getJsonContext(writer),
+                 rcjson_stringForError(jsonResult));
+        rcjson_beginObject(getJsonContext(writer), key);
+        rcjson_addStringElement(getJsonContext(writer),
                                 RollbarCrashField_Error,
                                 errorBuff,
                                 RollbarCrashJSON_SIZE_AUTOMATIC);
-        ksjson_addStringElement(getJsonContext(writer),
+        rcjson_addStringElement(getJsonContext(writer),
                                 RollbarCrashField_JSONData,
                                 jsonElement,
                                 RollbarCrashJSON_SIZE_AUTOMATIC);
-        ksjson_endContainer(getJsonContext(writer));
+        rcjson_endContainer(getJsonContext(writer));
     }
 }
 
@@ -279,22 +279,22 @@ static void addJSONElementFromFile(const RollbarCrashReportWriter* const writer,
                                    const char* const filePath,
                                    bool closeLastContainer)
 {
-    ksjson_addJSONFromFile(getJsonContext(writer), key, filePath, closeLastContainer);
+    rcjson_addJSONFromFile(getJsonContext(writer), key, filePath, closeLastContainer);
 }
 
 static void beginObject(const RollbarCrashReportWriter* const writer, const char* const key)
 {
-    ksjson_beginObject(getJsonContext(writer), key);
+    rcjson_beginObject(getJsonContext(writer), key);
 }
 
 static void beginArray(const RollbarCrashReportWriter* const writer, const char* const key)
 {
-    ksjson_beginArray(getJsonContext(writer), key);
+    rcjson_beginArray(getJsonContext(writer), key);
 }
 
 static void endContainer(const RollbarCrashReportWriter* const writer)
 {
-    ksjson_endContainer(getJsonContext(writer));
+    rcjson_endContainer(getJsonContext(writer));
 }
 
 
@@ -302,7 +302,7 @@ static void addTextLinesFromFile(const RollbarCrashReportWriter* const writer, c
 {
     char readBuffer[1024];
     RollbarCrashBufferedReader reader;
-    if(!ksfu_openBufferedReader(&reader, filePath, readBuffer, sizeof(readBuffer)))
+    if(!rcfu_openBufferedReader(&reader, filePath, readBuffer, sizeof(readBuffer)))
     {
         return;
     }
@@ -312,23 +312,23 @@ static void addTextLinesFromFile(const RollbarCrashReportWriter* const writer, c
         for(;;)
         {
             int length = sizeof(buffer);
-            ksfu_readBufferedReaderUntilChar(&reader, '\n', buffer, &length);
+            rcfu_readBufferedReaderUntilChar(&reader, '\n', buffer, &length);
             if(length <= 0)
             {
                 break;
             }
             buffer[length - 1] = '\0';
-            ksjson_addStringElement(getJsonContext(writer), NULL, buffer, RollbarCrashJSON_SIZE_AUTOMATIC);
+            rcjson_addStringElement(getJsonContext(writer), NULL, buffer, RollbarCrashJSON_SIZE_AUTOMATIC);
         }
     }
     endContainer(writer);
-    ksfu_closeBufferedReader(&reader);
+    rcfu_closeBufferedReader(&reader);
 }
 
 static int addJSONData(const char* restrict const data, const int length, void* restrict userData)
 {
     RollbarCrashBufferedWriter* writer = (RollbarCrashBufferedWriter*)userData;
-    const bool success = ksfu_writeBufferedWriter(writer, data, length);
+    const bool success = rcfu_writeBufferedWriter(writer, data, length);
     return success ? RollbarCrashJSON_OK : RollbarCrashJSON_ERROR_CANNOT_ADD_DATA;
 }
 
@@ -356,11 +356,11 @@ static bool isValidString(const void* const address)
         // Wrapped around the address range.
         return false;
     }
-    if(!ksmem_copySafely(address, buffer, sizeof(buffer)))
+    if(!rcmem_copySafely(address, buffer, sizeof(buffer)))
     {
         return false;
     }
-    return ksstring_isNullTerminatedUTF8String(buffer, kMinStringLength, sizeof(buffer));
+    return rcstring_isNullTerminatedUTF8String(buffer, kMinStringLength, sizeof(buffer));
 }
 
 /** Get the backtrace for the specified machine context.
@@ -382,13 +382,13 @@ static bool getStackCursor(const RollbarCrash_MonitorContext* const crash,
                            const struct RollbarCrashMachineContext* const machineContext,
                            RollbarCrashStackCursor *cursor)
 {
-    if(ksmc_getThreadFromContext(machineContext) == ksmc_getThreadFromContext(crash->offendingMachineContext))
+    if(rcmc_getThreadFromContext(machineContext) == rcmc_getThreadFromContext(crash->offendingMachineContext))
     {
         *cursor = *((RollbarCrashStackCursor*)crash->stackCursor);
         return true;
     }
 
-    kssc_initWithMachineContext(cursor, RollbarCrashSC_STACK_OVERFLOW_THRESHOLD, machineContext);
+    rcsc_initWithMachineContext(cursor, RollbarCrashSC_STACK_OVERFLOW_THRESHOLD, machineContext);
     return true;
 }
 
@@ -431,7 +431,7 @@ static void writeNSStringContents(const RollbarCrashReportWriter* const writer,
 {
     const void* object = (const void*)objectAddress;
     char buffer[200];
-    if(ksobjc_copyStringContents(object, buffer, sizeof(buffer)))
+    if(rcobjc_copyStringContents(object, buffer, sizeof(buffer)))
     {
         writer->addStringElement(writer, key, buffer);
     }
@@ -455,7 +455,7 @@ static void writeURLContents(const RollbarCrashReportWriter* const writer,
 {
     const void* object = (const void*)objectAddress;
     char buffer[200];
-    if(ksobjc_copyStringContents(object, buffer, sizeof(buffer)))
+    if(rcobjc_copyStringContents(object, buffer, sizeof(buffer)))
     {
         writer->addStringElement(writer, key, buffer);
     }
@@ -478,7 +478,7 @@ static void writeDateContents(const RollbarCrashReportWriter* const writer,
                               __unused int* limit)
 {
     const void* object = (const void*)objectAddress;
-    writer->addFloatingPointElement(writer, key, ksobjc_dateContents(object));
+    writer->addFloatingPointElement(writer, key, rcobjc_dateContents(object));
 }
 
 /** Write a number to the report.
@@ -498,7 +498,7 @@ static void writeNumberContents(const RollbarCrashReportWriter* const writer,
                                 __unused int* limit)
 {
     const void* object = (const void*)objectAddress;
-    writer->addFloatingPointElement(writer, key, ksobjc_numberAsFloat(object));
+    writer->addFloatingPointElement(writer, key, rcobjc_numberAsFloat(object));
 }
 
 /** Write an array to the report.
@@ -519,7 +519,7 @@ static void writeArrayContents(const RollbarCrashReportWriter* const writer,
 {
     const void* object = (const void*)objectAddress;
     uintptr_t firstObject;
-    if(ksobjc_arrayContents(object, &firstObject, 1) == 1)
+    if(rcobjc_arrayContents(object, &firstObject, 1) == 1)
     {
         writeMemoryContents(writer, key, firstObject, limit);
     }
@@ -561,14 +561,14 @@ static void writeUnknownObjectContents(const RollbarCrashReportWriter* const wri
     
     writer->beginObject(writer, key);
     {
-        if(ksobjc_isTaggedPointer(object))
+        if(rcobjc_isTaggedPointer(object))
         {
-            writer->addIntegerElement(writer, "tagged_payload", (int64_t)ksobjc_taggedPointerPayload(object));
+            writer->addIntegerElement(writer, "tagged_payload", (int64_t)rcobjc_taggedPointerPayload(object));
         }
         else
         {
-            const void* class = ksobjc_isaPointer(object);
-            int ivarCount = ksobjc_ivarList(class, ivars, sizeof(ivars)/sizeof(*ivars));
+            const void* class = rcobjc_isaPointer(object);
+            int ivarCount = rcobjc_ivarList(class, ivars, sizeof(ivars)/sizeof(*ivars));
             *limit -= ivarCount;
             for(int i = 0; i < ivarCount; i++)
             {
@@ -576,62 +576,62 @@ static void writeUnknownObjectContents(const RollbarCrashReportWriter* const wri
                 switch(ivar->type[0])
                 {
                     case 'c':
-                        ksobjc_ivarValue(object, ivar->index, &s8);
+                        rcobjc_ivarValue(object, ivar->index, &s8);
                         writer->addIntegerElement(writer, ivar->name, s8);
                         break;
                     case 'i':
-                        ksobjc_ivarValue(object, ivar->index, &sInt);
+                        rcobjc_ivarValue(object, ivar->index, &sInt);
                         writer->addIntegerElement(writer, ivar->name, sInt);
                         break;
                     case 's':
-                        ksobjc_ivarValue(object, ivar->index, &s16);
+                        rcobjc_ivarValue(object, ivar->index, &s16);
                         writer->addIntegerElement(writer, ivar->name, s16);
                         break;
                     case 'l':
-                        ksobjc_ivarValue(object, ivar->index, &s32);
+                        rcobjc_ivarValue(object, ivar->index, &s32);
                         writer->addIntegerElement(writer, ivar->name, s32);
                         break;
                     case 'q':
-                        ksobjc_ivarValue(object, ivar->index, &s64);
+                        rcobjc_ivarValue(object, ivar->index, &s64);
                         writer->addIntegerElement(writer, ivar->name, s64);
                         break;
                     case 'C':
-                        ksobjc_ivarValue(object, ivar->index, &u8);
+                        rcobjc_ivarValue(object, ivar->index, &u8);
                         writer->addUIntegerElement(writer, ivar->name, u8);
                         break;
                     case 'I':
-                        ksobjc_ivarValue(object, ivar->index, &uInt);
+                        rcobjc_ivarValue(object, ivar->index, &uInt);
                         writer->addUIntegerElement(writer, ivar->name, uInt);
                         break;
                     case 'S':
-                        ksobjc_ivarValue(object, ivar->index, &u16);
+                        rcobjc_ivarValue(object, ivar->index, &u16);
                         writer->addUIntegerElement(writer, ivar->name, u16);
                         break;
                     case 'L':
-                        ksobjc_ivarValue(object, ivar->index, &u32);
+                        rcobjc_ivarValue(object, ivar->index, &u32);
                         writer->addUIntegerElement(writer, ivar->name, u32);
                         break;
                     case 'Q':
-                        ksobjc_ivarValue(object, ivar->index, &u64);
+                        rcobjc_ivarValue(object, ivar->index, &u64);
                         writer->addUIntegerElement(writer, ivar->name, u64);
                         break;
                     case 'f':
-                        ksobjc_ivarValue(object, ivar->index, &f32);
+                        rcobjc_ivarValue(object, ivar->index, &f32);
                         writer->addFloatingPointElement(writer, ivar->name, f32);
                         break;
                     case 'd':
-                        ksobjc_ivarValue(object, ivar->index, &f64);
+                        rcobjc_ivarValue(object, ivar->index, &f64);
                         writer->addFloatingPointElement(writer, ivar->name, f64);
                         break;
                     case 'B':
-                        ksobjc_ivarValue(object, ivar->index, &b);
+                        rcobjc_ivarValue(object, ivar->index, &b);
                         writer->addBooleanElement(writer, ivar->name, b);
                         break;
                     case '*':
                     case '@':
                     case '#':
                     case ':':
-                        ksobjc_ivarValue(object, ivar->index, &pointer);
+                        rcobjc_ivarValue(object, ivar->index, &pointer);
                         writeMemoryContents(writer, ivar->name, (uintptr_t)pointer, limit);
                         break;
                     default:
@@ -664,7 +664,7 @@ static void writeZombieIfPresent(const RollbarCrashReportWriter* const writer,
 {
 #if RollbarCrashCRASH_HAS_OBJC
     const void* object = (const void*)address;
-    const char* zombieClassName = kszombie_className(object);
+    const char* zombieClassName = rczombie_className(object);
     if(zombieClassName != NULL)
     {
         writer->addStringElement(writer, key, zombieClassName);
@@ -678,20 +678,20 @@ static bool writeObjCObject(const RollbarCrashReportWriter* const writer,
 {
 #if RollbarCrashCRASH_HAS_OBJC
     const void* object = (const void*)address;
-    switch(ksobjc_objectType(object))
+    switch(rcobjc_objectType(object))
     {
         case RollbarCrashObjCTypeClass:
             writer->addStringElement(writer, RollbarCrashField_Type, RollbarCrashMemType_Class);
-            writer->addStringElement(writer, RollbarCrashField_Class, ksobjc_className(object));
+            writer->addStringElement(writer, RollbarCrashField_Class, rcobjc_className(object));
             return true;
         case RollbarCrashObjCTypeObject:
         {
             writer->addStringElement(writer, RollbarCrashField_Type, RollbarCrashMemType_Object);
-            const char* className = ksobjc_objectClassName(object);
+            const char* className = rcobjc_objectClassName(object);
             writer->addStringElement(writer, RollbarCrashField_Class, className);
             if(!isRestrictedClass(className))
             {
-                switch(ksobjc_objectClassType(object))
+                switch(rcobjc_objectClassType(object))
                 {
                     case RollbarCrashObjCClassTypeString:
                         writeNSStringContents(writer, RollbarCrashField_Value, address, limit);
@@ -731,7 +731,7 @@ static bool writeObjCObject(const RollbarCrashReportWriter* const writer,
         }
         case RollbarCrashObjCTypeBlock:
             writer->addStringElement(writer, RollbarCrashField_Type, RollbarCrashMemType_Block);
-            const char* className = ksobjc_objectClassName(object);
+            const char* className = rcobjc_objectClassName(object);
             writer->addStringElement(writer, RollbarCrashField_Class, className);
             return true;
         case RollbarCrashObjCTypeUnknown:
@@ -792,9 +792,9 @@ static bool isValidPointer(const uintptr_t address)
     }
 
 #if RollbarCrashCRASH_HAS_OBJC
-    if(ksobjc_isTaggedPointer((const void*)address))
+    if(rcobjc_isTaggedPointer((const void*)address))
     {
-        if(!ksobjc_isValidTaggedPointer((const void*)address))
+        if(!rcobjc_isValidTaggedPointer((const void*)address))
         {
             return false;
         }
@@ -814,12 +814,12 @@ static bool isNotableAddress(const uintptr_t address)
     const void* object = (const void*)address;
 
 #if RollbarCrashCRASH_HAS_OBJC
-    if(kszombie_className(object) != NULL)
+    if(rczombie_className(object) != NULL)
     {
         return true;
     }
 
-    if(ksobjc_objectType(object) != RollbarCrashObjCTypeUnknown)
+    if(rcobjc_objectType(object) != RollbarCrashObjCTypeUnknown)
     {
         return true;
     }
@@ -866,7 +866,7 @@ static void writeAddressReferencedByString(const RollbarCrashReportWriter* const
                                            const char* string)
 {
     uint64_t address = 0;
-    if(string == NULL || !ksstring_extractHexValue(string, (int)strlen(string), &address))
+    if(string == NULL || !rcstring_extractHexValue(string, (int)strlen(string), &address))
     {
         return;
     }
@@ -901,7 +901,7 @@ static void writeBacktrace(const RollbarCrashReportWriter* const writer,
                     {
                         if(stackCursor->stackEntry.imageName != NULL)
                         {
-                            writer->addStringElement(writer, RollbarCrashField_ObjectName, ksfu_lastPathEntry(stackCursor->stackEntry.imageName));
+                            writer->addStringElement(writer, RollbarCrashField_ObjectName, rcfu_lastPathEntry(stackCursor->stackEntry.imageName));
                         }
                         writer->addUIntegerElement(writer, RollbarCrashField_ObjectAddr, stackCursor->stackEntry.imageAddress);
                         if(stackCursor->stackEntry.symbolName != NULL)
@@ -939,14 +939,14 @@ static void writeStackContents(const RollbarCrashReportWriter* const writer,
                                const struct RollbarCrashMachineContext* const machineContext,
                                const bool isStackOverflow)
 {
-    uintptr_t sp = kscpu_stackPointer(machineContext);
+    uintptr_t sp = rccpu_stackPointer(machineContext);
     if((void*)sp == NULL)
     {
         return;
     }
 
-    uintptr_t lowAddress = sp + (uintptr_t)(kStackContentsPushedDistance * (int)sizeof(sp) * kscpu_stackGrowDirection() * -1);
-    uintptr_t highAddress = sp + (uintptr_t)(kStackContentsPoppedDistance * (int)sizeof(sp) * kscpu_stackGrowDirection());
+    uintptr_t lowAddress = sp + (uintptr_t)(kStackContentsPushedDistance * (int)sizeof(sp) * rccpu_stackGrowDirection() * -1);
+    uintptr_t highAddress = sp + (uintptr_t)(kStackContentsPoppedDistance * (int)sizeof(sp) * rccpu_stackGrowDirection());
     if(highAddress < lowAddress)
     {
         uintptr_t tmp = lowAddress;
@@ -955,14 +955,14 @@ static void writeStackContents(const RollbarCrashReportWriter* const writer,
     }
     writer->beginObject(writer, key);
     {
-        writer->addStringElement(writer, RollbarCrashField_GrowDirection, kscpu_stackGrowDirection() > 0 ? "+" : "-");
+        writer->addStringElement(writer, RollbarCrashField_GrowDirection, rccpu_stackGrowDirection() > 0 ? "+" : "-");
         writer->addUIntegerElement(writer, RollbarCrashField_DumpStart, lowAddress);
         writer->addUIntegerElement(writer, RollbarCrashField_DumpEnd, highAddress);
         writer->addUIntegerElement(writer, RollbarCrashField_StackPtr, sp);
         writer->addBooleanElement(writer, RollbarCrashField_Overflow, isStackOverflow);
         uint8_t stackBuffer[kStackContentsTotalDistance * sizeof(sp)];
         int copyLength = (int)(highAddress - lowAddress);
-        if(ksmem_copySafely((void*)lowAddress, stackBuffer, copyLength))
+        if(rcmem_copySafely((void*)lowAddress, stackBuffer, copyLength))
         {
             writer->addDataElement(writer, RollbarCrashField_Contents, (void*)stackBuffer, copyLength);
         }
@@ -989,14 +989,14 @@ static void writeNotableStackContents(const RollbarCrashReportWriter* const writ
                                       const int backDistance,
                                       const int forwardDistance)
 {
-    uintptr_t sp = kscpu_stackPointer(machineContext);
+    uintptr_t sp = rccpu_stackPointer(machineContext);
     if((void*)sp == NULL)
     {
         return;
     }
 
-    uintptr_t lowAddress = sp + (uintptr_t)(backDistance * (int)sizeof(sp) * kscpu_stackGrowDirection() * -1);
-    uintptr_t highAddress = sp + (uintptr_t)(forwardDistance * (int)sizeof(sp) * kscpu_stackGrowDirection());
+    uintptr_t lowAddress = sp + (uintptr_t)(backDistance * (int)sizeof(sp) * rccpu_stackGrowDirection() * -1);
+    uintptr_t highAddress = sp + (uintptr_t)(forwardDistance * (int)sizeof(sp) * rccpu_stackGrowDirection());
     if(highAddress < lowAddress)
     {
         uintptr_t tmp = lowAddress;
@@ -1007,7 +1007,7 @@ static void writeNotableStackContents(const RollbarCrashReportWriter* const writ
     char nameBuffer[40];
     for(uintptr_t address = lowAddress; address < highAddress; address += sizeof(address))
     {
-        if(ksmem_copySafely((void*)address, &contentsAsPointer, sizeof(contentsAsPointer)))
+        if(rcmem_copySafely((void*)address, &contentsAsPointer, sizeof(contentsAsPointer)))
         {
             sprintf(nameBuffer, "stack@%p", (void*)address);
             writeMemoryContentsIfNotable(writer, nameBuffer, contentsAsPointer);
@@ -1034,17 +1034,17 @@ static void writeBasicRegisters(const RollbarCrashReportWriter* const writer,
     const char* registerName;
     writer->beginObject(writer, key);
     {
-        const int numRegisters = kscpu_numRegisters();
+        const int numRegisters = rccpu_numRegisters();
         for(int reg = 0; reg < numRegisters; reg++)
         {
-            registerName = kscpu_registerName(reg);
+            registerName = rccpu_registerName(reg);
             if(registerName == NULL)
             {
                 snprintf(registerNameBuff, sizeof(registerNameBuff), "r%d", reg);
                 registerName = registerNameBuff;
             }
             writer->addUIntegerElement(writer, registerName,
-                                       kscpu_registerValue(machineContext, reg));
+                                       rccpu_registerValue(machineContext, reg));
         }
     }
     writer->endContainer(writer);
@@ -1066,17 +1066,17 @@ static void writeExceptionRegisters(const RollbarCrashReportWriter* const writer
     const char* registerName;
     writer->beginObject(writer, key);
     {
-        const int numRegisters = kscpu_numExceptionRegisters();
+        const int numRegisters = rccpu_numExceptionRegisters();
         for(int reg = 0; reg < numRegisters; reg++)
         {
-            registerName = kscpu_exceptionRegisterName(reg);
+            registerName = rccpu_exceptionRegisterName(reg);
             if(registerName == NULL)
             {
                 snprintf(registerNameBuff, sizeof(registerNameBuff), "r%d", reg);
                 registerName = registerNameBuff;
             }
             writer->addUIntegerElement(writer,registerName,
-                                       kscpu_exceptionRegisterValue(machineContext, reg));
+                                       rccpu_exceptionRegisterValue(machineContext, reg));
         }
     }
     writer->endContainer(writer);
@@ -1097,7 +1097,7 @@ static void writeRegisters(const RollbarCrashReportWriter* const writer,
     writer->beginObject(writer, key);
     {
         writeBasicRegisters(writer, RollbarCrashField_Basic, machineContext);
-        if(ksmc_hasValidExceptionRegisters(machineContext))
+        if(rcmc_hasValidExceptionRegisters(machineContext))
         {
             writeExceptionRegisters(writer, RollbarCrashField_Exception, machineContext);
         }
@@ -1116,10 +1116,10 @@ static void writeNotableRegisters(const RollbarCrashReportWriter* const writer,
 {
     char registerNameBuff[30];
     const char* registerName;
-    const int numRegisters = kscpu_numRegisters();
+    const int numRegisters = rccpu_numRegisters();
     for(int reg = 0; reg < numRegisters; reg++)
     {
-        registerName = kscpu_registerName(reg);
+        registerName = rccpu_registerName(reg);
         if(registerName == NULL)
         {
             snprintf(registerNameBuff, sizeof(registerNameBuff), "r%d", reg);
@@ -1127,7 +1127,7 @@ static void writeNotableRegisters(const RollbarCrashReportWriter* const writer,
         }
         writeMemoryContentsIfNotable(writer,
                                      registerName,
-                                     (uintptr_t)kscpu_registerValue(machineContext, reg));
+                                     (uintptr_t)rccpu_registerValue(machineContext, reg));
     }
 }
 
@@ -1175,8 +1175,8 @@ static void writeThread(const RollbarCrashReportWriter* const writer,
                         const int threadIndex,
                         const bool shouldWriteNotableAddresses)
 {
-    bool isCrashedThread = ksmc_isCrashedContext(machineContext);
-    RollbarCrashThread thread = ksmc_getThreadFromContext(machineContext);
+    bool isCrashedThread = rcmc_isCrashedContext(machineContext);
+    RollbarCrashThread thread = rcmc_getThreadFromContext(machineContext);
     RollbarCrashLOG_DEBUG("Writing thread %x (index %d). is crashed: %d", thread, threadIndex, isCrashedThread);
 
     RollbarCrashStackCursor stackCursor;
@@ -1188,23 +1188,23 @@ static void writeThread(const RollbarCrashReportWriter* const writer,
         {
             writeBacktrace(writer, RollbarCrashField_Backtrace, &stackCursor);
         }
-        if(ksmc_canHaveCPUState(machineContext))
+        if(rcmc_canHaveCPUState(machineContext))
         {
             writeRegisters(writer, RollbarCrashField_Registers, machineContext);
         }
         writer->addIntegerElement(writer, RollbarCrashField_Index, threadIndex);
-        const char* name = ksccd_getThreadName(thread);
+        const char* name = rcccd_getThreadName(thread);
         if(name != NULL)
         {
             writer->addStringElement(writer, RollbarCrashField_Name, name);
         }
-        name = ksccd_getQueueName(thread);
+        name = rcccd_getQueueName(thread);
         if(name != NULL)
         {
             writer->addStringElement(writer, RollbarCrashField_DispatchQueue, name);
         }
         writer->addBooleanElement(writer, RollbarCrashField_Crashed, isCrashedThread);
-        writer->addBooleanElement(writer, RollbarCrashField_CurrentThread, thread == ksthread_self());
+        writer->addBooleanElement(writer, RollbarCrashField_CurrentThread, thread == rcthread_self());
         if(isCrashedThread)
         {
             writeStackContents(writer, RollbarCrashField_Stack, machineContext, stackCursor.state.hasGivenUp);
@@ -1231,8 +1231,8 @@ static void writeAllThreads(const RollbarCrashReportWriter* const writer,
                             bool writeNotableAddresses)
 {
     const struct RollbarCrashMachineContext* const context = crash->offendingMachineContext;
-    RollbarCrashThread offendingThread = ksmc_getThreadFromContext(context);
-    int threadCount = ksmc_getThreadCount(context);
+    RollbarCrashThread offendingThread = rcmc_getThreadFromContext(context);
+    int threadCount = rcmc_getThreadCount(context);
     RollbarCrashMC_NEW_CONTEXT(machineContext);
 
     // Fetch info for all threads.
@@ -1241,14 +1241,14 @@ static void writeAllThreads(const RollbarCrashReportWriter* const writer,
         RollbarCrashLOG_DEBUG("Writing %d threads.", threadCount);
         for(int i = 0; i < threadCount; i++)
         {
-            RollbarCrashThread thread = ksmc_getThreadAtIndex(context, i);
+            RollbarCrashThread thread = rcmc_getThreadAtIndex(context, i);
             if(thread == offendingThread)
             {
                 writeThread(writer, NULL, crash, context, i, writeNotableAddresses);
             }
             else
             {
-                ksmc_getContextForThread(thread, machineContext, false);
+                rcmc_getContextForThread(thread, machineContext, false);
                 writeThread(writer, NULL, crash, machineContext, i, writeNotableAddresses);
             }
         }
@@ -1271,7 +1271,7 @@ static void writeBinaryImage(const RollbarCrashReportWriter* const writer,
                              const int index)
 {
     RollbarCrashBinaryImage image = {0};
-    if(!ksdl_getBinaryImage(index, &image))
+    if(!rcdl_getBinaryImage(index, &image))
     {
         return;
     }
@@ -1308,7 +1308,7 @@ static void writeBinaryImage(const RollbarCrashReportWriter* const writer,
  */
 static void writeBinaryImages(const RollbarCrashReportWriter* const writer, const char* const key)
 {
-    const int imageCount = ksdl_imageCount();
+    const int imageCount = rcdl_imageCount();
 
     writer->beginArray(writer, key);
     {
@@ -1356,8 +1356,8 @@ static void writeError(const RollbarCrashReportWriter* const writer,
 #if RollbarCrashCRASH_HOST_APPLE
         writer->beginObject(writer, RollbarCrashField_Mach);
         {
-            const char* machExceptionName = ksmach_exceptionName(crash->mach.type);
-            const char* machCodeName = crash->mach.code == 0 ? NULL : ksmach_kernelReturnCodeName(crash->mach.code);
+            const char* machExceptionName = rcmach_exceptionName(crash->mach.type);
+            const char* machCodeName = crash->mach.code == 0 ? NULL : rcmach_kernelReturnCodeName(crash->mach.code);
             writer->addUIntegerElement(writer, RollbarCrashField_Exception, (unsigned)crash->mach.type);
             if(machExceptionName != NULL)
             {
@@ -1374,8 +1374,8 @@ static void writeError(const RollbarCrashReportWriter* const writer,
 #endif
         writer->beginObject(writer, RollbarCrashField_Signal);
         {
-            const char* sigName = kssignal_signalName(crash->signal.signum);
-            const char* sigCodeName = kssignal_signalCodeName(crash->signal.signum, crash->signal.sigcode);
+            const char* sigName = rcsignal_signalName(crash->signal.signum);
+            const char* sigCodeName = rcsignal_signalCodeName(crash->signal.signum, crash->signal.sigcode);
             writer->addUIntegerElement(writer, RollbarCrashField_Signal, (unsigned)crash->signal.signum);
             if(sigName != NULL)
             {
@@ -1594,7 +1594,7 @@ static void prepareReportWriter(RollbarCrashReportWriter* const writer, RollbarC
 #pragma mark - Main API -
 // ============================================================================
 
-void kscrashreport_writeRecrashReport(const RollbarCrash_MonitorContext* const monitorContext, const char* const path)
+void rcreport_writeRecrashReport(const RollbarCrash_MonitorContext* const monitorContext, const char* const path)
 {
     char writeBuffer[1024];
     RollbarCrashBufferedWriter bufferedWriter;
@@ -1607,12 +1607,12 @@ void kscrashreport_writeRecrashReport(const RollbarCrash_MonitorContext* const m
     {
         RollbarCrashLOG_ERROR("Could not rename %s to %s: %s", path, tempPath, strerror(errno));
     }
-    if(!ksfu_openBufferedWriter(&bufferedWriter, path, writeBuffer, sizeof(writeBuffer)))
+    if(!rcfu_openBufferedWriter(&bufferedWriter, path, writeBuffer, sizeof(writeBuffer)))
     {
         return;
     }
 
-    ksccd_freeze();
+    rcccd_freeze();
 
     RollbarCrashJSONEncodeContext jsonContext;
     jsonContext.userData = &bufferedWriter;
@@ -1620,12 +1620,12 @@ void kscrashreport_writeRecrashReport(const RollbarCrash_MonitorContext* const m
     RollbarCrashReportWriter* writer = &concreteWriter;
     prepareReportWriter(writer, &jsonContext);
 
-    ksjson_beginEncode(getJsonContext(writer), true, addJSONData, &bufferedWriter);
+    rcjson_beginEncode(getJsonContext(writer), true, addJSONData, &bufferedWriter);
 
     writer->beginObject(writer, RollbarCrashField_Report);
     {
         writeRecrash(writer, RollbarCrashField_RecrashReport, tempPath);
-        ksfu_flushBufferedWriter(&bufferedWriter);
+        rcfu_flushBufferedWriter(&bufferedWriter);
         if(remove(tempPath) < 0)
         {
             RollbarCrashLOG_ERROR("Could not remove %s: %s", tempPath, strerror(errno));
@@ -1635,29 +1635,29 @@ void kscrashreport_writeRecrashReport(const RollbarCrash_MonitorContext* const m
                         RollbarCrashReportType_Minimal,
                         monitorContext->eventID,
                         monitorContext->System.processName);
-        ksfu_flushBufferedWriter(&bufferedWriter);
+        rcfu_flushBufferedWriter(&bufferedWriter);
 
         writer->beginObject(writer, RollbarCrashField_Crash);
         {
             writeError(writer, RollbarCrashField_Error, monitorContext);
-            ksfu_flushBufferedWriter(&bufferedWriter);
-            int threadIndex = ksmc_indexOfThread(monitorContext->offendingMachineContext,
-                                                 ksmc_getThreadFromContext(monitorContext->offendingMachineContext));
+            rcfu_flushBufferedWriter(&bufferedWriter);
+            int threadIndex = rcmc_indexOfThread(monitorContext->offendingMachineContext,
+                                                 rcmc_getThreadFromContext(monitorContext->offendingMachineContext));
             writeThread(writer,
                         RollbarCrashField_CrashedThread,
                         monitorContext,
                         monitorContext->offendingMachineContext,
                         threadIndex,
                         false);
-            ksfu_flushBufferedWriter(&bufferedWriter);
+            rcfu_flushBufferedWriter(&bufferedWriter);
         }
         writer->endContainer(writer);
     }
     writer->endContainer(writer);
 
-    ksjson_endEncode(getJsonContext(writer));
-    ksfu_closeBufferedWriter(&bufferedWriter);
-    ksccd_unfreeze();
+    rcjson_endEncode(getJsonContext(writer));
+    rcfu_closeBufferedWriter(&bufferedWriter);
+    rcccd_unfreeze();
 }
 
 static void writeSystemInfo(const RollbarCrashReportWriter* const writer,
@@ -1717,18 +1717,18 @@ static void writeDebugInfo(const RollbarCrashReportWriter* const writer,
     
 }
 
-void kscrashreport_writeStandardReport(const RollbarCrash_MonitorContext* const monitorContext, const char* const path)
+void rcreport_writeStandardReport(const RollbarCrash_MonitorContext* const monitorContext, const char* const path)
 {
     RollbarCrashLOG_INFO("Writing crash report to %s", path);
     char writeBuffer[1024];
     RollbarCrashBufferedWriter bufferedWriter;
 
-    if(!ksfu_openBufferedWriter(&bufferedWriter, path, writeBuffer, sizeof(writeBuffer)))
+    if(!rcfu_openBufferedWriter(&bufferedWriter, path, writeBuffer, sizeof(writeBuffer)))
     {
         return;
     }
 
-    ksccd_freeze();
+    rcccd_freeze();
     
     RollbarCrashJSONEncodeContext jsonContext;
     jsonContext.userData = &bufferedWriter;
@@ -1736,7 +1736,7 @@ void kscrashreport_writeStandardReport(const RollbarCrash_MonitorContext* const 
     RollbarCrashReportWriter* writer = &concreteWriter;
     prepareReportWriter(writer, &jsonContext);
 
-    ksjson_beginEncode(getJsonContext(writer), true, addJSONData, &bufferedWriter);
+    rcjson_beginEncode(getJsonContext(writer), true, addJSONData, &bufferedWriter);
 
     writer->beginObject(writer, RollbarCrashField_Report);
     {
@@ -1745,33 +1745,33 @@ void kscrashreport_writeStandardReport(const RollbarCrash_MonitorContext* const 
                         RollbarCrashReportType_Standard,
                         monitorContext->eventID,
                         monitorContext->System.processName);
-        ksfu_flushBufferedWriter(&bufferedWriter);
+        rcfu_flushBufferedWriter(&bufferedWriter);
 
         writeBinaryImages(writer, RollbarCrashField_BinaryImages);
-        ksfu_flushBufferedWriter(&bufferedWriter);
+        rcfu_flushBufferedWriter(&bufferedWriter);
 
         writeProcessState(writer, RollbarCrashField_ProcessState, monitorContext);
-        ksfu_flushBufferedWriter(&bufferedWriter);
+        rcfu_flushBufferedWriter(&bufferedWriter);
 
         writeSystemInfo(writer, RollbarCrashField_System, monitorContext);
-        ksfu_flushBufferedWriter(&bufferedWriter);
+        rcfu_flushBufferedWriter(&bufferedWriter);
 
         writer->beginObject(writer, RollbarCrashField_Crash);
         {
             writeError(writer, RollbarCrashField_Error, monitorContext);
-            ksfu_flushBufferedWriter(&bufferedWriter);
+            rcfu_flushBufferedWriter(&bufferedWriter);
             writeAllThreads(writer,
                             RollbarCrashField_Threads,
                             monitorContext,
                             g_introspectionRules.enabled);
-            ksfu_flushBufferedWriter(&bufferedWriter);
+            rcfu_flushBufferedWriter(&bufferedWriter);
         }
         writer->endContainer(writer);
 
         if(g_userInfoJSON != NULL)
         {
             addJSONElement(writer, RollbarCrashField_User, g_userInfoJSON, false);
-            ksfu_flushBufferedWriter(&bufferedWriter);
+            rcfu_flushBufferedWriter(&bufferedWriter);
         }
         else
         {
@@ -1779,26 +1779,26 @@ void kscrashreport_writeStandardReport(const RollbarCrash_MonitorContext* const 
         }
         if(g_userSectionWriteCallback != NULL)
         {
-            ksfu_flushBufferedWriter(&bufferedWriter);
+            rcfu_flushBufferedWriter(&bufferedWriter);
             if (monitorContext->currentSnapshotUserReported == false) {
                 g_userSectionWriteCallback(writer);
             }
         }
         writer->endContainer(writer);
-        ksfu_flushBufferedWriter(&bufferedWriter);
+        rcfu_flushBufferedWriter(&bufferedWriter);
 
         writeDebugInfo(writer, RollbarCrashField_Debug, monitorContext);
     }
     writer->endContainer(writer);
     
-    ksjson_endEncode(getJsonContext(writer));
-    ksfu_closeBufferedWriter(&bufferedWriter);
-    ksccd_unfreeze();
+    rcjson_endEncode(getJsonContext(writer));
+    rcfu_closeBufferedWriter(&bufferedWriter);
+    rcccd_unfreeze();
 }
 
 
 
-void kscrashreport_setUserInfoJSON(const char* const userInfoJSON)
+void rcreport_setUserInfoJSON(const char* const userInfoJSON)
 {
     static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
     RollbarCrashLOG_TRACE("set userInfoJSON to %p", userInfoJSON);
@@ -1819,12 +1819,12 @@ void kscrashreport_setUserInfoJSON(const char* const userInfoJSON)
     pthread_mutex_unlock(&mutex);
 }
 
-void kscrashreport_setIntrospectMemory(bool shouldIntrospectMemory)
+void rcreport_setIntrospectMemory(bool shouldIntrospectMemory)
 {
     g_introspectionRules.enabled = shouldIntrospectMemory;
 }
 
-void kscrashreport_setDoNotIntrospectClasses(const char** doNotIntrospectClasses, int length)
+void rcreport_setDoNotIntrospectClasses(const char** doNotIntrospectClasses, int length)
 {
     const char** oldClasses = g_introspectionRules.restrictedClasses;
     int oldClassesLength = g_introspectionRules.restrictedClassesCount;
@@ -1860,7 +1860,7 @@ void kscrashreport_setDoNotIntrospectClasses(const char** doNotIntrospectClasses
     }
 }
 
-void kscrashreport_setUserSectionWriteCallback(const RollbarCrashReportWriteCallback userSectionWriteCallback)
+void rcreport_setUserSectionWriteCallback(const RollbarCrashReportWriteCallback userSectionWriteCallback)
 {
     RollbarCrashLOG_TRACE("Set userSectionWriteCallback to %p", userSectionWriteCallback);
     g_userSectionWriteCallback = userSectionWriteCallback;

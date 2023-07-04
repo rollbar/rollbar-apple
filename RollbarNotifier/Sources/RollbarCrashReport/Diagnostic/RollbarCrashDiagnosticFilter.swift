@@ -53,7 +53,7 @@ public class RollbarCrashDiagnosticFilter: NSObject, RollbarCrashReportFilter {
     /// - Parameter report: The `Report` to diagnose.
     /// - Returns: A new `Report` with the parsed diagnostic information.
     private func diagnose(_ report: Report) -> Result<Report, NSError> {
-        let kscrashDiagnostics = report.crash.diagnosis?
+        let crashDiagnostics = report.crash.diagnosis?
             .split(separator: "\n")
             .map { Diagnostic($0, source: report.crashType) } ?? []
 
@@ -70,12 +70,12 @@ public class RollbarCrashDiagnosticFilter: NSObject, RollbarCrashReportFilter {
                     : diagnostic
             }
 
-        let diagnostic = kscrashDiagnostics.first
+        let diagnostic = crashDiagnostics.first
             ?? dyldDiagnostics.first(where: { $0.source != "libsystem_sim_platform.dylib" })
 
         var diagnosedReport = report
         diagnosedReport.crash.diagnosis = diagnostic?.diagnosis
-        diagnosedReport.crash.diagnostics = kscrashDiagnostics + dyldDiagnostics
+        diagnosedReport.crash.diagnostics = crashDiagnostics + dyldDiagnostics
         return .success(diagnosedReport)
     }
 

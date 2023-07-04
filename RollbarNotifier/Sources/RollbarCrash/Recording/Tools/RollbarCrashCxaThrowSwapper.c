@@ -316,7 +316,7 @@ static void rebind_symbols_for_image(const struct mach_header *header, intptr_t 
         return;
     }
     
-    const segment_command_t *linkedit_segment = ksgs_getsegbynamefromheader((mach_header_t *) header, SEG_LINKEDIT);
+    const segment_command_t *linkedit_segment = rcgs_getsegbynamefromheader((mach_header_t *) header, SEG_LINKEDIT);
     
     // Find base symbol/string table addresses
     uintptr_t linkedit_base = (uintptr_t) slide + linkedit_segment->vmaddr - linkedit_segment->fileoff;
@@ -329,7 +329,7 @@ static void rebind_symbols_for_image(const struct mach_header *header, intptr_t 
     const section_t *lazy_sym_sect = NULL;
     const section_t *non_lazy_sym_sect = NULL;
     
-    const segment_command_t *data_seg = ksgs_getsegbynamefromheader((mach_header_t *) header, SEG_DATA);
+    const segment_command_t *data_seg = rcgs_getsegbynamefromheader((mach_header_t *) header, SEG_DATA);
     if (data_seg != NULL)
     {
         if (get_sections(data_seg, &lazy_sym_sect, &non_lazy_sym_sect))
@@ -339,7 +339,7 @@ static void rebind_symbols_for_image(const struct mach_header *header, intptr_t 
         }
     }
     
-    const segment_command_t *data_const_seg = ksgs_getsegbynamefromheader((mach_header_t *) header, SEG_DATA_CONST);
+    const segment_command_t *data_const_seg = rcgs_getsegbynamefromheader((mach_header_t *) header, SEG_DATA_CONST);
     if (data_const_seg != NULL)
     {
         if (get_sections(data_const_seg, &lazy_sym_sect, &non_lazy_sym_sect))
@@ -350,7 +350,7 @@ static void rebind_symbols_for_image(const struct mach_header *header, intptr_t 
     }
 }
 
-int ksct_swap(const cxa_throw_type handler)
+int rcct_swap(const cxa_throw_type handler)
 {
     if (g_cxa_originals == NULL)
     {

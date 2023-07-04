@@ -71,35 +71,35 @@ static bool copyStringIvar(const void* self, const char* ivarName, char* buffer,
 {
     Class class = object_getClass((id)self);
     RollbarCrashObjCIvar ivar = {0};
-    likely_if(ksobjc_ivarNamed(class, ivarName, &ivar))
+    likely_if(rcobjc_ivarNamed(class, ivarName, &ivar))
     {
         void* pointer;
-        likely_if(ksobjc_ivarValue(self, ivar.index, &pointer))
+        likely_if(rcobjc_ivarValue(self, ivar.index, &pointer))
         {
-            likely_if(ksobjc_isValidObject(pointer))
+            likely_if(rcobjc_isValidObject(pointer))
             {
-                likely_if(ksobjc_copyStringContents(pointer, buffer, bufferLength) > 0)
+                likely_if(rcobjc_copyStringContents(pointer, buffer, bufferLength) > 0)
                 {
                     return true;
                 }
                 else
                 {
-                    RollbarCrashLOG_DEBUG("ksobjc_copyStringContents %s failed", ivarName);
+                    RollbarCrashLOG_DEBUG("rcobjc_copyStringContents %s failed", ivarName);
                 }
             }
             else
             {
-                RollbarCrashLOG_DEBUG("ksobjc_isValidObject %s failed", ivarName);
+                RollbarCrashLOG_DEBUG("rcobjc_isValidObject %s failed", ivarName);
             }
         }
         else
         {
-            RollbarCrashLOG_DEBUG("ksobjc_ivarValue %s failed", ivarName);
+            RollbarCrashLOG_DEBUG("rcobjc_ivarValue %s failed", ivarName);
         }
     }
     else
     {
-        RollbarCrashLOG_DEBUG("ksobjc_ivarNamed %s failed", ivarName);
+        RollbarCrashLOG_DEBUG("rcobjc_ivarNamed %s failed", ivarName);
     }
     return false;
 }
@@ -190,7 +190,7 @@ static void install()
 //    });
 //}
 
-const char* kszombie_className(const void* object)
+const char* rczombie_className(const void* object)
 {
     volatile Zombie* cache = g_zombieCache;
     if(cache == NULL || object == NULL)
@@ -239,7 +239,7 @@ static void addContextualInfoToEvent(RollbarCrash_MonitorContext* eventContext)
     }
 }
 
-RollbarCrashMonitorAPI* kscm_zombie_getAPI()
+RollbarCrashMonitorAPI* rcm_zombie_getAPI()
 {
     static RollbarCrashMonitorAPI api =
     {
