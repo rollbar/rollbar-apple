@@ -48,14 +48,14 @@ bool rccpu_i_fillState(const thread_t thread,
                        const thread_state_flavor_t flavor,
                        const mach_msg_type_number_t stateCount)
 {
-    RollbarCrashLOG_TRACE("Filling thread state with flavor %x.", flavor);
+    RCLOG_TRACE("Filling thread state with flavor %x.", flavor);
     mach_msg_type_number_t stateCountBuff = stateCount;
     kern_return_t kr;
     
     kr = thread_get_state(thread, flavor, state, &stateCountBuff);
     if(kr != KERN_SUCCESS)
     {
-        RollbarCrashLOG_ERROR("thread_get_state: %s", mach_error_string(kr));
+        RCLOG_ERROR("thread_get_state: %s", mach_error_string(kr));
         return false;
     }
     return true;

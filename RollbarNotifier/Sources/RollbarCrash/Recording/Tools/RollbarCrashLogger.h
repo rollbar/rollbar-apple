@@ -63,13 +63,13 @@
  * in objective-C files and regular strings in regular C files):
  *
  * Code:
- *    RollbarCrashLOG_ERROR(@"Some error message");
+ *    RCLOG_ERROR(@"Some error message");
  *
  * Prints:
  *    2011-07-16 05:41:01.379 TestApp[4439:f803] ERROR: SomeClass.m (21): -[SomeFunction]: Some error message 
  *
  * Code:
- *    RollbarCrashLOG_INFO(@"Info about %@", someObject);
+ *    RCLOG_INFO(@"Info about %@", someObject);
  *
  * Prints:
  *    2011-07-16 05:44:05.239 TestApp[4473:f803] INFO : SomeClass.m (20): -[SomeFunction]: Info about <NSObject: 0xb622840>
@@ -79,7 +79,7 @@
  * except they respect the RollbarCrashLogger_Level setting:
  *
  * Code:
- *    RollbarCrashLOGBASIC_ERROR(@"A basic log entry");
+ *    RCLOGBASIC_ERROR(@"A basic log entry");
  *
  * Prints:
  *    2011-07-16 05:44:05.916 TestApp[4473:f803] A basic log entry
@@ -89,12 +89,12 @@
  *       in C files do not print the NSLog preamble:
  *
  * Objective-C version:
- *    RollbarCrashLOG_ERROR(@"Some error message");
+ *    RCLOG_ERROR(@"Some error message");
  *
  *    2011-07-16 05:41:01.379 TestApp[4439:f803] ERROR: SomeClass.m (21): -[SomeFunction]: Some error message
  *
  * C version:
- *    RollbarCrashLOG_ERROR("Some error message");
+ *    RCLOG_ERROR("Some error message");
  *
  *    ERROR: SomeClass.c (21): SomeFunction(): Some error message
  *
@@ -107,7 +107,7 @@
  * "RollbarCrashLogger_LocalLevel" define. Note that it must be defined BEFORE
  * including RollbarCrashLogger.h
  *
- * The RollbarCrashLOG_XX() and RollbarCrashLOGBASIC_XX() macros will print out based on the LOWER
+ * The RCLOG_XX() and RCLOGBASIC_XX() macros will print out based on the LOWER
  * of RollbarCrashLogger_Level and RollbarCrashLogger_LocalLevel, so if RollbarCrashLogger_Level is DEBUG
  * and RollbarCrashLogger_LocalLevel is TRACE, it will print all the way down to the trace
  * level for the local file where RollbarCrashLogger_LocalLevel was defined, and to the
@@ -167,8 +167,8 @@ void i_rclog_logObjC(const char* level,
 
 void i_rclog_logObjCBasic(CFStringRef fmt, ...);
 
-#define i_RollbarCrashLOG_FULL(LEVEL,FILE,LINE,FUNCTION,FMT,...) i_rclog_logObjC(LEVEL,FILE,LINE,FUNCTION,(__bridge CFStringRef)FMT,##__VA_ARGS__)
-#define i_RollbarCrashLOG_BASIC(FMT, ...) i_rclog_logObjCBasic((__bridge CFStringRef)FMT,##__VA_ARGS__)
+#define i_RCLOG_FULL(LEVEL,FILE,LINE,FUNCTION,FMT,...) i_rclog_logObjC(LEVEL,FILE,LINE,FUNCTION,(__bridge CFStringRef)FMT,##__VA_ARGS__)
+#define i_RCLOG_BASIC(FMT, ...) i_rclog_logObjCBasic((__bridge CFStringRef)FMT,##__VA_ARGS__)
 
 #else // __OBJC__
 
@@ -180,35 +180,35 @@ void i_rclog_logC(const char* level,
 
 void i_rclog_logCBasic(const char* fmt, ...);
 
-#define i_RollbarCrashLOG_FULL i_rclog_logC
-#define i_RollbarCrashLOG_BASIC i_rclog_logCBasic
+#define i_RCLOG_FULL i_rclog_logC
+#define i_RCLOG_BASIC i_rclog_logCBasic
 
 #endif // __OBJC__
 
 
 /* Back up any existing defines by the same name */
 #ifdef RollbarCrash_NONE
-    #define RollbarCrashLOG_BAK_NONE RollbarCrash_NONE
+    #define RCLOG_BAK_NONE RollbarCrash_NONE
     #undef RollbarCrash_NONE
 #endif
 #ifdef ERROR
-    #define RollbarCrashLOG_BAK_ERROR ERROR
+    #define RCLOG_BAK_ERROR ERROR
     #undef ERROR
 #endif
 #ifdef WARN
-    #define RollbarCrashLOG_BAK_WARN WARN
+    #define RCLOG_BAK_WARN WARN
     #undef WARN
 #endif
 #ifdef INFO
-    #define RollbarCrashLOG_BAK_INFO INFO
+    #define RCLOG_BAK_INFO INFO
     #undef INFO
 #endif
 #ifdef DEBUG
-    #define RollbarCrashLOG_BAK_DEBUG DEBUG
+    #define RCLOG_BAK_DEBUG DEBUG
     #undef DEBUG
 #endif
 #ifdef TRACE
-    #define RollbarCrashLOG_BAK_TRACE TRACE
+    #define RCLOG_BAK_TRACE TRACE
     #undef TRACE
 #endif
 
@@ -236,8 +236,8 @@ void i_rclog_logCBasic(const char* fmt, ...);
     #define RollbarCrashLogger_LocalLevel RollbarCrashLogger_Level_None
 #endif
 
-#define a_RollbarCrashLOG_FULL(LEVEL, FMT, ...) \
-    i_RollbarCrashLOG_FULL(LEVEL, \
+#define a_RCLOG_FULL(LEVEL, FMT, ...) \
+    i_RCLOG_FULL(LEVEL, \
                  __FILE__, \
                  __LINE__, \
                  __PRETTY_FUNCTION__, \
@@ -272,7 +272,7 @@ bool rclog_clearLogFile(void);
  *
  * @return TRUE if the logger would print at the specified level.
  */
-#define RollbarCrashLOG_PRINTS_AT_LEVEL(LEVEL) \
+#define RCLOG_PRINTS_AT_LEVEL(LEVEL) \
     (RollbarCrashLogger_Level >= LEVEL || RollbarCrashLogger_LocalLevel >= LEVEL)
 
 /** Log a message regardless of the log settings.
@@ -280,8 +280,8 @@ bool rclog_clearLogFile(void);
  *
  * @param FMT The format specifier, followed by its arguments.
  */
-#define RollbarCrashLOG_ALWAYS(FMT, ...) a_RollbarCrashLOG_FULL("FORCE", FMT, ##__VA_ARGS__)
-#define RollbarCrashLOGBASIC_ALWAYS(FMT, ...) i_RollbarCrashLOG_BASIC(FMT, ##__VA_ARGS__)
+#define RCLOG_ALWAYS(FMT, ...) a_RCLOG_FULL("FORCE", FMT, ##__VA_ARGS__)
+#define RCLOGBASIC_ALWAYS(FMT, ...) i_RCLOG_BASIC(FMT, ##__VA_ARGS__)
 
 
 /** Log an error.
@@ -289,12 +289,12 @@ bool rclog_clearLogFile(void);
  *
  * @param FMT The format specifier, followed by its arguments.
  */
-#if RollbarCrashLOG_PRINTS_AT_LEVEL(RollbarCrashLogger_Level_Error)
-    #define RollbarCrashLOG_ERROR(FMT, ...) a_RollbarCrashLOG_FULL("ERROR", FMT, ##__VA_ARGS__)
-    #define RollbarCrashLOGBASIC_ERROR(FMT, ...) i_RollbarCrashLOG_BASIC(FMT, ##__VA_ARGS__)
+#if RCLOG_PRINTS_AT_LEVEL(RollbarCrashLogger_Level_Error)
+    #define RCLOG_ERROR(FMT, ...) a_RCLOG_FULL("ERROR", FMT, ##__VA_ARGS__)
+    #define RCLOGBASIC_ERROR(FMT, ...) i_RCLOG_BASIC(FMT, ##__VA_ARGS__)
 #else
-    #define RollbarCrashLOG_ERROR(FMT, ...)
-    #define RollbarCrashLOGBASIC_ERROR(FMT, ...)
+    #define RCLOG_ERROR(FMT, ...)
+    #define RCLOGBASIC_ERROR(FMT, ...)
 #endif
 
 /** Log a warning.
@@ -302,12 +302,12 @@ bool rclog_clearLogFile(void);
  *
  * @param FMT The format specifier, followed by its arguments.
  */
-#if RollbarCrashLOG_PRINTS_AT_LEVEL(RollbarCrashLogger_Level_Warn)
-    #define RollbarCrashLOG_WARN(FMT, ...)  a_RollbarCrashLOG_FULL("WARN ", FMT, ##__VA_ARGS__)
-    #define RollbarCrashLOGBASIC_WARN(FMT, ...) i_RollbarCrashLOG_BASIC(FMT, ##__VA_ARGS__)
+#if RCLOG_PRINTS_AT_LEVEL(RollbarCrashLogger_Level_Warn)
+    #define RCLOG_WARN(FMT, ...)  a_RCLOG_FULL("WARN ", FMT, ##__VA_ARGS__)
+    #define RCLOGBASIC_WARN(FMT, ...) i_RCLOG_BASIC(FMT, ##__VA_ARGS__)
 #else
-    #define RollbarCrashLOG_WARN(FMT, ...)
-    #define RollbarCrashLOGBASIC_WARN(FMT, ...)
+    #define RCLOG_WARN(FMT, ...)
+    #define RCLOGBASIC_WARN(FMT, ...)
 #endif
 
 /** Log an info message.
@@ -315,12 +315,12 @@ bool rclog_clearLogFile(void);
  *
  * @param FMT The format specifier, followed by its arguments.
  */
-#if RollbarCrashLOG_PRINTS_AT_LEVEL(RollbarCrashLogger_Level_Info)
-    #define RollbarCrashLOG_INFO(FMT, ...)  a_RollbarCrashLOG_FULL("INFO ", FMT, ##__VA_ARGS__)
-    #define RollbarCrashLOGBASIC_INFO(FMT, ...) i_RollbarCrashLOG_BASIC(FMT, ##__VA_ARGS__)
+#if RCLOG_PRINTS_AT_LEVEL(RollbarCrashLogger_Level_Info)
+    #define RCLOG_INFO(FMT, ...)  a_RCLOG_FULL("INFO ", FMT, ##__VA_ARGS__)
+    #define RCLOGBASIC_INFO(FMT, ...) i_RCLOG_BASIC(FMT, ##__VA_ARGS__)
 #else
-    #define RollbarCrashLOG_INFO(FMT, ...)
-    #define RollbarCrashLOGBASIC_INFO(FMT, ...)
+    #define RCLOG_INFO(FMT, ...)
+    #define RCLOGBASIC_INFO(FMT, ...)
 #endif
 
 /** Log a debug message.
@@ -328,12 +328,12 @@ bool rclog_clearLogFile(void);
  *
  * @param FMT The format specifier, followed by its arguments.
  */
-#if RollbarCrashLOG_PRINTS_AT_LEVEL(RollbarCrashLogger_Level_Debug)
-    #define RollbarCrashLOG_DEBUG(FMT, ...) a_RollbarCrashLOG_FULL("DEBUG", FMT, ##__VA_ARGS__)
-    #define RollbarCrashLOGBASIC_DEBUG(FMT, ...) i_RollbarCrashLOG_BASIC(FMT, ##__VA_ARGS__)
+#if RCLOG_PRINTS_AT_LEVEL(RollbarCrashLogger_Level_Debug)
+    #define RCLOG_DEBUG(FMT, ...) a_RCLOG_FULL("DEBUG", FMT, ##__VA_ARGS__)
+    #define RCLOGBASIC_DEBUG(FMT, ...) i_RCLOG_BASIC(FMT, ##__VA_ARGS__)
 #else
-    #define RollbarCrashLOG_DEBUG(FMT, ...)
-    #define RollbarCrashLOGBASIC_DEBUG(FMT, ...)
+    #define RCLOG_DEBUG(FMT, ...)
+    #define RCLOGBASIC_DEBUG(FMT, ...)
 #endif
 
 /** Log a trace message.
@@ -341,12 +341,12 @@ bool rclog_clearLogFile(void);
  *
  * @param FMT The format specifier, followed by its arguments.
  */
-#if RollbarCrashLOG_PRINTS_AT_LEVEL(RollbarCrashLogger_Level_Trace)
-    #define RollbarCrashLOG_TRACE(FMT, ...) a_RollbarCrashLOG_FULL("TRACE", FMT, ##__VA_ARGS__)
-    #define RollbarCrashLOGBASIC_TRACE(FMT, ...) i_RollbarCrashLOG_BASIC(FMT, ##__VA_ARGS__)
+#if RCLOG_PRINTS_AT_LEVEL(RollbarCrashLogger_Level_Trace)
+    #define RCLOG_TRACE(FMT, ...) a_RCLOG_FULL("TRACE", FMT, ##__VA_ARGS__)
+    #define RCLOGBASIC_TRACE(FMT, ...) i_RCLOG_BASIC(FMT, ##__VA_ARGS__)
 #else
-    #define RollbarCrashLOG_TRACE(FMT, ...)
-    #define RollbarCrashLOGBASIC_TRACE(FMT, ...)
+    #define RCLOG_TRACE(FMT, ...)
+    #define RCLOGBASIC_TRACE(FMT, ...)
 #endif
 
 
@@ -357,29 +357,29 @@ bool rclog_clearLogFile(void);
 
 /* Put everything back to the way we found it. */
 #undef ERROR
-#ifdef RollbarCrashLOG_BAK_ERROR
-    #define ERROR RollbarCrashLOG_BAK_ERROR
-    #undef RollbarCrashLOG_BAK_ERROR
+#ifdef RCLOG_BAK_ERROR
+    #define ERROR RCLOG_BAK_ERROR
+    #undef RCLOG_BAK_ERROR
 #endif
 #undef WARNING
-#ifdef RollbarCrashLOG_BAK_WARN
-    #define WARNING RollbarCrashLOG_BAK_WARN
-    #undef RollbarCrashLOG_BAK_WARN
+#ifdef RCLOG_BAK_WARN
+    #define WARNING RCLOG_BAK_WARN
+    #undef RCLOG_BAK_WARN
 #endif
 #undef INFO
-#ifdef RollbarCrashLOG_BAK_INFO
-    #define INFO RollbarCrashLOG_BAK_INFO
-    #undef RollbarCrashLOG_BAK_INFO
+#ifdef RCLOG_BAK_INFO
+    #define INFO RCLOG_BAK_INFO
+    #undef RCLOG_BAK_INFO
 #endif
 #undef DEBUG
-#ifdef RollbarCrashLOG_BAK_DEBUG
-    #define DEBUG RollbarCrashLOG_BAK_DEBUG
-    #undef RollbarCrashLOG_BAK_DEBUG
+#ifdef RCLOG_BAK_DEBUG
+    #define DEBUG RCLOG_BAK_DEBUG
+    #undef RCLOG_BAK_DEBUG
 #endif
 #undef TRACE
-#ifdef RollbarCrashLOG_BAK_TRACE
-    #define TRACE RollbarCrashLOG_BAK_TRACE
-    #undef RollbarCrashLOG_BAK_TRACE
+#ifdef RCLOG_BAK_TRACE
+    #define TRACE RCLOG_BAK_TRACE
+    #undef RCLOG_BAK_TRACE
 #endif
 
 

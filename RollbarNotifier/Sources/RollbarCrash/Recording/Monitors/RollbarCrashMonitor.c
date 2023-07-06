@@ -167,20 +167,20 @@ void rcm_setActiveMonitors(RollbarCrashMonitorType monitorTypes)
         if(!hasWarned)
         {
             hasWarned = true;
-            RollbarCrashLOGBASIC_WARN("    ************************ Crash Handler Notice ************************");
-            RollbarCrashLOGBASIC_WARN("    *     App is running in a debugger. Masking out unsafe monitors.     *");
-            RollbarCrashLOGBASIC_WARN("    * This means that most crashes WILL NOT BE RECORDED while debugging! *");
-            RollbarCrashLOGBASIC_WARN("    **********************************************************************");
+            RCLOGBASIC_WARN("    ************************ Crash Handler Notice ************************");
+            RCLOGBASIC_WARN("    *     App is running in a debugger. Masking out unsafe monitors.     *");
+            RCLOGBASIC_WARN("    * This means that most crashes WILL NOT BE RECORDED while debugging! *");
+            RCLOGBASIC_WARN("    **********************************************************************");
         }
         monitorTypes &= RollbarCrashMonitorTypeDebuggerSafe;
     }
     if(g_requiresAsyncSafety && (monitorTypes & RollbarCrashMonitorTypeAsyncUnsafe))
     {
-        RollbarCrashLOG_DEBUG("Async-safe environment detected. Masking out unsafe monitors.");
+        RCLOG_DEBUG("Async-safe environment detected. Masking out unsafe monitors.");
         monitorTypes &= RollbarCrashMonitorTypeAsyncSafe;
     }
 
-    RollbarCrashLOG_DEBUG("Changing active monitors from 0x%x tp 0x%x.", g_activeMonitors, monitorTypes);
+    RCLOG_DEBUG("Changing active monitors from 0x%x tp 0x%x.", g_activeMonitors, monitorTypes);
 
     RollbarCrashMonitorType activeMonitors = RollbarCrashMonitorTypeNone;
     for(int i = 0; i < g_monitorsCount; i++)
@@ -198,7 +198,7 @@ void rcm_setActiveMonitors(RollbarCrashMonitorType monitorTypes)
         }
     }
 
-    RollbarCrashLOG_DEBUG("Active monitors are now 0x%x.", activeMonitors);
+    RCLOG_DEBUG("Active monitors are now 0x%x.", activeMonitors);
     g_activeMonitors = activeMonitors;
 }
 
@@ -222,7 +222,7 @@ bool rcm_notifyFatalExceptionCaptured(bool isAsyncSafeEnvironment)
     g_handlingFatalException = true;
     if(g_crashedDuringExceptionHandling)
     {
-        RollbarCrashLOG_INFO("Detected crash in the crash reporter. Uninstalling RollbarCrash.");
+        RCLOG_INFO("Detected crash in the crash reporter. Uninstalling RollbarCrash.");
         rcm_setActiveMonitors(RollbarCrashMonitorTypeNone);
     }
     return g_crashedDuringExceptionHandling;
@@ -250,7 +250,7 @@ void rcm_handleException(struct RollbarCrash_MonitorContext* context)
         g_handlingFatalException = false;
     } else {
         if(g_handlingFatalException && !g_crashedDuringExceptionHandling) {
-            RollbarCrashLOG_DEBUG("Exception is fatal. Restoring original handlers.");
+            RCLOG_DEBUG("Exception is fatal. Restoring original handlers.");
             rcm_setActiveMonitors(RollbarCrashMonitorTypeNone);
         }
     }

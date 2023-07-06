@@ -54,8 +54,8 @@
  *
  * Unless you're logging from within signal handlers, it's safe to set it to 0.
  */
-#ifndef RollbarCrashLOGGER_CBufferSize
-#define RollbarCrashLOGGER_CBufferSize 1024
+#ifndef RCLOGGER_CBufferSize
+#define RCLOGGER_CBufferSize 1024
 #endif
 
 /** Where console logs will be written */
@@ -94,7 +94,7 @@ static inline void writeFmtToLog(const char* fmt, ...)
     va_end(args);
 }
 
-#if RollbarCrashLOGGER_CBufferSize > 0
+#if RCLOGGER_CBufferSize > 0
 
 /** The file descriptor where log entries get written. */
 static int g_fd = -1;
@@ -128,7 +128,7 @@ static inline void writeFmtArgsToLog(const char* fmt, va_list args)
     }
     else
     {
-        char buffer[RollbarCrashLOGGER_CBufferSize];
+        char buffer[RCLOGGER_CBufferSize];
         vsnprintf(buffer, sizeof(buffer), fmt, args);
         writeToLog(buffer);
     }

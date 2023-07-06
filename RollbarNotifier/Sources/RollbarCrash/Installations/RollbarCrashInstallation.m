@@ -144,7 +144,7 @@ static void crashCallback(const RollbarCrashReportWriter* writer)
     NSData* jsonData = [RollbarCrashJSONCodec encode:value options:RollbarCrashJSONEncodeOptionPretty | RollbarCrashJSONEncodeOptionSorted error:&error];
     if(jsonData == nil)
     {
-        RollbarCrashLOG_ERROR(@"Could not set value %@ for property %@: %@", value, self.key, error);
+        RCLOG_ERROR(@"Could not set value %@ for property %@: %@", value, self.key, error);
     }
     else
     {

@@ -171,7 +171,7 @@ static bool VMStats(vm_statistics_data_t* const vmStats, vm_size_t* const pageSi
     
     if((kr = host_page_size(hostPort, pageSize)) != KERN_SUCCESS)
     {
-        RollbarCrashLOG_ERROR(@"host_page_size: %s", mach_error_string(kr));
+        RCLOG_ERROR(@"host_page_size: %s", mach_error_string(kr));
         return false;
     }
     
@@ -182,7 +182,7 @@ static bool VMStats(vm_statistics_data_t* const vmStats, vm_size_t* const pageSi
                          &hostSize);
     if(kr != KERN_SUCCESS)
     {
-        RollbarCrashLOG_ERROR(@"host_statistics: %s", mach_error_string(kr));
+        RCLOG_ERROR(@"host_statistics: %s", mach_error_string(kr));
         return false;
     }
     

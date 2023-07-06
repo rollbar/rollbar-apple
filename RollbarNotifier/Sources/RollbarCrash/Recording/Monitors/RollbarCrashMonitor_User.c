@@ -50,7 +50,7 @@ void rcm_reportUserException(const char* name,
 {
     if(!g_isEnabled)
     {
-        RollbarCrashLOG_WARN("User-reported exception monitor is not installed. Exception has not been recorded.");
+        RCLOG_WARN("User-reported exception monitor is not installed. Exception has not been recorded.");
     }
     else
     {
@@ -73,7 +73,7 @@ void rcm_reportUserException(const char* name,
         rcsc_initSelfThread(&stackCursor, 0);
 
 
-        RollbarCrashLOG_DEBUG("Filling out context.");
+        RCLOG_DEBUG("Filling out context.");
         RollbarCrash_MonitorContext context;
         memset(&context, 0, sizeof(context));
         context.crashType = RollbarCrashMonitorTypeUserReported;

@@ -69,7 +69,7 @@ static void updateThreadList()
     kern_return_t kr;
     if((kr = task_threads(thisTask, &threads, &allThreadsCount)) != KERN_SUCCESS)
     {
-        RollbarCrashLOG_ERROR("task_threads: %s", mach_error_string(kr));
+        RCLOG_ERROR("task_threads: %s", mach_error_string(kr));
         return;
     }
 
@@ -180,7 +180,7 @@ void rcccd_init(int pollingIntervalInSeconds)
                            "RollbarCrash Cached Data Monitor");
     if(error != 0)
     {
-        RollbarCrashLOG_ERROR("pthread_create_suspended_np: %s", strerror(error));
+        RCLOG_ERROR("pthread_create_suspended_np: %s", strerror(error));
     }
     pthread_attr_destroy(&attr);
 }

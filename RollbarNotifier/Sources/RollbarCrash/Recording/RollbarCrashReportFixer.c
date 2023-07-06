@@ -314,7 +314,7 @@ char* rccrf_fixupCrashReport(const char* crashReport)
     free(stringBuffer);
     if(result != RollbarCrashJSON_OK)
     {
-        RollbarCrashLOG_ERROR("Could not decode report: %s", rcjson_stringForError(result));
+        RCLOG_ERROR("Could not decode report: %s", rcjson_stringForError(result));
         free(fixedReport);
         return NULL;
     }

@@ -88,7 +88,7 @@ static int getReportCount()
     DIR* dir = opendir(g_reportsPath);
     if(dir == NULL)
     {
-        RollbarCrashLOG_ERROR("Could not open directory %s", g_reportsPath);
+        RCLOG_ERROR("Could not open directory %s", g_reportsPath);
         goto done;
     }
     struct dirent* ent;
@@ -114,7 +114,7 @@ static int getReportIDs(int64_t* reportIDs, int count)
     DIR* dir = opendir(g_reportsPath);
     if(dir == NULL)
     {
-        RollbarCrashLOG_ERROR("Could not open directory %s", g_reportsPath);
+        RCLOG_ERROR("Could not open directory %s", g_reportsPath);
         goto done;
     }
 
@@ -231,19 +231,19 @@ int64_t rccrs_addUserReport(const char* report, int reportLength)
     int fd = open(crashReportPath, O_WRONLY | O_CREAT, 0644);
     if(fd < 0)
     {
-        RollbarCrashLOG_ERROR("Could not open file %s: %s", crashReportPath, strerror(errno));
+        RCLOG_ERROR("Could not open file %s: %s", crashReportPath, strerror(errno));
         goto done;
     }
 
     int bytesWritten = (int)write(fd, report, (unsigned)reportLength);
     if(bytesWritten < 0)
     {
-        RollbarCrashLOG_ERROR("Could not write to file %s: %s", crashReportPath, strerror(errno));
+        RCLOG_ERROR("Could not write to file %s: %s", crashReportPath, strerror(errno));
         goto done;
     }
     else if(bytesWritten < reportLength)
     {
-        RollbarCrashLOG_ERROR("Expected to write %d bytes to file %s, but only wrote %d", crashReportPath, reportLength, bytesWritten);
+        RCLOG_ERROR("Expected to write %d bytes to file %s, but only wrote %d", crashReportPath, reportLength, bytesWritten);
     }
 
 done:

@@ -113,7 +113,7 @@ uint64_t rccpu_registerValue(const RollbarCrashMachineContext* const context, co
         case 16: return context->machineContext.__ss.__cpsr;
     }
 
-    RollbarCrashLOG_ERROR("Invalid register number: %d", regNumber);
+    RCLOG_ERROR("Invalid register number: %d", regNumber);
     return 0;
 }
 
@@ -128,7 +128,7 @@ const char* rccpu_exceptionRegisterName(const int regNumber)
     {
         return g_exceptionRegisterNames[regNumber];
     }
-    RollbarCrashLOG_ERROR("Invalid register number: %d", regNumber);
+    RCLOG_ERROR("Invalid register number: %d", regNumber);
     return NULL;
 }
 
@@ -144,7 +144,7 @@ uint64_t rccpu_exceptionRegisterValue(const RollbarCrashMachineContext* const co
             return context->machineContext.__es.__far;
     }
 
-    RollbarCrashLOG_ERROR("Invalid register number: %d", regNumber);
+    RCLOG_ERROR("Invalid register number: %d", regNumber);
     return 0;
 }
 

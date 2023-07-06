@@ -75,13 +75,13 @@ static NSString* getBasePath()
                                                                YES);
     if([directories count] == 0)
     {
-        RollbarCrashLOG_ERROR(@"Could not locate cache directory path.");
+        RCLOG_ERROR(@"Could not locate cache directory path.");
         return nil;
     }
     NSString* cachePath = [directories objectAtIndex:0];
     if([cachePath length] == 0)
     {
-        RollbarCrashLOG_ERROR(@"Could not locate cache directory path.");
+        RCLOG_ERROR(@"Could not locate cache directory path.");
         return nil;
     }
     NSString* pathEnd = [@"RollbarCrash" stringByAppendingPathComponent:getBundleName()];
@@ -152,7 +152,7 @@ static NSString* getBasePath()
         self.basePath = basePath;
         if(self.basePath == nil)
         {
-            RollbarCrashLOG_ERROR(@"Failed to initialize crash handler. Crash reporting disabled.");
+            RCLOG_ERROR(@"Failed to initialize crash handler. Crash reporting disabled.");
             return nil;
         }
         self.deleteBehaviorAfterSendAll = RollbarCrashDeleteAlways;
@@ -188,7 +188,7 @@ static NSString* getBasePath()
                                                               error:&error]];
             if(error != NULL)
             {
-                RollbarCrashLOG_ERROR(@"Could not serialize user info: %@", error);
+                RCLOG_ERROR(@"Could not serialize user info: %@", error);
                 return;
             }
         }
@@ -329,15 +329,15 @@ static NSString* getBasePath()
 {
     NSArray* reports = [self allReports];
     
-    RollbarCrashLOG_INFO(@"Sending %d crash reports", [reports count]);
+    RCLOG_INFO(@"Sending %d crash reports", [reports count]);
     
     [self sendReports:reports
          onCompletion:^(NSArray* filteredReports, BOOL completed, NSError* error)
      {
-         RollbarCrashLOG_DEBUG(@"Process finished with completion: %d", completed);
+         RCLOG_DEBUG(@"Process finished with completion: %d", completed);
          if(error != nil)
          {
-             RollbarCrashLOG_ERROR(@"Failed to send reports: %@", error);
+             RCLOG_ERROR(@"Failed to send reports: %@", error);
          }
          if((self.deleteBehaviorAfterSendAll == RollbarCrashDeleteOnSucess && completed) ||
             self.deleteBehaviorAfterSendAll == RollbarCrashDeleteAlways)
@@ -378,7 +378,7 @@ static NSString* getBasePath()
         NSData* jsonData = [RollbarCrashJSONCodec encode:stackTrace options:0 error:&error];
         if(jsonData == nil || error != nil)
         {
-            RollbarCrashLOG_ERROR(@"Error encoding stack trace to JSON: %@", error);
+            RCLOG_ERROR(@"Error encoding stack trace to JSON: %@", error);
             // Don't return, since we can still record other useful information.
         }
         NSString* jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
@@ -505,11 +505,11 @@ SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
                                                      error:&error];
     if(error != nil)
     {
-        RollbarCrashLOG_ERROR(@"Encountered error loading crash report %" PRIx64 ": %@", reportID, error);
+        RCLOG_ERROR(@"Encountered error loading crash report %" PRIx64 ": %@", reportID, error);
     }
     if(crashReport == nil)
     {
-        RollbarCrashLOG_ERROR(@"Could not load crash report");
+        RCLOG_ERROR(@"Could not load crash report");
         return nil;
     }
     [self doctorReport:crashReport];

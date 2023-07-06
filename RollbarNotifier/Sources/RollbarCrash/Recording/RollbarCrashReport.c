@@ -148,13 +148,13 @@ static void addTextFileElement(const RollbarCrashReportWriter* const writer, con
     const int fd = open(filePath, O_RDONLY);
     if(fd < 0)
     {
-        RollbarCrashLOG_ERROR("Could not open file %s: %s", filePath, strerror(errno));
+        RCLOG_ERROR("Could not open file %s: %s", filePath, strerror(errno));
         return;
     }
 
     if(rcjson_beginStringElement(getJsonContext(writer), key) != RollbarCrashJSON_OK)
     {
-        RollbarCrashLOG_ERROR("Could not start string element");
+        RCLOG_ERROR("Could not start string element");
         goto done;
     }
 
@@ -166,7 +166,7 @@ static void addTextFileElement(const RollbarCrashReportWriter* const writer, con
     {
         if(rcjson_appendStringElement(getJsonContext(writer), buffer, bytesRead) != RollbarCrashJSON_OK)
         {
-            RollbarCrashLOG_ERROR("Could not append string element");
+            RCLOG_ERROR("Could not append string element");
             goto done;
         }
     }
@@ -635,7 +635,7 @@ static void writeUnknownObjectContents(const RollbarCrashReportWriter* const wri
                         writeMemoryContents(writer, ivar->name, (uintptr_t)pointer, limit);
                         break;
                     default:
-                        RollbarCrashLOG_DEBUG("%s: Unknown ivar type [%s]", ivar->name, ivar->type);
+                        RCLOG_DEBUG("%s: Unknown ivar type [%s]", ivar->name, ivar->type);
                 }
             }
         }
@@ -1177,7 +1177,7 @@ static void writeThread(const RollbarCrashReportWriter* const writer,
 {
     bool isCrashedThread = rcmc_isCrashedContext(machineContext);
     RollbarCrashThread thread = rcmc_getThreadFromContext(machineContext);
-    RollbarCrashLOG_DEBUG("Writing thread %x (index %d). is crashed: %d", thread, threadIndex, isCrashedThread);
+    RCLOG_DEBUG("Writing thread %x (index %d). is crashed: %d", thread, threadIndex, isCrashedThread);
 
     RollbarCrashStackCursor stackCursor;
     bool hasBacktrace = getStackCursor(crash, machineContext, &stackCursor);
@@ -1238,7 +1238,7 @@ static void writeAllThreads(const RollbarCrashReportWriter* const writer,
     // Fetch info for all threads.
     writer->beginArray(writer, key);
     {
-        RollbarCrashLOG_DEBUG("Writing %d threads.", threadCount);
+        RCLOG_DEBUG("Writing %d threads.", threadCount);
         for(int i = 0; i < threadCount; i++)
         {
             RollbarCrashThread thread = rcmc_getThreadAtIndex(context, i);
@@ -1457,7 +1457,7 @@ static void writeError(const RollbarCrashReportWriter* const writer,
             case RollbarCrashMonitorTypeSystem:
             case RollbarCrashMonitorTypeApplicationState:
             case RollbarCrashMonitorTypeZombie:
-                RollbarCrashLOG_ERROR("Crash monitor type 0x%x shouldn't be able to cause events!", crash->crashType);
+                RCLOG_ERROR("Crash monitor type 0x%x shouldn't be able to cause events!", crash->crashType);
                 break;
         }
     }
@@ -1601,11 +1601,11 @@ void rcreport_writeRecrashReport(const RollbarCrash_MonitorContext* const monito
     static char tempPath[RollbarCrashFU_MAX_PATH_LENGTH];
     strncpy(tempPath, path, sizeof(tempPath) - 10);
     strncpy(tempPath + strlen(tempPath) - 5, ".old", 5);
-    RollbarCrashLOG_INFO("Writing recrash report to %s", path);
+    RCLOG_INFO("Writing recrash report to %s", path);
 
     if(rename(path, tempPath) < 0)
     {
-        RollbarCrashLOG_ERROR("Could not rename %s to %s: %s", path, tempPath, strerror(errno));
+        RCLOG_ERROR("Could not rename %s to %s: %s", path, tempPath, strerror(errno));
     }
     if(!rcfu_openBufferedWriter(&bufferedWriter, path, writeBuffer, sizeof(writeBuffer)))
     {
@@ -1628,7 +1628,7 @@ void rcreport_writeRecrashReport(const RollbarCrash_MonitorContext* const monito
         rcfu_flushBufferedWriter(&bufferedWriter);
         if(remove(tempPath) < 0)
         {
-            RollbarCrashLOG_ERROR("Could not remove %s: %s", tempPath, strerror(errno));
+            RCLOG_ERROR("Could not remove %s: %s", tempPath, strerror(errno));
         }
         writeReportInfo(writer,
                         RollbarCrashField_Report,
@@ -1719,7 +1719,7 @@ static void writeDebugInfo(const RollbarCrashReportWriter* const writer,
 
 void rcreport_writeStandardReport(const RollbarCrash_MonitorContext* const monitorContext, const char* const path)
 {
-    RollbarCrashLOG_INFO("Writing crash report to %s", path);
+    RCLOG_INFO("Writing crash report to %s", path);
     char writeBuffer[1024];
     RollbarCrashBufferedWriter bufferedWriter;
 
@@ -1801,7 +1801,7 @@ void rcreport_writeStandardReport(const RollbarCrash_MonitorContext* const monit
 void rcreport_setUserInfoJSON(const char* const userInfoJSON)
 {
     static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-    RollbarCrashLOG_TRACE("set userInfoJSON to %p", userInfoJSON);
+    RCLOG_TRACE("set userInfoJSON to %p", userInfoJSON);
 
     pthread_mutex_lock(&mutex);
     if(g_userInfoJSON != NULL)
@@ -1837,7 +1837,7 @@ void rcreport_setDoNotIntrospectClasses(const char** doNotIntrospectClasses, int
         newClasses = malloc(sizeof(*newClasses) * (unsigned)newClassesLength);
         if(newClasses == NULL)
         {
-            RollbarCrashLOG_ERROR("Could not allocate memory");
+            RCLOG_ERROR("Could not allocate memory");
             return;
         }
         
@@ -1862,6 +1862,6 @@ void rcreport_setDoNotIntrospectClasses(const char** doNotIntrospectClasses, int
 
 void rcreport_setUserSectionWriteCallback(const RollbarCrashReportWriteCallback userSectionWriteCallback)
 {
-    RollbarCrashLOG_TRACE("Set userSectionWriteCallback to %p", userSectionWriteCallback);
+    RCLOG_TRACE("Set userSectionWriteCallback to %p", userSectionWriteCallback);
     g_userSectionWriteCallback = userSectionWriteCallback;
 }

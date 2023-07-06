@@ -49,7 +49,7 @@
 #if RollbarCrashJSONCODEC_UseRollbarCrashLogger
     #include "RollbarCrashLogger.h"
 #else
-    #define RollbarCrashLOG_DEBUG(FMT, ...)
+    #define RCLOG_DEBUG(FMT, ...)
 #endif
 
 /** The work buffer size to use when escaping string values.
@@ -175,7 +175,7 @@ static int appendEscapedString(RollbarCrashJSONEncodeContext* const context,
             default:
                 unlikely_if((unsigned char)*src < ' ')
             {
-                RollbarCrashLOG_DEBUG("Invalid character 0x%02x in string: %s",
+                RCLOG_DEBUG("Invalid character 0x%02x in string: %s",
                             *src, string);
                 return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
             }
@@ -287,7 +287,7 @@ int rcjson_beginElement(RollbarCrashJSONEncodeContext* const context, const char
     {
         unlikely_if(name == NULL)
         {
-            RollbarCrashLOG_DEBUG("Name was null inside an object");
+            RCLOG_DEBUG("Name was null inside an object");
             return RollbarCrashJSON_ERROR_INVALID_DATA;
         }
         unlikely_if((result = addQuotedEscapedString(context, name, (int)strlen(name))) != RollbarCrashJSON_OK)
@@ -732,7 +732,7 @@ static int writeUTF8(unsigned int character, char** dst)
     }
 
     // If we get here, the character cannot be converted to valid UTF-8.
-    RollbarCrashLOG_DEBUG("Invalid unicode: 0x%04x", character);
+    RCLOG_DEBUG("Invalid unicode: 0x%04x", character);
     return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
 }
 
@@ -741,7 +741,7 @@ static int decodeString(RollbarCrashJSONDecodeContext* context, char* dstBuffer,
     *dstBuffer = '\0';
     unlikely_if(*context->bufferPtr != '\"')
     {
-        RollbarCrashLOG_DEBUG("Expected '\"' but got '%c'", *context->bufferPtr);
+        RCLOG_DEBUG("Expected '\"' but got '%c'", *context->bufferPtr);
         return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
     }
 
@@ -758,7 +758,7 @@ static int decodeString(RollbarCrashJSONDecodeContext* context, char* dstBuffer,
     }
     unlikely_if(src >= context->bufferEnd)
     {
-        RollbarCrashLOG_DEBUG("Premature end of data");
+        RCLOG_DEBUG("Premature end of data");
         return RollbarCrashJSON_ERROR_INCOMPLETE;
     }
     const char* srcEnd = src;
@@ -766,7 +766,7 @@ static int decodeString(RollbarCrashJSONDecodeContext* context, char* dstBuffer,
     int length = (int)(srcEnd - src);
     if(length >= dstBufferLength)
     {
-        RollbarCrashLOG_DEBUG("String is too long");
+        RCLOG_DEBUG("String is too long");
         return RollbarCrashJSON_ERROR_DATA_TOO_LONG;
     }
 
@@ -821,7 +821,7 @@ static int decodeString(RollbarCrashJSONDecodeContext* context, char* dstBuffer,
                 {
                     unlikely_if(src + 5 > srcEnd)
                     {
-                        RollbarCrashLOG_DEBUG("Premature end of data");
+                        RCLOG_DEBUG("Premature end of data");
                         return RollbarCrashJSON_ERROR_INCOMPLETE;
                     }
                     unsigned int accum =
@@ -831,7 +831,7 @@ static int decodeString(RollbarCrashJSONDecodeContext* context, char* dstBuffer,
                     g_hexConversion[src[4]];
                     unlikely_if(accum > 0xffff)
                     {
-                        RollbarCrashLOG_DEBUG("Invalid unicode sequence: %c%c%c%c",
+                        RCLOG_DEBUG("Invalid unicode sequence: %c%c%c%c",
                                     src[1], src[2], src[3], src[4]);
                         return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
                     }
@@ -839,7 +839,7 @@ static int decodeString(RollbarCrashJSONDecodeContext* context, char* dstBuffer,
                     // UTF-16 Trail surrogate on its own.
                     unlikely_if(accum >= 0xdc00 && accum <= 0xdfff)
                     {
-                        RollbarCrashLOG_DEBUG("Unexpected trail surrogate: 0x%04x",
+                        RCLOG_DEBUG("Unexpected trail surrogate: 0x%04x",
                                     accum);
                         return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
                     }
@@ -850,13 +850,13 @@ static int decodeString(RollbarCrashJSONDecodeContext* context, char* dstBuffer,
                         // Fetch trail surrogate.
                         unlikely_if(src + 11 > srcEnd)
                         {
-                            RollbarCrashLOG_DEBUG("Premature end of data");
+                            RCLOG_DEBUG("Premature end of data");
                             return RollbarCrashJSON_ERROR_INCOMPLETE;
                         }
                         unlikely_if(src[5] != '\\' ||
                                     src[6] != 'u')
                         {
-                            RollbarCrashLOG_DEBUG("Expected \"\\u\" but got: \"%c%c\"",
+                            RCLOG_DEBUG("Expected \"\\u\" but got: \"%c%c\"",
                                         src[5], src[6]);
                             return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
                         }
@@ -868,7 +868,7 @@ static int decodeString(RollbarCrashJSONDecodeContext* context, char* dstBuffer,
                         g_hexConversion[src[4]];
                         unlikely_if(accum2 < 0xdc00 || accum2 > 0xdfff)
                         {
-                            RollbarCrashLOG_DEBUG("Invalid trail surrogate: 0x%04x",
+                            RCLOG_DEBUG("Invalid trail surrogate: 0x%04x",
                                         accum2);
                             return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
                         }
@@ -885,7 +885,7 @@ static int decodeString(RollbarCrashJSONDecodeContext* context, char* dstBuffer,
                     continue;
                 }
                 default:
-                    RollbarCrashLOG_DEBUG("Invalid control character '%c'", *src);
+                    RCLOG_DEBUG("Invalid control character '%c'", *src);
                     return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
             }
         }
@@ -900,7 +900,7 @@ static int decodeElement(const char* const name, RollbarCrashJSONDecodeContext* 
     SKIP_WHITESPACE(context);
     unlikely_if(context->bufferPtr >= context->bufferEnd)
     {
-        RollbarCrashLOG_DEBUG("Premature end of data");
+        RCLOG_DEBUG("Premature end of data");
         return RollbarCrashJSON_ERROR_INCOMPLETE;
     }
 
@@ -938,7 +938,7 @@ static int decodeElement(const char* const name, RollbarCrashJSONDecodeContext* 
                     context->bufferPtr++;
                 }
             }
-            RollbarCrashLOG_DEBUG("Premature end of data");
+            RCLOG_DEBUG("Premature end of data");
             return RollbarCrashJSON_ERROR_INCOMPLETE;
         }
         case '{':
@@ -967,7 +967,7 @@ static int decodeElement(const char* const name, RollbarCrashJSONDecodeContext* 
                 }
                 unlikely_if(*context->bufferPtr != ':')
                 {
-                    RollbarCrashLOG_DEBUG("Expected ':' but got '%c'", *context->bufferPtr);
+                    RCLOG_DEBUG("Expected ':' but got '%c'", *context->bufferPtr);
                     return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
                 }
                 context->bufferPtr++;
@@ -984,7 +984,7 @@ static int decodeElement(const char* const name, RollbarCrashJSONDecodeContext* 
                     context->bufferPtr++;
                 }
             }
-            RollbarCrashLOG_DEBUG("Premature end of data");
+            RCLOG_DEBUG("Premature end of data");
             return RollbarCrashJSON_ERROR_INCOMPLETE;
         }
         case '\"':
@@ -1000,7 +1000,7 @@ static int decodeElement(const char* const name, RollbarCrashJSONDecodeContext* 
         {
             unlikely_if(context->bufferEnd - context->bufferPtr < 5)
             {
-                RollbarCrashLOG_DEBUG("Premature end of data");
+                RCLOG_DEBUG("Premature end of data");
                 return RollbarCrashJSON_ERROR_INCOMPLETE;
             }
             unlikely_if(!(context->bufferPtr[1] == 'a' &&
@@ -1008,7 +1008,7 @@ static int decodeElement(const char* const name, RollbarCrashJSONDecodeContext* 
                           context->bufferPtr[3] == 's' &&
                           context->bufferPtr[4] == 'e'))
             {
-                RollbarCrashLOG_DEBUG("Expected \"false\" but got \"f%c%c%c%c\"",
+                RCLOG_DEBUG("Expected \"false\" but got \"f%c%c%c%c\"",
                             context->bufferPtr[1], context->bufferPtr[2], context->bufferPtr[3], context->bufferPtr[4]);
                 return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
             }
@@ -1019,14 +1019,14 @@ static int decodeElement(const char* const name, RollbarCrashJSONDecodeContext* 
         {
             unlikely_if(context->bufferEnd - context->bufferPtr < 4)
             {
-                RollbarCrashLOG_DEBUG("Premature end of data");
+                RCLOG_DEBUG("Premature end of data");
                 return RollbarCrashJSON_ERROR_INCOMPLETE;
             }
             unlikely_if(!(context->bufferPtr[1] == 'r' &&
                           context->bufferPtr[2] == 'u' &&
                           context->bufferPtr[3] == 'e'))
             {
-                RollbarCrashLOG_DEBUG("Expected \"true\" but got \"t%c%c%c\"",
+                RCLOG_DEBUG("Expected \"true\" but got \"t%c%c%c\"",
                             context->bufferPtr[1], context->bufferPtr[2], context->bufferPtr[3]);
                 return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
             }
@@ -1037,14 +1037,14 @@ static int decodeElement(const char* const name, RollbarCrashJSONDecodeContext* 
         {
             unlikely_if(context->bufferEnd - context->bufferPtr < 4)
             {
-                RollbarCrashLOG_DEBUG("Premature end of data");
+                RCLOG_DEBUG("Premature end of data");
                 return RollbarCrashJSON_ERROR_INCOMPLETE;
             }
             unlikely_if(!(context->bufferPtr[1] == 'u' &&
                           context->bufferPtr[2] == 'l' &&
                           context->bufferPtr[3] == 'l'))
             {
-                RollbarCrashLOG_DEBUG("Expected \"null\" but got \"n%c%c%c\"",
+                RCLOG_DEBUG("Expected \"null\" but got \"n%c%c%c\"",
                             context->bufferPtr[1], context->bufferPtr[2], context->bufferPtr[3]);
                 return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
             }
@@ -1056,7 +1056,7 @@ static int decodeElement(const char* const name, RollbarCrashJSONDecodeContext* 
             context->bufferPtr++;
             unlikely_if(!isdigit(*context->bufferPtr))
         {
-            RollbarCrashLOG_DEBUG("Not a digit: '%c'", *context->bufferPtr);
+            RCLOG_DEBUG("Not a digit: '%c'", *context->bufferPtr);
             return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
         }
             // Fall through
@@ -1085,7 +1085,7 @@ static int decodeElement(const char* const name, RollbarCrashJSONDecodeContext* 
 
             unlikely_if(context->bufferPtr >= context->bufferEnd)
             {
-                RollbarCrashLOG_DEBUG("Premature end of data");
+                RCLOG_DEBUG("Premature end of data");
                 return RollbarCrashJSON_ERROR_INCOMPLETE;
             }
 
@@ -1106,7 +1106,7 @@ static int decodeElement(const char* const name, RollbarCrashJSONDecodeContext* 
 
             unlikely_if(context->bufferPtr >= context->bufferEnd)
             {
-                RollbarCrashLOG_DEBUG("Premature end of data");
+                RCLOG_DEBUG("Premature end of data");
                 return RollbarCrashJSON_ERROR_INCOMPLETE;
             }
 
@@ -1117,7 +1117,7 @@ static int decodeElement(const char* const name, RollbarCrashJSONDecodeContext* 
             int len = (int)(context->bufferPtr - start);
             if(len >= context->stringBufferLength)
             {
-                RollbarCrashLOG_DEBUG("Number is too long.");
+                RCLOG_DEBUG("Number is too long.");
                 return RollbarCrashJSON_ERROR_DATA_TOO_LONG;
             }
             strncpy(context->stringBuffer, start, len);
@@ -1129,7 +1129,7 @@ static int decodeElement(const char* const name, RollbarCrashJSONDecodeContext* 
             return context->callbacks->onFloatingPointElement(name, value, context->userData);
         }
     }
-    RollbarCrashLOG_DEBUG("Invalid character '%c'", *context->bufferPtr);
+    RCLOG_DEBUG("Invalid character '%c'", *context->bufferPtr);
     return RollbarCrashJSON_ERROR_INVALID_CHARACTER;
 }
 
@@ -1211,7 +1211,7 @@ static void updateDecoder_readFile(struct JSONFromFileContext* context)
             {
                 if(bytesRead < 0)
                 {
-                    RollbarCrashLOG_ERROR("Error reading file %s: %s", context->sourceFilename, strerror(errno));
+                    RCLOG_ERROR("Error reading file %s: %s", context->sourceFilename, strerror(errno));
                 }
                 context->isEOF = true;
             }

@@ -142,7 +142,7 @@ typedef void (*RollbarCrashReportWrittenCallback)(int64_t reportID);
  */
 void rc_setReportWrittenCallback(const RollbarCrashReportWrittenCallback onReportWrittenNotify);
 
-/** Set if RollbarCrashLOG console messages should be appended to the report.
+/** Set if RCLOG console messages should be appended to the report.
  *
  * @param shouldAddConsoleLogToReport If true, add the log to the report.
  */

@@ -84,7 +84,7 @@
         {
             if(entry == nil)
             {
-                RollbarCrashLOG_ERROR(@"key entry was nil");
+                RCLOG_ERROR(@"key entry was nil");
             }
             else
             {
@@ -99,7 +99,7 @@
             }
             if(![entry conformsToProtocol:@protocol(RollbarCrashReportFilter)])
             {
-                RollbarCrashLOG_ERROR(@"Not a filter: %@", entry);
+                RCLOG_ERROR(@"Not a filter: %@", entry);
                 // Cause next key entry to fail as well.
                 return;
             }

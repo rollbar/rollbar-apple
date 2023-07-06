@@ -163,10 +163,10 @@ static char g_secondaryEventID[37];
  */
 static void restoreExceptionPorts(void)
 {
-    RollbarCrashLOG_DEBUG("Restoring original exception ports.");
+    RCLOG_DEBUG("Restoring original exception ports.");
     if(g_previousExceptionPorts.count == 0)
     {
-        RollbarCrashLOG_DEBUG("Original exception ports were already restored.");
+        RCLOG_DEBUG("Original exception ports were already restored.");
         return;
     }
 
@@ -176,7 +176,7 @@ static void restoreExceptionPorts(void)
     // Reinstall old exception ports.
     for(mach_msg_type_number_t i = 0; i < g_previousExceptionPorts.count; i++)
     {
-        RollbarCrashLOG_TRACE("Restoring port index %d", i);
+        RCLOG_TRACE("Restoring port index %d", i);
         kr = task_set_exception_ports(thisTask,
                                       g_previousExceptionPorts.masks[i],
                                       g_previousExceptionPorts.ports[i],
@@ -184,11 +184,11 @@ static void restoreExceptionPorts(void)
                                       g_previousExceptionPorts.flavors[i]);
         if(kr != KERN_SUCCESS)
         {
-            RollbarCrashLOG_ERROR("task_set_exception_ports: %s",
+            RCLOG_ERROR("task_set_exception_ports: %s",
                         mach_error_string(kr));
         }
     }
-    RollbarCrashLOG_DEBUG("Exception ports restored.");
+    RCLOG_DEBUG("Exception ports restored.");
     g_previousExceptionPorts.count = 0;
 }
 
@@ -276,14 +276,14 @@ static void* handleExceptions(void* const userData)
     pthread_setname_np(threadName);
     if(threadName == kThreadSecondary)
     {
-        RollbarCrashLOG_DEBUG("This is the secondary thread. Suspending.");
+        RCLOG_DEBUG("This is the secondary thread. Suspending.");
         thread_suspend((thread_t)rcthread_self());
         eventID = g_secondaryEventID;
     }
 
     for(;;)
     {
-        RollbarCrashLOG_DEBUG("Waiting for mach exception");
+        RCLOG_DEBUG("Waiting for mach exception");
 
         // Wait for a message.
         kern_return_t kr = mach_msg(&exceptionMessage.header,
@@ -299,10 +299,10 @@ static void* handleExceptions(void* const userData)
         }
 
         // Loop and try again on failure.
-        RollbarCrashLOG_ERROR("mach_msg: %s", mach_error_string(kr));
+        RCLOG_ERROR("mach_msg: %s", mach_error_string(kr));
     }
 
-    RollbarCrashLOG_DEBUG("Trapped mach exception code 0x%llx, subcode 0x%llx",
+    RCLOG_DEBUG("Trapped mach exception code 0x%llx, subcode 0x%llx",
                 exceptionMessage.code[0], exceptionMessage.code[1]);
     if(g_isEnabled)
     {
@@ -312,29 +312,29 @@ static void* handleExceptions(void* const userData)
         g_isHandlingCrash = true;
         rcm_notifyFatalExceptionCaptured(true);
 
-        RollbarCrashLOG_DEBUG("Exception handler is installed. Continuing exception handling.");
+        RCLOG_DEBUG("Exception handler is installed. Continuing exception handling.");
 
 
         // Switch to the secondary thread if necessary, or uninstall the handler
         // to avoid a death loop.
         if(rcthread_self() == g_primaryMachThread)
         {
-            RollbarCrashLOG_DEBUG("This is the primary exception thread. Activating secondary thread.");
+            RCLOG_DEBUG("This is the primary exception thread. Activating secondary thread.");
 // TODO: This was put here to avoid a freeze. Does secondary thread ever fire?
             restoreExceptionPorts();
             if(thread_resume(g_secondaryMachThread) != KERN_SUCCESS)
             {
-                RollbarCrashLOG_DEBUG("Could not activate secondary thread. Restoring original exception ports.");
+                RCLOG_DEBUG("Could not activate secondary thread. Restoring original exception ports.");
             }
         }
         else
         {
-            RollbarCrashLOG_DEBUG("This is the secondary exception thread.");// Restoring original exception ports.");
+            RCLOG_DEBUG("This is the secondary exception thread.");// Restoring original exception ports.");
 //            restoreExceptionPorts();
         }
 
         // Fill out crash information
-        RollbarCrashLOG_DEBUG("Fetching machine state.");
+        RCLOG_DEBUG("Fetching machine state.");
         RollbarCrashMC_NEW_CONTEXT(machineContext);
         RollbarCrash_MonitorContext* crashContext = &g_monitorContext;
         crashContext->offendingMachineContext = machineContext;
@@ -342,7 +342,7 @@ static void* handleExceptions(void* const userData)
         if(rcmc_getContextForThread(exceptionMessage.thread.name, machineContext, true))
         {
             rcsc_initWithMachineContext(&g_stackCursor, RollbarCrashSC_MAX_STACK_DEPTH, machineContext);
-            RollbarCrashLOG_TRACE("Fault address %p, instruction address %p",
+            RCLOG_TRACE("Fault address %p, instruction address %p",
                         rccpu_faultAddress(machineContext), rccpu_instructionAddress(machineContext));
             if(exceptionMessage.exception == EXC_BAD_ACCESS)
             {
@@ -354,7 +354,7 @@ static void* handleExceptions(void* const userData)
             }
         }
 
-        RollbarCrashLOG_DEBUG("Filling out context.");
+        RCLOG_DEBUG("Filling out context.");
         crashContext->crashType = RollbarCrashMonitorTypeMachException;
         crashContext->eventID = eventID;
         crashContext->registersAreValid = true;
@@ -373,12 +373,12 @@ static void* handleExceptions(void* const userData)
 
         rcm_handleException(crashContext);
 
-        RollbarCrashLOG_DEBUG("Crash handling complete. Restoring original handlers.");
+        RCLOG_DEBUG("Crash handling complete. Restoring original handlers.");
         g_isHandlingCrash = false;
         rcmc_resumeEnvironment(threads, numThreads);
     }
 
-    RollbarCrashLOG_DEBUG("Replying to mach exception message.");
+    RCLOG_DEBUG("Replying to mach exception message.");
     // Send a reply saying "I didn't handle this exception".
     replyMessage.header = exceptionMessage.header;
     replyMessage.NDR = exceptionMessage.NDR;
@@ -402,7 +402,7 @@ static void* handleExceptions(void* const userData)
 
 static void uninstallExceptionHandler()
 {
-    RollbarCrashLOG_DEBUG("Uninstalling mach exception handler.");
+    RCLOG_DEBUG("Uninstalling mach exception handler.");
     
     // NOTE: Do not deallocate the exception port. If a secondary crash occurs
     // it will hang the process.
@@ -413,7 +413,7 @@ static void uninstallExceptionHandler()
     
     if(g_primaryPThread != 0 && g_primaryMachThread != thread_self)
     {
-        RollbarCrashLOG_DEBUG("Canceling primary exception thread.");
+        RCLOG_DEBUG("Canceling primary exception thread.");
         if(g_isHandlingCrash)
         {
             thread_terminate(g_primaryMachThread);
@@ -427,7 +427,7 @@ static void uninstallExceptionHandler()
     }
     if(g_secondaryPThread != 0 && g_secondaryMachThread != thread_self)
     {
-        RollbarCrashLOG_DEBUG("Canceling secondary exception thread.");
+        RCLOG_DEBUG("Canceling secondary exception thread.");
         if(g_isHandlingCrash)
         {
             thread_terminate(g_secondaryMachThread);
@@ -441,12 +441,12 @@ static void uninstallExceptionHandler()
     }
     
     g_exceptionPort = MACH_PORT_NULL;
-    RollbarCrashLOG_DEBUG("Mach exception handlers uninstalled.");
+    RCLOG_DEBUG("Mach exception handlers uninstalled.");
 }
 
 static bool installExceptionHandler()
 {
-    RollbarCrashLOG_DEBUG("Installing mach exception handler.");
+    RCLOG_DEBUG("Installing mach exception handler.");
 
     bool attributes_created = false;
     pthread_attr_t attr;
@@ -461,7 +461,7 @@ static bool installExceptionHandler()
     EXC_MASK_SOFTWARE |
     EXC_MASK_BREAKPOINT;
 
-    RollbarCrashLOG_DEBUG("Backing up original exception ports.");
+    RCLOG_DEBUG("Backing up original exception ports.");
     kr = task_get_exception_ports(thisTask,
                                   mask,
                                   g_previousExceptionPorts.masks,
@@ -471,35 +471,35 @@ static bool installExceptionHandler()
                                   g_previousExceptionPorts.flavors);
     if(kr != KERN_SUCCESS)
     {
-        RollbarCrashLOG_ERROR("task_get_exception_ports: %s", mach_error_string(kr));
+        RCLOG_ERROR("task_get_exception_ports: %s", mach_error_string(kr));
         goto failed;
     }
 
     if(g_exceptionPort == MACH_PORT_NULL)
     {
-        RollbarCrashLOG_DEBUG("Allocating new port with receive rights.");
+        RCLOG_DEBUG("Allocating new port with receive rights.");
         kr = mach_port_allocate(thisTask,
                                 MACH_PORT_RIGHT_RECEIVE,
                                 &g_exceptionPort);
         if(kr != KERN_SUCCESS)
         {
-            RollbarCrashLOG_ERROR("mach_port_allocate: %s", mach_error_string(kr));
+            RCLOG_ERROR("mach_port_allocate: %s", mach_error_string(kr));
             goto failed;
         }
 
-        RollbarCrashLOG_DEBUG("Adding send rights to port.");
+        RCLOG_DEBUG("Adding send rights to port.");
         kr = mach_port_insert_right(thisTask,
                                     g_exceptionPort,
                                     g_exceptionPort,
                                     MACH_MSG_TYPE_MAKE_SEND);
         if(kr != KERN_SUCCESS)
         {
-            RollbarCrashLOG_ERROR("mach_port_insert_right: %s", mach_error_string(kr));
+            RCLOG_ERROR("mach_port_insert_right: %s", mach_error_string(kr));
             goto failed;
         }
     }
 
-    RollbarCrashLOG_DEBUG("Installing port as exception handler.");
+    RCLOG_DEBUG("Installing port as exception handler.");
     kr = task_set_exception_ports(thisTask,
                                   mask,
                                   g_exceptionPort,
@@ -507,11 +507,11 @@ static bool installExceptionHandler()
                                   THREAD_STATE_NONE);
     if(kr != KERN_SUCCESS)
     {
-        RollbarCrashLOG_ERROR("task_set_exception_ports: %s", mach_error_string(kr));
+        RCLOG_ERROR("task_set_exception_ports: %s", mach_error_string(kr));
         goto failed;
     }
 
-    RollbarCrashLOG_DEBUG("Creating secondary exception thread (suspended).");
+    RCLOG_DEBUG("Creating secondary exception thread (suspended).");
     pthread_attr_init(&attr);
     attributes_created = true;
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
@@ -521,32 +521,32 @@ static bool installExceptionHandler()
                            (void*)kThreadSecondary);
     if(error != 0)
     {
-        RollbarCrashLOG_ERROR("pthread_create_suspended_np: %s", strerror(error));
+        RCLOG_ERROR("pthread_create_suspended_np: %s", strerror(error));
         goto failed;
     }
     g_secondaryMachThread = pthread_mach_thread_np(g_secondaryPThread);
     rcmc_addReservedThread(g_secondaryMachThread);
 
-    RollbarCrashLOG_DEBUG("Creating primary exception thread.");
+    RCLOG_DEBUG("Creating primary exception thread.");
     error = pthread_create(&g_primaryPThread,
                            &attr,
                            &handleExceptions,
                            (void*)kThreadPrimary);
     if(error != 0)
     {
-        RollbarCrashLOG_ERROR("pthread_create: %s", strerror(error));
+        RCLOG_ERROR("pthread_create: %s", strerror(error));
         goto failed;
     }
     pthread_attr_destroy(&attr);
     g_primaryMachThread = pthread_mach_thread_np(g_primaryPThread);
     rcmc_addReservedThread(g_primaryMachThread);
 
-    RollbarCrashLOG_DEBUG("Mach exception handler installed.");
+    RCLOG_DEBUG("Mach exception handler installed.");
     return true;
 
 
 failed:
-    RollbarCrashLOG_DEBUG("Failed to install mach exception handler.");
+    RCLOG_DEBUG("Failed to install mach exception handler.");
     if(attributes_created)
     {
         pthread_attr_destroy(&attr);

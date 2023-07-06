@@ -63,22 +63,22 @@ static inline bool isStackOverflow(const RollbarCrashMachineContext* const conte
 static inline bool getThreadList(RollbarCrashMachineContext* context)
 {
     const task_t thisTask = mach_task_self();
-    RollbarCrashLOG_DEBUG("Getting thread list");
+    RCLOG_DEBUG("Getting thread list");
     kern_return_t kr;
     thread_act_array_t threads;
     mach_msg_type_number_t actualThreadCount;
 
     if((kr = task_threads(thisTask, &threads, &actualThreadCount)) != KERN_SUCCESS)
     {
-        RollbarCrashLOG_ERROR("task_threads: %s", mach_error_string(kr));
+        RCLOG_ERROR("task_threads: %s", mach_error_string(kr));
         return false;
     }
-    RollbarCrashLOG_TRACE("Got %d threads", context->threadCount);
+    RCLOG_TRACE("Got %d threads", context->threadCount);
     int threadCount = (int)actualThreadCount;
     int maxThreadCount = sizeof(context->allThreads) / sizeof(context->allThreads[0]);
     if(threadCount > maxThreadCount)
     {
-        RollbarCrashLOG_ERROR("Thread count %d is higher than maximum of %d", threadCount, maxThreadCount);
+        RCLOG_ERROR("Thread count %d is higher than maximum of %d", threadCount, maxThreadCount);
         threadCount = maxThreadCount;
     }
     for(int i = 0; i < threadCount; i++)
@@ -108,7 +108,7 @@ RollbarCrashThread rcmc_getThreadFromContext(const RollbarCrashMachineContext* c
 
 bool rcmc_getContextForThread(RollbarCrashThread thread, RollbarCrashMachineContext* destinationContext, bool isCrashedContext)
 {
-    RollbarCrashLOG_DEBUG("Fill thread 0x%x context into %p. is crashed = %d", thread, destinationContext, isCrashedContext);
+    RCLOG_DEBUG("Fill thread 0x%x context into %p. is crashed = %d", thread, destinationContext, isCrashedContext);
     memset(destinationContext, 0, sizeof(*destinationContext));
     destinationContext->thisThread = (thread_t)thread;
     destinationContext->isCurrentThread = thread == rcthread_self();
@@ -123,13 +123,13 @@ bool rcmc_getContextForThread(RollbarCrashThread thread, RollbarCrashMachineCont
         destinationContext->isStackOverflow = isStackOverflow(destinationContext);
         getThreadList(destinationContext);
     }
-    RollbarCrashLOG_TRACE("Context retrieved.");
+    RCLOG_TRACE("Context retrieved.");
     return true;
 }
 
 bool rcmc_getContextForSignal(void* signalUserContext, RollbarCrashMachineContext* destinationContext)
 {
-    RollbarCrashLOG_DEBUG("Get context from signal user context and put into %p.", destinationContext);
+    RCLOG_DEBUG("Get context from signal user context and put into %p.", destinationContext);
     _STRUCT_MCONTEXT* sourceContext = ((SignalUserContext*)signalUserContext)->UC_MCONTEXT;
     memcpy(&destinationContext->machineContext, sourceContext, sizeof(destinationContext->machineContext));
     destinationContext->thisThread = (thread_t)rcthread_self();
@@ -137,7 +137,7 @@ bool rcmc_getContextForSignal(void* signalUserContext, RollbarCrashMachineContex
     destinationContext->isSignalContext = true;
     destinationContext->isStackOverflow = isStackOverflow(destinationContext);
     getThreadList(destinationContext);
-    RollbarCrashLOG_TRACE("Context retrieved.");
+    RCLOG_TRACE("Context retrieved.");
     return true;
 }
 
@@ -146,7 +146,7 @@ void rcmc_addReservedThread(RollbarCrashThread thread)
     int nextIndex = g_reservedThreadsCount;
     if(nextIndex > g_reservedThreadsMaxIndex)
     {
-        RollbarCrashLOG_ERROR("Too many reserved threads (%d). Max is %d", nextIndex, g_reservedThreadsMaxIndex);
+        RCLOG_ERROR("Too many reserved threads (%d). Max is %d", nextIndex, g_reservedThreadsMaxIndex);
         return;
     }
     g_reservedThreads[g_reservedThreadsCount++] = thread;
@@ -169,14 +169,14 @@ static inline bool isThreadInList(thread_t thread, RollbarCrashThread* list, int
 void rcmc_suspendEnvironment(__unused thread_act_array_t *suspendedThreads, __unused mach_msg_type_number_t *numSuspendedThreads)
 {
 #if RollbarCrashCRASH_HAS_THREADS_API
-    RollbarCrashLOG_DEBUG("Suspending environment.");
+    RCLOG_DEBUG("Suspending environment.");
     kern_return_t kr;
     const task_t thisTask = mach_task_self();
     const thread_t thisThread = (thread_t)rcthread_self();
     
     if((kr = task_threads(thisTask, suspendedThreads, numSuspendedThreads)) != KERN_SUCCESS)
     {
-        RollbarCrashLOG_ERROR("task_threads: %s", mach_error_string(kr));
+        RCLOG_ERROR("task_threads: %s", mach_error_string(kr));
         return;
     }
     
@@ -188,26 +188,26 @@ void rcmc_suspendEnvironment(__unused thread_act_array_t *suspendedThreads, __un
             if((kr = thread_suspend(thread)) != KERN_SUCCESS)
             {
                 // Record the error and keep going.
-                RollbarCrashLOG_ERROR("thread_suspend (%08x): %s", thread, mach_error_string(kr));
+                RCLOG_ERROR("thread_suspend (%08x): %s", thread, mach_error_string(kr));
             }
         }
     }
     
-    RollbarCrashLOG_DEBUG("Suspend complete.");
+    RCLOG_DEBUG("Suspend complete.");
 #endif
 }
 
 void rcmc_resumeEnvironment(__unused thread_act_array_t threads, __unused mach_msg_type_number_t numThreads)
 {
 #if RollbarCrashCRASH_HAS_THREADS_API
-    RollbarCrashLOG_DEBUG("Resuming environment.");
+    RCLOG_DEBUG("Resuming environment.");
     kern_return_t kr;
     const task_t thisTask = mach_task_self();
     const thread_t thisThread = (thread_t)rcthread_self();
     
     if(threads == NULL || numThreads == 0)
     {
-        RollbarCrashLOG_ERROR("we should call rcmc_suspendEnvironment() first");
+        RCLOG_ERROR("we should call rcmc_suspendEnvironment() first");
         return;
     }
     
@@ -219,7 +219,7 @@ void rcmc_resumeEnvironment(__unused thread_act_array_t threads, __unused mach_m
             if((kr = thread_resume(thread)) != KERN_SUCCESS)
             {
                 // Record the error and keep going.
-                RollbarCrashLOG_ERROR("thread_resume (%08x): %s", thread, mach_error_string(kr));
+                RCLOG_ERROR("thread_resume (%08x): %s", thread, mach_error_string(kr));
             }
         }
     }
@@ -230,7 +230,7 @@ void rcmc_resumeEnvironment(__unused thread_act_array_t threads, __unused mach_m
     }
     vm_deallocate(thisTask, (vm_address_t)threads, sizeof(thread_t) * numThreads);
     
-    RollbarCrashLOG_DEBUG("Resume complete.");
+    RCLOG_DEBUG("Resume complete.");
 #endif
 }
 
@@ -247,10 +247,10 @@ RollbarCrashThread rcmc_getThreadAtIndex(const RollbarCrashMachineContext* const
 
 int rcmc_indexOfThread(const RollbarCrashMachineContext* const context, RollbarCrashThread thread)
 {
-    RollbarCrashLOG_TRACE("check thread vs %d threads", context->threadCount);
+    RCLOG_TRACE("check thread vs %d threads", context->threadCount);
     for(int i = 0; i < (int)context->threadCount; i++)
     {
-        RollbarCrashLOG_TRACE("%d: %x vs %x", i, thread, context->allThreads[i]);
+        RCLOG_TRACE("%d: %x vs %x", i, thread, context->allThreads[i]);
         if(context->allThreads[i] == thread)
         {
             return i;

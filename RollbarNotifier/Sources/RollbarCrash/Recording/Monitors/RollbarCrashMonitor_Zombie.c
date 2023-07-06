@@ -84,22 +84,22 @@ static bool copyStringIvar(const void* self, const char* ivarName, char* buffer,
                 }
                 else
                 {
-                    RollbarCrashLOG_DEBUG("rcobjc_copyStringContents %s failed", ivarName);
+                    RCLOG_DEBUG("rcobjc_copyStringContents %s failed", ivarName);
                 }
             }
             else
             {
-                RollbarCrashLOG_DEBUG("rcobjc_isValidObject %s failed", ivarName);
+                RCLOG_DEBUG("rcobjc_isValidObject %s failed", ivarName);
             }
         }
         else
         {
-            RollbarCrashLOG_DEBUG("rcobjc_ivarValue %s failed", ivarName);
+            RCLOG_DEBUG("rcobjc_ivarValue %s failed", ivarName);
         }
     }
     else
     {
-        RollbarCrashLOG_DEBUG("rcobjc_ivarNamed %s failed", ivarName);
+        RCLOG_DEBUG("rcobjc_ivarNamed %s failed", ivarName);
     }
     return false;
 }
@@ -161,7 +161,7 @@ static void install()
     g_zombieCache = calloc(cacheSize, sizeof(*g_zombieCache));
     if(g_zombieCache == NULL)
     {
-        RollbarCrashLOG_ERROR("Error: Could not allocate %u bytes of memory. RollbarCrashZombie NOT installed!",
+        RCLOG_ERROR("Error: Could not allocate %u bytes of memory. RollbarCrashZombie NOT installed!",
               cacheSize * sizeof(*g_zombieCache));
         return;
     }

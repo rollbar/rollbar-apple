@@ -59,7 +59,7 @@ static NSUncaughtExceptionHandler* g_previousUncaughtExceptionHandler;
  */
 
 static void handleException(NSException* exception, BOOL currentSnapshotUserReported) {
-    RollbarCrashLOG_DEBUG(@"Trapped exception %@", exception);
+    RCLOG_DEBUG(@"Trapped exception %@", exception);
     if(g_isEnabled)
     {
         thread_act_array_t threads = NULL;
@@ -67,7 +67,7 @@ static void handleException(NSException* exception, BOOL currentSnapshotUserRepo
         rcmc_suspendEnvironment(&threads, &numThreads);
         rcm_notifyFatalExceptionCaptured(false);
 
-        RollbarCrashLOG_DEBUG(@"Filling out context.");
+        RCLOG_DEBUG(@"Filling out context.");
         NSArray* addresses = [exception callStackReturnAddresses];
         NSUInteger numFrames = addresses.count;
         uintptr_t* callstack = malloc(numFrames * sizeof(*callstack));
@@ -96,7 +96,7 @@ static void handleException(NSException* exception, BOOL currentSnapshotUserRepo
         crashContext->stackCursor = &cursor;
         crashContext->currentSnapshotUserReported = currentSnapshotUserReported;
 
-        RollbarCrashLOG_DEBUG(@"Calling main crash handler.");
+        RCLOG_DEBUG(@"Calling main crash handler.");
         rcm_handleException(crashContext);
 
         free(callstack);
@@ -105,7 +105,7 @@ static void handleException(NSException* exception, BOOL currentSnapshotUserRepo
         }
         if (g_previousUncaughtExceptionHandler != NULL)
         {
-            RollbarCrashLOG_DEBUG(@"Calling original exception handler.");
+            RCLOG_DEBUG(@"Calling original exception handler.");
             g_previousUncaughtExceptionHandler(exception);
         }
     }
@@ -130,17 +130,17 @@ static void setEnabled(bool isEnabled)
         g_isEnabled = isEnabled;
         if(isEnabled)
         {
-            RollbarCrashLOG_DEBUG(@"Backing up original handler.");
+            RCLOG_DEBUG(@"Backing up original handler.");
             g_previousUncaughtExceptionHandler = NSGetUncaughtExceptionHandler();
             
-            RollbarCrashLOG_DEBUG(@"Setting new handler.");
+            RCLOG_DEBUG(@"Setting new handler.");
             NSSetUncaughtExceptionHandler(&handleUncaughtException);
             RollbarCrash.sharedInstance.uncaughtExceptionHandler = &handleUncaughtException;
             RollbarCrash.sharedInstance.currentSnapshotUserReportedExceptionHandler = &handleCurrentSnapshotUserReportedException;
         }
         else
         {
-            RollbarCrashLOG_DEBUG(@"Restoring original handler.");
+            RCLOG_DEBUG(@"Restoring original handler.");
             NSSetUncaughtExceptionHandler(g_previousUncaughtExceptionHandler);
         }
     }

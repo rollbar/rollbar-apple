@@ -48,7 +48,7 @@ bool rcdebug_isBeingTraced(void)
     
     if(sysctl(mib, sizeof(mib)/sizeof(*mib), &procInfo, &structSize, NULL, 0) != 0)
     {
-        RollbarCrashLOG_ERROR("sysctl: %s", strerror(errno));
+        RCLOG_ERROR("sysctl: %s", strerror(errno));
         return false;
     }
     

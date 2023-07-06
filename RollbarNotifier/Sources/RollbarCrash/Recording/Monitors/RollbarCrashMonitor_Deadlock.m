@@ -119,7 +119,7 @@ static NSTimeInterval g_watchdogInterval = 0;
     char eventID[37];
     rcid_generate(eventID);
 
-    RollbarCrashLOG_DEBUG(@"Filling out context.");
+    RCLOG_DEBUG(@"Filling out context.");
     RollbarCrash_MonitorContext* crashContext = &g_monitorContext;
     memset(crashContext, 0, sizeof(*crashContext));
     crashContext->crashType = RollbarCrashMonitorTypeMainThreadDeadlock;
@@ -131,7 +131,7 @@ static NSTimeInterval g_watchdogInterval = 0;
     rcm_handleException(crashContext);
     rcmc_resumeEnvironment(threads, numThreads);
 
-    RollbarCrashLOG_DEBUG(@"Calling abort()");
+    RCLOG_DEBUG(@"Calling abort()");
     abort();
 }
 
@@ -189,13 +189,13 @@ static void setEnabled(bool isEnabled)
         g_isEnabled = isEnabled;
         if(isEnabled)
         {
-            RollbarCrashLOG_DEBUG(@"Creating new deadlock monitor.");
+            RCLOG_DEBUG(@"Creating new deadlock monitor.");
             initialize();
             g_monitor = [[RollbarCrashDeadlockMonitor alloc] init];
         }
         else
         {
-            RollbarCrashLOG_DEBUG(@"Stopping deadlock monitor.");
+            RCLOG_DEBUG(@"Stopping deadlock monitor.");
             [g_monitor cancel];
             g_monitor = nil;
         }

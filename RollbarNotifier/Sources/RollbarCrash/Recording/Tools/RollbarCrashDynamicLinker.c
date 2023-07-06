@@ -348,37 +348,37 @@ static void getCrashInfo(const struct mach_header* header, RollbarCrashBinaryIma
         return;
     }
 
-    RollbarCrashLOG_TRACE("Found crash info section in binary: %s", buffer->name);
+    RCLOG_TRACE("Found crash info section in binary: %s", buffer->name);
     const unsigned int minimalSize = offsetof(crash_info_t, reserved); // Include message and message2
     if(size < minimalSize)
     {
-        RollbarCrashLOG_TRACE("Skipped reading crash info: section is too small");
+        RCLOG_TRACE("Skipped reading crash info: section is too small");
         return;
     }
     if(!rcmem_isMemoryReadable(crashInfo, minimalSize))
     {
-        RollbarCrashLOG_TRACE("Skipped reading crash info: section memory is not readable");
+        RCLOG_TRACE("Skipped reading crash info: section memory is not readable");
         return;
     }
     if(crashInfo->version != 4 && crashInfo->version != 5)
     {
-        RollbarCrashLOG_TRACE("Skipped reading crash info: invalid version '%d'", crashInfo->version);
+        RCLOG_TRACE("Skipped reading crash info: invalid version '%d'", crashInfo->version);
         return;
     }
     if(crashInfo->message == NULL && crashInfo->message2 == NULL)
     {
-        RollbarCrashLOG_TRACE("Skipped reading crash info: both messages are null");
+        RCLOG_TRACE("Skipped reading crash info: both messages are null");
         return;
     }
 
     if(isValidCrashInfoMessage(crashInfo->message))
     {
-        RollbarCrashLOG_DEBUG("Found first message: %s", crashInfo->message);
+        RCLOG_DEBUG("Found first message: %s", crashInfo->message);
         buffer->crashInfoMessage = crashInfo->message;
     }
     if(isValidCrashInfoMessage(crashInfo->message2))
     {
-        RollbarCrashLOG_DEBUG("Found second message: %s", crashInfo->message2);
+        RCLOG_DEBUG("Found second message: %s", crashInfo->message2);
         buffer->crashInfoMessage2 = crashInfo->message2;
     }
 }

@@ -111,7 +111,7 @@ static int onIntegerElement(const char* const name, const int64_t value, void* c
     {
         if(value != kFormatVersion)
         {
-            RollbarCrashLOG_ERROR("Expected version 1 but got %" PRId64, value);
+            RCLOG_ERROR("Expected version 1 but got %" PRId64, value);
             return RollbarCrashJSON_ERROR_INVALID_DATA;
         }
     }
@@ -208,7 +208,7 @@ static bool loadState(const char* const path)
     int length;
     if(!rcfu_readEntireFile(path, &data, &length, 50000))
     {
-        RollbarCrashLOG_ERROR("%s: Could not load file", path);
+        RCLOG_ERROR("%s: Could not load file", path);
         return false;
     }
 
@@ -236,7 +236,7 @@ static bool loadState(const char* const path)
     free(data);
     if(result != RollbarCrashJSON_OK)
     {
-        RollbarCrashLOG_ERROR("%s, offset %d: %s",
+        RCLOG_ERROR("%s, offset %d: %s",
                     path, errorOffset, rcjson_stringForError(result));
         return false;
     }
@@ -254,7 +254,7 @@ static bool saveState(const char* const path)
     int fd = open(path, O_RDWR | O_CREAT | O_TRUNC, 0644);
     if(fd < 0)
     {
-        RollbarCrashLOG_ERROR("Could not open file %s for writing: %s",
+        RCLOG_ERROR("Could not open file %s for writing: %s",
                     path,
                     strerror(errno));
         return false;
@@ -314,7 +314,7 @@ done:
     close(fd);
     if(result != RollbarCrashJSON_OK)
     {
-        RollbarCrashLOG_ERROR("%s: %s",
+        RCLOG_ERROR("%s: %s",
                     path, rcjson_stringForError(result));
         return false;
     }
@@ -328,14 +328,14 @@ static void updateAppState(void)
     
     if(g_state.applicationIsActive)
     {
-        RollbarCrashLOG_TRACE("Updating activeDurationSinceLaunch: %f and activeDurationSinceLastCrash: %f with duration: %f",
+        RCLOG_TRACE("Updating activeDurationSinceLaunch: %f and activeDurationSinceLastCrash: %f with duration: %f",
                     g_state.activeDurationSinceLaunch, g_state.activeDurationSinceLastCrash, duration);
         g_state.activeDurationSinceLaunch += duration;
         g_state.activeDurationSinceLastCrash += duration;
     }
     else if(!g_state.applicationIsInForeground)
     {
-        RollbarCrashLOG_TRACE("Updating backgroundDurationSinceLaunch: %f and backgroundDurationSinceLastCrash: %f with duration: %f",
+        RCLOG_TRACE("Updating backgroundDurationSinceLaunch: %f and backgroundDurationSinceLastCrash: %f with duration: %f",
                     g_state.backgroundDurationSinceLaunch, g_state.backgroundDurationSinceLastCrash, duration);
         g_state.backgroundDurationSinceLaunch += duration;
         g_state.backgroundDurationSinceLastCrash += duration;
@@ -380,7 +380,7 @@ bool rcstate_reset()
 
 void rcstate_notifyObjCLoad(void)
 {
-    RollbarCrashLOG_TRACE("RollbarCrash has been loaded!");
+    RCLOG_TRACE("RollbarCrash has been loaded!");
     memset(&g_state, 0, sizeof(g_state));
     g_state.applicationIsInForeground = false;
     g_state.applicationIsActive = true;
@@ -394,13 +394,13 @@ void rcstate_notifyAppActive(const bool isActive)
         g_state.applicationIsActive = isActive;
         if(isActive)
         {
-            RollbarCrashLOG_TRACE("Updating transition time from: %f to: %f", g_state.appStateTransitionTime, getCurrentTime());
+            RCLOG_TRACE("Updating transition time from: %f to: %f", g_state.appStateTransitionTime, getCurrentTime());
             g_state.appStateTransitionTime = getCurrentTime();
         }
         else
         {
             double duration = timeSince(g_state.appStateTransitionTime);
-            RollbarCrashLOG_TRACE("Updating activeDurationSinceLaunch: %f and activeDurationSinceLastCrash: %f with duration: %f",
+            RCLOG_TRACE("Updating activeDurationSinceLaunch: %f and activeDurationSinceLastCrash: %f with duration: %f",
                         g_state.activeDurationSinceLaunch, g_state.activeDurationSinceLastCrash, duration);
             g_state.activeDurationSinceLaunch += duration;
             g_state.activeDurationSinceLastCrash += duration;
@@ -418,7 +418,7 @@ void rcstate_notifyAppInForeground(const bool isInForeground)
         if(isInForeground)
         {
             double duration = getCurrentTime() - g_state.appStateTransitionTime;
-            RollbarCrashLOG_TRACE("Updating backgroundDurationSinceLaunch: %f and backgroundDurationSinceLastCrash: %f with duration: %f",
+            RCLOG_TRACE("Updating backgroundDurationSinceLaunch: %f and backgroundDurationSinceLastCrash: %f with duration: %f",
                         g_state.backgroundDurationSinceLaunch, g_state.backgroundDurationSinceLastCrash, duration);
             g_state.backgroundDurationSinceLaunch += duration;
             g_state.backgroundDurationSinceLastCrash += duration;
@@ -445,7 +445,7 @@ void rcstate_notifyAppTerminate(void)
 
 void rcstate_notifyAppCrash(void)
 {
-    RollbarCrashLOG_TRACE("Trying to update AppState. g_isEnabled: %d", g_isEnabled);
+    RCLOG_TRACE("Trying to update AppState. g_isEnabled: %d", g_isEnabled);
     if(g_isEnabled)
     {
         const char* const stateFilePath = g_stateFilePath;

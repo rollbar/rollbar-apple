@@ -40,7 +40,7 @@
 #define CHECK_SYSCTL_NAME(TYPE, CALL) \
 if(0 != (CALL)) \
 { \
-    RollbarCrashLOG_ERROR("Could not get %s value for %s: %s", \
+    RCLOG_ERROR("Could not get %s value for %s: %s", \
                 #CALL, name, strerror(errno)); \
     return 0; \
 }
@@ -48,7 +48,7 @@ if(0 != (CALL)) \
 #define CHECK_SYSCTL_CMD(TYPE, CALL) \
 if(0 != (CALL)) \
 { \
-    RollbarCrashLOG_ERROR("Could not get %s value for %d,%d: %s", \
+    RCLOG_ERROR("Could not get %s value for %d,%d: %s", \
                 #CALL, major_cmd, minor_cmd, strerror(errno)); \
     return 0; \
 }
@@ -194,7 +194,7 @@ struct timeval rcsysctl_timeval(const int major_cmd, const int minor_cmd)
 
     if(0 != sysctl(cmd, sizeof(cmd)/sizeof(*cmd), &value, &size, NULL, 0))
     {
-        RollbarCrashLOG_ERROR("Could not get timeval value for %d,%d: %s",
+        RCLOG_ERROR("Could not get timeval value for %d,%d: %s",
                     major_cmd, minor_cmd, strerror(errno));
     }
 
@@ -208,7 +208,7 @@ struct timeval rcsysctl_timevalForName(const char* const name)
 
     if(0 != sysctlbyname(name, &value, &size, NULL, 0))
     {
-        RollbarCrashLOG_ERROR("Could not get timeval value for %s: %s",
+        RCLOG_ERROR("Could not get timeval value for %s: %s",
                     name, strerror(errno));
     }
 
@@ -223,7 +223,7 @@ bool rcsysctl_getProcessInfo(const int pid,
 
     if(0 != sysctl(cmd, sizeof(cmd)/sizeof(*cmd), procInfo, &size, NULL, 0))
     {
-        RollbarCrashLOG_ERROR("Could not get the name for process %d: %s",
+        RCLOG_ERROR("Could not get the name for process %d: %s",
                     pid, strerror(errno));
         return false;
     }
@@ -246,7 +246,7 @@ bool rcsysctl_getMacAddress(const char* const name,
     };
     if(mib[5] == 0)
     {
-        RollbarCrashLOG_ERROR("Could not get interface index for %s: %s",
+        RCLOG_ERROR("Could not get interface index for %s: %s",
                     name, strerror(errno));
         return false;
     }
@@ -254,7 +254,7 @@ bool rcsysctl_getMacAddress(const char* const name,
     size_t length;
     if(sysctl(mib, 6, NULL, &length, NULL, 0) != 0)
     {
-        RollbarCrashLOG_ERROR("Could not get interface data for %s: %s",
+        RCLOG_ERROR("Could not get interface data for %s: %s",
                     name, strerror(errno));
         return false;
     }
@@ -262,13 +262,13 @@ bool rcsysctl_getMacAddress(const char* const name,
     void* ifBuffer = malloc(length);
     if(ifBuffer == NULL)
     {
-        RollbarCrashLOG_ERROR("Out of memory");
+        RCLOG_ERROR("Out of memory");
         return false;
     }
 
     if(sysctl(mib, 6, ifBuffer, &length, NULL, 0) != 0)
     {
-        RollbarCrashLOG_ERROR("Could not get interface data for %s: %s",
+        RCLOG_ERROR("Could not get interface data for %s: %s",
                     name, strerror(errno));
         free(ifBuffer);
         return false;

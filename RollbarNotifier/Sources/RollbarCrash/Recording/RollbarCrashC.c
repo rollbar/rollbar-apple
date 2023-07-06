@@ -96,7 +96,7 @@ static void printPreviousLog(const char* filePath)
 
 static void notifyOfBeforeInstallationState(void)
 {
-    RollbarCrashLOG_DEBUG("Notifying of pre-installation state");
+    RCLOG_DEBUG("Notifying of pre-installation state");
     switch (g_lastApplicationState)
     {
         case RollbarCrashApplicationStateDidBecomeActive:
@@ -125,7 +125,7 @@ static void notifyOfBeforeInstallationState(void)
 static void onCrash(struct RollbarCrash_MonitorContext* monitorContext)
 {
     if (monitorContext->currentSnapshotUserReported == false) {
-        RollbarCrashLOG_DEBUG("Updating application state to note crash.");
+        RCLOG_DEBUG("Updating application state to note crash.");
         rcstate_notifyAppCrash();
     }
     monitorContext->consoleLogPath = g_shouldAddConsoleLogToReport ? g_consoleLogPath : NULL;
@@ -155,11 +155,11 @@ static void onCrash(struct RollbarCrash_MonitorContext* monitorContext)
 
 RollbarCrashMonitorType rc_install(const char* appName, const char* const installPath)
 {
-    RollbarCrashLOG_DEBUG("Installing crash reporter.");
+    RCLOG_DEBUG("Installing crash reporter.");
 
     if(g_installed)
     {
-        RollbarCrashLOG_DEBUG("Crash reporter already installed.");
+        RCLOG_DEBUG("Crash reporter already installed.");
         return g_monitoring;
     }
     g_installed = 1;
@@ -186,7 +186,7 @@ RollbarCrashMonitorType rc_install(const char* appName, const char* const instal
     rcm_setEventCallback(onCrash);
     RollbarCrashMonitorType monitors = rc_setMonitoring(g_monitoring);
 
-    RollbarCrashLOG_DEBUG("Installation complete.");
+    RCLOG_DEBUG("Installation complete.");
 
     notifyOfBeforeInstallationState();
 
@@ -339,21 +339,21 @@ char* rc_readReport(int64_t reportID)
 {
     if(reportID <= 0)
     {
-        RollbarCrashLOG_ERROR("Report ID was %" PRIx64, reportID);
+        RCLOG_ERROR("Report ID was %" PRIx64, reportID);
         return NULL;
     }
 
     char* rawReport = rccrs_readReport(reportID);
     if(rawReport == NULL)
     {
-        RollbarCrashLOG_ERROR("Failed to load report ID %" PRIx64, reportID);
+        RCLOG_ERROR("Failed to load report ID %" PRIx64, reportID);
         return NULL;
     }
 
     char* fixedReport = rccrf_fixupCrashReport(rawReport);
     if(fixedReport == NULL)
     {
-        RollbarCrashLOG_ERROR("Failed to fixup report ID %" PRIx64, reportID);
+        RCLOG_ERROR("Failed to fixup report ID %" PRIx64, reportID);
     }
 
     free(rawReport);

@@ -81,7 +81,7 @@ static char g_eventID[37];
  */
 static void handleSignal(int sigNum, siginfo_t* signalInfo, void* userContext)
 {
-    RollbarCrashLOG_DEBUG("Trapped signal %d", sigNum);
+    RCLOG_DEBUG("Trapped signal %d", sigNum);
     if(g_isEnabled)
     {
         thread_act_array_t threads = NULL;
@@ -89,7 +89,7 @@ static void handleSignal(int sigNum, siginfo_t* signalInfo, void* userContext)
         rcmc_suspendEnvironment(&threads, &numThreads);
         rcm_notifyFatalExceptionCaptured(false);
 
-        RollbarCrashLOG_DEBUG("Filling out context.");
+        RCLOG_DEBUG("Filling out context.");
         RollbarCrashMC_NEW_CONTEXT(machineContext);
         rcmc_getContextForSignal(userContext, machineContext);
         rcsc_initWithMachineContext(&g_stackCursor, RollbarCrashSC_MAX_STACK_DEPTH, machineContext);
@@ -110,7 +110,7 @@ static void handleSignal(int sigNum, siginfo_t* signalInfo, void* userContext)
         rcmc_resumeEnvironment(threads, numThreads);
     }
 
-    RollbarCrashLOG_DEBUG("Re-raising signal for regular handlers to catch.");
+    RCLOG_DEBUG("Re-raising signal for regular handlers to catch.");
     raise(sigNum);
 }
 
@@ -121,21 +121,21 @@ static void handleSignal(int sigNum, siginfo_t* signalInfo, void* userContext)
 
 static bool installSignalHandler()
 {
-    RollbarCrashLOG_DEBUG("Installing signal handler.");
+    RCLOG_DEBUG("Installing signal handler.");
 
 #if RollbarCrashCRASH_HAS_SIGNAL_STACK
 
     if(g_signalStack.ss_size == 0)
     {
-        RollbarCrashLOG_DEBUG("Allocating signal stack area.");
+        RCLOG_DEBUG("Allocating signal stack area.");
         g_signalStack.ss_size = SIGSTKSZ;
         g_signalStack.ss_sp = malloc(g_signalStack.ss_size);
     }
 
-    RollbarCrashLOG_DEBUG("Setting signal stack area.");
+    RCLOG_DEBUG("Setting signal stack area.");
     if(sigaltstack(&g_signalStack, NULL) != 0)
     {
-        RollbarCrashLOG_ERROR("signalstack: %s", strerror(errno));
+        RCLOG_ERROR("signalstack: %s", strerror(errno));
         goto failed;
     }
 #endif
@@ -145,7 +145,7 @@ static bool installSignalHandler()
 
     if(g_previousSignalHandlers == NULL)
     {
-        RollbarCrashLOG_DEBUG("Allocating memory to store previous signal handlers.");
+        RCLOG_DEBUG("Allocating memory to store previous signal handlers.");
         g_previousSignalHandlers = malloc(sizeof(*g_previousSignalHandlers)
                                           * (unsigned)fatalSignalsCount);
     }
@@ -160,7 +160,7 @@ static bool installSignalHandler()
 
     for(int i = 0; i < fatalSignalsCount; i++)
     {
-        RollbarCrashLOG_DEBUG("Assigning handler for signal %d", fatalSignals[i]);
+        RCLOG_DEBUG("Assigning handler for signal %d", fatalSignals[i]);
         if(sigaction(fatalSignals[i], &action, &g_previousSignalHandlers[i]) != 0)
         {
             char sigNameBuff[30];
@@ -170,7 +170,7 @@ static bool installSignalHandler()
                 snprintf(sigNameBuff, sizeof(sigNameBuff), "%d", fatalSignals[i]);
                 sigName = sigNameBuff;
             }
-            RollbarCrashLOG_ERROR("sigaction (%s): %s", sigName, strerror(errno));
+            RCLOG_ERROR("sigaction (%s): %s", sigName, strerror(errno));
             // Try to reverse the damage
             for(i--;i >= 0; i--)
             {
@@ -179,31 +179,31 @@ static bool installSignalHandler()
             goto failed;
         }
     }
-    RollbarCrashLOG_DEBUG("Signal handlers installed.");
+    RCLOG_DEBUG("Signal handlers installed.");
     return true;
 
 failed:
-    RollbarCrashLOG_DEBUG("Failed to install signal handlers.");
+    RCLOG_DEBUG("Failed to install signal handlers.");
     return false;
 }
 
 static void uninstallSignalHandler(void)
 {
-    RollbarCrashLOG_DEBUG("Uninstalling signal handlers.");
+    RCLOG_DEBUG("Uninstalling signal handlers.");
 
     const int* fatalSignals = rcsignal_fatalSignals();
     int fatalSignalsCount = rcsignal_numFatalSignals();
 
     for(int i = 0; i < fatalSignalsCount; i++)
     {
-        RollbarCrashLOG_DEBUG("Restoring original handler for signal %d", fatalSignals[i]);
+        RCLOG_DEBUG("Restoring original handler for signal %d", fatalSignals[i]);
         sigaction(fatalSignals[i], &g_previousSignalHandlers[i], NULL);
     }
     
 #if RollbarCrashCRASH_HAS_SIGNAL_STACK
     g_signalStack = (stack_t){0};
 #endif
-    RollbarCrashLOG_DEBUG("Signal handlers uninstalled.");
+    RCLOG_DEBUG("Signal handlers uninstalled.");
 }
 
 static void setEnabled(bool isEnabled)

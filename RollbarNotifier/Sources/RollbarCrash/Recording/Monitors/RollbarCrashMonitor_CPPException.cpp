@@ -112,7 +112,7 @@ static void CPPExceptionTerminate(void)
     thread_act_array_t threads = NULL;
     mach_msg_type_number_t numThreads = 0;
     rcmc_suspendEnvironment(&threads, &numThreads);
-    RollbarCrashLOG_DEBUG("Trapped c++ exception");
+    RCLOG_DEBUG("Trapped c++ exception");
     const char* name = NULL;
     std::type_info* tinfo = __cxxabiv1::__cxa_current_exception_type();
     if(tinfo != NULL)
@@ -130,7 +130,7 @@ static void CPPExceptionTerminate(void)
         const char* description = descriptionBuff;
         descriptionBuff[0] = 0;
 
-        RollbarCrashLOG_DEBUG("Discovering what kind of exception was thrown.");
+        RCLOG_DEBUG("Discovering what kind of exception was thrown.");
         g_captureNextStackTrace = false;
         try
         {
@@ -169,7 +169,7 @@ catch(TYPE value)\
         RollbarCrashMC_NEW_CONTEXT(machineContext);
         rcmc_getContextForThread(rcthread_self(), machineContext, true);
 
-        RollbarCrashLOG_DEBUG("Filling out context.");
+        RCLOG_DEBUG("Filling out context.");
         crashContext->crashType = RollbarCrashMonitorTypeCPPException;
         crashContext->eventID = g_eventID;
         crashContext->registersAreValid = false;
@@ -183,11 +183,11 @@ catch(TYPE value)\
     }
     else
     {
-        RollbarCrashLOG_DEBUG("Detected NSException. Letting the current NSException handler deal with it.");
+        RCLOG_DEBUG("Detected NSException. Letting the current NSException handler deal with it.");
     }
     rcmc_resumeEnvironment(threads, numThreads);
 
-    RollbarCrashLOG_DEBUG("Calling original terminate handler.");
+    RCLOG_DEBUG("Calling original terminate handler.");
     g_originalTerminateHandler();
 }
 
