@@ -1,26 +1,26 @@
 import Foundation
 import RollbarCrash
 
-/// A `KSCrash` filter that produces richer diagnostic information by extracting data from a raw
+/// A `RollbarCrash` filter that produces richer diagnostic information by extracting data from a raw
 /// crash hashmap that's not usually made available in Apple crash reports.
 ///
-/// `KSCrash` filters receive a set of reports, possibly transforms them, and then
+/// `RollbarCrash` filters receive a set of reports, possibly transforms them, and then
 /// calls a completion method.
 @objcMembers
-public class RollbarCrashDiagnosticFilter: NSObject, KSCrashReportFilter {
+public class RollbarCrashDiagnosticFilter: NSObject, RollbarCrashReportFilter {
 
     /// This is the filter entry point.
     ///
     /// Since this is called from Obj-C, type information is poor, which is why the set of
     /// reports sent is `[Any]?`. Reports are reified as part of the validation process.
     ///
-    /// `KSCrashReportFilterCompletion` is an ObjC function with three parameters:
+    /// `RollbarCrashReportFilterCompletion` is an ObjC function with three parameters:
     ///   - An array of `Dictionary<AnyHashable, Any>`, which are "filtered" reports.
     ///   - A boolean value stating whether all the reports were able to be processed.
     ///   - An `NSError` object with error information, or `nil` if no error.
     public func filterReports(
         _ reports: [Any]?,
-        onCompletion complete: KSCrashReportFilterCompletion?
+        onCompletion complete: RollbarCrashReportFilterCompletion?
     ) {
         let diagnosedResults = (reports ?? []).map { report in
             validated(report).flatMap(diagnose)
@@ -36,7 +36,7 @@ public class RollbarCrashDiagnosticFilter: NSObject, KSCrashReportFilter {
     ///
     /// Diagnostics are extracted from three sources:
     ///
-    /// - The original `KSCrash` diagnosis, this is usually available for most
+    /// - The original `RollbarCrash` diagnosis, this is usually available for most
     ///   Objective-C, C and C++ crashes.
     /// - Dynamically linked libraries: Certain libraries like the Swift
     ///   runtime, and Cocoa framework report specialized diagnostic information
@@ -53,7 +53,7 @@ public class RollbarCrashDiagnosticFilter: NSObject, KSCrashReportFilter {
     /// - Parameter report: The `Report` to diagnose.
     /// - Returns: A new `Report` with the parsed diagnostic information.
     private func diagnose(_ report: Report) -> Result<Report, NSError> {
-        let kscrashDiagnostics = report.crash.diagnosis?
+        let crashDiagnostics = report.crash.diagnosis?
             .split(separator: "\n")
             .map { Diagnostic($0, source: report.crashType) } ?? []
 
@@ -70,12 +70,12 @@ public class RollbarCrashDiagnosticFilter: NSObject, KSCrashReportFilter {
                     : diagnostic
             }
 
-        let diagnostic = kscrashDiagnostics.first
+        let diagnostic = crashDiagnostics.first
             ?? dyldDiagnostics.first(where: { $0.source != "libsystem_sim_platform.dylib" })
 
         var diagnosedReport = report
         diagnosedReport.crash.diagnosis = diagnostic?.diagnosis
-        diagnosedReport.crash.diagnostics = kscrashDiagnostics + dyldDiagnostics
+        diagnosedReport.crash.diagnostics = crashDiagnostics + dyldDiagnostics
         return .success(diagnosedReport)
     }
 

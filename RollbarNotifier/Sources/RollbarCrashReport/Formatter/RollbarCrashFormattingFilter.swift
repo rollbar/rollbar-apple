@@ -1,26 +1,26 @@
 import Foundation
 import RollbarCrash
 
-/// A `KSCrash` filter that produces a proper Apple crash report with rich diagnostic
+/// A `RollbarCrash` filter that produces a proper Apple crash report with rich diagnostic
 /// information by parsing data from a raw crash hashmap.
 ///
-/// `KSCrash` filters receive a set of reports, possibly transforms them, and then
+/// `RollbarCrash` filters receive a set of reports, possibly transforms them, and then
 /// calls a completion method.
 @objcMembers
-public class RollbarCrashFormattingFilter: NSObject, KSCrashReportFilter {
+public class RollbarCrashFormattingFilter: NSObject, RollbarCrashReportFilter {
 
     /// This is the filter entry point.
     ///
     /// Since this is called from Obj-C, type information is poor, which is why the set of
     /// reports sent is `[Any]?`. Reports are reified as part of the validation process.
     ///
-    /// `KSCrashReportFilterCompletion` is an ObjC function with three parameters:
+    /// `RollbarCrashReportFilterCompletion` is an ObjC function with three parameters:
     ///   - An array of `Dictionary<AnyHashable, Any>`, which are "filtered" reports.
     ///   - A boolean value stating whether all the reports were able to be processed.
     ///   - An `NSError` object with error information, or `nil` if no error.
     public func filterReports(
         _ reports: [Any]?,
-        onCompletion complete: KSCrashReportFilterCompletion?
+        onCompletion complete: RollbarCrashReportFilterCompletion?
     ) -> () {
         let formattedResults = (reports ?? []).map { report in
             validated(report).map(format)
