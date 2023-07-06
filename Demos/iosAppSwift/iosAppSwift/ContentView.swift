@@ -178,7 +178,7 @@ struct Example {
 
     func outOfBounds(_ index: Int) {
         print("outOfBounds: \(index)")
-        _ = [][index]
+        _ = [Any]()[index]
     }
 
     func incrementPastEndIndex(_ r: ClosedRange<Int>) {
