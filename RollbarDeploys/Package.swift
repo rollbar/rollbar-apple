@@ -22,28 +22,17 @@ let package = Package(
     targets: [
         .target(
             name: "RollbarDeploys",
-            dependencies: ["RollbarCommon",],
-            publicHeadersPath: "include",
-            cSettings: [
-                .headerSearchPath("Sources/RollbarDeploys/**"),
-            ]
+            dependencies: ["RollbarCommon"],
+            path: "Sources/RollbarDeploys"
         ),
         .testTarget(
             name: "RollbarDeploysTests",
-            dependencies: [
-                "UnitTesting",
-                "RollbarDeploys",
-            ]
+            dependencies: ["UnitTesting", "RollbarDeploys"]
         ),
         .testTarget(
             name: "RollbarDeploysTests-ObjC",
-            dependencies: [
-                "UnitTesting",
-                "RollbarDeploys",
-            ],
-            cSettings: [
-                .headerSearchPath("Tests/RollbarDeploysTests-ObjC/**"),
-            ]
+            dependencies: ["UnitTesting", "RollbarDeploys"],
+            path: "Tests/RollbarDeploysTests-ObjC"
         ),
     ],
     swiftLanguageVersions: [

@@ -23,16 +23,12 @@ let package = Package(
     targets: [
         .target(
             name: "RollbarCommon",
-            path: "RollbarCommon/Sources/RollbarCommon",
-            publicHeadersPath: "include",
-            cSettings: [
-                .headerSearchPath("RollbarCommon/Sources/RollbarCommon/**"),
-            ]),
+            path: "RollbarCommon/Sources/RollbarCommon"
+        ),
         .target(
             name: "RollbarCrash",
             dependencies: [],
             path: "RollbarNotifier/Sources/RollbarCrash",
-            publicHeadersPath: "include",
             cxxSettings: [
                 .define("GCC_ENABLE_CPP_EXCEPTIONS", to: "YES"),
                 .headerSearchPath("Monitors"),
@@ -56,32 +52,21 @@ let package = Package(
                 "RollbarCrash",
                 "RollbarReport"
             ],
-            path: "RollbarNotifier/Sources/RollbarNotifier",
-            publicHeadersPath: "include",
-            cSettings: [
-                .headerSearchPath("./**"),
-            ]),
+            path: "RollbarNotifier/Sources/RollbarNotifier"
+        ),
         .target(
             name: "RollbarDeploys",
-            dependencies: [
-                "RollbarCommon",
-            ],
-            path: "RollbarDeploys/Sources/RollbarDeploys",
-            publicHeadersPath: "include",
-            cSettings: [
-                .headerSearchPath("./**"),
-            ]),
+            dependencies: ["RollbarCommon"],
+            path: "RollbarDeploys/Sources/RollbarDeploys"
+        ),
         .target(
             name: "RollbarAUL",
             dependencies: [
                 "RollbarCommon",
                 "RollbarNotifier",
             ],
-            path: "RollbarAUL/Sources/RollbarAUL",
-            publicHeadersPath: "include",
-            cSettings: [
-                .headerSearchPath("./**"),
-            ]),
+            path: "RollbarAUL/Sources/RollbarAUL"
+        ),
         .target(
             name: "RollbarCocoaLumberjack",
             dependencies: [
@@ -89,11 +74,7 @@ let package = Package(
                 "RollbarNotifier",
                 "CocoaLumberjack",
             ],
-            path: "RollbarCocoaLumberjack/Sources/RollbarCocoaLumberjack",
-            publicHeadersPath: "include",
-            cSettings: [
-                .headerSearchPath("./**"),
-            ]
+            path: "RollbarCocoaLumberjack/Sources/RollbarCocoaLumberjack"
         ),
     ],
     swiftLanguageVersions: [

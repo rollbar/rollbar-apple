@@ -29,7 +29,6 @@ let package = Package(
             name: "RollbarCrash",
             dependencies: [],
             path: "Sources/RollbarCrash",
-            publicHeadersPath: "include",
             cxxSettings: [
                 .define("GCC_ENABLE_CPP_EXCEPTIONS", to: "YES"),
                 .headerSearchPath("Monitors"),
@@ -53,11 +52,7 @@ let package = Package(
                 "RollbarCrash",
                 "RollbarReport"
             ],
-            path: "Sources/RollbarNotifier",
-            publicHeadersPath: "include",
-            cSettings: [
-                .headerSearchPath("./**"),
-            ]
+            path: "Sources/RollbarNotifier"
         ),
         .testTarget(
             name: "RollbarReportTests",
@@ -77,10 +72,7 @@ let package = Package(
                 "UnitTesting",
                 "RollbarNotifier",
             ],
-            path: "Tests/RollbarNotifierTests-ObjC",
-            cSettings: [
-                .headerSearchPath("./**")
-            ]
+            path: "Tests/RollbarNotifierTests-ObjC"
         ),
     ],
     swiftLanguageVersions: [

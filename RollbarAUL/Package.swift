@@ -23,28 +23,18 @@ let package = Package(
     targets: [
         .target(
             name: "RollbarAUL",
-            dependencies: ["RollbarCommon", "RollbarNotifier",],
-            publicHeadersPath: "include",
-            cSettings: [
-                .headerSearchPath("Sources/RollbarAUL/**"),
-            ]
+            dependencies: ["RollbarCommon", "RollbarNotifier"],
+            path: "Sources/RollbarAUL",
+            publicHeadersPath: "include"
         ),
         .testTarget(
             name: "RollbarAULTests",
-            dependencies: [
-                "UnitTesting",
-                "RollbarAUL",
-            ]
+            dependencies: ["UnitTesting", "RollbarAUL"]
         ),
         .testTarget(
             name: "RollbarAULTests-ObjC",
-            dependencies: [
-                "UnitTesting",
-                "RollbarAUL"
-            ],
-            cSettings: [
-                .headerSearchPath("Tests/RollbarAULTests-ObjC/**"),
-            ]
+            dependencies: ["UnitTesting", "RollbarAUL"],
+            path: "Tests/RollbarAULTests-ObjC"
         ),
     ],
     swiftLanguageVersions: [
