@@ -16,20 +16,18 @@ let package = Package(
     targets: [
         .target(
             name: "RollbarCommon",
-            publicHeadersPath: "include",
-            cSettings: [
-                .headerSearchPath("Sources/RollbarCommon/**"),
-            ]),
+            path: "Sources/RollbarCommon"
+        ),
         .testTarget(
             name: "RollbarCommonTests",
-            dependencies: ["RollbarCommon"]),
+            dependencies: ["RollbarCommon"]
+        ),
         .testTarget(
             name: "RollbarCommonTests-ObjC",
             dependencies: ["RollbarCommon"],
-            exclude: ["TestData/rollbar-crash-report-147120812218-raw.txt"],
-            cSettings: [
-                .headerSearchPath("Tests/RollbarCommonTests-ObjC/**"),
-            ]),
+            path: "Tests/RollbarCommonTests-ObjC",
+            exclude: ["TestData/rollbar-crash-report-147120812218-raw.txt"]
+        )
     ],
     swiftLanguageVersions: [
         SwiftVersion.v5,

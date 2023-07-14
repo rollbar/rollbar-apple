@@ -15,8 +15,8 @@ let package = Package(
             name: "RollbarNotifier",
             targets: [
                 "RollbarCrash",
-                "RollbarNotifier",
-                "RollbarCrashReport"
+                "RollbarReport",
+                "RollbarNotifier"
             ]
         ),
     ],
@@ -29,10 +29,11 @@ let package = Package(
             name: "RollbarCrash",
             dependencies: [],
             path: "Sources/RollbarCrash",
-            publicHeadersPath: "include",
             cxxSettings: [
                 .define("GCC_ENABLE_CPP_EXCEPTIONS", to: "YES"),
-                .headerSearchPath("./**")
+                .headerSearchPath("Monitors"),
+                .headerSearchPath("Recording"),
+                .headerSearchPath("Util"),
             ],
             linkerSettings: [
                 .linkedLibrary("c++"),
@@ -40,26 +41,22 @@ let package = Package(
             ]
         ),
         .target(
-            name: "RollbarCrashReport",
+            name: "RollbarReport",
             dependencies: ["RollbarCrash"],
-            path: "Sources/RollbarCrashReport"
+            path: "Sources/RollbarReport"
         ),
         .target(
             name: "RollbarNotifier",
             dependencies: [
                 "RollbarCommon",
                 "RollbarCrash",
-                "RollbarCrashReport"
+                "RollbarReport"
             ],
-            path: "Sources/RollbarNotifier",
-            publicHeadersPath: "include",
-            cSettings: [
-                .headerSearchPath("./**"),
-            ]
+            path: "Sources/RollbarNotifier"
         ),
         .testTarget(
-            name: "RollbarCrashReportTests",
-            dependencies: ["RollbarCrashReport"],
+            name: "RollbarReportTests",
+            dependencies: ["RollbarReport"],
             resources: [.process("Assets")]
         ),
         .testTarget(
@@ -75,10 +72,7 @@ let package = Package(
                 "UnitTesting",
                 "RollbarNotifier",
             ],
-            path: "Tests/RollbarNotifierTests-ObjC",
-            cSettings: [
-                .headerSearchPath("./**")
-            ]
+            path: "Tests/RollbarNotifierTests-ObjC"
         ),
     ],
     swiftLanguageVersions: [

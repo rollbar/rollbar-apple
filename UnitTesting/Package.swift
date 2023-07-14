@@ -21,17 +21,13 @@ let package = Package(
     targets: [
         .target(
             name: "UnitTesting",
-            dependencies: [
-                "RollbarCommon",
-            ],
-            publicHeadersPath: "include",
-            cSettings: [
-                .headerSearchPath("Sources/UnitTesting/**"),
-            ]
+            dependencies: ["RollbarCommon"],
+            path: "Sources/UnitTesting"
         ),
         .testTarget(
             name: "UnitTestingTests",
-            dependencies: ["UnitTesting"]),
+            dependencies: ["UnitTesting"]
+        ),
     ],
     swiftLanguageVersions: [
         SwiftVersion.v5,

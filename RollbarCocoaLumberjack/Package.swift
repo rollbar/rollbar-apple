@@ -13,7 +13,8 @@ let package = Package(
     products: [
         .library(
             name: "RollbarCocoaLumberjack",
-            targets: ["RollbarCocoaLumberjack"]),
+            targets: ["RollbarCocoaLumberjack"]
+        ),
     ],
     dependencies: [
         .package(path: "../RollbarCommon"),
@@ -29,10 +30,7 @@ let package = Package(
                 "RollbarNotifier",
                 "CocoaLumberjack",
             ],
-            publicHeadersPath: "include",
-            cSettings: [
-                .headerSearchPath("Sources/RollbarCocoaLumberjack/**"),
-            ]
+            path: "Sources/RollbarCocoaLumberjack"
         ),
         .testTarget(
             name: "RollbarCocoaLumberjackTests",
@@ -45,13 +43,8 @@ let package = Package(
         ),
         .testTarget(
             name: "RollbarCocoaLumberjackTests-ObjC",
-            dependencies: [
-                "UnitTesting",
-                "RollbarCocoaLumberjack",
-            ],
-            cSettings: [
-                .headerSearchPath("Tests/RollbarCocoaLumberjackTests-ObjC/**"),
-            ]
+            dependencies: ["UnitTesting", "RollbarCocoaLumberjack"],
+            path: "Tests/RollbarCocoaLumberjackTests-ObjC"
         ),
     ],
     swiftLanguageVersions: [

@@ -12,63 +12,61 @@ let package = Package(
     ],
     products: [
         .library(name: "RollbarCommon", targets: ["RollbarCommon"]),
-        .library(name: "RollbarNotifier", targets: ["RollbarNotifier", "RollbarCrashReport"]),
+        .library(name: "RollbarNotifier", targets: ["RollbarCrash", "RollbarReport", "RollbarNotifier"]),
         .library(name: "RollbarDeploys", targets: ["RollbarDeploys"]),
         .library(name: "RollbarAUL", targets: ["RollbarAUL"]),
         .library(name: "RollbarCocoaLumberjack", targets: ["RollbarCocoaLumberjack"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/kstenerud/KSCrash.git", from: "1.15.26"),
         .package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git", from: "3.7.4"),
     ],
     targets: [
         .target(
             name: "RollbarCommon",
-            path: "RollbarCommon/Sources/RollbarCommon",
-            publicHeadersPath: "include",
-            cSettings: [
-                .headerSearchPath("RollbarCommon/Sources/RollbarCommon/**"),
-            ]),
+            path: "RollbarCommon/Sources/RollbarCommon"
+        ),
         .target(
-            name: "RollbarCrashReport",
-            dependencies: [
-                "KSCrash",
+            name: "RollbarCrash",
+            dependencies: [],
+            path: "RollbarNotifier/Sources/RollbarCrash",
+            cxxSettings: [
+                .define("GCC_ENABLE_CPP_EXCEPTIONS", to: "YES"),
+                .headerSearchPath("Monitors"),
+                .headerSearchPath("Recording"),
+                .headerSearchPath("Util")
             ],
-            path: "RollbarNotifier/Sources/RollbarCrashReport"
+            linkerSettings: [
+                .linkedLibrary("c++"),
+                .linkedLibrary("z")
+            ]
+        ),
+        .target(
+            name: "RollbarReport",
+            dependencies: ["RollbarCrash"],
+            path: "RollbarNotifier/Sources/RollbarReport"
         ),
         .target(
             name: "RollbarNotifier",
             dependencies: [
                 "RollbarCommon",
-                "KSCrash",
-                "RollbarCrashReport"
+                "RollbarCrash",
+                "RollbarReport"
             ],
-            path: "RollbarNotifier/Sources/RollbarNotifier",
-            publicHeadersPath: "include",
-            cSettings: [
-                .headerSearchPath("RollbarNotifier/Sources/RollbarNotifier/**"),
-            ]),
+            path: "RollbarNotifier/Sources/RollbarNotifier"
+        ),
         .target(
             name: "RollbarDeploys",
-            dependencies: [
-                "RollbarCommon",
-            ],
-            path: "RollbarDeploys/Sources/RollbarDeploys",
-            publicHeadersPath: "include",
-            cSettings: [
-                .headerSearchPath("RollbarDeploys/Sources/RollbarDeploys/**"),
-            ]),
+            dependencies: ["RollbarCommon"],
+            path: "RollbarDeploys/Sources/RollbarDeploys"
+        ),
         .target(
             name: "RollbarAUL",
             dependencies: [
                 "RollbarCommon",
                 "RollbarNotifier",
             ],
-            path: "RollbarAUL/Sources/RollbarAUL",
-            publicHeadersPath: "include",
-            cSettings: [
-                .headerSearchPath("RollbarAUL/Sources/RollbarAUL/**"),
-            ]),
+            path: "RollbarAUL/Sources/RollbarAUL"
+        ),
         .target(
             name: "RollbarCocoaLumberjack",
             dependencies: [
@@ -76,14 +74,11 @@ let package = Package(
                 "RollbarNotifier",
                 "CocoaLumberjack",
             ],
-            path: "RollbarCocoaLumberjack/Sources/RollbarCocoaLumberjack",
-            publicHeadersPath: "include",
-            cSettings: [
-                .headerSearchPath("RollbarCocoaLumberjack/Sources/RollbarCocoaLumberjack/**"),
-            ]
+            path: "RollbarCocoaLumberjack/Sources/RollbarCocoaLumberjack"
         ),
     ],
     swiftLanguageVersions: [
         SwiftVersion.v5,
-    ]
+    ],
+    cxxLanguageStandard: .cxx17
 )
