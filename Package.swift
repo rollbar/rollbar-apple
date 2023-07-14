@@ -12,7 +12,7 @@ let package = Package(
     ],
     products: [
         .library(name: "RollbarCommon", targets: ["RollbarCommon"]),
-        .library(name: "RollbarNotifier", targets: ["RollbarCrash", "RollbarCrashReport", "RollbarNotifier"]),
+        .library(name: "RollbarNotifier", targets: ["RollbarCrash", "RollbarReport", "RollbarNotifier"]),
         .library(name: "RollbarDeploys", targets: ["RollbarDeploys"]),
         .library(name: "RollbarAUL", targets: ["RollbarAUL"]),
         .library(name: "RollbarCocoaLumberjack", targets: ["RollbarCocoaLumberjack"]),
@@ -45,16 +45,16 @@ let package = Package(
             ]
         ),
         .target(
-            name: "RollbarCrashReport",
+            name: "RollbarReport",
             dependencies: ["RollbarCrash"],
-            path: "RollbarNotifier/Sources/RollbarCrashReport"
+            path: "RollbarNotifier/Sources/RollbarReport"
         ),
         .target(
             name: "RollbarNotifier",
             dependencies: [
                 "RollbarCommon",
                 "RollbarCrash",
-                "RollbarCrashReport"
+                "RollbarReport"
             ],
             path: "RollbarNotifier/Sources/RollbarNotifier",
             publicHeadersPath: "include",

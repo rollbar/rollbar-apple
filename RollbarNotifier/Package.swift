@@ -15,7 +15,7 @@ let package = Package(
             name: "RollbarNotifier",
             targets: [
                 "RollbarCrash",
-                "RollbarCrashReport",
+                "RollbarReport",
                 "RollbarNotifier"
             ]
         ),
@@ -42,16 +42,16 @@ let package = Package(
             ]
         ),
         .target(
-            name: "RollbarCrashReport",
+            name: "RollbarReport",
             dependencies: ["RollbarCrash"],
-            path: "Sources/RollbarCrashReport"
+            path: "Sources/RollbarReport"
         ),
         .target(
             name: "RollbarNotifier",
             dependencies: [
                 "RollbarCommon",
                 "RollbarCrash",
-                "RollbarCrashReport"
+                "RollbarReport"
             ],
             path: "Sources/RollbarNotifier",
             publicHeadersPath: "include",
@@ -60,8 +60,8 @@ let package = Package(
             ]
         ),
         .testTarget(
-            name: "RollbarCrashReportTests",
-            dependencies: ["RollbarCrashReport"],
+            name: "RollbarReportTests",
+            dependencies: ["RollbarReport"],
             resources: [.process("Assets")]
         ),
         .testTarget(

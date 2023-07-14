@@ -4,7 +4,7 @@
 #import "RollbarCrashCollector.h"
 #import "RollbarInternalLogging.h"
 
-@import RollbarCrashReport;
+@import RollbarReport;
 
 static bool isDebuggerAttached() {
     static bool attached = false;
