@@ -20,6 +20,48 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "RollbarNotifier_RollbarCrashReportTests"
+               BuildableName = "RollbarNotifier_RollbarCrashReportTests"
+               BlueprintName = "RollbarNotifier_RollbarCrashReportTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "RollbarCrash"
+               BuildableName = "RollbarCrash"
+               BlueprintName = "RollbarCrash"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "RollbarCrashReport"
+               BuildableName = "RollbarCrashReport"
+               BlueprintName = "RollbarCrashReport"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -45,6 +87,16 @@
                BlueprintIdentifier = "RollbarNotifierTests-ObjC"
                BuildableName = "RollbarNotifierTests-ObjC"
                BlueprintName = "RollbarNotifierTests-ObjC"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "RollbarCrashReportTests"
+               BuildableName = "RollbarCrashReportTests"
+               BlueprintName = "RollbarCrashReportTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>

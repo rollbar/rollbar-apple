@@ -10,21 +10,12 @@
       }
     },
     {
-      "identity" : "kscrash",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/kstenerud/KSCrash.git",
-      "state" : {
-        "revision" : "c49092e96815ea6cb348862cd2a8c03bb8bd63f2",
-        "version" : "1.15.26"
-      }
-    },
-    {
       "identity" : "swift-log",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-log.git",
       "state" : {
-        "revision" : "6fe203dc33195667ce1759bf0182975e4653ba1c",
-        "version" : "1.4.4"
+        "revision" : "32e8d724467f8fe623624570367e3d50c5638e46",
+        "version" : "1.5.2"
       }
     }
   ],

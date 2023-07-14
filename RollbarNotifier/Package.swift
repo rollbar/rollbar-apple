@@ -15,8 +15,8 @@ let package = Package(
             name: "RollbarNotifier",
             targets: [
                 "RollbarCrash",
-                "RollbarNotifier",
-                "RollbarCrashReport"
+                "RollbarCrashReport",
+                "RollbarNotifier"
             ]
         ),
     ],
@@ -32,7 +32,9 @@ let package = Package(
             publicHeadersPath: "include",
             cxxSettings: [
                 .define("GCC_ENABLE_CPP_EXCEPTIONS", to: "YES"),
-                .headerSearchPath("./**")
+                .headerSearchPath("Monitors"),
+                .headerSearchPath("Recording"),
+                .headerSearchPath("Util"),
             ],
             linkerSettings: [
                 .linkedLibrary("c++"),

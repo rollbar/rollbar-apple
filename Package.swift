@@ -12,13 +12,12 @@ let package = Package(
     ],
     products: [
         .library(name: "RollbarCommon", targets: ["RollbarCommon"]),
-        .library(name: "RollbarNotifier", targets: ["RollbarNotifier", "RollbarCrashReport"]),
+        .library(name: "RollbarNotifier", targets: ["RollbarCrash", "RollbarCrashReport", "RollbarNotifier"]),
         .library(name: "RollbarDeploys", targets: ["RollbarDeploys"]),
         .library(name: "RollbarAUL", targets: ["RollbarAUL"]),
         .library(name: "RollbarCocoaLumberjack", targets: ["RollbarCocoaLumberjack"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/kstenerud/KSCrash.git", from: "1.15.26"),
         .package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git", from: "3.7.4"),
     ],
     targets: [
@@ -30,23 +29,37 @@ let package = Package(
                 .headerSearchPath("RollbarCommon/Sources/RollbarCommon/**"),
             ]),
         .target(
-            name: "RollbarCrashReport",
-            dependencies: [
-                "KSCrash",
+            name: "RollbarCrash",
+            dependencies: [],
+            path: "RollbarNotifier/Sources/RollbarCrash",
+            publicHeadersPath: "include",
+            cxxSettings: [
+                .define("GCC_ENABLE_CPP_EXCEPTIONS", to: "YES"),
+                .headerSearchPath("Monitors"),
+                .headerSearchPath("Recording"),
+                .headerSearchPath("Util")
             ],
+            linkerSettings: [
+                .linkedLibrary("c++"),
+                .linkedLibrary("z")
+            ]
+        ),
+        .target(
+            name: "RollbarCrashReport",
+            dependencies: ["RollbarCrash"],
             path: "RollbarNotifier/Sources/RollbarCrashReport"
         ),
         .target(
             name: "RollbarNotifier",
             dependencies: [
                 "RollbarCommon",
-                "KSCrash",
+                "RollbarCrash",
                 "RollbarCrashReport"
             ],
             path: "RollbarNotifier/Sources/RollbarNotifier",
             publicHeadersPath: "include",
             cSettings: [
-                .headerSearchPath("RollbarNotifier/Sources/RollbarNotifier/**"),
+                .headerSearchPath("./**"),
             ]),
         .target(
             name: "RollbarDeploys",
@@ -56,7 +69,7 @@ let package = Package(
             path: "RollbarDeploys/Sources/RollbarDeploys",
             publicHeadersPath: "include",
             cSettings: [
-                .headerSearchPath("RollbarDeploys/Sources/RollbarDeploys/**"),
+                .headerSearchPath("./**"),
             ]),
         .target(
             name: "RollbarAUL",
@@ -67,7 +80,7 @@ let package = Package(
             path: "RollbarAUL/Sources/RollbarAUL",
             publicHeadersPath: "include",
             cSettings: [
-                .headerSearchPath("RollbarAUL/Sources/RollbarAUL/**"),
+                .headerSearchPath("./**"),
             ]),
         .target(
             name: "RollbarCocoaLumberjack",
@@ -79,11 +92,12 @@ let package = Package(
             path: "RollbarCocoaLumberjack/Sources/RollbarCocoaLumberjack",
             publicHeadersPath: "include",
             cSettings: [
-                .headerSearchPath("RollbarCocoaLumberjack/Sources/RollbarCocoaLumberjack/**"),
+                .headerSearchPath("./**"),
             ]
         ),
     ],
     swiftLanguageVersions: [
         SwiftVersion.v5,
-    ]
+    ],
+    cxxLanguageStandard: .cxx17
 )

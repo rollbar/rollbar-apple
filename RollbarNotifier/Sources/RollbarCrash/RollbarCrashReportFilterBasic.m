@@ -135,13 +135,13 @@
     NSArray* filters = self.filters;
     NSArray* keys = self.keys;
     NSUInteger filterCount = [filters count];
-    
+
     if(filterCount == 0)
     {
         rc_callCompletion(onCompletion, reports, YES, nil);
         return;
     }
-    
+
     if(filterCount != [keys count])
     {
         rc_callCompletion(onCompletion, reports, NO,
@@ -151,9 +151,9 @@
                                   [keys count], filterCount]);
         return;
     }
-    
+
     NSMutableArray* reportSets = [NSMutableArray arrayWithCapacity:filterCount];
-    
+
     __block NSUInteger iFilter = 0;
     __block RollbarCrashReportFilterCompletion filterCompletion = nil;
     __block __weak RollbarCrashReportFilterCompletion weakFilterCompletion = nil;
@@ -188,7 +188,7 @@
                                 disposeOfCompletion();
                                 return;
                             }
-                            
+
                             // Normal run until all filters exhausted.
                             [reportSets addObject:filteredReports];
                             if(++iFilter < filterCount)
@@ -197,7 +197,7 @@
                                 [filter filterReports:reports onCompletion:weakFilterCompletion];
                                 return;
                             }
-                            
+
                             // All filters complete, or a filter failed.
                             // Build final "filteredReports" array.
                             NSUInteger reportCount = [(NSArray*)[reportSets objectAtIndex:0] count];
@@ -216,12 +216,12 @@
                                 }
                                 [combinedReports addObject:dict];
                             }
-                            
+
                             rc_callCompletion(onCompletion, combinedReports, completed, filterError);
                             disposeOfCompletion();
                         } copy];
     weakFilterCompletion = filterCompletion;
-    
+
     // Initial call with first filter to start everything going.
     id<RollbarCrashReportFilter> filter = [filters objectAtIndex:iFilter];
     [filter filterReports:reports onCompletion:filterCompletion];
@@ -286,13 +286,13 @@
 {
     NSArray* filters = self.filters;
     NSUInteger filterCount = [filters count];
-    
+
     if(filterCount == 0)
     {
         rc_callCompletion(onCompletion, reports, YES,  nil);
         return;
     }
-    
+
     __block NSUInteger iFilter = 0;
     __block RollbarCrashReportFilterCompletion filterCompletion;
     __block __weak RollbarCrashReportFilterCompletion weakFilterCompletion = nil;
@@ -327,7 +327,7 @@
                                 disposeOfCompletion();
                                 return;
                             }
-                            
+
                             // Normal run until all filters exhausted or one
                             // filter fails to complete.
                             if(++iFilter < filterCount)
@@ -336,13 +336,13 @@
                                 [filter filterReports:filteredReports onCompletion:weakFilterCompletion];
                                 return;
                             }
-                            
+
                             // All filters complete, or a filter failed.
                             rc_callCompletion(onCompletion, filteredReports, completed, filterError);
                             disposeOfCompletion();
                         } copy];
     weakFilterCompletion = filterCompletion;
-    
+
     // Initial call with first filter to start everything going.
     id<RollbarCrashReportFilter> filter = [filters objectAtIndex:iFilter];
     [filter filterReports:reports onCompletion:filterCompletion];
@@ -458,7 +458,7 @@
                 [realKeys addObject:key];
             }
         }
-        
+
         self.separatorFmt = separatorFmt;
         self.keys = realKeys;
     }
@@ -532,7 +532,7 @@
                 [realKeyPaths addObject:keyPath];
             }
         }
-        
+
         self.keyPaths = realKeyPaths;
     }
     return self;
