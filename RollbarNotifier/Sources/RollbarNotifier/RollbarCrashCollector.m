@@ -1,7 +1,8 @@
+@import Darwin.sys.sysctl;
+
 #import "Rollbar.h"
 #import "RollbarCrashCollector.h"
 #import "RollbarInternalLogging.h"
-#import "KSCrashReportFilter.h"
 
 @import RollbarCrashReport;
 
@@ -29,19 +30,19 @@ static bool isDebuggerAttached() {
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface RollbarCrashLoggingFilter : NSObject <KSCrashReportFilter>
+@interface RollbarCrashLoggingFilter : NSObject <RollbarCrashReportFilter>
 @end
 
 @implementation RollbarCrashLoggingFilter
 
 - (void)filterReports:(NSArray *)reports
-         onCompletion:(KSCrashReportFilterCompletion)completion
+         onCompletion:(RollbarCrashReportFilterCompletion)completion
 {
     for (NSString *report in reports) {
         [Rollbar logCrashReport:report];
     }
 
-    kscrash_callCompletion(completion, reports, YES, nil);
+    rc_callCompletion(completion, reports, YES, nil);
 }
 
 @end
@@ -57,22 +58,21 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)install {
     [super install];
 
-    KSCrashMonitorType monitoring = isDebuggerAttached()
-        ? KSCrashMonitorTypeDebuggerSafe
-        & ~(KSCrashMonitorTypeOptional
-            | KSCrashMonitorTypeExperimental
-            | KSCrashMonitorTypeUserReported)
-        : KSCrashMonitorTypeProductionSafe
-        & ~(KSCrashMonitorTypeOptional
-            | KSCrashMonitorTypeUserReported);
+    RollbarCrashMonitorType monitoring = isDebuggerAttached()
+        ? RollbarCrashMonitorTypeDebuggerSafe
+        & ~(RollbarCrashMonitorTypeOptional
+            | RollbarCrashMonitorTypeExperimental
+            | RollbarCrashMonitorTypeUserReported)
+        : RollbarCrashMonitorTypeProductionSafe
+        & ~(RollbarCrashMonitorTypeOptional
+            | RollbarCrashMonitorTypeUserReported);
 
-    [KSCrash.sharedInstance setDeleteBehaviorAfterSendAll:KSCDeleteOnSucess];
-    [KSCrash.sharedInstance setDemangleLanguages:KSCrashDemangleLanguageAll];
-    [KSCrash.sharedInstance setMonitoring:monitoring];
-    [KSCrash.sharedInstance setAddConsoleLogToReport:NO];
-    [KSCrash.sharedInstance setCatchZombies:NO];
-    [KSCrash.sharedInstance setIntrospectMemory:YES];
-    [KSCrash.sharedInstance setSearchQueueNames:NO];
+    [RollbarCrash.sharedInstance setDeleteBehaviorAfterSendAll:RollbarCrashDeleteOnSucess];
+    [RollbarCrash.sharedInstance setMonitoring:monitoring];
+    [RollbarCrash.sharedInstance setAddConsoleLogToReport:NO];
+    [RollbarCrash.sharedInstance setCatchZombies:NO];
+    [RollbarCrash.sharedInstance setIntrospectMemory:YES];
+    [RollbarCrash.sharedInstance setSearchQueueNames:NO];
 }
 
 - (void)sendAllReports {
@@ -83,11 +83,11 @@ NS_ASSUME_NONNULL_BEGIN
     }];
 }
 
-- (id<KSCrashReportFilter>)sink {
+- (id<RollbarCrashReportFilter>)sink {
     id diagnose = [[RollbarCrashDiagnosticFilter alloc] init];
     id format = [[RollbarCrashFormattingFilter alloc] init];
     id log = [[RollbarCrashLoggingFilter alloc] init];
-    return [KSCrashReportFilterPipeline filterWithFilters:diagnose, format, log, nil];
+    return [RollbarCrashReportFilterPipeline filterWithFilters:diagnose, format, log, nil];
 }
 
 @end

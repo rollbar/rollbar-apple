@@ -11,31 +11,50 @@ let package = Package(
         .watchOS(.v8),
     ],
     products: [
-        .library(name: "RollbarNotifier", targets: ["RollbarNotifier", "RollbarCrashReport"]),
+        .library(
+            name: "RollbarNotifier",
+            targets: [
+                "RollbarCrash",
+                "RollbarNotifier",
+                "RollbarCrashReport"
+            ]
+        ),
     ],
     dependencies: [
         .package(path: "../RollbarCommon"),
         .package(path: "../UnitTesting"),
-        .package(url: "https://github.com/kstenerud/KSCrash.git", from: "1.15.26"),
     ],
     targets: [
         .target(
-            name: "RollbarCrashReport",
-            dependencies: [
-                "KSCrash",
+            name: "RollbarCrash",
+            dependencies: [],
+            path: "Sources/RollbarCrash",
+            publicHeadersPath: "include",
+            cxxSettings: [
+                .define("GCC_ENABLE_CPP_EXCEPTIONS", to: "YES"),
+                .headerSearchPath("./**")
             ],
+            linkerSettings: [
+                .linkedLibrary("c++"),
+                .linkedLibrary("z")
+            ]
+        ),
+        .target(
+            name: "RollbarCrashReport",
+            dependencies: ["RollbarCrash"],
             path: "Sources/RollbarCrashReport"
         ),
         .target(
             name: "RollbarNotifier",
             dependencies: [
                 "RollbarCommon",
-                "KSCrash",
+                "RollbarCrash",
                 "RollbarCrashReport"
             ],
+            path: "Sources/RollbarNotifier",
             publicHeadersPath: "include",
             cSettings: [
-                .headerSearchPath("Sources/RollbarNotifier/**"),
+                .headerSearchPath("./**"),
             ]
         ),
         .testTarget(
@@ -56,12 +75,14 @@ let package = Package(
                 "UnitTesting",
                 "RollbarNotifier",
             ],
+            path: "Tests/RollbarNotifierTests-ObjC",
             cSettings: [
-                .headerSearchPath("Tests/RollbarNotifierTests-ObjC/**"),
+                .headerSearchPath("./**")
             ]
         ),
     ],
     swiftLanguageVersions: [
-        SwiftVersion.v5,
-    ]
+        SwiftVersion.v5
+    ],
+    cxxLanguageStandard: .cxx17
 )
