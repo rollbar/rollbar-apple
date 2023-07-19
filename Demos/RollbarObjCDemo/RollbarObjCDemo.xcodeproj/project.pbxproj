@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -53,7 +53,7 @@
 		55684F622553B4C400F82F34 = {
 			isa = PBXGroup;
 			children = (
-				55684F6D2553B4C400F82F34 /* iosAppObjC */,
+				55684F6D2553B4C400F82F34 /* RollbarObjCDemo */,
 				55684F6C2553B4C400F82F34 /* Products */,
 				55684F8B2553B7E100F82F34 /* Frameworks */,
 			);
@@ -67,7 +67,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		55684F6D2553B4C400F82F34 /* iosAppObjC */ = {
+		55684F6D2553B4C400F82F34 /* RollbarObjCDemo */ = {
 			isa = PBXGroup;
 			children = (
 				3BDB825B292E34990093AC9D /* Info.plist */,
@@ -83,7 +83,7 @@
 				55684F7C2553B4C700F82F34 /* LaunchScreen.storyboard */,
 				55684F802553B4C700F82F34 /* main.m */,
 			);
-			path = iosAppObjC;
+			path = RollbarObjCDemo;
 			sourceTree = "<group>";
 		};
 		55684F8B2553B7E100F82F34 /* Frameworks */ = {
@@ -124,14 +124,15 @@
 		55684F632553B4C400F82F34 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1210;
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					55684F6A2553B4C400F82F34 = {
 						CreatedOnToolsVersion = 12.1;
 					};
 				};
 			};
-			buildConfigurationList = 55684F662553B4C400F82F34 /* Build configuration list for PBXProject "iosAppObjC" */;
+			buildConfigurationList = 55684F662553B4C400F82F34 /* Build configuration list for PBXProject "RollbarObjCDemo" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -252,7 +253,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rollbar.iosAppObjC;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rollbar.apple.demo.objc;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -306,7 +307,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rollbar.iosAppObjC;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rollbar.apple.demo.objc;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -317,12 +318,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = iosAppObjC/iosAppObjC.entitlements;
+				CODE_SIGN_ENTITLEMENTS = RollbarObjCDemo/RollbarObjCDemo.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = 6B5NER795L;
-				INFOPLIST_FILE = iosAppObjC/Info.plist;
+				INFOPLIST_FILE = RollbarObjCDemo/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Rollbar ObjC Demo";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -335,7 +336,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rollbar.apple.demo.objc;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -348,12 +349,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = iosAppObjC/iosAppObjC.entitlements;
+				CODE_SIGN_ENTITLEMENTS = RollbarObjCDemo/RollbarObjCDemo.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = 6B5NER795L;
-				INFOPLIST_FILE = iosAppObjC/Info.plist;
+				INFOPLIST_FILE = RollbarObjCDemo/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Rollbar ObjC Demo";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -366,7 +367,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rollbar.apple.demo.objc;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -377,7 +378,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		55684F662553B4C400F82F34 /* Build configuration list for PBXProject "iosAppObjC" */ = {
+		55684F662553B4C400F82F34 /* Build configuration list for PBXProject "RollbarObjCDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				55684F822553B4C700F82F34 /* Debug */,

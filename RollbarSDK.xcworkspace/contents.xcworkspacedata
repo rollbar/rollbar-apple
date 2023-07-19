@@ -71,17 +71,14 @@
       <FileRef
          location = "group:Demos/RollbarDemo/RollbarDemo.xcodeproj">
       </FileRef>
+      <FileRef
+         location = "group:Demos/RollbarObjCDemo/RollbarObjCDemo.xcodeproj">
+      </FileRef>
       <Group
          location = "container:"
          name = "iOS">
          <FileRef
-            location = "group:Demos/iosAppObjC/iosAppObjC.xcodeproj">
-         </FileRef>
-         <FileRef
             location = "group:Demos/RollbarCocoapodsSwift">
-         </FileRef>
-         <FileRef
-            location = "group:Demos/RollbarExpoReactNative">
          </FileRef>
       </Group>
    </Group>
