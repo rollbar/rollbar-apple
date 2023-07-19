@@ -71,7 +71,7 @@ PODS:
     - RollbarCrashReport (~> 3.0.3)
 
 DEPENDENCIES:
-  - RollbarNotifier (~> 3.0.1)
+  - RollbarNotifier
 
 SPEC REPOS:
   trunk:
@@ -86,6 +86,6 @@ SPEC CHECKSUMS:
   RollbarCrashReport: 42639f9b5cf52dd9800a4fdd0cc0c340dc2671fa
   RollbarNotifier: 83cb331853027736df859dbfe6bc55fa5a75cf1a
 
-PODFILE CHECKSUM: e7eaa6c1417a607cfb40845f8128bd0fdadb5c88
+PODFILE CHECKSUM: dd7a7b22d0a187b57cfd1a7b2c9b0f188e533e22
 
 COCOAPODS: 1.12.1
