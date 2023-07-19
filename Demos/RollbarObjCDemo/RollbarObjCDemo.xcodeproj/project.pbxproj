@@ -20,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3B1DED342A6846A0003936E7 /* RollbarObjCDemo.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = RollbarObjCDemo.entitlements; sourceTree = "<group>"; };
 		3BDB8258292D67900093AC9D /* SceneDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
 		3BDB8259292D67900093AC9D /* SceneDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
 		3BDB825B292E34990093AC9D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -32,7 +33,6 @@
 		55684F7A2553B4C700F82F34 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		55684F7D2553B4C700F82F34 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		55684F802553B4C700F82F34 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		55684F9B2553BD1B00F82F34 /* iosAppObjC.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iosAppObjC.entitlements; sourceTree = "<group>"; };
 		55684F9C2553BD1C00F82F34 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -70,18 +70,18 @@
 		55684F6D2553B4C400F82F34 /* RollbarObjCDemo */ = {
 			isa = PBXGroup;
 			children = (
-				3BDB825B292E34990093AC9D /* Info.plist */,
-				55684F9B2553BD1B00F82F34 /* iosAppObjC.entitlements */,
 				55684F6E2553B4C400F82F34 /* AppDelegate.h */,
 				55684F6F2553B4C400F82F34 /* AppDelegate.m */,
+				55684F802553B4C700F82F34 /* main.m */,
 				3BDB8259292D67900093AC9D /* SceneDelegate.h */,
 				3BDB8258292D67900093AC9D /* SceneDelegate.m */,
 				55684F742553B4C400F82F34 /* ViewController.h */,
 				55684F752553B4C400F82F34 /* ViewController.m */,
+				55684F7C2553B4C700F82F34 /* LaunchScreen.storyboard */,
 				55684F772553B4C400F82F34 /* Main.storyboard */,
 				55684F7A2553B4C700F82F34 /* Assets.xcassets */,
-				55684F7C2553B4C700F82F34 /* LaunchScreen.storyboard */,
-				55684F802553B4C700F82F34 /* main.m */,
+				3BDB825B292E34990093AC9D /* Info.plist */,
+				3B1DED342A6846A0003936E7 /* RollbarObjCDemo.entitlements */,
 			);
 			path = RollbarObjCDemo;
 			sourceTree = "<group>";

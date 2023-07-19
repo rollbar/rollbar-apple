@@ -47,6 +47,16 @@
          location = "group:upload_dsym.py">
       </FileRef>
    </Group>
+   <Group
+      location = "container:"
+      name = "Demos">
+      <FileRef
+         location = "group:Demos/RollbarDemo/RollbarDemo.xcodeproj">
+      </FileRef>
+      <FileRef
+         location = "group:Demos/RollbarObjCDemo/RollbarObjCDemo.xcodeproj">
+      </FileRef>
+   </Group>
    <FileRef
       location = "group:RollbarCommon">
    </FileRef>
@@ -65,21 +75,4 @@
    <FileRef
       location = "group:UnitTesting">
    </FileRef>
-   <Group
-      location = "container:"
-      name = "Demos">
-      <FileRef
-         location = "group:Demos/RollbarDemo/RollbarDemo.xcodeproj">
-      </FileRef>
-      <FileRef
-         location = "group:Demos/RollbarObjCDemo/RollbarObjCDemo.xcodeproj">
-      </FileRef>
-      <Group
-         location = "container:"
-         name = "iOS">
-         <FileRef
-            location = "group:Demos/RollbarCocoapodsSwift">
-         </FileRef>
-      </Group>
-   </Group>
 </Workspace>
