@@ -1,8 +1,8 @@
 Incident Identifier: 22FE63C2-E1EB-498E-A1B5-21C063D417A0
 CrashReporter Key:   389fef42fa10edcc97bc004d5c8579e5c0d5e1e5
 Hardware Model:      iPhone15,2
-Process:             iosAppSwift [80655]
-Path:                /Users/matux/Library/Developer/CoreSimulator/Devices/D0A3BA18-8B19-43A4-9B7D-FFB0577EE2B9/data/Containers/Bundle/Application/F60AB504-F150-4C6F-B99D-C46D605BF6EC/iosAppSwift.app/iosAppSwift
+Process:             RollbarDemo [80655]
+Path:                /Users/matux/Library/Developer/CoreSimulator/Devices/D0A3BA18-8B19-43A4-9B7D-FFB0577EE2B9/data/Containers/Bundle/Application/F60AB504-F150-4C6F-B99D-C46D605BF6EC/RollbarDemo.app/RollbarDemo
 Identifier:          com.matux.test.rollbarAppDemo
 Version:             4 (1.0)
 Code Type:           ARM-64
@@ -57,8 +57,8 @@ Thread 0 Crashed:
 3   libswiftCore.dylib              0x000000018bd55564 _assertionFailure(_:_:file:line:flags:) + 228
 4   libswiftCore.dylib              0x000000018bd36eb8 _ArrayBuffer._checkInoutAndNativeTypeCheckedBounds(_:wasNativeTypeChecked:) + 276
 5   libswiftCore.dylib              0x000000018bd3abf0 Array.subscript.getter + 84
-6   iosAppSwift                     0x0000000104733590 0x010472c000 + 30096
-7   iosAppSwift                     0x000000010473353c 0x010472c000 + 30012
+6   RollbarDemo                     0x0000000104733590 0x010472c000 + 30096
+7   RollbarDemo                     0x000000010473353c 0x010472c000 + 30012
 8   SwiftUI                         0x0000000109acfa18 __swift_memcpy3_1 + 8096
 9   SwiftUI                         0x0000000109ad02a0 __swift_memcpy3_1 + 10280
 10  SwiftUI                         0x0000000109ad0210 __swift_memcpy3_1 + 10136
@@ -92,8 +92,8 @@ Thread 0 Crashed:
 38  SwiftUI                         0x000000010a4490d4 OUTLINED_FUNCTION_51 + 496
 39  SwiftUI                         0x000000010a448f7c OUTLINED_FUNCTION_51 + 152
 40  SwiftUI                         0x0000000109baeb60 OUTLINED_FUNCTION_10 + 88
-41  iosAppSwift                     0x000000010473d638 0x010472c000 + 71224
-42  iosAppSwift                     0x000000010473e484 0x010472c000 + 74884
+41  RollbarDemo                     0x000000010473d638 0x010472c000 + 71224
+42  RollbarDemo                     0x000000010473e484 0x010472c000 + 74884
 43  ?                               0x0000000104a79fa0 ? + 4373061536
 44  ?                               0x0000000104b5de50 ? + 4373995088
 
@@ -140,7 +140,7 @@ Thread 8:
 0   libsystem_kernel.dylib          0x00000001b05455e0 __semwait_signal + 8
 1   libsystem_c.dylib               0x0000000180127050 nanosleep + 216
 2   libsystem_c.dylib               0x0000000180126e4c sleep + 48
-3   iosAppSwift                     0x00000001047a4788 0x010472c000 + 493448
+3   RollbarDemo                     0x00000001047a4788 0x010472c000 + 493448
 4   libsystem_pthread.dylib         0x00000001b059e4e4 _pthread_start + 116
 
 Thread 9 name:  KSCrash Exception Handler (Secondary)
@@ -149,7 +149,7 @@ Thread 9:
 1   libsystem_kernel.dylib          0x00000001b0553154 mach_msg2_internal + 76
 2   libsystem_kernel.dylib          0x00000001b054a4b8 mach_msg_overwrite + 536
 3   libsystem_kernel.dylib          0x00000001b054261c mach_msg + 20
-4   iosAppSwift                     0x00000001047b11b8 0x010472c000 + 545208
+4   RollbarDemo                     0x00000001047b11b8 0x010472c000 + 545208
 5   libsystem_pthread.dylib         0x00000001b059e4e4 _pthread_start + 116
 
 Thread 10 name:  KSCrash Exception Handler (Primary)
@@ -166,7 +166,7 @@ Thread 11:
 5   CoreFoundation                  0x000000018036d03c __CFRunLoopRun + 1152
 6   CoreFoundation                  0x000000018036c7a4 CFRunLoopRunSpecific + 584
 7   Foundation                      0x0000000180bcf02c -[NSRunLoop(NSRunLoop) runMode:beforeDate:] + 208
-8   iosAppSwift                     0x00000001047650c4 0x010472c000 + 233668
+8   RollbarDemo                     0x00000001047650c4 0x010472c000 + 233668
 9   Foundation                      0x0000000180bf4a10 __NSThread__start__ + 704
 10  libsystem_pthread.dylib         0x00000001b059e4e4 _pthread_start + 116
 
@@ -184,7 +184,7 @@ Thread 12:
 9   libsystem_pthread.dylib         0x00000001b059e4e4 _pthread_start + 116
 
 Binary Images:
-0x010472c000 - 0x010484bfff +iosAppSwift arm64  <41be1a68c6923f3cba615a387688f2d8> /Users/matux/Library/Developer/CoreSimulator/Devices/D0A3BA18-8B19-43A4-9B7D-FFB0577EE2B9/data/Containers/Bundle/Application/F60AB504-F150-4C6F-B99D-C46D605BF6EC/iosAppSwift.app/iosAppSwift
+0x010472c000 - 0x010484bfff +RollbarDemo arm64  <41be1a68c6923f3cba615a387688f2d8> /Users/matux/Library/Developer/CoreSimulator/Devices/D0A3BA18-8B19-43A4-9B7D-FFB0577EE2B9/data/Containers/Bundle/Application/F60AB504-F150-4C6F-B99D-C46D605BF6EC/RollbarDemo.app/RollbarDemo
 0x0104b48000 - 0x0104b4bfff  UIKit arm64  <8b15488095fe390fae821a3a3a640227> /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/System/Library/Frameworks/UIKit.framework/UIKit
 0x0104c48000 - 0x0104d2bfff  PDFKit arm64  <7a8f430696353a84ab0ba3b31fe3c51f> /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/System/Library/Frameworks/PDFKit.framework/PDFKit
 0x0104e30000 - 0x0104e5bfff  AppSupportUI arm64  <7d72100a8001395ca5f6066d645b3f27> /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/System/Library/PrivateFrameworks/AppSupportUI.framework/AppSupportUI
