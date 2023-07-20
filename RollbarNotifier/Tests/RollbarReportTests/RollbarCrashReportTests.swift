@@ -24,10 +24,10 @@ final class RollbarCrashReportTests: XCTestCase {
                 return XCTFail()
             }
 
-            XCTAssertEqual(report.crash.diagnosis, "Fatal error: Unexpectedly found nil while unwrapping an Optional value (iosAppSwift/ContentView.swift:117)")
+            XCTAssertEqual(report.crash.diagnosis, "Fatal error: Unexpectedly found nil while unwrapping an Optional value (RollbarDemo/ContentView.swift:117)")
             XCTAssertEqual(report.crash.diagnostics.count, 1)
             XCTAssertEqual(report.crash.diagnostics[0].source, "libswiftCore.dylib")
-            XCTAssertEqual(report.crash.diagnostics[0].diagnosis, "Fatal error: Unexpectedly found nil while unwrapping an Optional value (iosAppSwift/ContentView.swift:117)")
+            XCTAssertEqual(report.crash.diagnostics[0].diagnosis, "Fatal error: Unexpectedly found nil while unwrapping an Optional value (RollbarDemo/ContentView.swift:117)")
         }
     }
 

@@ -4,9 +4,9 @@ import RollbarNotifier
 
 enum ExampleError: Error {
     case
-        invalidResult,
-        invalidInput,
-        someOtherError
+    invalidResult,
+    invalidInput,
+    someOtherError
 }
 
 struct ContentView: View {
