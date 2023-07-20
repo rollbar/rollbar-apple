@@ -1,5 +1,5 @@
 Pod::Spec.new do |s|
-    s.name         = "RollbarAUL"
+    s.name         = "RollbarReport"
     s.version      = "3.1.0"
     s.summary      = "Application or client side SDK for interacting with the Rollbar API Server."
     s.description  = <<-DESC
@@ -18,19 +18,16 @@ Pod::Spec.new do |s|
     s.social_media_url  = "https://twitter.com/rollbar"
 
     s.osx.deployment_target = "12.0"
+    s.ios.deployment_target = "14.0"
+    s.tvos.deployment_target = "14.0"
+    s.watchos.deployment_target = "8.0"
 
-    s.source_files = "#{s.name}/Sources/#{s.name}/**/*.{h,m}"
-    s.public_header_files = "#{s.name}/Sources/#{s.name}/include/*.h"
-    s.module_map = "#{s.name}/Sources/#{s.name}/include/module.modulemap"
+    s.module_name = "RollbarReport"
+    s.source_files  = "RollbarNotifier/Sources/RollbarReport/**/*.swift"
 
     s.framework = "Foundation"
-    s.dependency "RollbarCommon", "~> #{s.version}"
-    s.dependency "RollbarNotifier", "~> #{s.version}"
+    s.dependency "RollbarCrash", "~> #{s.version}"
 
     s.swift_versions = "5.5"
     s.requires_arc = true
-    s.xcconfig = {
-      "USE_HEADERMAP" => "NO",
-      "HEADER_SEARCH_PATHS" => "$(PODS_ROOT)/#{s.name}/#{s.name}/Sources/#{s.name}/**"
-    }
 end

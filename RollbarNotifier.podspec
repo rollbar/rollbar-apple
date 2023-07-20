@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name         = "RollbarNotifier"
-    s.version      = "3.0.3"
+    s.version      = "3.1.0"
     s.summary      = "Application or client side SDK for interacting with the Rollbar API Server."
     s.description  = <<-DESC
                       Find, fix, and resolve errors with Rollbar.
@@ -22,14 +22,15 @@ Pod::Spec.new do |s|
     s.tvos.deployment_target = "14.0"
     s.watchos.deployment_target = "8.0"
 
+    s.module_name = "RollbarNotifier"
     s.source_files  = "#{s.name}/Sources/#{s.name}/**/*.{h,m}"
     s.public_header_files = "#{s.name}/Sources/#{s.name}/include/*.h"
     s.module_map = "#{s.name}/Sources/#{s.name}/include/module.modulemap"
 
     s.framework = "Foundation"
     s.dependency "RollbarCommon", "~> #{s.version}"
-    s.dependency "RollbarCrashReport", "~> #{s.version}"
-    s.dependency "KSCrash", "~> 1.15"
+    s.dependency "RollbarCrash", "~> #{s.version}"
+    s.dependency "RollbarReport", "~> #{s.version}"
 
     s.swift_versions = "5.5"
     s.requires_arc = true
