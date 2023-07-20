@@ -2,7 +2,7 @@ import SwiftUI
 import RollbarNotifier
 
 @main
-struct iosAppSwiftApp: App {
+struct RollbarDemoApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
