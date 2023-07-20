@@ -1,14 +1,13 @@
 Pod::Spec.new do |s|
-    s.name         = "RollbarCrashReport"
-    s.version      = "3.0.3"
+    s.name         = "RollbarCrash"
+    s.version      = "3.1.0"
     s.summary      = "Application or client side SDK for interacting with the Rollbar API Server."
     s.description  = <<-DESC
                       Find, fix, and resolve errors with Rollbar.
                       Easily send error data using Rollbar API.
                       Analyze, de-dupe, send alerts, and prepare the data for further analysis.
                       Search, sort, and prioritize via the Rollbar dashboard.
-                  DESC
-
+                   DESC
     s.homepage     = "https://rollbar.com"
     s.resource     = "rollbar-logo.png"
     s.license      = { :type => "MIT", :file => "LICENSE" }
@@ -23,10 +22,12 @@ Pod::Spec.new do |s|
     s.tvos.deployment_target = "14.0"
     s.watchos.deployment_target = "8.0"
 
-    s.module_name = "RollbarCrashReport"
-    s.dependency "KSCrash", "~> 1.15"
-    s.frameworks = "Foundation"
-    s.source_files  = "RollbarNotifier/Sources/RollbarCrashReport/**/*.swift"
+    s.module_name = "RollbarCrash"
+    s.source_files  = "RollbarNotifier/Sources/#{s.name}/**/*.{h,c,m}"
+    s.public_header_files = "RollbarNotifier/Sources/#{s.name}/include/*.h"
+    s.module_map = "RollbarNotifier/Sources/#{s.name}/include/module.modulemap"
+
+    s.framework = "Foundation"
 
     s.swift_versions = "5.5"
     s.requires_arc = true
