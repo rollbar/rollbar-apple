@@ -1,7 +1,7 @@
 #import "RollbarBody.h"
 
 #import "RollbarMessage.h"
-#import "RollbarCrashReport.h"
+#import "RollbarRawCrashReport.h"
 #import "RollbarTrace.h"
 #import "RollbarTelemetry.h"
 #import "RollbarTelemetryEvent.h"
@@ -27,15 +27,15 @@ static NSString * const DFK_CRASH_REPORT = @"crash_report";
     [self setDictionary:message.jsonFriendlyData forKey:DFK_MESSAGE];
 }
 
-- (nullable RollbarCrashReport *)crashReport {
+- (nullable RollbarRawCrashReport *)crashReport {
     id data = [self getDataByKey:DFK_CRASH_REPORT];
     if (data != nil) {
-        return [[RollbarCrashReport alloc] initWithDictionary:data];
+        return [[RollbarRawCrashReport alloc] initWithDictionary:data];
     }
     return nil;
 }
 
-- (void)setCrashReport:(RollbarCrashReport *)crashReport {
+- (void)setCrashReport:(RollbarRawCrashReport *)crashReport {
     [self setDictionary:crashReport.jsonFriendlyData forKey:DFK_CRASH_REPORT];
 }
 
@@ -132,7 +132,7 @@ static NSString * const DFK_CRASH_REPORT = @"crash_report";
     
     self = [super initWithDictionary:@{
         DFK_MESSAGE: [NSNull null],
-        DFK_CRASH_REPORT: [[RollbarCrashReport alloc] initWithRawCrashReport:crashReport].jsonFriendlyData,
+        DFK_CRASH_REPORT: [[RollbarRawCrashReport alloc] initWithRawCrashReport:crashReport].jsonFriendlyData,
         DFK_TRACE: [NSNull null],
         // if/when we do allow a trace side-by-side with the crash report use the following line instead of code line above:
         //DFK_TRACE: [[RollbarTrace alloc] initWithCrashReport:crashReport].jsonFriendlyData,

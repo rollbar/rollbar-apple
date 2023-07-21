@@ -6,7 +6,7 @@
 @class RollbarTelemetry;
 @class RollbarTrace;
 @class RollbarMessage;
-@class RollbarCrashReport;
+@class RollbarRawCrashReport;
 @class RollbarTelemetryEvent;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 // Payload Option 4: "crash_report"
 // Only one of "trace", "trace_chain", "message", or "crash_report" should be present.
-@property (nonatomic, strong, nullable) RollbarCrashReport *crashReport;
+@property (nonatomic, strong, nullable) RollbarRawCrashReport *crashReport;
 
 #pragma mark - Optional properties
 

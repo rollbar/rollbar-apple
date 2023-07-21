@@ -1,9 +1,8 @@
-#import "RollbarCrashReport.h"
-#import <Foundation/Foundation.h>
+#import "RollbarRawCrashReport.h"
 
 static NSString * const DFK_RAW = @"raw";
 
-@implementation RollbarCrashReport
+@implementation RollbarRawCrashReport
 
 #pragma mark - Properties
 
