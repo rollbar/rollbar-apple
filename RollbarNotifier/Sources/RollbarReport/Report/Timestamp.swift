@@ -48,6 +48,7 @@ private final class ISO8601Formatter: DateFormatter {
 
         self.locale = .init(identifier: "en_US_POSIX")
         self.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS ZZZ"
+        self.timeZone = .init(secondsFromGMT: 0)
     }
 }
 
