@@ -6,7 +6,7 @@
 
 @import RollbarReport;
 
-static bool isDebuggerAttached() {
+static bool isDebuggerAttached(void) {
     static bool attached = false;
 
     static dispatch_once_t token;
