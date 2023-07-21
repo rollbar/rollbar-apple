@@ -16,7 +16,7 @@
 #import "RollbarCallStackFrame.h"
 #import "RollbarCallStackFrameContext.h"
 #import "RollbarException.h"
-#import "RollbarCrashReport.h"
+#import "RollbarRawCrashReport.h"
 #import "RollbarConfig.h"
 #import "RollbarServerConfig.h"
 #import "RollbarDestination.h"

@@ -1,12 +1,12 @@
-#ifndef RollbarCrashReport_h
-#define RollbarCrashReport_h
+#ifndef RollbarRawCrashReport_h
+#define RollbarRawCrashReport_h
 
 @import RollbarCommon;
 
 NS_ASSUME_NONNULL_BEGIN
 
 /// Crash report payload element
-@interface RollbarCrashReport : RollbarDTO
+@interface RollbarRawCrashReport : RollbarDTO
 
 #pragma mark - Properties
 
@@ -25,4 +25,4 @@ NS_ASSUME_NONNULL_BEGIN
 
 NS_ASSUME_NONNULL_END
 
-#endif //RollbarCrashReport_h
+#endif //RollbarRawCrashReport_h
