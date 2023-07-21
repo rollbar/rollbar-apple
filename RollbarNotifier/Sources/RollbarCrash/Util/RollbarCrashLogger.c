@@ -247,7 +247,7 @@ bool rclog_setLogFilename(const char* filename, bool overwrite)
 
 #endif
 
-bool rclog_clearLogFile()
+bool rclog_clearLogFile(void)
 {
     return rclog_setLogFilename(g_logFilename, true);
 }

@@ -202,7 +202,7 @@ void rcm_setActiveMonitors(RollbarCrashMonitorType monitorTypes)
     g_activeMonitors = activeMonitors;
 }
 
-RollbarCrashMonitorType rcm_getActiveMonitors()
+RollbarCrashMonitorType rcm_getActiveMonitors(void)
 {
     return g_activeMonitors;
 }

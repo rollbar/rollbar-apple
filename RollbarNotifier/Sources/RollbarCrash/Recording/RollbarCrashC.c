@@ -325,7 +325,7 @@ void rc_notifyAppCrash(void)
     rcstate_notifyAppCrash();
 }
 
-int rc_getReportCount()
+int rc_getReportCount(void)
 {
     return rccrs_getReportCount();
 }
@@ -365,7 +365,7 @@ int64_t rc_addUserReport(const char* report, int reportLength)
     return rccrs_addUserReport(report, reportLength);
 }
 
-void rc_deleteAllReports()
+void rc_deleteAllReports(void)
 {
     rccrs_deleteAllReports();
 }

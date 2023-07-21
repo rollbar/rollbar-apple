@@ -383,7 +383,7 @@ static void getCrashInfo(const struct mach_header* header, RollbarCrashBinaryIma
     }
 }
 
-int rcdl_imageCount()
+int rcdl_imageCount(void)
 {
     return (int)_dyld_image_count();
 }

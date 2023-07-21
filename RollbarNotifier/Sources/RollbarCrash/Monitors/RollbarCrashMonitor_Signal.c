@@ -119,7 +119,7 @@ static void handleSignal(int sigNum, siginfo_t* signalInfo, void* userContext)
 #pragma mark - API -
 // ============================================================================
 
-static bool installSignalHandler()
+static bool installSignalHandler(void)
 {
     RCLOG_DEBUG("Installing signal handler.");
 
@@ -226,7 +226,7 @@ static void setEnabled(bool isEnabled)
     }
 }
 
-static bool isEnabled()
+static bool isEnabled(void)
 {
     return g_isEnabled;
 }
@@ -241,7 +241,7 @@ static void addContextualInfoToEvent(struct RollbarCrash_MonitorContext* eventCo
 
 #endif
 
-RollbarCrashMonitorAPI* rcm_signal_getAPI()
+RollbarCrashMonitorAPI* rcm_signal_getAPI(void)
 {
     static RollbarCrashMonitorAPI api =
     {

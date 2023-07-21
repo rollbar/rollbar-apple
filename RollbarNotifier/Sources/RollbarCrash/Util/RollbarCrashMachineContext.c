@@ -96,7 +96,7 @@ static inline bool getThreadList(RollbarCrashMachineContext* context)
     return true;
 }
 
-int rcmc_contextSize()
+int rcmc_contextSize(void)
 {
     return sizeof(RollbarCrashMachineContext);
 }
