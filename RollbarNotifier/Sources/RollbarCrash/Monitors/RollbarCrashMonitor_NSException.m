@@ -146,12 +146,12 @@ static void setEnabled(bool isEnabled)
     }
 }
 
-static bool isEnabled()
+static bool isEnabled(void)
 {
     return g_isEnabled;
 }
 
-RollbarCrashMonitorAPI* rcm_nsexception_getAPI()
+RollbarCrashMonitorAPI* rcm_nsexception_getAPI(void)
 {
     static RollbarCrashMonitorAPI api =
     {

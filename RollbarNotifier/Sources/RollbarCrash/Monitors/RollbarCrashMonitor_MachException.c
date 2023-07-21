@@ -400,7 +400,7 @@ static void* handleExceptions(void* const userData)
 #pragma mark - API -
 // ============================================================================
 
-static void uninstallExceptionHandler()
+static void uninstallExceptionHandler(void)
 {
     RCLOG_DEBUG("Uninstalling mach exception handler.");
     
@@ -444,7 +444,7 @@ static void uninstallExceptionHandler()
     RCLOG_DEBUG("Mach exception handlers uninstalled.");
 }
 
-static bool installExceptionHandler()
+static bool installExceptionHandler(void)
 {
     RCLOG_DEBUG("Installing mach exception handler.");
 
@@ -576,7 +576,7 @@ static void setEnabled(bool isEnabled)
     }
 }
 
-static bool isEnabled()
+static bool isEnabled(void)
 {
     return g_isEnabled;
 }
@@ -595,7 +595,7 @@ static void addContextualInfoToEvent(struct RollbarCrash_MonitorContext* eventCo
 
 #endif
 
-RollbarCrashMonitorAPI* rcm_machexception_getAPI()
+RollbarCrashMonitorAPI* rcm_machexception_getAPI(void)
 {
     static RollbarCrashMonitorAPI api =
     {

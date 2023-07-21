@@ -175,7 +175,7 @@ static int addJSONData(const char* const data, const int length, void* const use
 #pragma mark - Utility -
 // ============================================================================
 
-static double getCurrentTime()
+static double getCurrentTime(void)
 {
     struct timeval tv;
     gettimeofday(&tv, NULL);
@@ -352,7 +352,7 @@ void rcstate_initialize(const char* const stateFilePath)
     loadState(g_stateFilePath);
 }
 
-bool rcstate_reset()
+bool rcstate_reset(void)
 {
     if(g_isEnabled)
     {
@@ -472,7 +472,7 @@ static void setEnabled(bool isEnabled)
     }
 }
 
-static bool isEnabled()
+static bool isEnabled(void)
 {
     return g_isEnabled;
 }
@@ -498,7 +498,7 @@ static void addContextualInfoToEvent(RollbarCrash_MonitorContext* eventContext)
     }
 }
 
-RollbarCrashMonitorAPI* rcm_appstate_getAPI()
+RollbarCrashMonitorAPI* rcm_appstate_getAPI(void)
 {
     static RollbarCrashMonitorAPI api =
     {
