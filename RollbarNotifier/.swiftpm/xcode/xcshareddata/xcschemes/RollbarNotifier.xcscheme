@@ -14,34 +14,6 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "RollbarNotifier"
-               BuildableName = "RollbarNotifier"
-               BlueprintName = "RollbarNotifier"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "RollbarNotifier_RollbarCrashReportTests"
-               BuildableName = "RollbarNotifier_RollbarCrashReportTests"
-               BlueprintName = "RollbarNotifier_RollbarCrashReportTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "RollbarCrash"
                BuildableName = "RollbarCrash"
                BlueprintName = "RollbarCrash"
@@ -56,9 +28,23 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "RollbarCrashReport"
-               BuildableName = "RollbarCrashReport"
-               BlueprintName = "RollbarCrashReport"
+               BlueprintIdentifier = "RollbarNotifier"
+               BuildableName = "RollbarNotifier"
+               BlueprintName = "RollbarNotifier"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "RollbarReportTests"
+               BuildableName = "RollbarReportTests"
+               BlueprintName = "RollbarReportTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -94,9 +80,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "RollbarCrashReportTests"
-               BuildableName = "RollbarCrashReportTests"
-               BlueprintName = "RollbarCrashReportTests"
+               BlueprintIdentifier = "RollbarReportTests"
+               BuildableName = "RollbarReportTests"
+               BlueprintName = "RollbarReportTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
