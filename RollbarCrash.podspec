@@ -23,11 +23,18 @@ Pod::Spec.new do |s|
     s.watchos.deployment_target = "8.0"
 
     s.module_name = "RollbarCrash"
-    s.source_files  = "RollbarNotifier/Sources/#{s.name}/**/*.{h,c,m}"
+    s.source_files  = "RollbarNotifier/Sources/#{s.name}/**/*.{h,c,cpp,m}"
     s.public_header_files = "RollbarNotifier/Sources/#{s.name}/include/*.h"
     s.module_map = "RollbarNotifier/Sources/#{s.name}/include/module.modulemap"
 
     s.framework = "Foundation"
+    s.libraries = 'z', 'c++'
+
+    s.pod_target_xcconfig = {
+        'GCC_ENABLE_CPP_EXCEPTIONS' => 'YES',
+        'CLANG_CXX_LANGUAGE_STANDARD' => 'c++17',
+        'CLANG_CXX_LIBRARY' => 'libc++'
+    }
 
     s.swift_versions = "5.5"
     s.requires_arc = true

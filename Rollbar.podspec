@@ -39,7 +39,7 @@ Pod::Spec.new do |s|
   }
 
   s.source_files =
-    "RollbarNotifier/Sources/RollbarCrash/**/*.{h,c,m}",
+    "RollbarNotifier/Sources/RollbarCrash/**/*.{h,c,cpp,m}",
     "RollbarNotifier/Sources/RollbarReport/**/*.swift",
     "RollbarNotifier/Sources/RollbarNotifier/**/*.{h,m}"
   s.public_header_files =
