@@ -1,10 +1,10 @@
 #if !os(watchOS)
 import XCTest
-@testable import RollbarCrashReport
+@testable import RollbarReport
 
-final class RollbarCrashReportTests: XCTestCase {
+final class RollbarReportTests: XCTestCase {
 
-    func testRollbarCrashReportDiagnostics() {
+    func testRollbarReportDiagnostics() {
         let report = Bundle.module
             .url(forResource: "crash.json", withExtension: .none)
             .flatMap { try? Data(contentsOf: $0) }
@@ -31,7 +31,7 @@ final class RollbarCrashReportTests: XCTestCase {
         }
     }
 
-    func testRollbarCrashReportFormatting() {
+    func testRollbarReportFormatting() {
         let diagnosedCrash = Bundle.module
             .url(forResource: "diagnosed.json", withExtension: .none)
             .flatMap { try! Data(contentsOf: $0) }
