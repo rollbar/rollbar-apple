@@ -1,0 +1,35 @@
+PODS:
+  - RollbarCommon (3.1.0)
+  - RollbarCrash (3.1.0)
+  - RollbarNotifier (3.1.0):
+    - RollbarCommon (~> 3.1.0)
+    - RollbarCrash (~> 3.1.0)
+    - RollbarReport (~> 3.1.0)
+  - RollbarReport (3.1.0):
+    - RollbarCrash (~> 3.1.0)
+
+DEPENDENCIES:
+  - RollbarCommon (from `../../../`)
+  - RollbarCrash (from `../../../`)
+  - RollbarNotifier (from `../../../`)
+  - RollbarReport (from `../../../`)
+
+EXTERNAL SOURCES:
+  RollbarCommon:
+    :path: "../../../"
+  RollbarCrash:
+    :path: "../../../"
+  RollbarNotifier:
+    :path: "../../../"
+  RollbarReport:
+    :path: "../../../"
+
+SPEC CHECKSUMS:
+  RollbarCommon: 125fb7e9fa63ea79ef33ee0f0e50456bb9f9cdf5
+  RollbarCrash: d831f9c067bbe2147080a700c0a7ebc346d31db3
+  RollbarNotifier: c712946d79d82103fc2ae07956c768ba8705dee2
+  RollbarReport: 2f42cb47ce9f0be32c5e040e702f936b99e62542
+
+PODFILE CHECKSUM: 5275e0d96c9f6b1d06ef6f586fede164fdb00d8c
+
+COCOAPODS: 1.12.1
