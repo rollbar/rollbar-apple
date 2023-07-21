@@ -1,8 +1,9 @@
 import XCTest
 
 import RollbarNotifierTests
+import RollbarReportTests
 
 XCTMain([
     RollbarNotifierTests.allTests(),
-    RollbarCrashReportTests.allTests(),
+    RollbarReportTests.allTests(),
 ])
