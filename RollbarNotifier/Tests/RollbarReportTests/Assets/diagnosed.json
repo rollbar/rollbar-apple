@@ -9,7 +9,7 @@
       "image_addr" : 4369596416,
       "image_size" : 1179648,
       "minor_version" : 0,
-      "name" : "\/Users\/matux\/Library\/Developer\/CoreSimulator\/Devices\/D0A3BA18-8B19-43A4-9B7D-FFB0577EE2B9\/data\/Containers\/Bundle\/Application\/F60AB504-F150-4C6F-B99D-C46D605BF6EC\/iosAppSwift.app\/iosAppSwift",
+      "name" : "\/Users\/matux\/Library\/Developer\/CoreSimulator\/Devices\/D0A3BA18-8B19-43A4-9B7D-FFB0577EE2B9\/data\/Containers\/Bundle\/Application\/F60AB504-F150-4C6F-B99D-C46D605BF6EC\/RollbarDemo.app\/RollbarDemo",
       "cpu_type" : 16777228
     },
     {
@@ -6439,14 +6439,14 @@
               "symbol_name" : "Example.outOfBounds()",
               "symbol_addr" : 4369626440,
               "instruction_addr" : 4369626512,
-              "object_name" : "iosAppSwift",
+              "object_name" : "RollbarDemo",
               "object_addr" : 4369596416
             },
             {
-              "symbol_name" : "$s11iosAppSwift11ContentViewV4bodyQrvg0C2UI05TupleE0VyAE0E0PAEE7paddingyQrAE4EdgeO3SetV_12CoreGraphics7CGFloatVSgtFQOyAE4TextV_Qo__AE6VStackVyAGyAiEEAJyQrAN_ARtFQOyAC6button_6actionQrSS_yyctFQOy_Qo__Qo__AE5GroupVyAGyAZ_AZA_tGGA1_yAGyAZ_A_tGGA3_A5_A1_yAGyAZ_A2ZtGGtGGtGyXEfU_A8_yXEfU_A2_yXEfU1_yycAA7ExampleVcfu_yycfu0_",
+              "symbol_name" : "$s11RollbarDemo11ContentViewV4bodyQrvg0C2UI05TupleE0VyAE0E0PAEE7paddingyQrAE4EdgeO3SetV_12CoreGraphics7CGFloatVSgtFQOyAE4TextV_Qo__AE6VStackVyAGyAiEEAJyQrAN_ARtFQOyAC6button_6actionQrSS_yyctFQOy_Qo__Qo__AE5GroupVyAGyAZ_AZA_tGGA1_yAGyAZ_A_tGGA3_A5_A1_yAGyAZ_A2ZtGGtGGtGyXEfU_A8_yXEfU_A2_yXEfU1_yycAA7ExampleVcfu_yycfu0_",
               "symbol_addr" : 4369626400,
               "instruction_addr" : 4369626428,
-              "object_name" : "iosAppSwift",
+              "object_name" : "RollbarDemo",
               "object_addr" : 4369596416
             },
             {
@@ -6681,17 +6681,17 @@
               "object_addr" : 4451155968
             },
             {
-              "symbol_name" : "static iosAppSwiftApp.$main()",
+              "symbol_name" : "static RollbarDemoApp.$main()",
               "symbol_addr" : 4369667600,
               "instruction_addr" : 4369667640,
-              "object_name" : "iosAppSwift",
+              "object_name" : "RollbarDemo",
               "object_addr" : 4369596416
             },
             {
               "symbol_name" : "main",
               "symbol_addr" : 4369671288,
               "instruction_addr" : 4369671300,
-              "object_name" : "iosAppSwift",
+              "object_name" : "RollbarDemo",
               "object_addr" : 4369596416
             },
             {
@@ -7257,7 +7257,7 @@
               "symbol_name" : "monitorCachedData",
               "symbol_addr" : 4370089736,
               "instruction_addr" : 4370089864,
-              "object_name" : "iosAppSwift",
+              "object_name" : "RollbarDemo",
               "object_addr" : 4369596416
             },
             {
@@ -7348,7 +7348,7 @@
               "symbol_name" : "handleExceptions",
               "symbol_addr" : 4370141440,
               "instruction_addr" : 4370141624,
-              "object_name" : "iosAppSwift",
+              "object_name" : "RollbarDemo",
               "object_addr" : 4369596416
             },
             {
@@ -7482,7 +7482,7 @@
               "symbol_name" : "-[RollbarThread run]",
               "symbol_addr" : 4369829768,
               "instruction_addr" : 4369830084,
-              "object_name" : "iosAppSwift",
+              "object_name" : "RollbarDemo",
               "object_addr" : 4369596416
             },
             {
@@ -7707,8 +7707,8 @@
     "binary_cpu_type" : 16777228,
     "boot_time" : "2023-02-14T18:24:19Z",
     "app_uuid" : "41BE1A68-C692-3F3C-BA61-5A387688F2D8",
-    "CFBundleName" : "iosAppSwift",
-    "process_name" : "iosAppSwift",
+    "CFBundleName" : "RollbarDemo",
+    "process_name" : "RollbarDemo",
     "system_version" : "16.2",
     "device_app_hash" : "389fef42fa10edcc97bc004d5c8579e5c0d5e1e5",
     "storage" : 994662584320,
@@ -7734,7 +7734,7 @@
     "binary_cpu_subtype" : 0,
     "system_name" : "iOS",
     "app_start_time" : "2023-02-16T02:09:38Z",
-    "CFBundleExecutable" : "iosAppSwift",
+    "CFBundleExecutable" : "RollbarDemo",
     "process_id" : 80655,
     "cpu_subtype" : 2,
     "CFBundleIdentifier" : "com.matux.test.rollbarAppDemo",
@@ -7743,7 +7743,7 @@
     "os_version" : "22D68",
     "model" : "simulator",
     "time_zone" : "GMT-3",
-    "CFBundleExecutablePath" : "\/Users\/matux\/Library\/Developer\/CoreSimulator\/Devices\/D0A3BA18-8B19-43A4-9B7D-FFB0577EE2B9\/data\/Containers\/Bundle\/Application\/F60AB504-F150-4C6F-B99D-C46D605BF6EC\/iosAppSwift.app\/iosAppSwift",
+    "CFBundleExecutablePath" : "\/Users\/matux\/Library\/Developer\/CoreSimulator\/Devices\/D0A3BA18-8B19-43A4-9B7D-FFB0577EE2B9\/data\/Containers\/Bundle\/Application\/F60AB504-F150-4C6F-B99D-C46D605BF6EC\/RollbarDemo.app\/RollbarDemo",
     "build_type" : "simulator",
     "machine" : "iPhone15,2",
     "kernel_version" : "Darwin Kernel Version 22.3.0: Mon Jan 30 20:38:37 PST 2023; root:xnu-8792.81.3~2\/RELEASE_ARM64_T6000",
@@ -7753,7 +7753,7 @@
 
   },
   "report" : {
-    "process_name" : "iosAppSwift",
+    "process_name" : "RollbarDemo",
     "id" : "22FE63C2-E1EB-498E-A1B5-21C063D417A0",
     "timestamp" : "2023-02-16T02:09:40.723603Z",
     "type" : "standard",

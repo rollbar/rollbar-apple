@@ -96,8 +96,8 @@ fileprivate extension RollbarCrashFormattingFilter {
     /// Incident Identifier: 74C597A4-8AFD-4611-8C25-1547E4FD8E8C
     /// CrashReporter Key:   33f6cae3f5d192f79bd3a18c8bac24d6ef24b08b
     /// Hardware Model:      iPhone12,5
-    /// Process:             iosAppSwift [11466]
-    /// Path:                /private/var/containers/Bundle/Application/88931A2D-AF88-4252-97C6-677C0915BFB0/iosAppSwift.app/iosAppSwift
+    /// Process:             RollbarDemo [11466]
+    /// Path:                /private/var/containers/Bundle/Application/88931A2D-AF88-4252-97C6-677C0915BFB0/RollbarDemo.app/RollbarDemo
     /// Identifier:          com.matux.test.rollbarAppDemo
     /// Version:             4 (1.0)
     /// Code Type:           ARM-64
@@ -312,7 +312,7 @@ fileprivate extension RollbarCrashFormattingFilter {
     ///
     /// ```
     /// Binary Images:
-    /// 0x0104fa8000 - 0x01050c3fff +iosAppSwift arm64  <cee0da5f0205374c9f8b7d6eda58dc42> /Users/matux/Library/Developer/CoreSimulator/Devices/D0A3BA18-8B19-43A4-9B7D-FFB0577EE2B9/data/Containers/Bundle/Application/0CC38EA0-F306-4C14-8157-14057B20075F/iosAppSwift.app/iosAppSwift
+    /// 0x0104fa8000 - 0x01050c3fff +RollbarDemo arm64  <cee0da5f0205374c9f8b7d6eda58dc42> /Users/matux/Library/Developer/CoreSimulator/Devices/D0A3BA18-8B19-43A4-9B7D-FFB0577EE2B9/data/Containers/Bundle/Application/0CC38EA0-F306-4C14-8157-14057B20075F/RollbarDemo.app/RollbarDemo
     /// 0x0105330000 - 0x0105333fff  libswiftWebKit.dylib arm64  <73bebae1764e32cbb78c34c92c0bd8d6> /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/usr/lib/swift/libswiftWebKit.dylib
     /// 0x0105348000 - 0x010534bfff  UIKit arm64  <8b15488095fe390fae821a3a3a640227> /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/System/Library/Frameworks/UIKit.framework/UIKit
     /// ...
