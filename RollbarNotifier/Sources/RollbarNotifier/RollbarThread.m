@@ -553,10 +553,10 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
     switch (reply.statusCode) {
         case 200: // OK
             return RollbarTriStateFlag_On; // the payload was successfully transmitted
-        case 400: // bad request
-        case 413: // request entity too large
-        case 422: // unprocessable entity
-            return RollbarTriStateFlag_Off; // unecceptable request/payload - should be dropped
+        case 401: // unauthorized
+        case 403: // access denied
+        case 404: // not found
+            return RollbarTriStateFlag_None; // worth retrying later
         case 429: // too many requests
             switch (self.rateLimitBehavior) {
                 case RollbarRateLimitBehavior_Queue:
@@ -565,10 +565,12 @@ static NSTimeInterval const DEFAULT_PAYLOAD_LIFETIME_SECONDS = 24 * 60 * 60;
                 default:
                     return RollbarTriStateFlag_Off;
             }
-        case 403: // access denied
-        case 404: // not found
+        case 400: // bad request
+        case 413: // request entity too large
+        case 422: // unprocessable entity
         default:
-            return RollbarTriStateFlag_None; // worth retrying later
+            return RollbarTriStateFlag_Off; // unacceptable request/payload - should be dropped
+
     }
 }
 

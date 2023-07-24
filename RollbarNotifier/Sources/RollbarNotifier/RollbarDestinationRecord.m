@@ -90,10 +90,11 @@
     }
     
     switch (reply.statusCode) {
+        case 401: // unauthorized
         case 403: // access denied
         case 404: // not found
             RBLog(@"\tQueuing record");
-            //let's hold on on posting to the destination for 1 minute:
+            // let's hold on on posting to the destination for 1 minute:
             self->_nextEarliestPost = [NSDate dateWithTimeIntervalSinceNow:60];
             self->_localWindowCount = 0;
             self->_serverWindowRemainingCount = 0;
@@ -113,7 +114,7 @@
         case 422: // unprocessable entity
         default:
             RBLog(@"\tDropping record");
-            self->_nextServerWindowStart = [NSDate dateWithTimeIntervalSinceNow:reply.remainingSeconds];;
+            self->_nextServerWindowStart = [NSDate dateWithTimeIntervalSinceNow:reply.remainingSeconds];
             self->_serverWindowRemainingCount = reply.remainingCount;
             if (self->_nextLocalWindowStart) {
                 self->_localWindowCount = 0;
