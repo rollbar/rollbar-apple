@@ -110,7 +110,7 @@ struct Example {
     /// Log a single informational message to Rollbar.
     func logMessage() {
         Rollbar.infoMessage(
-            "Rollbar is up and running! Enjoy your remote error and log monitoring...",
+            "Rollbar is up and running! 😁",
             data: ["key_x": "value_x", "key_y": "value_y"])
     }
 

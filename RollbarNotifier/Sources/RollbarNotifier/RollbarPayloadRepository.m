@@ -55,18 +55,19 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
 {
     defaultOnSelectCallback(info, columns, data, column);
 
-    NSMutableArray<NSDictionary<NSString *, NSString *> *> *__strong*result =
-    (NSMutableArray<NSDictionary<NSString *, NSString *> *> *__strong*)info;
+    typedef NSMutableDictionary<NSString *, NSString *> RBPayload;
+    typedef NSMutableArray<RBPayload *> RBPayloads;
+
+    RBPayloads * __strong *result = (RBPayloads * __strong *)info;
     if (!*result) {
-        *result = [NSMutableArray<NSDictionary<NSString *, NSString *> *> array];
+        *result = [RBPayloads array];
     }
     
-    NSMutableDictionary<NSString *, NSString *> *row =
-    [NSMutableDictionary<NSString *, NSString *> dictionaryWithCapacity:columns];
+    RBPayload *row = [RBPayload dictionaryWithCapacity:columns];
         
     for (int i = 0; i < columns; i++) {
-        NSString *key = [NSString stringWithFormat:@"%s", column[i]];
-        NSString *value = [NSString stringWithFormat:@"%s", data[i]];
+        NSString *key = [[NSString alloc] initWithUTF8String:column[i]];
+        NSString *value = [[NSString alloc] initWithUTF8String:data[i]];
         row[key] = value;
     }
     
