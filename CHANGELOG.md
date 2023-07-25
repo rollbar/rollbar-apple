@@ -2,6 +2,19 @@
 
 ## Release Notes
 
+### 3.1.0
+
+- The `KSCrash` dependency has been completely dropped.
+  - Its source related to the core mechanism that allows us to capture crashes as they happen has been integrated directly into our SDK. `KSCrash` license is available at the top of all sources related to it.
+- The overall size of the SDK has been reduced by 20% resulting in smaller binaries and reduced memory footprint.
+- The SDK can now be integrated into Frameworks and static libraries through your preferred package manager.
+- The SDK demo projects `iosAppSwift` and `iosAppObjc` have been renamed to `Rollbar Demo` and `Rollbar ObjC Demo` respectively, and moved into the `Examples` directory.
+- New package manager integration examples have been added showing different methods of integrating the SDK into your applications and frameworks.
+- Fixed Xcode 14.3 support when integrating the SDK using Cocoapods.
+- Fixed an UTF-8 character encoding issue when retrieving persisted payloads that resulted in corrupt Unicode characters in messages, telemetry and others.
+- Fixed a problem when dealing with unhandled status responses resulting in bad requests being sent repeatedly has been fixed.
+- Fixed several warnings that would only show up when integrating with Cocoapods have been fixed.
+
 ### 3.0.3
 
 - The sequencing of logging levels has been revised to align with industry-standard priority order.
