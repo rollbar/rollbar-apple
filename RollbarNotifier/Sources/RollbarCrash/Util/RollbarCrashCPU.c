@@ -38,8 +38,12 @@
 
 const char* rccpu_currentArch(void)
 {
+#if TARGET_OS_WATCH
+    return NULL;
+#else
     const NXArchInfo* archInfo = NXGetLocalArchInfo();
     return archInfo == NULL ? NULL : archInfo->name;
+#endif
 }
 
 #if RollbarCrashCRASH_HAS_THREADS_API
