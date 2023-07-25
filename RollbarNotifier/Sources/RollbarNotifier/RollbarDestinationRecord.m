@@ -158,9 +158,9 @@
                              ,
                              super.description,
                              self->_destinationID,
-                             self->_localWindowLimit,
-                             self->_localWindowCount,
-                             self->_serverWindowRemainingCount,
+                             (unsigned long)self->_localWindowLimit,
+                             (unsigned long)self->_localWindowCount,
+                             (unsigned long)self->_serverWindowRemainingCount,
                              self->_nextLocalWindowStart,
                              self->_nextServerWindowStart,
                              self->_nextEarliestPost];

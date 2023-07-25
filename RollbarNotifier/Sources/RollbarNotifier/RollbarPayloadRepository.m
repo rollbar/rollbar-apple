@@ -306,7 +306,7 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
       escapedConfig,
       escapedPayload,
       destinationID,
-      [timeStamp integerValue]
+      (long)[timeStamp integerValue]
     ];
     
     if (NO == [self executeSql:sql]) {
@@ -363,8 +363,8 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
     NSString *sql = [NSString stringWithFormat:
                          @"SELECT * FROM payloads WHERE destination_key = '%@' LIMIT %lu OFFSET %lu",
                      destinationID,
-                     limit,
-                     offset
+                     (unsigned long)limit,
+                     (unsigned long)offset
     ];
     
     NSArray<NSDictionary<NSString *, NSString *> *> *result =
@@ -382,7 +382,9 @@ static int selectMultipleRowsCallback(void *info, int columns, char **data, char
                                                                           andLimit:(NSUInteger)limit {
 
     NSString *sql =
-    [NSString stringWithFormat:@"SELECT * FROM payloads LIMIT %lu OFFSET %lu", limit, offset];
+    [NSString stringWithFormat:@"SELECT * FROM payloads LIMIT %lu OFFSET %lu",
+     (unsigned long)limit,
+     (unsigned long)offset];
     
     NSArray<NSDictionary<NSString *, NSString *> *> *result =
     [self selectMultipleRowsWithSql:sql andCallback:selectMultipleRowsCallback];

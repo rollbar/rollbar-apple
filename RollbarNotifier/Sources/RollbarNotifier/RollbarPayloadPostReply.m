@@ -47,10 +47,10 @@ static NSString * const RESPONSE_HEADER_REMAINING_SECONDS = @"x-rate-limit-remai
                              "   nextPostTime:     %@\n"
                              ,
                              super.description,
-                             self->_statusCode,
-                             self->_rateLimit,
-                             self->_remainingCount,
-                             self->_remainingSeconds,
+                             (long)self->_statusCode,
+                             (unsigned long)self->_rateLimit,
+                             (unsigned long)self->_remainingCount,
+                             (unsigned long)self->_remainingSeconds,
                              self->_nextPostTime
     ];
     return description;
