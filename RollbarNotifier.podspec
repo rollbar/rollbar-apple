@@ -36,6 +36,9 @@ Pod::Spec.new do |s|
     s.requires_arc = true
 
     s.osx.xcconfig = {
-      "USE_HEADERMAP" => "NO"
+      "USE_HEADERMAP" => "NO",
+      "HEADER_SEARCH_PATHS" => \
+        "$(PODS_ROOT)/#{s.name}/#{s.name}/Sources/#{s.name}/** " \
+        "$(PODS_ROOT)/RollbarCommon/RollbarCommon/Sources/RollbarCommon/include"
     }
 end
