@@ -20,7 +20,7 @@ let package = Package(
         .package(path: "../RollbarCommon"),
         .package(path: "../RollbarNotifier"),
         .package(path: "../UnitTesting"),
-        .package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git", from: "3.7.4"),
+        .package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git", from: "3.8.0"),
     ],
     targets: [
         .target(

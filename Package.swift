@@ -18,7 +18,7 @@ let package = Package(
         .library(name: "RollbarCocoaLumberjack", targets: ["RollbarCocoaLumberjack"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git", from: "3.7.4"),
+        .package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git", from: "3.8.0"),
     ],
     targets: [
         .target(
