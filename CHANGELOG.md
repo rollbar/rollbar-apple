@@ -6,6 +6,7 @@
 
 - Fixed archiving issue when integrating the SDK using Cocoapods.
   - Updating is unnecessary if using any other package manager like SPM.
+- Renamed `RollbarCrash` Obj-C protocol to `RollbarCrashHandler` to prevent potential name collisions with the `RollbarCrash` module` when creating Swift frameworks.
 
 ### 3.1.0
 
