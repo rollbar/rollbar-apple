@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3B7FEF292A7AE018000CFD64 /* RollbarNotifier in Frameworks */ = {isa = PBXBuildFile; productRef = 3B7FEF282A7AE018000CFD64 /* RollbarNotifier */; };
+		3B7FEF2C2A7AFA4E000CFD64 /* RollbarNotifier in Frameworks */ = {isa = PBXBuildFile; productRef = 3B7FEF2B2A7AFA4E000CFD64 /* RollbarNotifier */; };
 		3BCA6D272A69D0C70070C892 /* SPMFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = 3BCA6D262A69D0C70070C892 /* SPMFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3BCA6D312A69D1580070C892 /* SPMFramework.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCA6D302A69D1580070C892 /* SPMFramework.swift */; };
 /* End PBXBuildFile section */
@@ -23,7 +23,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3B7FEF292A7AE018000CFD64 /* RollbarNotifier in Frameworks */,
+				3B7FEF2C2A7AFA4E000CFD64 /* RollbarNotifier in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,7 +84,7 @@
 			);
 			name = SPMFramework;
 			packageProductDependencies = (
-				3B7FEF282A7AE018000CFD64 /* RollbarNotifier */,
+				3B7FEF2B2A7AFA4E000CFD64 /* RollbarNotifier */,
 			);
 			productName = SPMFramework;
 			productReference = 3BCA6D232A69D0C70070C892 /* SPMFramework.framework */;
@@ -115,7 +115,7 @@
 			);
 			mainGroup = 3BCA6D192A69D0C70070C892;
 			packageReferences = (
-				3B7FEF272A7AE018000CFD64 /* XCRemoteSwiftPackageReference "rollbar-apple" */,
+				3B7FEF2A2A7AFA4E000CFD64 /* XCRemoteSwiftPackageReference "rollbar-apple" */,
 			);
 			productRefGroup = 3BCA6D242A69D0C70070C892 /* Products */;
 			projectDirPath = "";
@@ -359,20 +359,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		3B7FEF272A7AE018000CFD64 /* XCRemoteSwiftPackageReference "rollbar-apple" */ = {
+		3B7FEF2A2A7AFA4E000CFD64 /* XCRemoteSwiftPackageReference "rollbar-apple" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "git@github.com:rollbar/rollbar-apple.git";
 			requirement = {
-				branch = nameconflict;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		3B7FEF282A7AE018000CFD64 /* RollbarNotifier */ = {
+		3B7FEF2B2A7AFA4E000CFD64 /* RollbarNotifier */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 3B7FEF272A7AE018000CFD64 /* XCRemoteSwiftPackageReference "rollbar-apple" */;
+			package = 3B7FEF2A2A7AFA4E000CFD64 /* XCRemoteSwiftPackageReference "rollbar-apple" */;
 			productName = RollbarNotifier;
 		};
 /* End XCSwiftPackageProductDependency section */
