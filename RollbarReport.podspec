@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name         = "RollbarReport"
-    s.version      = "3.1.0"
+    s.version      = "3.1.1"
     s.summary      = "Application or client side SDK for interacting with the Rollbar API Server."
     s.description  = <<-DESC
                       Find, fix, and resolve errors with Rollbar.
@@ -31,7 +31,7 @@ Pod::Spec.new do |s|
     s.swift_versions = "5.5"
     s.requires_arc = true
 
-    s.osx.xcconfig = {
+    s.xcconfig = {
       "USE_HEADERMAP" => "NO"
     }
 end
