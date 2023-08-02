@@ -1,7 +1,7 @@
 import SwiftUI
 import RollbarNotifier
 
-public struct SPMFramework {
+public struct SPMEntryPoint {
     public static func start() {
         let config = RollbarConfig.mutableConfig(withAccessToken: "[ACCESSTOKEN]")
         config.developerOptions.suppressSdkInfoLogging = false
