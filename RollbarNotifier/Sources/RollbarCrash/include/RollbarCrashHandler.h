@@ -1,5 +1,5 @@
 //
-//  RollbarCrash.h
+//  RollbarCrashHandler.h
 //
 //  Created by Karl Stenerud on 2012-01-28.
 //
@@ -43,11 +43,11 @@ typedef enum
  *
  * The crash reports will be located in $APP_HOME/Library/Caches/RollbarCrashReports
  */
-@interface RollbarCrash : NSObject
+@interface RollbarCrashHandler : NSObject
 
 #pragma mark - Configuration -
 
-/** Init RollbarCrash instance with custom base path. */
+/** Init RollbarCrashHandler instance with custom base path. */
 - (id) initWithBasePath:(NSString *)basePath;
 
 /** A dictionary containing any info you'd like to appear in crash reports. Must
@@ -210,7 +210,7 @@ typedef enum
 
 /** Get the singleton instance of the crash reporter.
  */
-+ (RollbarCrash*) sharedInstance;
++ (RollbarCrashHandler*) sharedInstance;
 
 /** Install the crash reporter.
  * The reporter will record crashes, but will not send any crash reports unless
