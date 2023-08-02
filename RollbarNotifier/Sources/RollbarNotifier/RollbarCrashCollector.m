@@ -67,12 +67,13 @@ NS_ASSUME_NONNULL_BEGIN
         & ~(RollbarCrashMonitorTypeOptional
             | RollbarCrashMonitorTypeUserReported);
 
-    [RollbarCrash.sharedInstance setDeleteBehaviorAfterSendAll:RollbarCrashDeleteOnSucess];
-    [RollbarCrash.sharedInstance setMonitoring:monitoring];
-    [RollbarCrash.sharedInstance setAddConsoleLogToReport:NO];
-    [RollbarCrash.sharedInstance setCatchZombies:NO];
-    [RollbarCrash.sharedInstance setIntrospectMemory:YES];
-    [RollbarCrash.sharedInstance setSearchQueueNames:NO];
+    RollbarCrashHandler *handler = RollbarCrashHandler.sharedInstance;
+    [handler setDeleteBehaviorAfterSendAll:RollbarCrashDeleteOnSucess];
+    [handler setMonitoring:monitoring];
+    [handler setAddConsoleLogToReport:NO];
+    [handler setCatchZombies:NO];
+    [handler setIntrospectMemory:YES];
+    [handler setSearchQueueNames:NO];
 }
 
 - (void)sendAllReports {

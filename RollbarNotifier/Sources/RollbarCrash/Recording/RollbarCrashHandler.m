@@ -1,5 +1,5 @@
 //
-//  RollbarCrash.m
+//  RollbarCrashHandler.m
 //
 //  Created by Karl Stenerud on 2012-01-28.
 //
@@ -25,7 +25,7 @@
 //
 
 
-#import "RollbarCrash.h"
+#import "RollbarCrashHandler.h"
 
 #import "RollbarCrashC.h"
 #import "RollbarCrashDoctor.h"
@@ -50,7 +50,7 @@
 #pragma mark - Globals -
 // ============================================================================
 
-@interface RollbarCrash ()
+@interface RollbarCrashHandler ()
 
 @property(nonatomic,readwrite,retain) NSString* bundleName;
 @property(nonatomic,readwrite,retain) NSString* basePath;
@@ -89,7 +89,7 @@ static NSString* getBasePath(void)
 }
 
 
-@implementation RollbarCrash
+@implementation RollbarCrashHandler
 
 // ============================================================================
 #pragma mark - Properties -
@@ -123,18 +123,18 @@ static NSString* getBasePath(void)
 
 + (void)initialize
 {
-    if (self == [RollbarCrash class]) {
+    if (self == [RollbarCrashHandler class]) {
         [[self class] subscribeToNotifications];
     }
 }
 
 + (instancetype) sharedInstance
 {
-    static RollbarCrash *sharedInstance = nil;
+    static RollbarCrashHandler *sharedInstance = nil;
     static dispatch_once_t onceToken;
     
     dispatch_once(&onceToken, ^{
-        sharedInstance = [[RollbarCrash alloc] init];
+        sharedInstance = [[RollbarCrashHandler alloc] init];
     });
     return sharedInstance;
 }

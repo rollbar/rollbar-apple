@@ -47,12 +47,12 @@
  */
 @property(atomic,readwrite,assign) RollbarCrashReportWriteCallback onCrash;
 
-/** Install this installation. Call this instead of -[RollbarCrash install] to install
+/** Install this installation. Call this instead of -[RollbarCrashHandler install] to install
  * with everything needed for your particular backend.
  */
 - (void) install;
 
-/** Convenience method to call -[RollbarCrash sendAllReportsWithCompletion:].
+/** Convenience method to call -[RollbarCrashHandler sendAllReportsWithCompletion:].
  * This method will set the RollbarCrash sink and then send all outstanding reports.
  *
  * Note: Pay special attention to RollbarCrash's "deleteBehaviorAfterSendAll" property.

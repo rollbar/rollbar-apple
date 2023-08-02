@@ -24,7 +24,7 @@
 // THE SOFTWARE.
 //
 
-#import "RollbarCrash.h"
+#import "RollbarCrashHandler.h"
 #import "RollbarCrashMonitor_NSException.h"
 #import "RollbarCrashStackCursor_Backtrace.h"
 #include "RollbarCrashMonitorContext.h"
@@ -135,8 +135,8 @@ static void setEnabled(bool isEnabled)
             
             RCLOG_DEBUG(@"Setting new handler.");
             NSSetUncaughtExceptionHandler(&handleUncaughtException);
-            RollbarCrash.sharedInstance.uncaughtExceptionHandler = &handleUncaughtException;
-            RollbarCrash.sharedInstance.currentSnapshotUserReportedExceptionHandler = &handleCurrentSnapshotUserReportedException;
+            RollbarCrashHandler.sharedInstance.uncaughtExceptionHandler = &handleUncaughtException;
+            RollbarCrashHandler.sharedInstance.currentSnapshotUserReportedExceptionHandler = &handleCurrentSnapshotUserReportedException;
         }
         else
         {

@@ -28,7 +28,7 @@
 #import "RollbarCrashInstallation.h"
 #import "RollbarCrashInstallation+Private.h"
 #import "RollbarCrashReportFilterBasic.h"
-#import "RollbarCrash.h"
+#import "RollbarCrashHandler.h"
 #import "RollbarCrashCString.h"
 #import "RollbarCrashJSONCodecObjC.h"
 #import "RollbarCrashLogger.h"
@@ -198,7 +198,7 @@ static void crashCallback(const RollbarCrashReportWriter* writer)
 
 - (void) dealloc
 {
-    RollbarCrash* handler = [RollbarCrash sharedInstance];
+    RollbarCrashHandler* handler = [RollbarCrashHandler sharedInstance];
     @synchronized(handler)
     {
         if(g_crashHandlerData == self.crashHandlerData)
@@ -318,7 +318,7 @@ static void crashCallback(const RollbarCrashReportWriter* writer)
 
 - (void) install
 {
-    RollbarCrash* handler = [RollbarCrash sharedInstance];
+    RollbarCrashHandler* handler = [RollbarCrashHandler sharedInstance];
     @synchronized(handler)
     {
         g_crashHandlerData = self.crashHandlerData;
@@ -350,7 +350,7 @@ static void crashCallback(const RollbarCrashReportWriter* writer)
     
     sink = [RollbarCrashReportFilterPipeline filterWithFilters:self.prependedFilters, sink, nil];
 
-    RollbarCrash* handler = [RollbarCrash sharedInstance];
+    RollbarCrashHandler* handler = [RollbarCrashHandler sharedInstance];
     handler.sink = sink;
     [handler sendAllReportsWithCompletion:onCompletion];
 }
