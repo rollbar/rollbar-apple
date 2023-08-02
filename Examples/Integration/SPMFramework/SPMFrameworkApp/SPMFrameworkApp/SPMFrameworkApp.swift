@@ -4,7 +4,7 @@ import SPMFramework
 @main
 struct SPMFrameworkApp: App {
     init() {
-        SPMFramework.start()
+        SPMEntryPoint.start()
     }
 
     var body: some Scene {
