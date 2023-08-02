@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "git@github.com:rollbar/rollbar-apple.git",
       "state" : {
-        "branch" : "integration_examples",
-        "revision" : "eb1e002d38dbca25873b3524e11ccdd43841305b"
+        "revision" : "37b6481208eade23be9cb61bc53b3fb8884d4de2",
+        "version" : "3.1.0"
       }
     },
     {
