@@ -2,6 +2,11 @@
 
 ## Release Notes
 
+### 3.1.1
+
+- Fixed archiving issue when integrating the SDK using Cocoapods.
+  - Updating is unnecessary if using any other package manager like SPM.
+
 ### 3.1.0
 
 - The `KSCrash` dependency has been completely dropped.
