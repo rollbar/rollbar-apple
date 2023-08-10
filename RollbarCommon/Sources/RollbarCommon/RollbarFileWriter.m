@@ -28,45 +28,25 @@
 + (void)appendData:(nullable NSData *)data toFile:(nullable NSString *)fileFullPath {
     
     if (!(data && fileFullPath && (fileFullPath.length > 0))) {
-        
         RBCErr(@"Can't append data: %@ to file: %@!", data, fileFullPath);
         return;
     }
     
     // append-save the data into the file (assuming it exists):
-    
     NSError *error;
-    
     NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:fileFullPath];
     if (!fileHandle) {
-        
-        RBCErr(@"    Error while acquiring file handle for: %@", fileFullPath);
+        RBCErr(@"Error while acquiring file handle for: %@", fileFullPath);
         return;
     }
-    
-    unsigned long long offset;
-    if (![fileHandle seekToEndReturningOffset:&offset error:&error]) {
-        
-        RBCErr(@"    Error while seeking to file end of %@: %@", fileFullPath, [error localizedDescription]);
-        return;
-    }
-    
-    if (![fileHandle writeData:data error:&error]) {
-        
-        RBCErr(@"    Error while writing data to %@: %@", fileFullPath, [error localizedDescription]);
-        return;
-    }
-    
-    if (![fileHandle writeData:[@"\n" dataUsingEncoding:NSUTF8StringEncoding] error:&error]) {
-        
-        RBCErr(@"    Error while writing data to %@: %@", fileFullPath, [error localizedDescription]);
-        return;
-    }
-    
-    if (![fileHandle closeAndReturnError:&error]) {
-        
-        RBCErr(@"    Error while closing %@: %@", fileFullPath, [error localizedDescription]);
-        return;
+
+    @try {
+        [fileHandle seekToEndOfFile];
+        [fileHandle writeData:data];
+        [fileHandle writeData:[@"\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        [fileHandle closeFile];
+    } @catch (NSException *e) {
+        RBCErr(@"Error while appendingData to %@: %@", fileFullPath, [error localizedDescription]);
     }
 }
 

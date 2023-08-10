@@ -8,9 +8,10 @@ static NSString * const RESPONSE_HEADER_REMAINING_SECONDS = @"x-rate-limit-remai
 @implementation RollbarPayloadPostReply
 
 + (nullable RollbarPayloadPostReply *)replyFromHttpResponse:(nonnull NSHTTPURLResponse *)httpResponse {
-    NSInteger rateLimit = [[httpResponse valueForHTTPHeaderField:RESPONSE_HEADER_RATE_LIMIT] integerValue];
-    NSInteger remainingCount = [[httpResponse valueForHTTPHeaderField:RESPONSE_HEADER_REMAINING_COUNT] integerValue];
-    NSInteger remainingSeconds = [[httpResponse valueForHTTPHeaderField:RESPONSE_HEADER_REMAINING_SECONDS] integerValue];
+    NSDictionary<NSString *, NSString *> *headers = [httpResponse allHeaderFields];
+    NSInteger rateLimit = [headers[RESPONSE_HEADER_RATE_LIMIT] integerValue];
+    NSInteger remainingCount = [headers[RESPONSE_HEADER_REMAINING_COUNT] integerValue];
+    NSInteger remainingSeconds = [headers[RESPONSE_HEADER_REMAINING_SECONDS] integerValue];
 
     return [[RollbarPayloadPostReply alloc] initWithStatusCode:httpResponse.statusCode
                                                      rateLimit:rateLimit
