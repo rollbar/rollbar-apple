@@ -467,7 +467,6 @@ SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
     }
 
     if ((crashReport = report[@RollbarCrashField_RecrashReport][@RollbarCrashField_Crash]) != NULL) {
-        [self cleanupReport:crashReport];
         crashReport[@RollbarCrashField_Diagnosis] = [[RollbarCrashDoctor doctor] diagnoseCrash:report];
     }
 }
@@ -476,8 +475,8 @@ SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
 {
     NSNumber *address = crashReport[@RollbarCrashField_Error][@RollbarCrashField_Address];
     NSNumber *subcode = crashReport[@RollbarCrashField_Error][@RollbarCrashField_Mach][@RollbarCrashField_Subcode];
-    if (![address isEqualToNumber:subcode]) {
-        return;
+    if ([address isEqualToNumber:subcode]) {
+        [self dedupFrames:crashReport forAddress:address];
     }
 
     [self dedupLinkRegisterFrames:crashReport];
@@ -496,6 +495,28 @@ SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
             && [frames[indexes.firstIndex] isEqualToDictionary:frames[indexes.lastIndex]])
         {
             [frames removeObjectAtIndex:indexes.firstIndex];
+        }
+    }
+}
+
+- (void) dedupLinkRegisterFrames:(NSMutableDictionary*) crashReport
+{
+    NSArray *threads = crashReport[@RollbarCrashField_Threads];
+    for (NSDictionary *thread in threads) {
+        // Link register, if available, is the second address in the trace.
+        NSMutableArray *frames = thread[@RollbarCrashField_Backtrace][@RollbarCrashField_Contents];
+        NSDictionary *registers = thread[@RollbarCrashField_Registers][@RollbarCrashField_Basic];
+        if (frames.count < 2 || !(registers && registers[@"lr"])) {
+            continue;
+        }
+
+        NSDictionary *lastFrame = frames[frames.count - 1];
+        NSDictionary *penultimateFrame = frames[frames.count - 2];
+
+        if ([lastFrame[@RollbarCrashField_SymbolAddr] isEqualToNumber:penultimateFrame[@RollbarCrashField_SymbolAddr]]
+            && [penultimateFrame[@RollbarCrashField_InstructionAddr] isEqualToNumber:registers[@"lr"]])
+        {
+            [frames removeObjectAtIndex:frames.count - 2];
         }
     }
 }
