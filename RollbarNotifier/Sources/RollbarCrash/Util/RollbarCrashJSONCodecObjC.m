@@ -435,7 +435,7 @@ static int encodeObject(RollbarCrashJSONCodec* codec, id object, NSString* name,
 {
     RollbarCrashJSONCodec* codec = [self codecWithEncodeOptions:0
                                         decodeOptions:decodeOptions];
-    NSMutableData* stringData = [NSMutableData dataWithLength:10001];
+    NSMutableData* stringData = [NSMutableData dataWithLength:RCMAX_STRINGBUFFERSIZE+1];
     int errorOffset;
     int result = rcjson_decode(JSONData.bytes,
                                (int)JSONData.length,

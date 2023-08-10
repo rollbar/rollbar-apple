@@ -291,7 +291,7 @@ char* rccrf_fixupCrashReport(const char* crashReport)
         .onNullElement = onNullElement,
         .onStringElement = onStringElement,
     };
-    int stringBufferLength = 10000;
+    int stringBufferLength = RCMAX_STRINGBUFFERSIZE;
     char* stringBuffer = malloc((unsigned)stringBufferLength);
     int crashReportLength = (int)strlen(crashReport);
     int fixedReportLength = (int)(crashReportLength * 1.5);
