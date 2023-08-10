@@ -156,7 +156,7 @@ extension Sequence {
 extension Collection where Self.SubSequence == ArraySlice<Element> {
 
     /// Returns this collection split into slices of the given length.
-    func chunks(of len: Self.Index) -> some Collection<ArraySlice<Element>> {
+    func chunks(of len: Self.Index) -> [ArraySlice<Element>] {
         stride(from: self.startIndex, to: self.endIndex, by: len).map {
             self[$0 ..< Swift.min($0 + len, self.endIndex)]
         }

@@ -19,7 +19,7 @@
 - (void)testDateToString {
     
     if (@available(tvOS 13.0, *)) {
-        NSString *dateString = [[NSDate now] rollbar_toString];
+        NSString *dateString = [[NSDate date] rollbar_toString];
         XCTAssertNotNil(dateString);
         XCTAssertTrue(dateString.length > 0);
     } else {
@@ -38,7 +38,7 @@
     [self measureBlock:^{
         
         if (@available(tvOS 13.0, *)) {
-            NSString *dateString = [[NSDate now] rollbar_toString];
+            NSString *dateString = [[NSDate date] rollbar_toString];
         } else {
             // Fallback on earlier versions
         }

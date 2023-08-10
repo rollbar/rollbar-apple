@@ -3,23 +3,10 @@ import RollbarNotifier
 
 @main
 struct RollbarDemoApp: App {
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
-    }
-}
-
-class AppDelegate: NSObject, UIApplicationDelegate {
     @AppStorage("rollbar_endpoint") var endpoint = "https://api.rollbar.com/api/1/item/"
     @AppStorage("rollbar_post_client_item_access_token") var accessToken = ""
 
-    func application(
-        _ application: UIApplication,
-        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
-    ) -> Bool {
+    init() {
         // Dynamically read these settings from your config settings on application startup.
         let accessToken = self.accessToken // Rollbar post_client_item access token
         let environment = "staging"
@@ -68,8 +55,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
         // Initialize a Rollbar shared instance with a crash collector
         Rollbar.initWithConfiguration(config)
+    }
 
-        return true
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
     }
 }
 

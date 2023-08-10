@@ -17,10 +17,10 @@ Pod::Spec.new do |s|
     s.documentation_url = "https://docs.rollbar.com/docs/apple"
     s.social_media_url  = "https://twitter.com/rollbar"
 
-    s.osx.deployment_target = "12.0"
-    s.ios.deployment_target = "14.0"
-    s.tvos.deployment_target = "14.0"
-    s.watchos.deployment_target = "8.0"
+    s.osx.deployment_target = "10.13"
+    s.ios.deployment_target = "11.0"
+    s.tvos.deployment_target = "11.0"
+    s.watchos.deployment_target = "4.0"
 
     s.source_files  = "#{s.name}/Sources/#{s.name}/**/*.{h,m}"
     s.public_header_files = "#{s.name}/Sources/#{s.name}/include/*.h"

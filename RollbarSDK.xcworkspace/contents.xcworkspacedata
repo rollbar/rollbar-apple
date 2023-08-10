@@ -32,6 +32,12 @@
          location = "group:RollbarCommon.podspec">
       </FileRef>
       <FileRef
+         location = "group:RollbarCrash.podspec">
+      </FileRef>
+      <FileRef
+         location = "group:RollbarReport.podspec">
+      </FileRef>
+      <FileRef
          location = "group:RollbarDeploys.podspec">
       </FileRef>
       <FileRef

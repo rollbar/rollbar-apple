@@ -17,8 +17,7 @@ struct ContentView: View {
 
     func button(_ title: String, action: @escaping () -> ()) -> some View {
         Button(title, action: action)
-            .buttonStyle(.bordered)
-            .tint(.blue)
+            .frame(height: 24.0)
     }
 
     func accessTokenIsValid(_ accessToken: String) -> Bool {

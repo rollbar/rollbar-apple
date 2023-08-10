@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3BDB825A292D67900093AC9D /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDB8258292D67900093AC9D /* SceneDelegate.m */; };
 		55684F702553B4C400F82F34 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 55684F6F2553B4C400F82F34 /* AppDelegate.m */; };
 		55684F762553B4C400F82F34 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55684F752553B4C400F82F34 /* ViewController.m */; };
 		55684F792553B4C400F82F34 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 55684F772553B4C400F82F34 /* Main.storyboard */; };
@@ -19,9 +18,6 @@
 
 /* Begin PBXFileReference section */
 		3B1DED342A6846A0003936E7 /* RollbarObjCDemo.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = RollbarObjCDemo.entitlements; sourceTree = "<group>"; };
-		3BDB8258292D67900093AC9D /* SceneDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
-		3BDB8259292D67900093AC9D /* SceneDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
-		3BDB825B292E34990093AC9D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		55684F6B2553B4C400F82F34 /* RollbarObjCDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RollbarObjCDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55684F6E2553B4C400F82F34 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		55684F6F2553B4C400F82F34 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -69,15 +65,12 @@
 				55684F6E2553B4C400F82F34 /* AppDelegate.h */,
 				55684F6F2553B4C400F82F34 /* AppDelegate.m */,
 				55684F802553B4C700F82F34 /* main.m */,
-				3BDB8259292D67900093AC9D /* SceneDelegate.h */,
-				3BDB8258292D67900093AC9D /* SceneDelegate.m */,
 				55684F742553B4C400F82F34 /* ViewController.h */,
 				55684F752553B4C400F82F34 /* ViewController.m */,
 				55684F7C2553B4C700F82F34 /* LaunchScreen.storyboard */,
 				55684F772553B4C400F82F34 /* Main.storyboard */,
 				3B1DED342A6846A0003936E7 /* RollbarObjCDemo.entitlements */,
 				55684F7A2553B4C700F82F34 /* Assets.xcassets */,
-				3BDB825B292E34990093AC9D /* Info.plist */,
 			);
 			path = RollbarObjCDemo;
 			sourceTree = "<group>";
@@ -166,7 +159,6 @@
 				55684F762553B4C400F82F34 /* ViewController.m in Sources */,
 				55684F702553B4C400F82F34 /* AppDelegate.m in Sources */,
 				55684F812553B4C700F82F34 /* main.m in Sources */,
-				3BDB825A292D67900093AC9D /* SceneDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,7 +310,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = 9P5JVC2F34;
-				INFOPLIST_FILE = RollbarObjCDemo/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Rollbar ObjC Demo";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -327,6 +318,7 @@
 				INFOPLIST_KEY_UIRequiredDeviceCapabilities = armv7;
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -349,7 +341,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = 9P5JVC2F34;
-				INFOPLIST_FILE = RollbarObjCDemo/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Rollbar ObjC Demo";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -358,6 +349,7 @@
 				INFOPLIST_KEY_UIRequiredDeviceCapabilities = armv7;
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

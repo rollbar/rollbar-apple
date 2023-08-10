@@ -5,10 +5,10 @@ import PackageDescription
 let package = Package(
     name: "RollbarDeploys",
     platforms: [
-        .macOS(.v12),
-        .iOS(.v14),
-        .tvOS(.v14),
-        .watchOS(.v8),
+        .macOS(.v10_13),
+        .iOS(.v11),
+        .tvOS(.v11),
+        .watchOS(.v4),
     ],
     products: [
         .library(
