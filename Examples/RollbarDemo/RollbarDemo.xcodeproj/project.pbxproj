@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3B810F452A7B2D10001A3D29 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3B810F442A7B2D10001A3D29 /* LaunchScreen.storyboard */; };
 		3BAD89E12A699BD300713F26 /* RollbarDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAD89E02A699BD300713F26 /* RollbarDemoApp.swift */; };
 		3BAD89E32A699BD300713F26 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAD89E22A699BD300713F26 /* ContentView.swift */; };
 		3BAD89E52A699BD400713F26 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BAD89E42A699BD400713F26 /* Assets.xcassets */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3B810F442A7B2D10001A3D29 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3BAD89DD2A699BD300713F26 /* RollbarDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RollbarDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BAD89E02A699BD300713F26 /* RollbarDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RollbarDemoApp.swift; sourceTree = "<group>"; };
 		3BAD89E22A699BD300713F26 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -57,10 +59,11 @@
 		3BAD89DF2A699BD300713F26 /* RollbarDemo */ = {
 			isa = PBXGroup;
 			children = (
-				3BAD89E62A699BD400713F26 /* RollbarDemo.entitlements */,
 				3BAD89E02A699BD300713F26 /* RollbarDemoApp.swift */,
 				3BAD89E22A699BD300713F26 /* ContentView.swift */,
 				3BAD89EF2A699F9E00713F26 /* Prelude.swift */,
+				3B810F442A7B2D10001A3D29 /* LaunchScreen.storyboard */,
+				3BAD89E62A699BD400713F26 /* RollbarDemo.entitlements */,
 				3BAD89E42A699BD400713F26 /* Assets.xcassets */,
 				3BAD89E72A699BD400713F26 /* Preview Content */,
 			);
@@ -143,6 +146,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3B810F452A7B2D10001A3D29 /* LaunchScreen.storyboard in Resources */,
 				3BAD89E92A699BD400713F26 /* Preview Assets.xcassets in Resources */,
 				3BAD89E52A699BD400713F26 /* Assets.xcassets in Resources */,
 			);
@@ -197,6 +201,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -255,6 +260,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -281,14 +287,18 @@
 				CODE_SIGN_ENTITLEMENTS = RollbarDemo/RollbarDemo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 70;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"RollbarDemo/Preview Content\"";
 				DEVELOPMENT_TEAM = 9P5JVC2F34;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Rollbar Demo";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rollbar.apple.demo;
@@ -311,14 +321,18 @@
 				CODE_SIGN_ENTITLEMENTS = RollbarDemo/RollbarDemo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 70;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"RollbarDemo/Preview Content\"";
 				DEVELOPMENT_TEAM = 9P5JVC2F34;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Rollbar Demo";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rollbar.apple.demo;
