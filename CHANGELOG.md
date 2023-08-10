@@ -2,6 +2,10 @@
 
 ## Release Notes
 
+### Unreleased
+
+- Dropped minimum deployable OS requirements to iOS 11, macOS 10.13, tvOS 11, and watchOS 4.
+
 ### 3.1.1
 
 - Fixed archiving issue when integrating the SDK using Cocoapods.
