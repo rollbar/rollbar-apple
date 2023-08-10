@@ -457,17 +457,46 @@ SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
     return nil;
 }
 
-- (void) doctorReport:(NSMutableDictionary*) report
+- (void) finalizeReport:(NSMutableDictionary*) report
 {
-    NSMutableDictionary* crashReport = report[@RollbarCrashField_Crash];
-    if(crashReport != nil)
-    {
+    NSMutableDictionary* crashReport;
+
+    if ((crashReport = report[@RollbarCrashField_Crash]) != NULL) {
+        [self cleanupReport:crashReport];
         crashReport[@RollbarCrashField_Diagnosis] = [[RollbarCrashDoctor doctor] diagnoseCrash:report];
     }
-    crashReport = report[@RollbarCrashField_RecrashReport][@RollbarCrashField_Crash];
-    if(crashReport != nil)
-    {
+
+    if ((crashReport = report[@RollbarCrashField_RecrashReport][@RollbarCrashField_Crash]) != NULL) {
+        [self cleanupReport:crashReport];
         crashReport[@RollbarCrashField_Diagnosis] = [[RollbarCrashDoctor doctor] diagnoseCrash:report];
+    }
+}
+
+- (void) cleanupReport:(NSMutableDictionary*) crashReport
+{
+    NSNumber *address = crashReport[@RollbarCrashField_Error][@RollbarCrashField_Address];
+    NSNumber *subcode = crashReport[@RollbarCrashField_Error][@RollbarCrashField_Mach][@RollbarCrashField_Subcode];
+    if (![address isEqualToNumber:subcode]) {
+        return;
+    }
+
+    [self dedupLinkRegisterFrames:crashReport];
+}
+
+- (void) dedupFrames:(NSMutableDictionary*) crashReport forAddress:(NSNumber*) address
+{
+    NSArray *threads = crashReport[@RollbarCrashField_Threads];
+    for (NSDictionary *thread in threads) {
+        NSMutableArray *frames = thread[@RollbarCrashField_Backtrace][@RollbarCrashField_Contents];
+        NSIndexSet *indexes = [frames indexesOfObjectsPassingTest:^BOOL(NSDictionary * _Nonnull frame, NSUInteger idx, BOOL *_) {
+            return [frame[@RollbarCrashField_InstructionAddr] isEqualToNumber:address];
+        }];
+
+        if (indexes.firstIndex == 0 && indexes.lastIndex == 1
+            && [frames[indexes.firstIndex] isEqualToDictionary:frames[indexes.lastIndex]])
+        {
+            [frames removeObjectAtIndex:indexes.firstIndex];
+        }
     }
 }
 
@@ -512,7 +541,7 @@ SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
         RCLOG_ERROR(@"Could not load crash report");
         return nil;
     }
-    [self doctorReport:crashReport];
+    [self finalizeReport:crashReport];
 
     return crashReport;
 }
