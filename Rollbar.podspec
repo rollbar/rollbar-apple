@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "Rollbar"
-  s.version      = "3.1.1"
+  s.version      = "3.2.0"
   s.summary      = "Application or client side SDK for interacting with the Rollbar API Server."
   s.description  = <<-DESC
                     Find, fix, and resolve errors with Rollbar.
@@ -64,7 +64,7 @@ Pod::Spec.new do |s|
   s.subspec 'CocoaLumberjack' do |sp|
       sp.source_files  = "RollbarCocoaLumberjack/Sources/RollbarCocoaLumberjack/**/*.{h,m}"
       sp.public_header_files = "RollbarCocoaLumberjack/Sources/RollbarCocoaLumberjack/include/*.h"
-      sp.dependency "CocoaLumberjack", "~> 3.7.4"
+      sp.dependency "CocoaLumberjack", "~> 3.8.0"
   end
 
   s.subspec 'Deploys' do |sp|
