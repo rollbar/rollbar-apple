@@ -45,6 +45,8 @@ extern "C" {
  */
 #define RollbarCrashJSON_SIZE_AUTOMATIC -1
 
+#define RCMAX_STRINGBUFFERSIZE 150000
+
 enum
 {
     /** Encoding or decoding: Everything completed without error */
