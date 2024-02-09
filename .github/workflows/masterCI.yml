@@ -9,16 +9,18 @@ on:
 jobs:
   build:
     runs-on: macos-latest
+    env:
+      BUILD_WRAPPER_OUT_DIR: DerivedData/compilation-database
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Create DerivedData folder
         run: mkdir DerivedData
 
-      - name: Create DerivedData/compilation-database folder
+      - name: Create ${{ env.BUILD_WRAPPER_OUT_DIR }} folder
         working-directory: DerivedData
         run: mkdir compilation-database
 
@@ -38,22 +40,17 @@ jobs:
         working-directory: RollbarAUL
         run: swift build -v
 
+      - name: Install sonar-scanner and build-wrapper
+        uses: SonarSource/sonarcloud-github-c-cpp@v2
+
       - name: SonarCloud RollbarCommon
-        run:
-          SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir DerivedData/compilation-database
-          xcodebuild
-          -workspace RollbarSDK.xcworkspace
-          -scheme RollbarCommon
-          -derivedDataPath DerivedData
-          -enableCodeCoverage YES
-          build
-          test
-          CODE_SIGN_IDENTITY="-"
-          CODE_SIGNING_REQUIRED=NO
+        run: |
+          build-wrapper-macosx-x86 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} xcodebuild -workspace RollbarSDK.xcworkspace -scheme RollbarCommon -derivedDataPath DerivedData -enableCodeCoverage YES build test CODE_SIGN_IDENTITY="-" CODE_SIGNING_REQUIRED=NO
 
       - name: SonarCloud RollbarDeploys
         run:
-          SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir DerivedData/compilation-database
+          SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86
+          --out-dir DerivedData/compilation-database
           xcodebuild
           -workspace RollbarSDK.xcworkspace
           -scheme RollbarDeploys
