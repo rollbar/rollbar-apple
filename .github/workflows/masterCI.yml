@@ -94,7 +94,7 @@ jobs:
         run: bash xccov-to-sonarqube-generic.sh DerivedData/Logs/Test/*.xcresult/ > sonarqube-generic-coverage.xml
 
       - name: Run SonarScanner Analysis
-        run: SonarCloud/sonar-scanner-4.7.0.2747-macosx/bin/sonar-scanner -X -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION_KEY }} -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.coverageReportPaths=sonarqube-generic-coverage.xml
+        run: SonarCloud/sonar-scanner-5.0.1.3006-macosx/bin/sonar-scanner -X -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION_KEY }} -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.coverageReportPaths=sonarqube-generic-coverage.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
