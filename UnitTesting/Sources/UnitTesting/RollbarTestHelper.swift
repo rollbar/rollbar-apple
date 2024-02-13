@@ -4,8 +4,8 @@ import Foundation
     
     private static let rollbarUnitTestEnvironment = "Rollbar-Apple-UnitTests";
     private static let rollbarUnitTestPayloadsAccessToken = "09da180aba21479e9ed3d91e0b8d58d6";
-    private static let rollbarUnitTestDeploysWriteAccessToken = "efdc4b85d66045f293a7f9e99c732f61";
-    private static let rollbarUnitTestDeploysReadAccessToken = "595cbf76b05b45f2b3ef661a2e0078d4";
+    private static let rollbarUnitTestDeploysWriteAccessToken = "a63c9c2f61be4746a888e9cad19a7a9f";
+    private static let rollbarUnitTestDeploysReadAccessToken = "3520e804c6234873bad3c6b4a8de7476";
 
     
     @objc public static func getRollbarEnvironment() -> String {
