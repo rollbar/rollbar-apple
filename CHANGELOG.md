@@ -2,7 +2,11 @@
 
 ## Release Notes
 
-### Unreleased
+### 3.2.1
+
+- Removed SonarCloud from the project and CI.
+
+### 3.2.0
 
 - Dropped minimum deployable OS requirements to iOS 11, macOS 10.13, tvOS 11, and watchOS 4.
 

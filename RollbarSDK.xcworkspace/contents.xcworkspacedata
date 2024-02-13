@@ -8,12 +8,6 @@
          location = "group:docs">
       </FileRef>
       <FileRef
-         location = "group:sonar-project.properties">
-      </FileRef>
-      <FileRef
-         location = "group:xccov-to-sonarqube-generic.sh">
-      </FileRef>
-      <FileRef
          location = "group:rollbar-logo.png">
       </FileRef>
       <FileRef
