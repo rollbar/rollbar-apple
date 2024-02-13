@@ -11,7 +11,7 @@
          location = "group:sonar-project.properties">
       </FileRef>
       <FileRef
-         location = "group:xccov-to-sonarqube-generic.sh">
+         location = "group:xccov-to-generic.sh">
       </FileRef>
       <FileRef
          location = "group:rollbar-logo.png">
