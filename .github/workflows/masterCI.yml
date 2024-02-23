@@ -11,16 +11,10 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@v4
 
       - name: Create DerivedData folder
         run: mkdir DerivedData
-
-      - name: Create DerivedData/compilation-database folder
-        working-directory: DerivedData
-        run: mkdir compilation-database
 
       - name: Build RollbarCommon
         working-directory: RollbarCommon
@@ -38,63 +32,50 @@ jobs:
         working-directory: RollbarAUL
         run: swift build -v
 
-      - name: SonarCloud RollbarCommon
-        run:
-          SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir DerivedData/compilation-database
-          xcodebuild
-          -workspace RollbarSDK.xcworkspace
-          -scheme RollbarCommon
-          -derivedDataPath DerivedData
-          -enableCodeCoverage YES
-          build
-          test
-          CODE_SIGN_IDENTITY="-"
-          CODE_SIGNING_REQUIRED=NO
+      - name: Test RollbarCommon
+        run: |
+          xcodebuild \
+            -workspace RollbarSDK.xcworkspace \
+            -scheme RollbarCommon \
+            -derivedDataPath DerivedData \
+            -enableCodeCoverage YES \
+            build \
+            test \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO
 
-      - name: SonarCloud RollbarDeploys
-        run:
-          SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir DerivedData/compilation-database
-          xcodebuild
-          -workspace RollbarSDK.xcworkspace
-          -scheme RollbarDeploys
-          -derivedDataPath DerivedData
-          -enableCodeCoverage YES
-          build
-          test
-          CODE_SIGN_IDENTITY="-"
-          CODE_SIGNING_REQUIRED=NO
+      - name: Test RollbarDeploys
+        run: |
+          xcodebuild \
+            -workspace RollbarSDK.xcworkspace \
+            -scheme RollbarDeploys \
+            -derivedDataPath DerivedData \
+            -enableCodeCoverage YES \
+            build \
+            test \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO
 
-      - name: SonarCloud RollbarNotifier
-        run:
-          SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir DerivedData/compilation-database
-          xcodebuild
-          -workspace RollbarSDK.xcworkspace
-          -scheme RollbarNotifier
-          -derivedDataPath DerivedData
-          -enableCodeCoverage YES
-          build
-          test
-          CODE_SIGN_IDENTITY="-"
-          CODE_SIGNING_REQUIRED=NO
+      - name: Test RollbarNotifier
+        run: |
+          xcodebuild \
+            -workspace RollbarSDK.xcworkspace \
+            -scheme RollbarNotifier \
+            -derivedDataPath DerivedData \
+            -enableCodeCoverage YES \
+            build \
+            test \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO
 
-      - name: SonarCloud RollbarAUL
-        run:
-          SonarCloud/build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir DerivedData/compilation-database
-          xcodebuild
-          -workspace RollbarSDK.xcworkspace
-          -scheme RollbarAUL
-          -derivedDataPath DerivedData
-          -enableCodeCoverage YES
-          build
-          test
-          CODE_SIGN_IDENTITY="-"
-          CODE_SIGNING_REQUIRED=NO
-
-      - name: SonarCloud Test Coverage Conversion
-        run: bash xccov-to-sonarqube-generic.sh DerivedData/Logs/Test/*.xcresult/ > sonarqube-generic-coverage.xml
-
-      - name: Run SonarScanner Analysis
-        run: SonarCloud/sonar-scanner-4.7.0.2747-macosx/bin/sonar-scanner -X -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION_KEY }} -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.coverageReportPaths=sonarqube-generic-coverage.xml
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Test RollbarAUL
+        run: |
+          xcodebuild \
+            -workspace RollbarSDK.xcworkspace \
+            -scheme RollbarAUL \
+            -derivedDataPath DerivedData \
+            -enableCodeCoverage YES \
+            build \
+            test \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO

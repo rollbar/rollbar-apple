@@ -163,7 +163,7 @@
     }
 
     NSMutableDictionary *customData = [NSMutableDictionary dictionaryWithDictionary:self->_config.customData];
-    if (exception) {
+    if (exception || error) {
         customData[@"error.extra"] = extra.mutableCopy;
         customData[@"error.message"] = message;
     } else if (crashReport) {

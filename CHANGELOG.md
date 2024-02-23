@@ -2,7 +2,12 @@
 
 ## Release Notes
 
-### Unreleased
+### 3.2.1
+
+- Fixed extra data not being correctly set in the outgoing payload when sending custom Swift errors.
+- Removed SonarCloud from the project and CI.
+
+### 3.2.0
 
 - Dropped minimum deployable OS requirements to iOS 11, macOS 10.13, tvOS 11, and watchOS 4.
 
