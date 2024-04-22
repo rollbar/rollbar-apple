@@ -45,6 +45,7 @@ Pod::Spec.new do |s|
   s.public_header_files =
     "RollbarNotifier/Sources/RollbarCrash/include/*.h",
     "RollbarNotifier/Sources/RollbarNotifier/include/*.h"
+  s.resource_bundles = { "RollbarNotifier" => "RollbarNotifier/Sources/RollbarNotifier/PrivacyInfo.xcprivacy" }
   s.module_map =
     "RollbarNotifier/Sources/RollbarCrash/include/module.modulemap",
     "RollbarNotifier/Sources/RollbarNotifier/include/module.modulemap"

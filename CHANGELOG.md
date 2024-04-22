@@ -2,6 +2,10 @@
 
 ## Release Notes
 
+### 3.3.0
+
+- Added Privacy Manifest to fulfill the new SDK privacy requirements from Apple.
+
 ### 3.2.1
 
 - Fixed extra data not being correctly set in the outgoing payload when sending custom Swift errors.
