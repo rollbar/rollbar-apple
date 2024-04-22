@@ -53,7 +53,7 @@ let package = Package(
                 "RollbarReport"
             ],
             path: "Sources/RollbarNotifier",
-            resources: [.process("PrivacyInfo.xcprivacy")]
+            resources: [.copy("PrivacyInfo.xcprivacy")]
         ),
         .testTarget(
             name: "RollbarReportTests",
