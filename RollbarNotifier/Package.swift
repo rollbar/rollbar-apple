@@ -29,7 +29,6 @@ let package = Package(
             name: "RollbarCrash",
             dependencies: [],
             path: "Sources/RollbarCrash",
-            resources: [.copy("PrivacyInfo.xcprivacy")],
             cxxSettings: [
                 .define("GCC_ENABLE_CPP_EXCEPTIONS", to: "YES"),
                 .headerSearchPath("Monitors"),
@@ -53,7 +52,8 @@ let package = Package(
                 "RollbarCrash",
                 "RollbarReport"
             ],
-            path: "Sources/RollbarNotifier"
+            path: "Sources/RollbarNotifier",
+            resources: [.process("PrivacyInfo.xcprivacy")]
         ),
         .testTarget(
             name: "RollbarReportTests",
