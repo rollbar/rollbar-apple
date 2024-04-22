@@ -23,12 +23,14 @@ let package = Package(
     targets: [
         .target(
             name: "RollbarCommon",
-            path: "RollbarCommon/Sources/RollbarCommon"
+            path: "RollbarCommon/Sources/RollbarCommon",
+            resources: [.copy("PrivacyInfo.xcprivacy")]
         ),
         .target(
             name: "RollbarCrash",
             dependencies: [],
             path: "RollbarNotifier/Sources/RollbarCrash",
+            resources: [.copy("PrivacyInfo.xcprivacy")],
             cxxSettings: [
                 .define("GCC_ENABLE_CPP_EXCEPTIONS", to: "YES"),
                 .headerSearchPath("Monitors"),
@@ -52,7 +54,8 @@ let package = Package(
                 "RollbarCrash",
                 "RollbarReport"
             ],
-            path: "RollbarNotifier/Sources/RollbarNotifier"
+            path: "RollbarNotifier/Sources/RollbarNotifier",
+            resources: [.copy("PrivacyInfo.xcprivacy")]
         ),
         .target(
             name: "RollbarDeploys",

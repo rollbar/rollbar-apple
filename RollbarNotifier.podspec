@@ -25,6 +25,7 @@ Pod::Spec.new do |s|
     s.module_name = "RollbarNotifier"
     s.source_files  = "#{s.name}/Sources/#{s.name}/**/*.{h,m}"
     s.public_header_files = "#{s.name}/Sources/#{s.name}/include/*.h"
+    s.resource_bundles = { "RollbarNotifier" => "RollbarNotifier/Sources/RollbarNotifier/PrivacyInfo.xcprivacy" }
     s.module_map = "#{s.name}/Sources/#{s.name}/include/module.modulemap"
 
     s.framework = "Foundation"

@@ -45,6 +45,10 @@ Pod::Spec.new do |s|
   s.public_header_files =
     "RollbarNotifier/Sources/RollbarCrash/include/*.h",
     "RollbarNotifier/Sources/RollbarNotifier/include/*.h"
+  s.resource_bundles = { ,
+    "RollbarCrash" => "RollbarNotifier/Sources/RollbarCrash/PrivacyInfo.xcprivacy",
+    "RollbarNotifier" => "RollbarNotifier/Sources/RollbarNotifier/PrivacyInfo.xcprivacy"
+  }
   s.module_map =
     "RollbarNotifier/Sources/RollbarCrash/include/module.modulemap",
     "RollbarNotifier/Sources/RollbarNotifier/include/module.modulemap"
@@ -54,6 +58,7 @@ Pod::Spec.new do |s|
   s.subspec 'Common' do |sp|
       sp.source_files  = "RollbarCommon/Sources/RollbarCommon/**/*.{h,m}"
       sp.public_header_files = "RollbarCommon/Sources/RollbarCommon/include/*.h"
+      sp.resource_bundles = { "Rollbar" => "RollbarCommon/Sources/PrivacyInfo.xcprivacy" }
   end
 
   s.subspec 'AUL' do |sp|
