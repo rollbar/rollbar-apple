@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name         = "RollbarReport"
-    s.version      = "3.2.1"
+    s.version      = "3.3.0"
     s.summary      = "Application or client side SDK for interacting with the Rollbar API Server."
     s.description  = <<-DESC
                       Find, fix, and resolve errors with Rollbar.
