@@ -23,8 +23,7 @@ let package = Package(
     targets: [
         .target(
             name: "RollbarCommon",
-            path: "RollbarCommon/Sources/RollbarCommon",
-            resources: [.copy("PrivacyInfo.xcprivacy")]
+            path: "RollbarCommon/Sources/RollbarCommon"
         ),
         .target(
             name: "RollbarCrash",
@@ -54,8 +53,7 @@ let package = Package(
                 "RollbarCrash",
                 "RollbarReport"
             ],
-            path: "RollbarNotifier/Sources/RollbarNotifier",
-            resources: [.copy("PrivacyInfo.xcprivacy")]
+            path: "RollbarNotifier/Sources/RollbarNotifier"
         ),
         .target(
             name: "RollbarDeploys",

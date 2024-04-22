@@ -16,8 +16,7 @@ let package = Package(
     targets: [
         .target(
             name: "RollbarCommon",
-            path: "Sources/RollbarCommon",
-            resources: [.copy("PrivacyInfo.xcprivacy")]
+            path: "Sources/RollbarCommon"
         ),
         .testTarget(
             name: "RollbarCommonTests",
