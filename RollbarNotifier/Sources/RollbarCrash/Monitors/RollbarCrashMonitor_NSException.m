@@ -125,25 +125,29 @@ static void handleUncaughtException(NSException* exception) {
 
 static void setEnabled(bool isEnabled)
 {
-    if(isEnabled != g_isEnabled)
-    {
-        g_isEnabled = isEnabled;
-        if(isEnabled)
-        {
-            RCLOG_DEBUG(@"Backing up original handler.");
-            g_previousUncaughtExceptionHandler = NSGetUncaughtExceptionHandler();
-            
-            RCLOG_DEBUG(@"Setting new handler.");
-            NSSetUncaughtExceptionHandler(&handleUncaughtException);
-            RollbarCrashHandler.sharedInstance.uncaughtExceptionHandler = &handleUncaughtException;
-            RollbarCrashHandler.sharedInstance.currentSnapshotUserReportedExceptionHandler = &handleCurrentSnapshotUserReportedException;
-        }
-        else
-        {
-            RCLOG_DEBUG(@"Restoring original handler.");
-            NSSetUncaughtExceptionHandler(g_previousUncaughtExceptionHandler);
-        }
-    }
+//    Wise: Wise has tooling already in place for crash reports, so we don't want to set a crash handler when
+//    setting up Rollbar. Currently there's no option to disable this from the public API of the Rollbar SDK.
+//    Rollbar have placed this into their feature backlog, which we should adopt once available.
+//
+//    if(isEnabled != g_isEnabled)
+//    {
+//        g_isEnabled = isEnabled;
+//        if(isEnabled)
+//        {
+//            RCLOG_DEBUG(@"Backing up original handler.");
+//            g_previousUncaughtExceptionHandler = NSGetUncaughtExceptionHandler();
+//            
+//            RCLOG_DEBUG(@"Setting new handler.");
+//            NSSetUncaughtExceptionHandler(&handleUncaughtException);
+//            RollbarCrashHandler.sharedInstance.uncaughtExceptionHandler = &handleUncaughtException;
+//            RollbarCrashHandler.sharedInstance.currentSnapshotUserReportedExceptionHandler = &handleCurrentSnapshotUserReportedException;
+//        }
+//        else
+//        {
+//            RCLOG_DEBUG(@"Restoring original handler.");
+//            NSSetUncaughtExceptionHandler(g_previousUncaughtExceptionHandler);
+//        }
+//    }
 }
 
 static bool isEnabled(void)
