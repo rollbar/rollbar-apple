@@ -208,22 +208,26 @@ static void uninstallSignalHandler(void)
 
 static void setEnabled(bool isEnabled)
 {
-    if(isEnabled != g_isEnabled)
-    {
-        g_isEnabled = isEnabled;
-        if(isEnabled)
-        {
-            rcid_generate(g_eventID);
-            if(!installSignalHandler())
-            {
-                return;
-            }
-        }
-        else
-        {
-            uninstallSignalHandler();
-        }
-    }
+//    Wise: Wise has tooling already in place for crash reports, so we don't want to set a crash handler when
+//    setting up Rollbar. Currently there's no option to disable this from the public API of the Rollbar SDK.
+//    Rollbar have placed this into their feature backlog, which we should adopt once available.
+//
+//    if(isEnabled != g_isEnabled)
+//    {
+//        g_isEnabled = isEnabled;
+//        if(isEnabled)
+//        {
+//            rcid_generate(g_eventID);
+//            if(!installSignalHandler())
+//            {
+//                return;
+//            }
+//        }
+//        else
+//        {
+//            uninstallSignalHandler();
+//        }
+//    }
 }
 
 static bool isEnabled(void)
