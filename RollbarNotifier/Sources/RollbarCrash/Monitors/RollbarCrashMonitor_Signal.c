@@ -208,6 +208,7 @@ static void uninstallSignalHandler(void)
 
 static void setEnabled(bool isEnabled)
 {
+    return FALSE
 //    Wise: Wise has tooling already in place for crash reports, so we don't want to set a crash handler when
 //    setting up Rollbar. Currently there's no option to disable this from the public API of the Rollbar SDK.
 //    Rollbar have placed this into their feature backlog, which we should adopt once available.
