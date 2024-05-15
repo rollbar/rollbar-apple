@@ -60,55 +60,59 @@ static NSUncaughtExceptionHandler* g_previousUncaughtExceptionHandler;
 
 static void handleException(NSException* exception, BOOL currentSnapshotUserReported) {
     RCLOG_DEBUG(@"Trapped exception %@", exception);
-    if(g_isEnabled)
-    {
-        thread_act_array_t threads = NULL;
-        mach_msg_type_number_t numThreads = 0;
-        rcmc_suspendEnvironment(&threads, &numThreads);
-        rcm_notifyFatalExceptionCaptured(false);
+    
+    //    Wise: Wise has tooling already in place for crash reports, so we don't want to handle Exceptions in Rollbar. Currently there's no option to disable this from the public API of the Rollbar SDK.
+    //    Rollbar have placed this into their feature backlog, which we should adopt once available.
 
-        RCLOG_DEBUG(@"Filling out context.");
-        NSArray* addresses = [exception callStackReturnAddresses];
-        NSUInteger numFrames = addresses.count;
-        uintptr_t* callstack = malloc(numFrames * sizeof(*callstack));
-        for(NSUInteger i = 0; i < numFrames; i++)
-        {
-            callstack[i] = (uintptr_t)[addresses[i] unsignedLongLongValue];
-        }
-
-        char eventID[37];
-        rcid_generate(eventID);
-        RollbarCrashMC_NEW_CONTEXT(machineContext);
-        rcmc_getContextForThread(rcthread_self(), machineContext, true);
-        RollbarCrashStackCursor cursor;
-        rcsc_initWithBacktrace(&cursor, callstack, (int)numFrames, 0);
-
-        RollbarCrash_MonitorContext* crashContext = &g_monitorContext;
-        memset(crashContext, 0, sizeof(*crashContext));
-        crashContext->crashType = RollbarCrashMonitorTypeNSException;
-        crashContext->eventID = eventID;
-        crashContext->offendingMachineContext = machineContext;
-        crashContext->registersAreValid = false;
-        crashContext->NSException.name = [[exception name] UTF8String];
-        crashContext->NSException.userInfo = [[NSString stringWithFormat:@"%@", exception.userInfo] UTF8String];
-        crashContext->exceptionName = crashContext->NSException.name;
-        crashContext->crashReason = [[exception reason] UTF8String];
-        crashContext->stackCursor = &cursor;
-        crashContext->currentSnapshotUserReported = currentSnapshotUserReported;
-
-        RCLOG_DEBUG(@"Calling main crash handler.");
-        rcm_handleException(crashContext);
-
-        free(callstack);
-        if (currentSnapshotUserReported) {
-            rcmc_resumeEnvironment(threads, numThreads);
-        }
-        if (g_previousUncaughtExceptionHandler != NULL)
-        {
-            RCLOG_DEBUG(@"Calling original exception handler.");
-            g_previousUncaughtExceptionHandler(exception);
-        }
-    }
+//    if(g_isEnabled)
+//    {
+//        thread_act_array_t threads = NULL;
+//        mach_msg_type_number_t numThreads = 0;
+//        rcmc_suspendEnvironment(&threads, &numThreads);
+//        rcm_notifyFatalExceptionCaptured(false);
+//
+//        RCLOG_DEBUG(@"Filling out context.");
+//        NSArray* addresses = [exception callStackReturnAddresses];
+//        NSUInteger numFrames = addresses.count;
+//        uintptr_t* callstack = malloc(numFrames * sizeof(*callstack));
+//        for(NSUInteger i = 0; i < numFrames; i++)
+//        {
+//            callstack[i] = (uintptr_t)[addresses[i] unsignedLongLongValue];
+//        }
+//
+//        char eventID[37];
+//        rcid_generate(eventID);
+//        RollbarCrashMC_NEW_CONTEXT(machineContext);
+//        rcmc_getContextForThread(rcthread_self(), machineContext, true);
+//        RollbarCrashStackCursor cursor;
+//        rcsc_initWithBacktrace(&cursor, callstack, (int)numFrames, 0);
+//
+//        RollbarCrash_MonitorContext* crashContext = &g_monitorContext;
+//        memset(crashContext, 0, sizeof(*crashContext));
+//        crashContext->crashType = RollbarCrashMonitorTypeNSException;
+//        crashContext->eventID = eventID;
+//        crashContext->offendingMachineContext = machineContext;
+//        crashContext->registersAreValid = false;
+//        crashContext->NSException.name = [[exception name] UTF8String];
+//        crashContext->NSException.userInfo = [[NSString stringWithFormat:@"%@", exception.userInfo] UTF8String];
+//        crashContext->exceptionName = crashContext->NSException.name;
+//        crashContext->crashReason = [[exception reason] UTF8String];
+//        crashContext->stackCursor = &cursor;
+//        crashContext->currentSnapshotUserReported = currentSnapshotUserReported;
+//
+//        RCLOG_DEBUG(@"Calling main crash handler.");
+//        rcm_handleException(crashContext);
+//
+//        free(callstack);
+//        if (currentSnapshotUserReported) {
+//            rcmc_resumeEnvironment(threads, numThreads);
+//        }
+//        if (g_previousUncaughtExceptionHandler != NULL)
+//        {
+//            RCLOG_DEBUG(@"Calling original exception handler.");
+//            g_previousUncaughtExceptionHandler(exception);
+//        }
+//    }
 }
 
 static void handleCurrentSnapshotUserReportedException(NSException* exception) {
