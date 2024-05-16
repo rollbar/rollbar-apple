@@ -46,9 +46,11 @@ NS_ASSUME_NONNULL_BEGIN
 
     [[RollbarTelemetry sharedInstance] configureWithOptions:config.telemetry];
 
-    self.collector = [[RollbarCrashCollector alloc] init];
-    [self.collector install];
-    [self.collector sendAllReports];
+/* Wise has tooling already in place for crash reports, so we don't want to handle crashes in Rollbar. Currently there's no option to disable this from the public API of the Rollbar SDK. */
+
+//    self.collector = [[RollbarCrashCollector alloc] init];
+//    [self.collector install];
+//    [self.collector sendAllReports];
 
     // Create RollbarThread and begin processing persisted occurrences
     if ([[RollbarThread sharedInstance] active]) {
