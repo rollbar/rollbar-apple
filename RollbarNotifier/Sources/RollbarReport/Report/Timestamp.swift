@@ -37,7 +37,7 @@ struct Timestamp: RawRepresentable {
 
 extension Timestamp: Equatable, Comparable, Hashable, Codable {}
 
-private final class ISO8601Formatter: DateFormatter {
+private final class ISO8601Formatter: DateFormatter, @unchecked Sendable {
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -52,7 +52,7 @@ private final class ISO8601Formatter: DateFormatter {
     }
 }
 
-private final class RFC3339Formatter: DateFormatter {
+private final class RFC3339Formatter: DateFormatter, @unchecked Sendable {
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
