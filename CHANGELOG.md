@@ -2,6 +2,10 @@
 
 ## Release Notes
 
+### 3.3.1
+
+- Fixes a compilation issue present in Xcode 16 beta.
+
 ### 3.3.0
 
 - Added Privacy Manifest to fulfill the new SDK privacy requirements from Apple.
