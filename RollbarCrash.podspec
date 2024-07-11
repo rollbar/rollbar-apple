@@ -22,6 +22,7 @@ Pod::Spec.new do |s|
     s.tvos.deployment_target = "11.0"
     s.watchos.deployment_target = "4.0"
 
+    s.static_framework = true
     s.module_name = "RollbarCrash"
     s.source_files  = "RollbarNotifier/Sources/#{s.name}/**/*.{h,c,cpp,m}"
     s.public_header_files = "RollbarNotifier/Sources/#{s.name}/include/*.h"
