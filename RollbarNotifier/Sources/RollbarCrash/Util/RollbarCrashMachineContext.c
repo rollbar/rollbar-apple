@@ -39,7 +39,8 @@
 #ifdef __arm64__
     #define UC_MCONTEXT uc_mcontext64
 
-typedef ucontext64_t SignalUserContext;
+    #include <sys/_types/_ucontext64.h>
+    typedef ucontext64_t SignalUserContext;
 #else
     #define UC_MCONTEXT uc_mcontext
     typedef ucontext_t SignalUserContext;
