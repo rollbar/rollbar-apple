@@ -27,6 +27,6 @@
 #ifndef HDR_RollbarCrashReportVersion_h
 #define HDR_RollbarCrashReportVersion_h
 
-#define RollbarCrashCRASH_REPORT_VERSION "3.3.1"
+#define RollbarCrashCRASH_REPORT_VERSION "3.3.2"
 
 #endif /* HDR_RollbarCrashReportVersion_h */

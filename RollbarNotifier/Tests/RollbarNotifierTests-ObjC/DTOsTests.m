@@ -53,7 +53,7 @@
     XCTAssertTrue([payload hasSameDefinedPropertiesAs:payloadAtOnce],
                   @"Two RollbarPayload DTOs do not have same defined properties"
                   );
-    
+
     XCTAssertTrue([payloadAtOnce isEqual:payload],
                   @"Two RollbarPayload DTOs are expected to be equal"
                   );
@@ -70,7 +70,7 @@
     BOOL proxyEnabled = NO;
     NSUInteger proxyPort = 3000;
     NSString *proxyUrl = @"PROXY_URL";
-    RollbarProxy *dto = [[RollbarProxy alloc] initWithEnabled:proxyEnabled proxyUrl:proxyUrl proxyPort:proxyPort];    
+    RollbarProxy *dto = [[RollbarProxy alloc] initWithEnabled:proxyEnabled proxyUrl:proxyUrl proxyPort:proxyPort];
     XCTAssertTrue(dto.enabled == proxyEnabled,
                   @"Enabled."
                   );
@@ -93,12 +93,12 @@
     XCTAssertTrue(dto.safeListFields.count == 0,
                   @"Has NO whitelist fields"
                   );
-    
+
     dto.safeListFields = [@[@"tf1", @"tf2", @"tf3"] mutableCopy];
     XCTAssertTrue(dto.safeListFields.count == 3,
                   @"Has some whitelist fields"
                   );
-    
+
     dto.enabled = NO;
     XCTAssertTrue(!dto.enabled,
                   @"Expected to be disabled"
@@ -140,13 +140,13 @@
     XCTAssertTrue(NSOrderedSame == [dto.codeVersion compare:@"3.2.5"],
                   @"Proper new code version"
                   );
-    
-    
+
+
     RollbarMutableConfig *rc = [RollbarMutableConfig new];
     rc.destination.accessToken = @"ACCESSTOKEN";
     rc.destination.environment = @"ENVIRONMENT";
     rc.destination.endpoint = @"ENDPOINT";
-    
+
     dto = rc.server;
     NSString *branchValue = dto.branch;
     XCTAssertNil(branchValue,
@@ -185,7 +185,7 @@
     XCTAssertTrue(NSOrderedSame == [dto.email compare:@"EMAIL1"],
                   @"Proper email"
                   );
-    
+
     dto = [[RollbarMutablePerson alloc] initWithID:@"ID007"];
     XCTAssertTrue(NSOrderedSame == [dto.ID compare:@"ID007"],
                   @"Proper ID"
@@ -213,8 +213,8 @@
     XCTAssertTrue([dto.name isEqualToString:@"MN1"],
                   @"Proper name"
                   );
-    dto.version = @"v3.3.1";
-    XCTAssertTrue([dto.version isEqualToString:@"v3.3.1"],
+    dto.version = @"v3.3.2";
+    XCTAssertTrue([dto.version isEqualToString:@"v3.3.2"],
                   @"Proper version"
                   );
 
@@ -256,7 +256,7 @@
     XCTAssertTrue(dto.viewInputsScrubber.safeListFields.count == 3,
                   @"Proper view inputs scrubber white list fields count"
                   );
-    
+
     dto = [[RollbarMutableTelemetryOptions alloc] init];
     XCTAssertTrue(!dto.enabled,
                   @"Proper enabled"
@@ -288,7 +288,7 @@
     dto.codeVersion = @"CODEVERSION";
     dto.framework = @"FRAMEWORK";
     dto.requestId = @"REQUESTID";
-    
+
     XCTAssertTrue(dto.logLevel == RollbarLevel_Error,
                   @"Proper log level"
                   );
@@ -310,7 +310,7 @@
     XCTAssertTrue([dto.requestId isEqualToString:@"REQUESTID"],
                   @"Proper request ID"
                   );
-    
+
     dto = [[RollbarMutableLoggingOptions alloc] init];
     XCTAssertTrue(dto.logLevel == RollbarLevel_Debug,
                   @"Proper default log level"
@@ -343,16 +343,16 @@
     rc.destination.environment = @"ENVIRONMENT";
     rc.destination.endpoint = @"ENDPOINT";
     //rc.logLevel = RollbarDebug;
-    
+
     [rc setPersonId:@"PERSONID" username:@"PERSONUSERNAME" email:@"PERSONEMAIL"];
     [rc setServerHost:@"SERVERHOST" root:@"SERVERROOT" branch:@"SERVERBRANCH" codeVersion:@"SERVERCODEVERSION"];
     [rc setNotifierName:@"NOTIFIERNAME" version:@"NOTIFIERVERSION"];
-    
+
     RollbarMutableConfig *rcClone = [[RollbarMutableConfig alloc] initWithJSONString:[rc serializeToJSONString]];
-    
+
 //    id scrubList = rc.scrubFields;
 //    id scrubListClone = rcClone.scrubFields;
-    
+
     XCTAssertTrue([rc isEqual:rcClone],
                   @"Two DTOs are expected to be equal"
                   );
@@ -386,7 +386,7 @@
     NSString *messageBody = @"Test message";
     RollbarMessage *dto = [[RollbarMessage alloc] initWithBody:messageBody];
     XCTAssertEqual(messageBody, dto.body);
-    
+
     NSError *error = [NSError errorWithDomain:@"ERROR_DOMAIN" code:100 userInfo:nil];
     dto = [[RollbarMessage alloc] initWithNSError:error];
     XCTAssertNotNil(dto);
@@ -430,7 +430,7 @@
                                                        root:root
                                                      branch:branch
                                                 codeVersion:codeVersion];
-    
+
     XCTAssertNotNil(dto);
 
     XCTAssertNotNil(dto.cpu);
@@ -466,7 +466,7 @@
                                                           postParams:postParams
                                                             postBody:postBody
                                                               userIP:userIP];
-    
+
     XCTAssertNotNil(dto);
 
     XCTAssertNotNil(dto.headers);
@@ -497,7 +497,7 @@
     RollbarException *dto = [[RollbarException alloc] initWithExceptionClass:exceptionClass
                                                             exceptionMessage:exceptionMessage
                                                         exceptionDescription:exceptionDescription];
-    
+
     XCTAssertNotNil(dto);
 
     XCTAssertNotNil(dto.exceptionClass);
@@ -515,7 +515,7 @@
 
     RollbarCallStackFrameContext *dto = [[RollbarCallStackFrameContext alloc] initWithPreCodeLines:pre
                                                                                      postCodeLines:post];
-    
+
     XCTAssertNotNil(dto);
 
     XCTAssertNotNil(dto.preCodeLines);
@@ -535,7 +535,7 @@
 
     NSNumber *colno = @111;
     NSNumber *lineno = @222;
-    
+
     NSArray<NSString *> *pre = @[@"CODE_PR1", @"CODE_PR2"];
     NSArray<NSString *> *post = nil;
     RollbarCallStackFrameContext *codeContext = [[RollbarCallStackFrameContext alloc] initWithPreCodeLines:pre
@@ -555,7 +555,7 @@
     NSArray<NSString *> *argspec = @[];
     NSArray<NSString *> *varargspec = @[@"VARARG1"];
     NSArray<NSString *> *keywordspec = @[@"KW1", @"KW2"];
-    
+
     RollbarCallStackFrame *dto = [[RollbarCallStackFrame alloc] initWithFileName:filename];
     XCTAssertNotNil(dto);
     XCTAssertNotNil(dto.filename);
@@ -590,7 +590,7 @@
     XCTAssertTrue([dto.context.preCodeLines containsObject:pre[0]]);
     XCTAssertTrue([dto.context.preCodeLines containsObject:pre[1]]);
     XCTAssertNil(dto.context.postCodeLines);
-    
+
     XCTAssertNil(dto.locals);
     dto.locals = locals;
     XCTAssertNotNil(dto.locals);
@@ -600,7 +600,7 @@
     dto.argspec = argspec;
     XCTAssertNotNil(dto.argspec);
     XCTAssertEqual(dto.argspec.count, argspec.count);
-    
+
     XCTAssertNil(dto.varargspec);
     dto.varargspec = varargspec;
     XCTAssertNotNil(dto.varargspec);
@@ -610,11 +610,11 @@
     dto.keywordspec = keywordspec;
     XCTAssertNotNil(dto.keywordspec);
     XCTAssertEqual(dto.keywordspec.count, keywordspec.count);
-    
+
 }
 
 - (void)testRollbarTraceDTO {
-    
+
     NSString *exceptionClass = @"EXCEPTION_CLASS";
     NSString *exceptionMessage = @"EXCEPTIION_MESSAGE";
     NSString *exceptionDescription = nil;
@@ -640,7 +640,7 @@
     NSArray<NSString *> *argspec = @[];
     NSArray<NSString *> *varargspec = @[@"VARARG1"];
     NSArray<NSString *> *keywordspec = @[@"KW1", @"KW2"];
-    
+
     RollbarCallStackFrame *frameDto = [[RollbarCallStackFrame alloc] initWithFileName:filename];
     frameDto.className = className;
     frameDto.code = code;
@@ -652,7 +652,7 @@
     frameDto.argspec = argspec;
     frameDto.varargspec = varargspec;
     frameDto.keywordspec = keywordspec;
-    
+
     RollbarTrace *dto = [[RollbarTrace alloc] initWithRollbarException:exceptionDto
                                                 rollbarCallStackFrames:@[frameDto, frameDto]];
     XCTAssertNotNil(dto);
@@ -666,14 +666,14 @@
 
 // if/when we do allow a trace side-by-side with the crash report uncomment this test:
 //-(void)testRollbarBodyDTO {
-//    
+//
 //    RollbarBody *body = [[RollbarBody alloc] initWithCrashReport:CRASH_REPORT_PLCRASH_SYMBOLICATED];
-//    
+//
 //    XCTAssertNotNil(body.crashReport);
 //    XCTAssertNotNil(body.trace);
 //    XCTAssertNil(body.traceChain);
 //    XCTAssertNil(body.message);
-//    
+//
 //    XCTAssertNotNil(body.crashReport.rawCrashReport);
 //    XCTAssertTrue(body.crashReport.rawCrashReport.length > 0);
 //
@@ -687,12 +687,12 @@
 //}
 
 -(void)testRollbarTelemetryEventDTO_properBodyBasedOnType {
-    
+
     RollbarLevel level = RollbarLevel_Warning;
     RollbarSource source = RollbarSource_Server;
     RollbarTelemetryType type;
     RollbarTelemetryEvent *event = nil;
-    
+
     type = RollbarTelemetryType_Log;
     event = [[RollbarTelemetryEvent alloc] initWithLevel:level
                                            telemetryType:type
@@ -712,7 +712,7 @@
     XCTAssertEqual(event.type, type);
     XCTAssertNotNil(event.body);
     XCTAssertTrue([event.body isKindOfClass:[RollbarTelemetryViewBody class]]);
-    
+
     type = RollbarTelemetryType_Error;
     event = [[RollbarTelemetryEvent alloc] initWithLevel:level
                                            telemetryType:type
@@ -722,7 +722,7 @@
     XCTAssertEqual(event.type, type);
     XCTAssertNotNil(event.body);
     XCTAssertTrue([event.body isKindOfClass:[RollbarTelemetryErrorBody class]]);
-    
+
     type = RollbarTelemetryType_Navigation;
     event = [[RollbarTelemetryEvent alloc] initWithLevel:level
                                            telemetryType:type
@@ -732,7 +732,7 @@
     XCTAssertEqual(event.type, type);
     XCTAssertNotNil(event.body);
     XCTAssertTrue([event.body isKindOfClass:[RollbarTelemetryNavigationBody class]]);
-    
+
     type = RollbarTelemetryType_Network;
     event = [[RollbarTelemetryEvent alloc] initWithLevel:level
                                            telemetryType:type
@@ -742,7 +742,7 @@
     XCTAssertEqual(event.type, type);
     XCTAssertNotNil(event.body);
     XCTAssertTrue([event.body isKindOfClass:[RollbarTelemetryNetworkBody class]]);
-    
+
     type = RollbarTelemetryType_Connectivity;
     event = [[RollbarTelemetryEvent alloc] initWithLevel:level
                                            telemetryType:type
@@ -752,7 +752,7 @@
     XCTAssertEqual(event.type, type);
     XCTAssertNotNil(event.body);
     XCTAssertTrue([event.body isKindOfClass:[RollbarTelemetryConnectivityBody class]]);
-    
+
     type = RollbarTelemetryType_Manual;
     event = [[RollbarTelemetryEvent alloc] initWithLevel:level
                                            telemetryType:type
@@ -765,7 +765,7 @@
 }
 
 -(void)testRollbarTelemetryEventDTO_Log {
-    
+
     RollbarLevel level = RollbarLevel_Warning;
     RollbarSource source = RollbarSource_Server;
     NSDictionary *extra = @{
@@ -773,11 +773,11 @@
         @"EXTRA2":@"extra_2",
     };
     RollbarTelemetryEvent *event = nil;
-    
+
     NSString *logMessage = @"log message";
     RollbarTelemetryBody *body = [[RollbarTelemetryLogBody alloc] initWithMessage:logMessage
                                                                         extraData:extra];
-    
+
     event = [[RollbarTelemetryEvent alloc] initWithLevel:level
                                                   source:source
                                                     body:body];
@@ -794,7 +794,7 @@
 }
 
 -(void)testRollbarTelemetryEventDTO_View {
-    
+
     RollbarLevel level = RollbarLevel_Warning;
     RollbarSource source = RollbarSource_Server;
     NSDictionary *extra = @{
@@ -802,11 +802,11 @@
         @"EXTRA2":@"extra_2",
     };
     RollbarTelemetryEvent *event = nil;
-    
+
     NSString *viewElement = @"The element";
     RollbarTelemetryBody *body = [[RollbarTelemetryViewBody alloc] initWithElement:viewElement
                                                                          extraData:extra];
-    
+
     event = [[RollbarTelemetryEvent alloc] initWithLevel:level
                                                   source:source
                                                     body:body];
@@ -823,7 +823,7 @@
 }
 
 -(void)testRollbarTelemetryEventDTO_Error {
-    
+
     RollbarLevel level = RollbarLevel_Warning;
     RollbarSource source = RollbarSource_Server;
     NSDictionary *extra = @{
@@ -831,11 +831,11 @@
         @"EXTRA2":@"extra_2",
     };
     RollbarTelemetryEvent *event = nil;
-    
+
     NSString *logMessage = @"error message";
     RollbarTelemetryBody *body = [[RollbarTelemetryErrorBody alloc] initWithMessage:logMessage
                                                                           extraData:extra];
-    
+
     event = [[RollbarTelemetryEvent alloc] initWithLevel:level
                                                   source:source
                                                     body:body];
@@ -852,7 +852,7 @@
 }
 
 -(void)testRollbarTelemetryEventDTO_Navigation {
-    
+
     RollbarLevel level = RollbarLevel_Warning;
     RollbarSource source = RollbarSource_Server;
     NSDictionary *extra = @{
@@ -860,13 +860,13 @@
         @"EXTRA2":@"extra_2",
     };
     RollbarTelemetryEvent *event = nil;
-    
+
     NSString *from = @"FROM";
     NSString *to = @"TO";
     RollbarTelemetryBody *body = [[RollbarTelemetryNavigationBody alloc] initWithFromLocation:from
                                                                                    toLocation:to
                                                                                     extraData:extra];
-    
+
     event = [[RollbarTelemetryEvent alloc] initWithLevel:level
                                                   source:source
                                                     body:body];
@@ -884,7 +884,7 @@
 }
 
 -(void)testRollbarTelemetryEventDTO_Network {
-    
+
     RollbarLevel level = RollbarLevel_Warning;
     RollbarSource source = RollbarSource_Server;
     NSDictionary *extra = @{
@@ -892,7 +892,7 @@
         @"EXTRA2":@"extra_2",
     };
     RollbarTelemetryEvent *event = nil;
-    
+
     RollbarHttpMethod method = RollbarHttpMethod_Patch;
     NSString *url = @"URL";
     NSString *statusCode = @"STATUS_CODE";
@@ -900,7 +900,7 @@
                                                                                  url:url
                                                                           statusCode:statusCode
                                                                            extraData:extra];
-    
+
     event = [[RollbarTelemetryEvent alloc] initWithLevel:level
                                                   source:source
                                                     body:body];
@@ -919,7 +919,7 @@
 }
 
 -(void)testRollbarTelemetryEventDTO_Connectivity {
-    
+
     RollbarLevel level = RollbarLevel_Warning;
     RollbarSource source = RollbarSource_Server;
     NSDictionary *extra = @{
@@ -927,11 +927,11 @@
         @"EXTRA2":@"extra_2",
     };
     RollbarTelemetryEvent *event = nil;
-    
+
     NSString *status = @"STATUS_GOOD";
     RollbarTelemetryBody *body = [[RollbarTelemetryConnectivityBody alloc] initWithStatus:status
                                                                                 extraData:extra];
-    
+
     event = [[RollbarTelemetryEvent alloc] initWithLevel:level
                                                   source:source
                                                     body:body];
@@ -948,7 +948,7 @@
 }
 
 -(void)testRollbarTelemetryEventDTO_Manual {
-    
+
     RollbarLevel level = RollbarLevel_Warning;
     RollbarSource source = RollbarSource_Server;
     NSDictionary *extra = @{
@@ -956,9 +956,9 @@
         @"EXTRA2":@"extra_2",
     };
     RollbarTelemetryEvent *event = nil;
-    
+
     RollbarTelemetryBody *body = [[RollbarTelemetryManualBody alloc] initWithDictionary:extra];
-    
+
     event = [[RollbarTelemetryEvent alloc] initWithLevel:level
                                                   source:source
                                                     body:body];

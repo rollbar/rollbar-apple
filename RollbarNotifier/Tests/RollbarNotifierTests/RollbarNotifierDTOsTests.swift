@@ -4,15 +4,15 @@ import Foundation
 @testable import RollbarNotifier
 
 final class RollbarNotifierDTOsTests: XCTestCase {
-    
+
     override func setUp() {
     }
-    
+
     override func tearDown() {
     }
-    
+
     func testBasicDTOInitializationWithJSONString() {
-        
+
         let jsonString = "{\"access_token\":\"ACCESS_TOKEN\", \"data\":{\"environment\":\"ENV\"}}";
         let jsonPayload = "{\"access_token\":\"ACCESS_TOKEN\"}";
         let jsonData = "{\"environment\":\"ENV\"}";
@@ -44,7 +44,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         XCTAssertTrue(payload.hasSameDefinedProperties(as: payloadAtOnce),
                       "Two RollbarPayload DTOs do not have same defined properties"
                       );
-        
+
         XCTAssertEqual(payloadAtOnce, payload,
                       "Two RollbarPayload DTOs are expected to be equal"
                       );
@@ -58,7 +58,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
     }
 
     func testRollbarProxyDTO() {
-        
+
         let proxyEnabled = false;
         let proxyPort = UInt(3000);
         let proxyUrl = "PROXY_URL";
@@ -73,9 +73,9 @@ final class RollbarNotifierDTOsTests: XCTestCase {
                       "Proxy URL."
                       );
     }
-    
+
     func testRollbarScrubbingOptionsDTO() {
-        
+
         let dto = RollbarMutableScrubbingOptions(scrubFields: ["field1", "field2"]);
         XCTAssertTrue(dto.enabled,
                       "Enabled by default"
@@ -86,12 +86,12 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         XCTAssertTrue(dto.safeListFields.count == 0,
                       "Has NO whitelist fields"
                       );
-        
+
         dto.safeListFields = ["tf1", "tf2", "tf3"];
         XCTAssertTrue(dto.safeListFields.count == 3,
                       "Has some whitelist fields"
                       );
-        
+
         dto.enabled = false;
         XCTAssertTrue(!dto.enabled,
                       "Expected to be disabled"
@@ -99,9 +99,9 @@ final class RollbarNotifierDTOsTests: XCTestCase {
     }
 
     func testRollbarServerConfigDTO() {
-        
+
         var dto = RollbarMutableServerConfig(host: "HOST", root: "ROOT", branch: "BRANCH", codeVersion: "1.2.3");
-        
+
         XCTAssertTrue(.orderedSame == dto.host!.compare("HOST"),
                       "Proper host"
                       );
@@ -131,13 +131,13 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         XCTAssertTrue(.orderedSame == dto.codeVersion!.compare("3.2.5"),
                       "Proper new code version"
                       );
-        
-        
+
+
         let rc = RollbarMutableConfig();
         rc.destination.accessToken = "ACCESSTOKEN";
         rc.destination.environment = "ENVIRONMENT";
         rc.destination.endpoint = "ENDPOINT";
-        
+
         dto = rc.server;
         let branchValue = dto.branch;
         XCTAssertNil(branchValue,
@@ -150,7 +150,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
     }
 
     func testRollbarPersonDTO() {
-        
+
         var dto = RollbarMutablePerson(id: "ID", username: "USERNAME", email: "EMAIL");
 
         XCTAssertTrue(.orderedSame == dto.id.compare("ID"),
@@ -175,7 +175,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         XCTAssertTrue(.orderedSame == dto.email!.compare("EMAIL1"),
                       "Proper email"
                       );
-        
+
         dto = RollbarMutablePerson(id: "ID007");
         XCTAssertTrue(.orderedSame == dto.id.compare("ID007"),
                       "Proper ID"
@@ -186,7 +186,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         XCTAssertNil(dto.email,
                      "Proper default email"
                      );
-        
+
         dto = RollbarMutablePerson(id: "nil", username: "USERNAME", email: "EMAIL");
         XCTAssertTrue(.orderedSame == dto.id.compare("nil"),
                       "Proper initial ID"
@@ -195,7 +195,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         XCTAssertTrue(.orderedSame == dto.id.compare("ID"),
                       "Proper reassigned ID"
                       );
-        
+
         let personJson = dto.serializeToJSONString();
         XCTAssertNotNil(personJson, "Json serialization works.");
         XCTAssertTrue(.orderedSame == personJson!.compare("{\n  \"email\" : \"EMAIL\",\n  \"id\" : \"ID\",\n  \"username\" : \"USERNAME\"\n}"),
@@ -204,9 +204,9 @@ final class RollbarNotifierDTOsTests: XCTestCase {
     }
 
     func testRollbarModuleDTO() {
-        
+
         var dto = RollbarMutableModule(name: "ModuleName", version: "v1.2.3");
-        
+
         XCTAssertTrue(.orderedSame == dto.name!.compare("ModuleName"),
                       "Proper name"
                       );
@@ -218,8 +218,8 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         XCTAssertTrue(.orderedSame == dto.name!.compare("MN1"),
                       "Proper name"
                       );
-        dto.version = "v3.3.1";
-        XCTAssertTrue(.orderedSame == dto.version!.compare("v3.3.1"),
+        dto.version = "v3.3.2";
+        XCTAssertTrue(.orderedSame == dto.version!.compare("v3.3.2"),
                       "Proper version"
                       );
 
@@ -231,9 +231,9 @@ final class RollbarNotifierDTOsTests: XCTestCase {
                      "Proper version"
                      );
     }
-    
+
     func testRollbarTelemetryOptionsDTO() {
-        
+
         let scrubber = RollbarScrubbingOptions(
             enabled: true,
             scrubFields: ["one", "two"],
@@ -245,7 +245,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
             captureConnectivity: true,
             viewInputsScrubber: scrubber
         );
-        
+
         XCTAssertTrue(dto.enabled,
                       "Proper enabled"
                       );
@@ -264,7 +264,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         XCTAssertTrue(dto.viewInputsScrubber.safeListFields.count == 3,
                       "Proper view inputs scrubber white list fields count"
                       );
-        
+
         dto = RollbarMutableTelemetryOptions();
         XCTAssertTrue(!dto.enabled,
                       "Proper enabled"
@@ -286,9 +286,9 @@ final class RollbarNotifierDTOsTests: XCTestCase {
                       );
 
     }
-    
+
     func testRollbarLoggingOptionsDTO() {
-        
+
         var dto = RollbarMutableLoggingOptions(
             logLevel: .error,
             crash: .info,
@@ -299,7 +299,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         dto.codeVersion = "CODEVERSION";
         dto.framework = "FRAMEWORK";
         dto.requestId = "REQUESTID";
-        
+
         XCTAssertTrue(dto.logLevel == .error,
                       "Proper log level"
                       );
@@ -321,7 +321,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         XCTAssertTrue(.orderedSame == dto.requestId!.compare("REQUESTID"),
                       "Proper request ID"
                       );
-        
+
         dto = RollbarMutableLoggingOptions();
         XCTAssertTrue(dto.logLevel == .debug,
                       "Proper default log level"
@@ -348,25 +348,25 @@ final class RollbarNotifierDTOsTests: XCTestCase {
                      "Proper request ID"
                      );
     }
-    
+
     func testRollbarConfigDTO() {
-        
+
         let rc = RollbarMutableConfig();
         //id destination = rc.destination;
         rc.destination.accessToken = "ACCESSTOKEN";
         rc.destination.environment = "ENVIRONMENT";
         rc.destination.endpoint = "ENDPOINT";
         //rc.logLevel = RollbarDebug;
-        
+
         rc.setPersonId("PERSONID", username: "PERSONUSERNAME", email: "PERSONEMAIL");
         rc.setServerHost("SERVERHOST", root:"SERVERROOT", branch: "SERVERBRANCH", codeVersion: "SERVERCODEVERSION");
         rc.setNotifierName("NOTIFIERNAME", version: "NOTIFIERVERSION");
-        
+
         var rcClone = RollbarMutableConfig(jsonString: rc.serializeToJSONString()!);
-        
+
     //    id scrubList = rc.scrubFields;
     //    id scrubListClone = rcClone.scrubFields;
-        
+
         XCTAssertTrue(rc.isEqual(rcClone),
                       "Two DTOs are expected to be equal"
                       );
@@ -397,11 +397,11 @@ final class RollbarNotifierDTOsTests: XCTestCase {
     }
 
     func testRollbarMessageDTO() {
-        
+
         let messageBody = "Test message";
         var dto = RollbarMessage(body: messageBody);
         XCTAssertEqual(messageBody, dto.body);
-        
+
         let error = NSError(domain: "ERROR_DOMAIN", code: Int(100), userInfo: nil);
         dto = RollbarMessage(nsError: error);
         XCTAssertNotNil(dto);
@@ -410,7 +410,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
     }
 
     func testMessageRollbarBodyDTO() {
-        
+
         let message = "Test message";
         let dto = RollbarBody(message: message);
         XCTAssertNotNil(dto);
@@ -423,7 +423,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
     }
 
     func testCrashReportRollbarBodyDTO() {
-        
+
         let data = "RAW_CRASH_REPORT_CONTENT";
         let dto = RollbarBody(crashReport: data);
         XCTAssertNotNil(dto);
@@ -436,7 +436,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
     }
 
     func testRollbarServerDTO() {
-        
+
         let cpu = "CPU";
         let host = "HOST";
         let root = "ROOT";
@@ -450,7 +450,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
             branch: branch,
             codeVersion: nil
         );
-        
+
         XCTAssertNotNil(dto);
 
         XCTAssertNotNil(dto.cpu);
@@ -489,7 +489,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
             postBody: nil,
             userIP: userIP
         );
-        
+
         XCTAssertNotNil(dto);
 
         XCTAssertNotNil(dto.headers);
@@ -511,9 +511,9 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         XCTAssertEqual(dto.postBody, nil);
         XCTAssertEqual(dto.userIP, userIP);
     }
-    
+
     func testRollbarExceptionDTO() {
-        
+
         let exceptionClass = "EXCEPTION_CLASS";
         let exceptionMessage = "EXCEPTIION_MESSAGE";
         //let exceptionDescription = String();
@@ -523,7 +523,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
             exceptionMessage: exceptionMessage,
             exceptionDescription: nil
         );
-        
+
         XCTAssertNotNil(dto);
 
         XCTAssertNotNil(dto.exceptionClass);
@@ -536,7 +536,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
     }
 
     func testRollbarCallStackFrameContextDTO() {
-        
+
         let pre = ["CODE_PR1", "CODE_PR2"];
         //let post = [String]();
 
@@ -544,7 +544,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
             preCodeLines: pre,
             postCodeLines: nil
         );
-        
+
         XCTAssertNotNil(dto);
 
         XCTAssertNotNil(dto.preCodeLines);
@@ -556,7 +556,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
     }
 
     func testRollbarCallStackFrameDTO() {
-        
+
         let filename = "FILENAME";
 
         let className = "CLASSNAME";
@@ -565,14 +565,14 @@ final class RollbarNotifierDTOsTests: XCTestCase {
 
         let colno = UInt(111);
         let lineno = UInt(222);
-        
+
         let pre = ["CODE_PR1", "CODE_PR2"];
         //let post = [String]();
         let codeContext = RollbarCallStackFrameContext(
             preCodeLines: pre,
             postCodeLines: nil
         );
-        
+
         XCTAssertNotNil(codeContext);
         XCTAssertNotNil(codeContext.preCodeLines);
         XCTAssertNil(codeContext.postCodeLines);
@@ -588,7 +588,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         let argspec = [String]();
         let varargspec = ["VARARG1"];
         let keywordspec = ["KW1", "KW2"];
-        
+
         let dto = RollbarCallStackFrame(fileName: filename);
         XCTAssertNotNil(dto);
         XCTAssertNotNil(dto.filename);
@@ -623,7 +623,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         XCTAssertTrue(dto.context!.preCodeLines!.contains(pre[0]));
         XCTAssertTrue(dto.context!.preCodeLines!.contains(pre[1]));
         XCTAssertNil(dto.context!.postCodeLines);
-        
+
         XCTAssertNil(dto.locals);
         dto.locals = locals;
         XCTAssertNotNil(dto.locals);
@@ -633,7 +633,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         dto.argspec = argspec;
         XCTAssertNotNil(dto.argspec);
         XCTAssertEqual(dto.argspec!.count, argspec.count);
-        
+
         XCTAssertNil(dto.varargspec);
         dto.varargspec = varargspec;
         XCTAssertNotNil(dto.varargspec);
@@ -643,11 +643,11 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         dto.keywordspec = keywordspec;
         XCTAssertNotNil(dto.keywordspec);
         XCTAssertEqual(dto.keywordspec!.count, keywordspec.count);
-        
+
     }
-    
+
     func testRollbarTraceDTO() {
-        
+
         let exceptionClass = "EXCEPTION_CLASS";
         let exceptionMessage = "EXCEPTIION_MESSAGE";
         //let exceptionDescription = String();
@@ -677,7 +677,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         //let argspec = [String]();
         let varargspec = ["VARARG1"];
         let keywordspec = ["KW1", "KW2"];
-        
+
         let frameDto = RollbarCallStackFrame(fileName: filename);
         frameDto.className = className;
         frameDto.code = code;
@@ -689,7 +689,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         frameDto.argspec = nil;
         frameDto.varargspec = varargspec;
         frameDto.keywordspec = keywordspec;
-        
+
         let dto = RollbarTrace(
             rollbarException: exceptionDto,
             rollbarCallStackFrames: [frameDto, frameDto]
@@ -702,14 +702,14 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         XCTAssertEqual(dto.frames[0].filename, filename);
         XCTAssertEqual(dto.frames[1].filename, filename);
     }
-    
+
     func testRollbarTelemetryEventDTO_properBodyBasedOnType() {
-        
+
         let level = RollbarLevel.warning;
         let source = RollbarSource.server;
         var type: RollbarTelemetryType;
         var event: RollbarTelemetryEvent;
-        
+
         type = .log;
         event = RollbarTelemetryEvent(
             level: level,
@@ -733,7 +733,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         XCTAssertEqual(event.type, type);
         XCTAssertNotNil(event.body);
         XCTAssertTrue(event.body is RollbarTelemetryViewBody);
-        
+
         type = .error;
         event = RollbarTelemetryEvent(
             level: level,
@@ -745,7 +745,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         XCTAssertEqual(event.type, type);
         XCTAssertNotNil(event.body);
         XCTAssertTrue(event.body is RollbarTelemetryErrorBody);
-        
+
         type = .navigation;
         event = RollbarTelemetryEvent(
             level: level,
@@ -757,7 +757,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         XCTAssertEqual(event.type, type);
         XCTAssertNotNil(event.body);
         XCTAssertTrue(event.body is RollbarTelemetryNavigationBody);
-        
+
         type = .network;
         event = RollbarTelemetryEvent(
             level: level,
@@ -769,7 +769,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         XCTAssertEqual(event.type, type);
         XCTAssertNotNil(event.body);
         XCTAssertTrue(event.body is RollbarTelemetryNetworkBody);
-        
+
         type = .connectivity;
         event = RollbarTelemetryEvent(
             level: level,
@@ -781,7 +781,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         XCTAssertEqual(event.type, type);
         XCTAssertNotNil(event.body);
         XCTAssertTrue(event.body is RollbarTelemetryConnectivityBody);
-        
+
         type = .manual;
         event = RollbarTelemetryEvent(
             level: level,
@@ -794,9 +794,9 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         XCTAssertNotNil(event.body);
         XCTAssertTrue(event.body is RollbarTelemetryManualBody);
     }
-    
+
     func testRollbarTelemetryEventDTO_Log() {
-        
+
         let level: RollbarLevel = .warning;
         let source: RollbarSource = .server;
         let extra = [
@@ -810,7 +810,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
             message: logMessage,
             extraData: extra
         );
-        
+
         event = RollbarTelemetryEvent(
             level: level,
             source: source,
@@ -829,7 +829,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
     }
 
     func testRollbarTelemetryEventDTO_View() {
-        
+
         let level: RollbarLevel = .warning;
         let source: RollbarSource = .server;
         let extra = [
@@ -843,7 +843,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
             element: viewElement,
             extraData: extra
         );
-        
+
         event = RollbarTelemetryEvent(
             level: level,
             source: source,
@@ -862,7 +862,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
     }
 
     func testRollbarTelemetryEventDTO_Error() {
-        
+
         let level: RollbarLevel = .warning;
         let source: RollbarSource = .server;
         let extra = [
@@ -876,7 +876,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
             message: error,
             extraData: extra
         );
-        
+
         event = RollbarTelemetryEvent(
             level: level,
             source: source,
@@ -895,7 +895,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
     }
 
     func testRollbarTelemetryEventDTO_Navigation() {
-        
+
         let level: RollbarLevel = .warning;
         let source: RollbarSource = .server;
         let extra = [
@@ -911,7 +911,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
             toLocation: to,
             extraData: extra
         );
-        
+
         event = RollbarTelemetryEvent(
             level: level,
             source: source,
@@ -931,7 +931,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
     }
 
     func testRollbarTelemetryEventDTO_Network() {
-        
+
         let level: RollbarLevel = .warning;
         let source: RollbarSource = .server;
         let extra = [
@@ -949,7 +949,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
             statusCode: statusCode,
             extraData: extra
         );
-        
+
         event = RollbarTelemetryEvent(
             level: level,
             source: source,
@@ -970,7 +970,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
     }
 
     func testRollbarTelemetryEventDTO_Connectivity() {
-        
+
         let level: RollbarLevel = .warning;
         let source: RollbarSource = .server;
         let extra = [
@@ -981,7 +981,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
 
         let status = "STATUS_GOOD";
         let body = RollbarTelemetryConnectivityBody(status: status, extraData: extra);
-        
+
         event = RollbarTelemetryEvent(
             level: level,
             source: source,
@@ -1000,7 +1000,7 @@ final class RollbarNotifierDTOsTests: XCTestCase {
     }
 
     func testRollbarTelemetryEventDTO_Manual() {
-        
+
         let level: RollbarLevel = .warning;
         let source: RollbarSource = .server;
         let extra = [
@@ -1008,9 +1008,9 @@ final class RollbarNotifierDTOsTests: XCTestCase {
             "EXTRA2": "extra_2",
         ];
         var event: RollbarTelemetryEvent;
-        
+
         let body = RollbarTelemetryManualBody(dictionary: extra);
-        
+
         event = RollbarTelemetryEvent(
             level: level,
             source: source,
