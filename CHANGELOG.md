@@ -2,6 +2,11 @@
 
 ## Release Notes
 
+### 3.3.2
+
+- Fixes a compilation issue introduced in Xcode 16 Beta 5.
+- Fixes some warnings in our Swift code.
+
 ### 3.3.1
 
 - Fixes a compilation issue present in Xcode 16 beta.
