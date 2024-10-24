@@ -2,6 +2,10 @@
 
 ## Release Notes
 
+### Unreleased
+
+- Updated Cocoapods examples to use the latest SDK version, 3.3.2.
+
 ### 3.3.2
 
 - Fixes a compilation issue introduced in Xcode 16 Beta 5.
