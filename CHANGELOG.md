@@ -4,6 +4,7 @@
 
 ### Unreleased
 
+- Be more explicit about overloaded usage of `URL.init` that cannot be resolved in certain configurations when using the Rollbar React Native SDK.
 - Updated Cocoapods examples to use the latest SDK version, 3.3.2.
 
 ### 3.3.2

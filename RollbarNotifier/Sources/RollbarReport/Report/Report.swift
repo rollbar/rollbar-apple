@@ -83,7 +83,7 @@ extension Report {
     var bundleIdentifier: String? { self[any: "CFBundleIdentifier"] }
     var bundleVersion: String? { self[any: "CFBundleVersion"] }
     var bundleShortVersion: String? { self[any: "CFBundleShortVersionString"] }
-    var bundleExecutablePath: URL? { self[any: "CFBundleExecutablePath"].flatMap(URL.init) }
+    var bundleExecutablePath: URL? { self[any: "CFBundleExecutablePath"].flatMap(URL.init(string:)) }
 
     var processName: String { self[any: "process_name", default: "unknown"] }
     var processId: Int? { self[any: "process_id"] }
