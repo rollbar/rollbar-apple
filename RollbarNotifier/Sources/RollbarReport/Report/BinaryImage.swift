@@ -41,7 +41,7 @@ struct BinaryImage: RawRepresentable {
     init(rawValue: Report.Map) {
         self.rawValue = rawValue
 
-        self.path = rawValue[any: "name"].flatMap(URL.init) ?? URL(string: "/")!
+        self.path = rawValue[any: "name"].flatMap(URL.init(string:)) ?? URL(string: "/")!
         self.uuid = rawValue[any: "uuid"].flatMap(UUID.init) ?? .empty
         self.version = (
             major: rawValue[any: "major_version", default: 0],
