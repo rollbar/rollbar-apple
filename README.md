@@ -21,7 +21,7 @@ All the active development will be done within this SDK repository.
 
 ## Key benefits of using Rollbar for Apple software platforms are:
 
-- **Platforms:** Rollbar supports all <a href="https://docs.rollbar.com/docs/apple">Apple OS platforms</a> such as IOS, macOS, tvOS, watchOS, etc.
+- **Platforms:** Rollbar supports all <a href="https://docs.rollbar.com/docs/apple">Apple OS platforms</a> such as iOS, macOS, tvOS, watchOS, etc.
 - **Automatic error grouping:** Rollbar aggregates Occurrences caused by the same error into Items that represent application issues. <a href="https://docs.rollbar.com/docs/grouping-occurrences">Learn more about reducing log noise</a>.
 - **Advanced search:** Filter items by many different properties. <a href="https://docs.rollbar.com/docs/search-items">Learn more about search</a>.
 - **Customizable notifications:** Rollbar supports several messaging and incident management tools where your team can get notified about errors and important events by real-time alerts. <a href="https://docs.rollbar.com/docs/notifications">Learn more about Rollbar notifications</a>.
