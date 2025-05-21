@@ -29,8 +29,13 @@ extension Report {
     var system: Map { self[any: "system", default: [:]] }
     var process: Map? { self[any: "process"] }
     var recrashReport: Map? { self[any: "recrash_report"] }
-    var binaryImages: [BinaryImage] {
-        self[any: "binary_images", default: []].map(BinaryImage.init)
+    var binaryImages: Result<[BinaryImage], NSError> {
+        let raw: [Map] = self[any: "binary_images", default: []]
+        let images = raw.map(BinaryImage.init)
+        let result = images.compactMap { $0 }
+        return result.count == images.count
+            ? .success(result)
+            : .failure(.invalidBinaryImages(self, names: raw.compactMap { $0[any: "name"] }))
     }
 
     var crash: Map {
