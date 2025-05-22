@@ -74,8 +74,8 @@ final class RollbarReportTests: XCTestCase {
         XCTAssertNotNil(diagnosedCrash)
 
         RollbarCrashFormattingFilter().filterReports([diagnosedCrash!]) { reports, didComplete, error in
-            XCTAssertTrue(didComplete)
-            XCTAssertNil(error)
+            XCTAssertFalse(didComplete)
+            XCTAssertNotNil(error)
             XCTAssertNotNil(reports)
             XCTAssertNil(reports?.first)
         }

@@ -24,10 +24,21 @@ public class RollbarCrashFormattingFilter: NSObject, RollbarCrashReportFilter {
     ) -> () {
         let formattedResults = (reports ?? []).map { report in
             validated(report).map(format)
+        }.map {
+            $0.flatMap { formatted -> Result<Formatted<String>, NSError> in
+                switch formatted.string {
+                case .none:
+                    .success(Formatted(string: nil))
+                case let .success(string):
+                    .success(Formatted(string: string))
+                case let .failure(error):
+                    .failure(error)
+                }
+            }
         }
 
         complete?(
-            /*reports:*/formattedResults.compactMap(\.success?.string?.success).map(NSString.init),
+            /*reports:*/formattedResults.compactMap(\.success?.string).map(NSString.init),
             /*didFinish:*/formattedResults.allSatisfy(\.isSuccess),
             /*error:*/formattedResults.first(where: \.isFailure)?.failure)
     }
