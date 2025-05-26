@@ -45,10 +45,10 @@ extension Address {
         switch lhs {
         case let .memory(lhs):
             let (result, overflow) = lhs.addingReportingOverflow(rhs)
-            return overflow ? nil : .memory(result)
+            return overflow ? .none : .memory(result)
         case let .binary(lhs):
             let (result, overflow) = lhs.addingReportingOverflow(rhs)
-            return overflow ? nil : .binary(result)
+            return overflow ? .none : .binary(result)
         }
     }
 
@@ -58,10 +58,10 @@ extension Address {
         switch lhs {
         case let .memory(lhs):
             let (result, overflow) = lhs.subtractingReportingOverflow(rhs)
-            return overflow ? nil : .memory(result)
+            return overflow ? .none : .memory(result)
         case let .binary(lhs):
             let (result, overflow) = lhs.subtractingReportingOverflow(rhs)
-            return overflow ? nil : .binary(result)
+            return overflow ? .none : .binary(result)
         }
     }
 }

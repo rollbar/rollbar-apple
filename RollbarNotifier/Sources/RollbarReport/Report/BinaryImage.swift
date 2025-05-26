@@ -59,7 +59,8 @@ struct BinaryImage: RawRepresentable {
             .compactMap { rawValue[any: $0] }
 
         let addr = Address.binary(rawValue[any: "image_addr", default: 0])
-        guard let end = addr + (self.size - 1) else {
+        guard let addr = addr + self.size,
+              let end = addr - 1 else {
             return nil
         }
         self.addr = (addr, end)
