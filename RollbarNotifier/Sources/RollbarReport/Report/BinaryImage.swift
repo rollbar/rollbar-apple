@@ -58,11 +58,11 @@ struct BinaryImage: RawRepresentable {
         self.crashInfoMessages = ["crash_info_message", "crash_info_message2"]
             .compactMap { rawValue[any: $0] }
 
-        let addr = Address.binary(rawValue[any: "image_addr", default: 0])
-        guard let addr = addr + self.size,
+        let start = Address.binary(rawValue[any: "image_addr", default: 0])
+        guard let addr = start + self.size,
               let end = addr - 1 else {
             return nil
         }
-        self.addr = (addr, end)
+        self.addr = (start, end)
     }
 }
