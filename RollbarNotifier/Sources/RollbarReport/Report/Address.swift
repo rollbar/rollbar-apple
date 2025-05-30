@@ -41,19 +41,27 @@ extension Address {
 
     /// Performs addition over an Address and an unsigned integer primitive.
     @inlinable
-    static func + (lhs: Self, rhs: UInt) -> Self {
+    static func + (lhs: Self, rhs: UInt) -> Self? {
         switch lhs {
-        case let .memory(lhs): return .memory(lhs + rhs)
-        case let .binary(lhs): return .binary(lhs + rhs)
+        case let .memory(lhs):
+            let (result, overflow) = lhs.addingReportingOverflow(rhs)
+            return overflow ? .none : .memory(result)
+        case let .binary(lhs):
+            let (result, overflow) = lhs.addingReportingOverflow(rhs)
+            return overflow ? .none : .binary(result)
         }
     }
 
     /// Performs substraction over an Address and an unsigned integer primitive.
     @inlinable
-    static func - (lhs: Self, rhs: UInt) -> Self {
+    static func - (lhs: Self, rhs: UInt) -> Self? {
         switch lhs {
-        case let .memory(lhs): return .memory(lhs - rhs)
-        case let .binary(lhs): return .binary(lhs - rhs)
+        case let .memory(lhs):
+            let (result, overflow) = lhs.subtractingReportingOverflow(rhs)
+            return overflow ? .none : .memory(result)
+        case let .binary(lhs):
+            let (result, overflow) = lhs.subtractingReportingOverflow(rhs)
+            return overflow ? .none : .binary(result)
         }
     }
 }

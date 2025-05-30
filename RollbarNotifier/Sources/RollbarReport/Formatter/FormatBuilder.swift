@@ -39,7 +39,7 @@ import Foundation
 ///         gets ignored by the formatter.
 ///
 /// - Tag: DSL
-struct Formatted<T: StringProtocol> {
+struct Formatted<T> {
     /// The formatted string.
     ///
     /// An empty string represents an empty line, a nil string represents abscence, and
@@ -58,8 +58,7 @@ struct Formatted<T: StringProtocol> {
     }
 }
 
-extension Formatted: CustomStringConvertible {
-
+extension Formatted: CustomStringConvertible where T: StringProtocol {
     var description: String {
         "Format {\n\t\(self.string?.replacing("\n", with: "\n\t") ?? "\t.none")\n}"
     }
@@ -150,7 +149,7 @@ extension Result where Success == Formatted<String> {
     }
 }
 
-extension Formatted {
+extension Formatted where T: StringProtocol {
 
     /// Concatenates two formatted optional strings.
     @inlinable
@@ -159,11 +158,110 @@ extension Formatted {
     }
 }
 
+extension Formatted {
+    /// Concatenates two formatted optional strings.
+    @inlinable
+    static func *? <Success: StringProtocol, Failure: Error>(lhs: Self, rhs: Self) -> Formatted<Result<String, Failure>>
+        where T == Result<Success, Failure> {
+        switch (lhs.string, rhs.string) {
+        case let (.failure(failure), _),
+             let (_, .failure(failure)):
+            Formatted<Result<String, Failure>>(string: .failure(failure))
+        case (.none, _),
+             (_, .none):
+            Formatted<Result<String, Failure>>(string: .none)
+        case let (.success(lhs), .success(rhs)):
+            Formatted<Result<String, Failure>>(string: .success(lhs.appending(rhs)))
+        }
+    }
+}
+
 // MARK: - Formatted<String> Builder
 
 @resultBuilder
-enum FormatBuilder<T: StringProtocol> {
+enum FormatBuilder<T> {}
 
+extension FormatBuilder {
+    static func buildBlock<Success: StringProtocol, Failure: Error>(_ components: Formatted<T>?...) -> Formatted<Result<String, Failure>>
+        where T == Result<Success, Failure> {
+        buildArray(components.compact())
+    }
+
+    static func buildOptional<Success: StringProtocol, Failure: Error>(_ component: Formatted<T>?) -> Formatted<Result<Success, Failure>>
+        where T == Result<Success, Failure> {
+        component ?? Formatted(string: .none)
+    }
+
+    static func buildExpression<Success: StringProtocol, Failure: Error>(_ expression: ()) -> Formatted<T>
+        where T == Result<Success, Failure> {
+        Formatted(string: .none)
+    }
+
+    static func buildExpression<Success: StringProtocol, Failure: Error>(
+        _ expression: Formatted<T>
+    ) -> Formatted<T> where T == Result<Success, Failure> {
+        expression
+    }
+    
+    static func buildExpression<Success: StringProtocol, Failure: Error>(
+        _ expression: Formatted<Success>?
+    ) -> Formatted<T> where T == Result<Success, Failure> {
+        Formatted(string: (expression?.string).map { .success($0) })
+    }
+
+    static func buildExpression<Success: StringProtocol, Failure: Error>(
+        _ expression: Success?
+    ) -> Formatted<T> where T == Result<Success, Failure> {
+        Formatted(string: expression.map { .success($0) })
+    }
+
+    static func buildExpression<Success: StringProtocol, Failure: Error>(
+        _ expression: Failure
+    ) -> Formatted<T> where T == Result<Success, Failure> {
+        Formatted(string: .failure(expression))
+    }
+
+    static func buildExpression<Success: StringProtocol, Failure: Error>(
+        _ expression: Result<Success, Failure>?
+    ) -> Formatted<T> where T == Result<Success, Failure> {
+        Formatted(string: expression)
+    }
+
+    static func buildEither<Success: StringProtocol, Failure: Error>(first component: Formatted<T>?) -> Formatted<Result<Success, Failure>>
+        where T == Result<Success, Failure> {
+        component ?? Formatted(string: .none)
+    }
+
+    static func buildEither<Success: StringProtocol, Failure: Error>(second component: Formatted<T>?) -> Formatted<T>
+        where T == Result<Success, Failure> {
+        component ?? Formatted(string: .none)
+    }
+
+    static func buildArray<Success: StringProtocol, Failure: Error>(_ components: [Formatted<T>]) -> Formatted<Result<String, Failure>>
+        where T == Result<Success, Failure> {
+        if let failure = components.compactMap(\.string?.failure).first {
+            return .init(string: .failure(failure))
+        }
+        return Formatted(string: .success(components.compactMap(\.string?.success).joined(separator: "\n")))
+    }
+
+    static func buildExpression<Success: StringProtocol, Failure: Error>(_ expression: Report.Map?) -> Formatted<Result<String, Failure>>
+        where T == Result<Success, Failure> {
+        Formatted(string: (expression?.description).map { .success($0) })
+    }
+
+    static func buildExpression<Success: StringProtocol, Failure: Error>(_ expression: Diagnostic?) -> Formatted<Result<String, Failure>>
+        where T == Result<Success, Failure> {
+        Formatted(string: (expression?.description).map { .success($0) })
+    }
+    
+    static func buildExpression<S: CustomStringConvertible, Success: StringProtocol, Failure: Error>(_ expression: [S]?) -> Formatted<Result<String, Failure>>
+        where T == Result<Success, Failure> {
+            Formatted(string: (expression?.map(\.description).joined(separator: "\n")).map { .success($0) })
+    }
+}
+
+extension FormatBuilder where T: StringProtocol {
     static func buildBlock(_ components: Formatted<T>?...) -> Formatted<String> {
         components.compact().joined(separator: "\n")
     }
