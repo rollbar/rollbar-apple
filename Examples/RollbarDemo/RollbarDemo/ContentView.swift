@@ -143,7 +143,7 @@ struct Example {
             let extraInfo: [String: Any] = [
                 "item_1": "value_1",
                 "item_2": "value_2",
-                "stack_trace": stack.joined(separator: "\n")
+                "stack_trace": stack // stack.joined(separator: "\n")
             ]
             Rollbar.errorError(
                 error,
