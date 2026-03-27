@@ -86,7 +86,7 @@ UnitTesting             (shared XCTest utilities, used by test targets)
 
 ## Distribution
 
-The SDK ships via SwiftPM, CocoaPods (8 podspec files at repo root), and Carthage. Version is synchronized across all podspecs and `Package.swift`. Current version: 3.3.3.
+The SDK ships via SwiftPM, CocoaPods (8 podspec files at repo root), and Carthage. Version is synchronized across all podspecs and `Package.swift`. Current version: 3.4.0.
 
 ## External Dependency
 

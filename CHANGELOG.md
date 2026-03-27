@@ -2,6 +2,13 @@
 
 ## Release Notes
 
+### 3.4.0
+
+- Fixed a crash caused by integer overflow in address arithmetic when processing crash reports.
+- Added example on how to attach a stack trace for caught errors.
+- Fixed a compilation error in Xcode 26 caused by a private header import in `RollbarReachability.m`.
+- Added `CLAUDE.md` with project build, test, and architecture guidance.
+
 ### 3.3.3
 
 - Be more explicit about overloaded usage of `URL.init` that cannot be resolved in certain configurations when using the Rollbar React Native SDK.

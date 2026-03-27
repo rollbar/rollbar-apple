@@ -164,8 +164,8 @@
 
   dto.name = @"MN1";
   XCTAssertTrue([dto.name isEqualToString:@"MN1"], @"Proper name");
-  dto.version = @"v3.3.3";
-  XCTAssertTrue([dto.version isEqualToString:@"v3.3.3"], @"Proper version");
+  dto.version = @"v3.4.0";
+  XCTAssertTrue([dto.version isEqualToString:@"v3.4.0"], @"Proper version");
 
   dto = [[RollbarMutableModule alloc] initWithName:@"Module"];
   XCTAssertTrue([dto.name isEqualToString:@"Module"], @"Proper name");

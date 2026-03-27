@@ -2,5 +2,5 @@ platform :ios, '14.0'
 use_frameworks!
 
 target 'CocoapodsFramework' do
-  pod 'RollbarNotifier', '~> 3.3.3'
+  pod 'RollbarNotifier', '~> 3.4.0'
 end

@@ -13,7 +13,7 @@
 
 #pragma mark - constants
 
-static NSString *const NOTIFIER_VERSION = @"3.3.3";
+static NSString *const NOTIFIER_VERSION = @"3.4.0";
 
 static NSString *const NOTIFIER_NAME = @"rollbar-apple";
 
