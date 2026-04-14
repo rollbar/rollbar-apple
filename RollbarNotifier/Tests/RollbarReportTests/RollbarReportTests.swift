@@ -64,6 +64,22 @@ final class RollbarReportTests: XCTestCase {
             }
         }
     }
+    
+    func testRollbarReportFormattingDoesntCrash() {
+        let diagnosedCrash = Bundle.module
+            .url(forResource: "diagnosed_invalid.json", withExtension: .none)
+            .flatMap { try! Data(contentsOf: $0) }
+            .flatMap { try! JSONSerialization.jsonObject(with: $0) }
+
+        XCTAssertNotNil(diagnosedCrash)
+
+        RollbarCrashFormattingFilter().filterReports([diagnosedCrash!]) { reports, didComplete, error in
+            XCTAssertFalse(didComplete)
+            XCTAssertNotNil(error)
+            XCTAssertNotNil(reports)
+            XCTAssertNil(reports?.first)
+        }
+    }
 }
 
 #endif

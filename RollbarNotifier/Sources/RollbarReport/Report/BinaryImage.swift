@@ -38,10 +38,10 @@ struct BinaryImage: RawRepresentable {
     let rawValue: Report.Map
 
     /// Returns a new instance of a `BinaryImage` data structure from the given dictionary.
-    init(rawValue: Report.Map) {
+    init?(rawValue: Report.Map) {
         self.rawValue = rawValue
 
-        self.path = rawValue[any: "name"].flatMap(URL.init) ?? URL(string: "/")!
+        self.path = rawValue[any: "name"].flatMap(URL.init(string:)) ?? URL(string: "/")!
         self.uuid = rawValue[any: "uuid"].flatMap(UUID.init) ?? .empty
         self.version = (
             major: rawValue[any: "major_version", default: 0],
@@ -58,7 +58,11 @@ struct BinaryImage: RawRepresentable {
         self.crashInfoMessages = ["crash_info_message", "crash_info_message2"]
             .compactMap { rawValue[any: $0] }
 
-        let addr = Address.binary(rawValue[any: "image_addr", default: 0])
-        self.addr = (addr, addr + self.size - 1)
+        let start = Address.binary(rawValue[any: "image_addr", default: 0])
+        guard let addr = start + self.size,
+              let end = addr - 1 else {
+            return nil
+        }
+        self.addr = (start, end)
     }
 }

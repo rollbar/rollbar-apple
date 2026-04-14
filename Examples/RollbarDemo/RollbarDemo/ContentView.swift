@@ -6,7 +6,8 @@ enum ExampleError: Error {
     case
     invalidResult,
     invalidInput,
-    someOtherError
+    someOtherError,
+    someOtherErrorWithStackTrace
 }
 
 struct ContentView: View {
@@ -133,6 +134,22 @@ struct Example {
             throw ExampleError.someOtherError
         } catch {
             Rollbar.errorError(error, data: extraInfo)
+        }
+
+        do {
+            throw ExampleError.someOtherErrorWithStackTrace
+        } catch {
+            let stack = Thread.callStackSymbols
+            let extraInfo: [String: Any] = [
+                "item_1": "value_1",
+                "item_2": "value_2",
+                "stack_trace": stack // stack.joined(separator: "\n")
+            ]
+            Rollbar.errorError(
+                error,
+                data: extraInfo,
+                context: "Something bad happened, here’s your precious stack trace."
+            )
         }
     }
 

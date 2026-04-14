@@ -1,7 +1,6 @@
 import Foundation
 
 extension Error where Self == NSError {
-
     /// Returns a new `NSError` that describes a type-related error when trying to read
     /// a `Report` that's not a `Dictionary`.
     ///
@@ -32,6 +31,33 @@ extension Error where Self == NSError {
             NSLocalizedDescriptionKey: "Report has missing keys required.",
             NSFilePathErrorKey: file,
             "missing_keys": keys.joined(separator: ", ")
+        ])
+    }
+
+    /// Returns a new `NSError` stating that a `Report` contains invalid binary images,
+    /// making it impossible to process the `Report`.
+    static func invalidBinaryImages(
+        _ report: Report,
+        names: [String],
+        _ file: StaticString = #file,
+        _ line: UInt = #line
+    ) -> Self {
+        .init(domain: "\(file):\(line)", code: 10, userInfo: [
+            NSLocalizedDescriptionKey: "Report has invalid binary images.",
+            NSFilePathErrorKey: file,
+            "invalid_binary_images": names.joined(separator: ", ")
+        ])
+    }
+
+    /// Returns a new `NSError` stating that a `Report` contains at least one invalid stack address,
+    /// making it impossible to process the `Report`.
+    static func invalidAddress(
+        _ file: StaticString = #file,
+        _ line: UInt = #line
+    ) -> Self {
+        .init(domain: "\(file):\(line)", code: 11, userInfo: [
+            NSLocalizedDescriptionKey: "Report has an invalid address.",
+            NSFilePathErrorKey: file
         ])
     }
 

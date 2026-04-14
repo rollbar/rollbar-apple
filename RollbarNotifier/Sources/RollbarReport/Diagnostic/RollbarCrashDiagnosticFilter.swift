@@ -53,11 +53,16 @@ public class RollbarCrashDiagnosticFilter: NSObject, RollbarCrashReportFilter {
     /// - Parameter report: The `Report` to diagnose.
     /// - Returns: A new `Report` with the parsed diagnostic information.
     private func diagnose(_ report: Report) -> Result<Report, NSError> {
+        let binaryImagesResult = report.binaryImages
+        guard case let .success(binaryImages) = binaryImagesResult else {
+            return .failure(binaryImagesResult.failure!)
+        }
+        
         let crashDiagnostics = report.crash.diagnosis?
             .split(separator: "\n")
             .map { Diagnostic($0, source: report.crashType) } ?? []
 
-        let dyldDiagnostics = report.binaryImages
+        let dyldDiagnostics = binaryImages
             .filter(!\.crashInfoMessages.isEmpty)
             .flatMap { binaryImage in
                 binaryImage.crashInfoMessages.map { diagnosis in

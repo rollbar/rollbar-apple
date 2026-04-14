@@ -24,6 +24,17 @@ public class RollbarCrashFormattingFilter: NSObject, RollbarCrashReportFilter {
     ) -> () {
         let formattedResults = (reports ?? []).map { report in
             validated(report).map(format)
+        }.map {
+            $0.flatMap { formatted -> Result<Formatted<String>, NSError> in
+                switch formatted.string {
+                case .none:
+                    .success(Formatted(string: nil))
+                case let .success(string):
+                    .success(Formatted(string: string))
+                case let .failure(error):
+                    .failure(error)
+                }
+            }
         }
 
         complete?(
@@ -58,7 +69,7 @@ public class RollbarCrashFormattingFilter: NSObject, RollbarCrashReportFilter {
 fileprivate extension RollbarCrashFormattingFilter {
 
     /// Returns a formatted string with the formatted crash report.
-    func format(_ report: Report) -> Formatted<String> {
+    func format(_ report: Report) -> Formatted<Result<String, NSError>> {
         .init {
             header(for: report, system: report.system)
             error(for: report)
@@ -173,7 +184,7 @@ fileprivate extension RollbarCrashFormattingFilter {
     ///     ...
     /// }
     /// ```
-    func diagnostics(for report: Report, exception: Report.Map?) -> Formatted<String> {
+    func diagnostics(for report: Report, exception: Report.Map?) -> Formatted<Result<String, NSError>> {
         .init {
             "\nApplication Specific Information:"
             "*** Terminating app due to uncaught exception '" *? exception?.name *? "' , reason: '" *? exception?.reason *? "'"
@@ -236,7 +247,7 @@ fileprivate extension RollbarCrashFormattingFilter {
     /// ...
     /// 11  libsystem_pthread.dylib         0x00000001b059e4e4 _pthread_start + 116
     /// ```
-    func threadInfo(for thread: Report.Map, process: String) -> Formatted<String> {
+    func threadInfo(for thread: Report.Map, process: String) -> Formatted<Result<String, NSError>> {
         .init {
             ""
             "Thread \(thread.index)" *? " name:  " *? thread.threadName
@@ -253,7 +264,7 @@ fileprivate extension RollbarCrashFormattingFilter {
     /// ...
     /// 11  libsystem_pthread.dylib         0x00000001b059e4e4 _pthread_start + 116
     /// ```
-    func backtrace(for backtrace: [Frame], process: String) -> Formatted<String> {
+    func backtrace(for backtrace: [Frame], process: String) -> Formatted<Result<String, NSError>> {
         .init {
             for (n, frame) in backtrace.enumerated() {
                 let index = "\(n)".pad(3)
@@ -264,18 +275,27 @@ fileprivate extension RollbarCrashFormattingFilter {
 
                 case let .symbolicated(frame) where frame.object.name == process:
                     let preamble = "\(index) \(frame.object.name.pad(31)) \(frame.instructionAddr)"
-                    let offset = frame.instructionAddr - frame.object.addr.value
-                    "\(preamble) \(frame.object.addr) + \(offset.value)"
+                    if let offset = frame.instructionAddr - frame.object.addr.value {
+                        "\(preamble) \(frame.object.addr) + \(offset.value)"
+                    } else {
+                        .invalidAddress()
+                    }
 
                 case let .symbolicated(frame):
                     let preamble = "\(index) \(frame.object.name.pad(31)) \(frame.instructionAddr)"
-                    let offset = frame.instructionAddr - frame.symbol.addr.value
-                    "\(preamble) \(frame.symbol.name) + \(offset.value)"
+                    if let offset = frame.instructionAddr - frame.symbol.addr.value {
+                        "\(preamble) \(frame.symbol.name) + \(offset.value)"
+                    } else {
+                        .invalidAddress()
+                    }
 
                 case let .unsymbolicated(frame):
                     let preamble = "\(index) \(frame.object.name.pad(31)) \(frame.instructionAddr)"
-                    let offset = frame.instructionAddr - frame.object.addr.value
-                    "\(preamble) \(frame.object.addr) + \(offset.value)"
+                    if let offset = frame.instructionAddr - frame.object.addr.value {
+                        "\(preamble) \(frame.object.addr) + \(offset.value)"
+                    } else {
+                        .invalidAddress()
+                    }
                 }
             }
         }
@@ -318,10 +338,13 @@ fileprivate extension RollbarCrashFormattingFilter {
     /// ...
     /// 0x01b05ad000 - 0x01b05adfff  libsystem_sim_pthread_host.dylib arm64  <2544ef58c14d30b1a9fcce9d35e10cb0> /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/usr/lib/system/libsystem_sim_pthread_host.dylib
     /// ```
-    func binaryImages(for report: Report) -> Formatted<String> {
-        .init {
+    func binaryImages(for report: Report) -> Formatted<String>? {
+        guard case let .success(binaryImages) = report.binaryImages else {
+            return nil
+        }
+        return Formatted {
             "\nBinary Images:"
-            for img in report.binaryImages.sorted(by: their(\.addr.start)) {
+            for img in binaryImages.sorted(by: their(\.addr.start)) {
                 let cpu = img.cpu.subtypeName
                 let uuid = img.uuid.uuidString.replacingOccurrences(of: "-", with: "").lowercased()
                 let isMain = img.path == report.system.bundleExecutablePath ? "+" : " "

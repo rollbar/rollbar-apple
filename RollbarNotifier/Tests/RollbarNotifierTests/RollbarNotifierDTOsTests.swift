@@ -218,8 +218,8 @@ final class RollbarNotifierDTOsTests: XCTestCase {
         XCTAssertTrue(.orderedSame == dto.name!.compare("MN1"),
                       "Proper name"
                       );
-        dto.version = "v3.3.2";
-        XCTAssertTrue(.orderedSame == dto.version!.compare("v3.3.2"),
+        dto.version = "v3.4.0";
+        XCTAssertTrue(.orderedSame == dto.version!.compare("v3.4.0"),
                       "Proper version"
                       );
 

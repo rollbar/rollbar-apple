@@ -1,15 +1,15 @@
 PODS:
-  - RollbarCommon (3.1.0)
-  - RollbarCrash (3.1.0)
-  - RollbarNotifier (3.1.0):
-    - RollbarCommon (~> 3.1.0)
-    - RollbarCrash (~> 3.1.0)
-    - RollbarReport (~> 3.1.0)
-  - RollbarReport (3.1.0):
-    - RollbarCrash (~> 3.1.0)
+  - RollbarCommon (3.3.2)
+  - RollbarCrash (3.3.2)
+  - RollbarNotifier (3.3.2):
+    - RollbarCommon (~> 3.3.2)
+    - RollbarCrash (~> 3.3.2)
+    - RollbarReport (~> 3.3.2)
+  - RollbarReport (3.3.2):
+    - RollbarCrash (~> 3.3.2)
 
 DEPENDENCIES:
-  - RollbarNotifier (~> 3.1.0)
+  - RollbarNotifier (~> 3.3.2)
 
 SPEC REPOS:
   trunk:
@@ -19,11 +19,11 @@ SPEC REPOS:
     - RollbarReport
 
 SPEC CHECKSUMS:
-  RollbarCommon: 125fb7e9fa63ea79ef33ee0f0e50456bb9f9cdf5
-  RollbarCrash: d831f9c067bbe2147080a700c0a7ebc346d31db3
-  RollbarNotifier: 3213f4466b7f239c06d67e2c4963177e694df91b
-  RollbarReport: 55693c386a511cd37272fb2bfc8a6c1b333cd749
+  RollbarCommon: ebcc821a01d12aa29b66b204da041b95e99dfcce
+  RollbarCrash: 1069c64976ae36b42c45187c977115d07a6f6667
+  RollbarNotifier: e4c4d5c945489af69e063bf6b1aba4990136a7f6
+  RollbarReport: 6008c84d712bffb3cea026d04c284ce568ec7c27
 
-PODFILE CHECKSUM: 94655f4f87e1ff194ba9a4cc27c389b9a098a8a5
+PODFILE CHECKSUM: 7d733706898117d1f54dc3581d72138e1765dcfc
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.15.2
