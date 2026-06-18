@@ -33,7 +33,15 @@ void uncaughtExceptionHandler(NSException * _Nonnull exception) {
 
 + (void)initWithConfiguration:(nonnull RollbarConfig *)configuration {
 
-    [[RollbarInfrastructure sharedInstance] configureWith:[configuration mutableCopy]];
+    [self initWithConfiguration:configuration
+        isCrashReportingEnabled:YES];
+}
+
++ (void)initWithConfiguration:(nonnull RollbarConfig *)configuration
+      isCrashReportingEnabled:(BOOL)isCrashReportingEnabled {
+
+    [[RollbarInfrastructure sharedInstance] configureWith:[configuration mutableCopy]
+                                  isCrashReportingEnabled:isCrashReportingEnabled];
 }
 
 + (RollbarConfig *)configuration {
