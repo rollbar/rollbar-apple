@@ -159,6 +159,25 @@ Rollbar.initWithConfiguration(config)
 //OR Rollbar.initWithConfiguration(config, crashCollector: crashCollector)
 ```
 
+Automatic crash reporting is enabled by default. To disable it while keeping
+manual logging available, update the configuration before initializing Rollbar:
+
+#### Objective-C
+
+```Obj-C
+RollbarMutableConfig *config = [RollbarMutableConfig new];
+config.isCrashReportingEnabled = NO;
+[Rollbar initWithConfiguration:config];
+```
+
+#### Swift
+
+```Swift
+let config = RollbarMutableConfig()
+config.isCrashReportingEnabled = false
+Rollbar.initWithConfiguration(config)
+```
+
 ### Start Logging using the Shared Notifier
 
 #### Objective-C

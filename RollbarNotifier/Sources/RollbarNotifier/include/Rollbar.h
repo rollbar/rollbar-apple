@@ -21,12 +21,6 @@
 /// @param configuration a Rollbar configuration
 + (void)initWithConfiguration:(nonnull RollbarConfig *)configuration;
 
-/// Class initializer.
-/// @param configuration a Rollbar configuration
-/// @param isCrashReportingEnabled whether Rollbar should enable automatic crash reporting
-+ (void)initWithConfiguration:(nonnull RollbarConfig *)configuration
-      isCrashReportingEnabled:(BOOL)isCrashReportingEnabled;
-
  @end
 
 

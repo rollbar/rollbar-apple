@@ -77,6 +77,9 @@ typedef RollbarData *_Nonnull(^RollbarModifyData)(RollbarData *rollbarData);
 /// Telemetry related settings
 @property (nonnull, nonatomic, readonly, strong) RollbarTelemetryOptions *telemetry;
 
+/// Whether Rollbar should enable automatic crash reporting
+@property (nonatomic, readonly) BOOL isCrashReportingEnabled;
+
 #pragma mark - Custom data
 
 @property (nonatomic, readonly, strong) NSDictionary<NSString *, id> *customData;
@@ -135,6 +138,9 @@ NS_DESIGNATED_INITIALIZER;
 
 /// Telemetry related settings
 @property (nonnull, nonatomic, readwrite, strong) RollbarMutableTelemetryOptions *telemetry;
+
+/// Whether Rollbar should enable automatic crash reporting
+@property (nonatomic, readwrite) BOOL isCrashReportingEnabled;
 
 #pragma mark - Custom data
 

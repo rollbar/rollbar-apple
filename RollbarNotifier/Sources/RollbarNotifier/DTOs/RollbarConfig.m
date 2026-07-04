@@ -45,6 +45,7 @@ static NSString *const DFK_SERVER = @"server";
 static NSString *const DFK_PERSON = @"person";
 static NSString *const DFK_NOTIFIER = @"notifier";
 static NSString *const DFK_TELEMETRY = @"telemetry";
+static NSString *const DFK_CRASH_REPORTING_ENABLED = @"crashReportingEnabled";
 static NSString *const DFK_CUSTOM = @"custom";
 
 #pragma mark - class implementation
@@ -128,6 +129,7 @@ static NSString *const DFK_CUSTOM = @"custom";
         DFK_HTTPS_PROXY : [RollbarProxy new].jsonFriendlyData,
         DFK_DATA_SCRUBBER : [RollbarScrubbingOptions new].jsonFriendlyData,
         DFK_TELEMETRY : [RollbarTelemetryOptions new].jsonFriendlyData,
+        DFK_CRASH_REPORTING_ENABLED : [NSNumber numberWithBool:YES],
         DFK_NOTIFIER : [[RollbarModule alloc] initWithName:NOTIFIER_NAME
                                                    version:NOTIFIER_VERSION]
             .jsonFriendlyData,
@@ -152,6 +154,7 @@ static NSString *const DFK_CUSTOM = @"custom";
     DFK_HTTPS_PROXY : [RollbarProxy new].jsonFriendlyData,
     DFK_DATA_SCRUBBER : [RollbarScrubbingOptions new].jsonFriendlyData,
     DFK_TELEMETRY : [RollbarTelemetryOptions new].jsonFriendlyData,
+    DFK_CRASH_REPORTING_ENABLED : [NSNumber numberWithBool:YES],
     DFK_NOTIFIER : [[RollbarModule alloc] initWithName:NOTIFIER_NAME
                                                version:NOTIFIER_VERSION]
         .jsonFriendlyData,
@@ -233,6 +236,13 @@ static NSString *const DFK_CUSTOM = @"custom";
   return [[RollbarTelemetryOptions alloc] initWithDictionary:data];
 }
 
+#pragma mark - Crash reporting
+
+- (BOOL)isCrashReportingEnabled {
+  NSNumber *result = [self safelyGetNumberByKey:DFK_CRASH_REPORTING_ENABLED];
+  return result ? [result boolValue] : YES;
+}
+
 #pragma mark - Custom data
 
 - (NSDictionary<NSString *, id> *)customData {
@@ -303,6 +313,7 @@ static NSString *const DFK_CUSTOM = @"custom";
 
 @dynamic checkIgnoreRollbarData;
 @dynamic modifyRollbarData;
+@dynamic isCrashReportingEnabled;
 
 - (void)setCheckIgnoreRollbarData:
     (BOOL (^)(RollbarData *_Nonnull))checkIgnoreRollbarData {
@@ -425,6 +436,13 @@ static NSString *const DFK_CUSTOM = @"custom";
 
 - (void)setTelemetry:(RollbarTelemetryOptions *)value {
   [self setDataTransferObject:[value mutableCopy] forKey:DFK_TELEMETRY];
+}
+
+#pragma mark - Crash reporting
+
+- (void)setIsCrashReportingEnabled:(BOOL)value {
+  [self setNumber:[NSNumber numberWithBool:value]
+           forKey:DFK_CRASH_REPORTING_ENABLED];
 }
 
 #pragma mark - Convenience Methods

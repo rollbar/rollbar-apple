@@ -13,8 +13,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, strong) id<RollbarLogger> logger;
 
 - (instancetype)configureWith:(RollbarConfig *)config;
-- (instancetype)configureWith:(RollbarConfig *)config
-      isCrashReportingEnabled:(BOOL)isCrashReportingEnabled;
 
 #pragma mark - Sigleton pattern
 
