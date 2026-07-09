@@ -24,6 +24,30 @@
     // Put teardown code here. This method is called after the invocation of each test method in the class.
 }
 
+- (void)testCrashReportingEnabled {
+    
+    RollbarMutableConfig *mutable = [RollbarMutableConfig new];
+    XCTAssertTrue(mutable.isCrashReportingEnabled);
+
+    mutable.isCrashReportingEnabled = NO;
+    XCTAssertFalse(mutable.isCrashReportingEnabled);
+
+    NSString *content = [mutable serializeToJSONString];
+    XCTAssertNotNil(content);
+    XCTAssertTrue([content containsString:@"crashReportingEnabled"]);
+
+    RollbarConfig *immutable = [mutable copy];
+    XCTAssertNotNil(immutable);
+    XCTAssertFalse(immutable.isCrashReportingEnabled);
+
+    RollbarMutableConfig *mutableCopy = [immutable mutableCopy];
+    XCTAssertFalse(mutableCopy.isCrashReportingEnabled);
+
+    RollbarConfig *configWithoutCrashReportingOption =
+        [[RollbarConfig alloc] initWithDictionary:@{}];
+    XCTAssertTrue(configWithoutCrashReportingOption.isCrashReportingEnabled);
+}
+
 - (void)testRollbarDestination {
 
     NSString *defaultMutable = [[RollbarMutableDestination new] serializeToJSONString];

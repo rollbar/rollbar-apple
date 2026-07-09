@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface RollbarInfrastructure ()
 @property (readwrite, strong) id<RollbarLogger> logger;
 @property (readwrite, strong) RollbarConfig *configuration;
-@property (readwrite, strong) RollbarCrashCollector *collector;
+@property (readwrite, strong, nullable) RollbarCrashCollector *collector;
 @end
 
 @implementation RollbarInfrastructure
@@ -46,9 +46,13 @@ NS_ASSUME_NONNULL_BEGIN
 
     [[RollbarTelemetry sharedInstance] configureWithOptions:config.telemetry];
 
-    self.collector = [[RollbarCrashCollector alloc] init];
-    [self.collector install];
-    [self.collector sendAllReports];
+    if (config.isCrashReportingEnabled) {
+        self.collector = [[RollbarCrashCollector alloc] init];
+        [self.collector install];
+        [self.collector sendAllReports];
+    } else {
+        self.collector = nil;
+    }
 
     // Create RollbarThread and begin processing persisted occurrences
     if ([[RollbarThread sharedInstance] active]) {
