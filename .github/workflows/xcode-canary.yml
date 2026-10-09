@@ -1,0 +1,603 @@
+# Xcode canary: builds the SDK with every relevant Xcode installed on GitHub's
+# macOS runners, betas included, so a new Xcode that breaks the SDK is caught
+# here before users report it. Until now every Xcode break on this repo (Xcode
+# 16 beta 1, Xcode 16 beta 5, Xcode 26.4 RC) was reported by users first:
+# masterCI.yml only runs on push and pull request, with whichever Xcode
+# macos-latest has that day.
+#
+# Three jobs:
+#   discover  lists the Xcodes really installed on each runner image. The
+#             images' READMEs can run ahead of what is deployed, so the
+#             workflow looks instead of naming versions.
+#   plan      picks what to build: every version of the newest Xcode major
+#             (betas included) plus the newest version of each older major.
+#             A manual run with all_xcodes builds everything discovered.
+#   build     one job per Xcode: the root package with SwiftPM, then each
+#             platform, then the macOS tests masterCI.yml runs. A platform
+#             builds with xcodebuild when the Xcode has its runtime
+#             installed. When it doesn't, SwiftPM compiles the package
+#             against the Xcode's own SDK for that platform instead: the
+#             runner images install no runtimes for beta and RC Xcodes,
+#             which are the ones this canary exists for.
+#
+# Pome, Rollbar's maintainer agent, reads this workflow's runs. It parses the
+# build job names ("Xcode <version> (<build>) on <image>") and the step names
+# ("Build for iOS" and so on), so rename them only together with Pome. A
+# skipped "Build for <platform>" step means the Xcode has neither that
+# platform's runtime nor its SDK.
+#
+# GitHub disables scheduled workflows in a public repository after 60 days
+# without repository activity. If the Monday runs stop, re-enable the
+# workflow from the Actions tab.
+#
+# It uses no secrets and only reads the repository, so two runs can overlap
+# safely. It has no concurrency group on purpose: in one, a newly queued run
+# cancels a pending one even with cancel-in-progress off.
+
+name: Xcode canary
+
+on:
+  schedule:
+    # Mondays at 09:00 UTC.
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+    inputs:
+      all_xcodes:
+        description: Build every discovered Xcode, not only the default selection
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    # An explicit bash runs with -o pipefail; the implicit default does not.
+    shell: bash
+
+jobs:
+  discover:
+    name: Discover Xcodes on ${{ matrix.image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # Standard labels, free for public repositories. xcode-27 is GitHub's
+        # preview image for Xcode 27. Add the next image here when GitHub
+        # publishes one.
+        image: [macos-26, xcode-27]
+    runs-on: ${{ matrix.image }}
+    timeout-minutes: 10
+    steps:
+      - name: List installed Xcodes
+        env:
+          IMAGE: ${{ matrix.image }}
+        run: |
+          out="xcodes-${IMAGE}.json"
+          # One JSON object per line; jq -s turns them into the list.
+          entries="$(mktemp)"
+          seen=""
+          for app in /Applications/Xcode*.app; do
+            # The images add symlinks next to each install (Xcode.app for the
+            # default, Xcode_26.6.0.app, Xcode_27.2.app). Skip them, and
+            # compare real paths so no Xcode is listed twice.
+            if [ -L "$app" ] || [ ! -d "$app" ]; then
+              continue
+            fi
+            real="$(realpath "$app")"
+            case "$seen" in
+              *"|$real|"*) continue ;;
+            esac
+            seen="$seen|$real|"
+            if ! version="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$real/Contents/Info.plist")" \
+              || ! build="$(/usr/libexec/PlistBuddy -c 'Print :ProductBuildVersion' "$real/Contents/version.plist")" \
+              || [ -z "$version" ] || [ -z "$build" ]; then
+              echo "::warning::Skipping $real: its version or build could not be read"
+              continue
+            fi
+            echo "Found Xcode $version ($build) at $real"
+            jq -n -c --arg image "$IMAGE" --arg app "$real" --arg version "$version" --arg build "$build" \
+              '{image: $image, app: $app, version: $version, build: $build}' >> "$entries"
+          done
+          jq -s . "$entries" > "$out"
+          if [ "$(jq length "$out")" -eq 0 ]; then
+            echo "::warning::No Xcode found in /Applications on $IMAGE"
+          fi
+          cat "$out"
+
+      # Matrix legs can't hand outputs to a later job (the legs overwrite
+      # each other), so each leg uploads its list as an artifact.
+      - name: Upload the list
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcodes-${{ matrix.image }}
+          path: xcodes-${{ matrix.image }}.json
+          if-no-files-found: error
+          retention-days: 7
+
+  plan:
+    name: Plan builds
+    needs: discover
+    # Plan with whatever was discovered even when one image failed (the
+    # xcode-27 preview has no SLA). The failed leg already marks the run red.
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+    steps:
+      - name: Download the Xcode lists
+        uses: actions/download-artifact@v4
+        with:
+          pattern: xcodes-*
+          path: xcodes
+          merge-multiple: true
+
+      - name: Choose Xcodes
+        id: plan
+        shell: python3 {0}
+        env:
+          XCODES_DIR: xcodes
+          # Empty on scheduled runs, which build the default selection.
+          ALL_XCODES: ${{ inputs.all_xcodes }}
+        run: |
+          import glob
+          import json
+          import os
+          import re
+          import sys
+
+          VERSION = re.compile(r"^\d+(\.\d+)*$")
+          FIELDS = ("image", "app", "version", "build")
+
+
+          def fail(message):
+              print(f"::error::{message}")
+              sys.exit(1)
+
+
+          def version_key(entry):
+              return tuple(int(part) for part in entry["version"].split("."))
+
+
+          def major(entry):
+              return version_key(entry)[0]
+
+
+          def load(directory):
+              entries = []
+              for path in sorted(glob.glob(os.path.join(directory, "xcodes-*.json"))):
+                  with open(path, encoding="utf-8") as f:
+                      data = json.load(f)
+                  if not isinstance(data, list):
+                      fail(f"{path} is not a JSON list")
+                  for item in data:
+                      valid = isinstance(item, dict) and all(
+                          isinstance(item.get(k), str) and item[k] for k in FIELDS
+                      )
+                      if not valid or not VERSION.match(item["version"]):
+                          print(f"::warning::Ignoring {item!r} from {path}: not an Xcode entry")
+                          continue
+                      entries.append({k: item[k] for k in FIELDS})
+              return entries
+
+
+          def choose(entries, everything):
+              # One job per Xcode build. Images sort alphabetically, so when two
+              # images have the same build, the stable macos-* image builds it
+              # rather than a preview one.
+              unique = {}
+              for entry in sorted(entries, key=lambda e: (e["image"], e["app"])):
+                  unique.setdefault(entry["build"], entry)
+              chosen = list(unique.values())
+              if not everything:
+                  # Every version of the newest major, because that is where
+                  # betas and new breakage arrive; for older majors only the
+                  # newest version, which is what most users have.
+                  newest_major = max(major(e) for e in chosen)
+                  newest = {}
+                  for e in chosen:
+                      newest[major(e)] = max(newest.get(major(e), ()), version_key(e))
+                  chosen = [
+                      e for e in chosen
+                      if major(e) == newest_major or version_key(e) == newest[major(e)]
+                  ]
+              return sorted(chosen, key=lambda e: (version_key(e), e["build"]), reverse=True)
+
+
+          everything = os.environ.get("ALL_XCODES", "") == "true"
+          entries = load(os.environ["XCODES_DIR"])
+          if not entries:
+              fail("No Xcodes were discovered on any runner image, so there is nothing to build")
+          chosen = choose(entries, everything)
+          print(f"Discovered {len(entries)} Xcode installs; building {len(chosen)}"
+                f"{' (all_xcodes)' if everything else ''}:")
+          for e in chosen:
+              print(f"  Xcode {e['version']} ({e['build']}) on {e['image']}: {e['app']}")
+          include = [
+              {"image": e["image"], "app": e["app"], "xcode": e["version"], "build": e["build"]}
+              for e in chosen
+          ]
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              out.write(f"matrix={json.dumps({'include': include})}\n")
+
+  build:
+    # Pome parses this name. Keep it "Xcode <version> (<build>) on <image>".
+    name: Xcode ${{ matrix.xcode }} (${{ matrix.build }}) on ${{ matrix.image }}
+    needs: plan
+    # Without !cancelled(), a failed discover leg would skip every build even
+    # though plan succeeded with the other image's Xcodes.
+    if: ${{ !cancelled() && needs.plan.result == 'success' }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    runs-on: ${{ matrix.image }}
+    # The longest job builds every platform with xcodebuild, then runs the
+    # macOS tests (about 6 minutes of masterCI.yml's run on macos-latest). A
+    # SwiftPM platform build takes the place of an xcodebuild one rather than
+    # adding to it, and measured quicker, so an hour still leaves room for a
+    # slow beta.
+    timeout-minutes: 60
+    env:
+      # Selects this job's Xcode for xcodebuild, swift and xcrun, without
+      # xcode-select (which needs sudo and changes the whole machine).
+      DEVELOPER_DIR: ${{ matrix.app }}/Contents/Developer
+    # Every step after checkout runs even when an earlier one failed, so one
+    # broken platform doesn't hide the state of the others.
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Show toolchain
+        if: ${{ !cancelled() }}
+        run: |
+          xcodebuild -version
+          swift --version
+          xcrun simctl list runtimes || true
+
+      # The xcodebuild steps build the root Package.swift through the
+      # package's own workspace (tracked in git). xcodebuild at the repo root
+      # would pick RollbarSDK.xcworkspace, which has no RollbarSDK-Package
+      # scheme.
+      #
+      # The probe decides how each platform builds and writes it as a step
+      # output (ios, tvos, watchos, visionos, macos):
+      #   xcodebuild  the platform's generic destination is available.
+      #   swiftpm     it isn't, but the Xcode has the platform's SDK.
+      #               xcodebuild needs the platform installed (Xcode's
+      #               separate download with the runtime), while SwiftPM
+      #               compiles against the SDK alone.
+      #   none        the Xcode has neither, so the platform build is skipped.
+      # macOS is always xcodebuild: a macOS runner always has "Any Mac".
+      #
+      # -showsdks isn't enough to tell which platforms xcodebuild can build:
+      # it lists SDKs whose platform isn't installed (Xcode 26.4.1 without
+      # its iOS platform lists iphoneos26.4, then fails with "iOS 26.4 is not
+      # installed"). The destinations list is what xcodebuild accepts.
+      #
+      # When the probe fails it writes no output at all, so every output is
+      # empty and no platform build runs (the summary and Pome both expect
+      # that).
+      - name: Probe destinations
+        id: probe
+        if: ${{ !cancelled() }}
+        run: |
+          listing="$RUNNER_TEMP/destinations.txt"
+          status=0
+          xcodebuild \
+            -workspace .swiftpm/xcode/package.xcworkspace \
+            -scheme RollbarSDK-Package \
+            -derivedDataPath DerivedData/package \
+            -showdestinations > "$listing" 2>&1 || status=$?
+          cat "$listing"
+
+          # A listing from a failed xcodebuild isn't trusted.
+          if [ "$status" -ne 0 ]; then
+            echo "::error::xcodebuild -showdestinations failed (exit $status), so no platform build runs"
+            exit "$status"
+          fi
+
+          # Only the "Available destinations" section counts. It ends at the
+          # first blank line; the "Ineligible destinations" section after it
+          # lists platforms that aren't installed, each with an error.
+          available="$(awk '/Available destinations for/ { on = 1; next } on && /^[[:space:]]*$/ { exit } on { print }' "$listing")"
+
+          # Succeeds when the plain generic destination for a platform is
+          # available, as in "{ platform:iOS, id:..., name:Any iOS Device }".
+          # Variants share the platform and the name ("{ platform:macOS,
+          # variant:Mac Catalyst, name:Any Mac }") and don't count.
+          generic() {
+            local line
+            while IFS= read -r line; do
+              case "$line" in
+                *variant:*) ;;
+                *"{ platform:$1,"*"name:$2"*) return 0 ;;
+              esac
+            done <<< "$available"
+            return 1
+          }
+
+          # "Any Mac" is always available on a macOS runner, so after a zero
+          # exit, not finding it means the listing changed shape (a renamed
+          # header, a new destination format) and this parse can't read it.
+          # Every platform would then look uninstalled and quietly fall back
+          # to SwiftPM or to no build at all, so the probe fails instead.
+          if ! generic macOS "Any Mac"; then
+            echo "::error::xcodebuild -showdestinations exited 0 but the probe found no \"Any Mac\" destination in it, so its format changed and the probe can't read it; no platform build runs"
+            exit 1
+          fi
+
+          # Outputs are written together at the end, so a probe that stops
+          # part way leaves every one of them empty.
+          outputs=""
+
+          # Decides one platform: its output key, its platform and generic
+          # destination names in the listing, and its SDK name for xcrun.
+          record() {
+            local key="$1" platform="$2" destination="$3" sdk="$4" method sdk_path
+            if generic "$platform" "$destination"; then
+              method=xcodebuild
+            elif sdk_path="$(xcrun --sdk "$sdk" --show-sdk-path 2>/dev/null)" && [ -d "$sdk_path" ]; then
+              method=swiftpm
+              echo "::notice::The $platform platform isn't installed for this Xcode, so Build for $platform compiles with SwiftPM against $sdk_path"
+            else
+              method=none
+              echo "::notice::This Xcode has neither the $platform platform nor its SDK, so Build for $platform is skipped"
+            fi
+            echo "$platform: $method"
+            outputs+="$key=$method"$'\n'
+          }
+
+          record ios iOS "Any iOS Device" iphoneos
+          record tvos tvOS "Any tvOS Device" appletvos
+          record watchos watchOS "Any watchOS Device" watchos
+          record visionos visionOS "Any visionOS Device" xros
+          echo "macOS: xcodebuild"
+          outputs+="macos=xcodebuild"$'\n'
+          printf '%s' "$outputs" >> "$GITHUB_OUTPUT"
+
+      # The root Package.swift, the one SwiftPM users consume. masterCI.yml
+      # only builds the per-module manifests.
+      - name: Swift build
+        id: swift
+        if: ${{ !cancelled() }}
+        run: swift build
+
+      # Each platform builds the way the probe decided. xcodebuild builds the
+      # generic destination, as an app would. SwiftPM compiles the same
+      # package for the platform's triple against the Xcode's SDK for it,
+      # with a scratch path per platform so no build reuses another's state.
+      # SwiftPM takes the deployment target from Package.swift's minimum for
+      # the platform, not from the triple's OS version (with Xcode 26.4.1,
+      # arm64-apple-ios15.0 compiles for iOS 12.0). The triples still name a
+      # supported version, in case SwiftPM starts reading it.
+      - name: Build for iOS
+        id: ios
+        if: ${{ !cancelled() && steps.probe.outputs.ios != 'none' && steps.probe.outputs.ios != '' }}
+        env:
+          METHOD: ${{ steps.probe.outputs.ios }}
+          DESTINATION: generic/platform=iOS
+          SDK: iphoneos
+          TRIPLE: arm64-apple-ios15.0
+        run: |
+          case "$METHOD" in
+            xcodebuild)
+              xcodebuild \
+                -workspace .swiftpm/xcode/package.xcworkspace \
+                -scheme RollbarSDK-Package \
+                -derivedDataPath DerivedData/package \
+                -destination "$DESTINATION" \
+                build \
+                CODE_SIGNING_ALLOWED=NO
+              ;;
+            swiftpm)
+              sdk="$(xcrun --sdk "$SDK" --show-sdk-path)"
+              swift build --scratch-path "$RUNNER_TEMP/swiftpm-$SDK" --triple "$TRIPLE" --sdk "$sdk"
+              ;;
+            *)
+              echo "::error::The probe chose an unknown build method: \"$METHOD\""
+              exit 1
+              ;;
+          esac
+
+      - name: Build for tvOS
+        id: tvos
+        if: ${{ !cancelled() && steps.probe.outputs.tvos != 'none' && steps.probe.outputs.tvos != '' }}
+        env:
+          METHOD: ${{ steps.probe.outputs.tvos }}
+          DESTINATION: generic/platform=tvOS
+          SDK: appletvos
+          TRIPLE: arm64-apple-tvos15.0
+        run: |
+          case "$METHOD" in
+            xcodebuild)
+              xcodebuild \
+                -workspace .swiftpm/xcode/package.xcworkspace \
+                -scheme RollbarSDK-Package \
+                -derivedDataPath DerivedData/package \
+                -destination "$DESTINATION" \
+                build \
+                CODE_SIGNING_ALLOWED=NO
+              ;;
+            swiftpm)
+              sdk="$(xcrun --sdk "$SDK" --show-sdk-path)"
+              swift build --scratch-path "$RUNNER_TEMP/swiftpm-$SDK" --triple "$TRIPLE" --sdk "$sdk"
+              ;;
+            *)
+              echo "::error::The probe chose an unknown build method: \"$METHOD\""
+              exit 1
+              ;;
+          esac
+
+      # With SwiftPM, watchOS builds for arm64_32, the Apple Watch device
+      # architecture with 32-bit pointers that sets watchOS apart from iOS.
+      # (arm64 builds too, but only from watchOS 26.)
+      - name: Build for watchOS
+        id: watchos
+        if: ${{ !cancelled() && steps.probe.outputs.watchos != 'none' && steps.probe.outputs.watchos != '' }}
+        env:
+          METHOD: ${{ steps.probe.outputs.watchos }}
+          DESTINATION: generic/platform=watchOS
+          SDK: watchos
+          TRIPLE: arm64_32-apple-watchos9.0
+        run: |
+          case "$METHOD" in
+            xcodebuild)
+              xcodebuild \
+                -workspace .swiftpm/xcode/package.xcworkspace \
+                -scheme RollbarSDK-Package \
+                -derivedDataPath DerivedData/package \
+                -destination "$DESTINATION" \
+                build \
+                CODE_SIGNING_ALLOWED=NO
+              ;;
+            swiftpm)
+              sdk="$(xcrun --sdk "$SDK" --show-sdk-path)"
+              swift build --scratch-path "$RUNNER_TEMP/swiftpm-$SDK" --triple "$TRIPLE" --sdk "$sdk"
+              ;;
+            *)
+              echo "::error::The probe chose an unknown build method: \"$METHOD\""
+              exit 1
+              ;;
+          esac
+
+      # The SDK doesn't declare visionOS, but visionOS apps can still add the
+      # package, so a break there reaches users too.
+      #
+      # Because Package.swift has no visionOS minimum, SwiftPM appends 10.13
+      # to the triple's OS version (seen with Xcode 26.4.1): xros1.0 becomes
+      # xros1.010.13, which clang reads as visionOS 1.10.13 and builds, while
+      # a bare xros becomes xros10.13, which clang rejects. Keep the 1.0.
+      - name: Build for visionOS
+        id: visionos
+        if: ${{ !cancelled() && steps.probe.outputs.visionos != 'none' && steps.probe.outputs.visionos != '' }}
+        env:
+          METHOD: ${{ steps.probe.outputs.visionos }}
+          DESTINATION: generic/platform=visionOS
+          SDK: xros
+          TRIPLE: arm64-apple-xros1.0
+        run: |
+          case "$METHOD" in
+            xcodebuild)
+              xcodebuild \
+                -workspace .swiftpm/xcode/package.xcworkspace \
+                -scheme RollbarSDK-Package \
+                -derivedDataPath DerivedData/package \
+                -destination "$DESTINATION" \
+                build \
+                CODE_SIGNING_ALLOWED=NO
+              ;;
+            swiftpm)
+              sdk="$(xcrun --sdk "$SDK" --show-sdk-path)"
+              swift build --scratch-path "$RUNNER_TEMP/swiftpm-$SDK" --triple "$TRIPLE" --sdk "$sdk"
+              ;;
+            *)
+              echo "::error::The probe chose an unknown build method: \"$METHOD\""
+              exit 1
+              ;;
+          esac
+
+      # Always xcodebuild: the probe fails rather than report no "Any Mac".
+      - name: Build for macOS
+        id: macos
+        if: ${{ !cancelled() && steps.probe.outputs.macos == 'xcodebuild' }}
+        run: |
+          xcodebuild \
+            -workspace .swiftpm/xcode/package.xcworkspace \
+            -scheme RollbarSDK-Package \
+            -derivedDataPath DerivedData/package \
+            -destination 'generic/platform=macOS' \
+            build \
+            CODE_SIGNING_ALLOWED=NO
+
+      # The schemes and the invocation masterCI.yml uses, with a DerivedData
+      # per scheme. Every scheme runs even after one fails, so a single run
+      # shows them all.
+      - name: Test on macOS
+        id: test
+        if: ${{ !cancelled() }}
+        run: |
+          failed=""
+          for scheme in RollbarCommon RollbarDeploys RollbarNotifier RollbarAUL; do
+            echo "::group::Test $scheme"
+            if ! xcodebuild \
+              -workspace RollbarSDK.xcworkspace \
+              -scheme "$scheme" \
+              -derivedDataPath "DerivedData/test-$scheme" \
+              -enableCodeCoverage YES \
+              build \
+              test \
+              CODE_SIGN_IDENTITY="-" \
+              CODE_SIGNING_REQUIRED=NO; then
+              failed="$failed $scheme"
+            fi
+            echo "::endgroup::"
+          done
+          if [ -n "$failed" ]; then
+            echo "::error::Tests failed for:$failed"
+            exit 1
+          fi
+
+      - name: Write summary
+        if: ${{ !cancelled() }}
+        env:
+          XCODE: ${{ matrix.xcode }}
+          BUILD: ${{ matrix.build }}
+          IMAGE: ${{ matrix.image }}
+          PROBE: ${{ steps.probe.outcome }}
+          SWIFT: ${{ steps.swift.outcome }}
+          IOS: ${{ steps.ios.outcome }}
+          TVOS: ${{ steps.tvos.outcome }}
+          WATCHOS: ${{ steps.watchos.outcome }}
+          VISIONOS: ${{ steps.visionos.outcome }}
+          MACOS: ${{ steps.macos.outcome }}
+          TEST: ${{ steps.test.outcome }}
+          # How the probe decided each platform builds: xcodebuild, swiftpm
+          # or none, and empty when the probe failed.
+          IOS_METHOD: ${{ steps.probe.outputs.ios }}
+          TVOS_METHOD: ${{ steps.probe.outputs.tvos }}
+          WATCHOS_METHOD: ${{ steps.probe.outputs.watchos }}
+          VISIONOS_METHOD: ${{ steps.probe.outputs.visionos }}
+        run: |
+          # Says how a platform was built when it wasn't the usual xcodebuild.
+          via() {
+            if [ "$1" = swiftpm ]; then
+              echo " (SwiftPM against the $2 SDK, no runtime)"
+            fi
+          }
+
+          # One row's result: the step's outcome, then for a platform build
+          # its method and platform. A platform build is skipped only when
+          # the Xcode has neither the platform nor its SDK, or when the probe
+          # itself failed.
+          result() {
+            local outcome="$1" method="${2:-}" platform="${3:-}"
+            case "$outcome" in
+              success) echo "passed$(via "$method" "$platform")" ;;
+              failure) echo "**failed**$(via "$method" "$platform")" ;;
+              skipped)
+                if [ -z "$platform" ]; then
+                  echo "skipped"
+                elif [ "$PROBE" = success ]; then
+                  echo "skipped, this Xcode has neither the $platform platform nor its SDK"
+                else
+                  echo "skipped, destinations unknown (probe $PROBE)"
+                fi
+                ;;
+              "") echo "did not run" ;;
+              *) echo "$outcome" ;;
+            esac
+          }
+          {
+            echo "### Xcode $XCODE ($BUILD) on $IMAGE"
+            echo
+            echo "| Step | Result |"
+            echo "| --- | --- |"
+            echo "| Swift build | $(result "$SWIFT") |"
+            echo "| Build for iOS | $(result "$IOS" "$IOS_METHOD" iOS) |"
+            echo "| Build for tvOS | $(result "$TVOS" "$TVOS_METHOD" tvOS) |"
+            echo "| Build for watchOS | $(result "$WATCHOS" "$WATCHOS_METHOD" watchOS) |"
+            echo "| Build for visionOS | $(result "$VISIONOS" "$VISIONOS_METHOD" visionOS) |"
+            echo "| Build for macOS | $(result "$MACOS" xcodebuild macOS) |"
+            echo "| Test on macOS | $(result "$TEST") |"
+          } >> "$GITHUB_STEP_SUMMARY"
