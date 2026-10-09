@@ -1,7 +1,9 @@
-# Xcode canary: builds the SDK with every relevant Xcode installed on GitHub's
-# macOS runners, betas included, so a new Xcode that breaks the SDK is caught
-# here before users report it. Until now every Xcode break on this repo (Xcode
-# 16 beta 1, Xcode 16 beta 5, Xcode 26.4 RC) was reported by users first:
+# Xcode canary: every week, builds the SDK with new and beta Xcode versions on
+# GitHub's macOS runners. It builds with every installed version of the newest
+# Xcode major, betas included, and with the newest version of each older
+# major. A new Xcode that breaks the SDK is caught here before users report
+# it. Until now every Xcode break on this repo (Xcode 16 beta 1, Xcode 16
+# beta 5, Xcode 26.4 RC) was reported by users first:
 # masterCI.yml only runs on push and pull request, with whichever Xcode
 # macos-latest has that day.
 #
