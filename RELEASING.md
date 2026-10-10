@@ -83,8 +83,53 @@ version under that name would reach every app that asks for `Rollbar` with no
 version, on its next `pod update`, and break its build. `Rollbar` has never
 been published at 3.x.
 
-## `podpub.sh` is out of date
+## Run `podpub.sh`
 
-It pushes `RollbarCrashReport` and `RollbarSwift`, which no longer exist, and
-skips `RollbarCrash` and `RollbarReport`. It also pushes the next pod without
-a wait for the CDN. Do not use it as it is.
+`podpub.sh` pushes the pods in the rounds above. Before each round but the
+first, it waits until the CDN serves the pods that round needs. It never pushes
+`Rollbar.podspec`.
+
+You need `pod` and a CocoaPods trunk session. Check out the release tag first.
+
+Lint the pods:
+
+```bash
+./podpub.sh --lint
+```
+
+`pod spec lint` checks a pod against the versions trunk has. So before round 1
+is out, only RollbarCommon and RollbarCrash can pass. The others fail because
+trunk does not have the new versions they need yet.
+
+Then push:
+
+```bash
+./podpub.sh
+```
+
+Before it pushes, it checks that the tag equals `s.version` in every podspec.
+It checks that the tag is on GitHub at the same commit as here, and that the
+podspecs here are the ones at the tag. Then it shows the plan and asks. It
+skips a pod the CDN already serves at the tag. The three waits take about an
+hour in all.
+
+If a push fails or a wait times out, the script stops and says which round to
+rerun from:
+
+```bash
+./podpub.sh --from-round 3
+```
+
+A rerun first waits until the CDN serves the pods its first round needs. Then
+it skips the pods the CDN already serves. After a failed push, fix the cause.
+Also wait until the CDN serves the pods that did go out, about 20 minutes after
+their push. Trunk refuses a pod it already has, so a rerun before that fails.
+
+Nothing needs RollbarDeploys. If it cannot go out, `--from-round 3` still
+pushes the rest.
+
+`--synchronous` passes `--synchronous` to `pod trunk push` (see above). It may
+remove the need to wait, but the script still waits for the CDN before each
+round, so a rerun can tell which pods are out.
+
+Run `./podpub.sh --help` for the other options.
