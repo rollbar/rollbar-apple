@@ -1,7 +1,8 @@
 # Xcode canary: every week, builds the SDK with new and beta Xcode versions on
 # GitHub's macOS runners. It builds with every installed version of the newest
-# Xcode major, betas included, and with the newest version of each older
-# major. A new Xcode that breaks the SDK is caught here before users report
+# Xcode major, betas included, and with the newest stable version of each
+# older major (plus that major's newest beta or RC, when it is newer still).
+# A new Xcode that breaks the SDK is caught here before users report
 # it. Until now every Xcode break on this repo (Xcode 16 beta 1, Xcode 16
 # beta 5, Xcode 26.4 RC) was reported by users first:
 # masterCI.yml only runs on push and pull request, with whichever Xcode
@@ -12,7 +13,8 @@
 #             images' READMEs can run ahead of what is deployed, so the
 #             workflow looks instead of naming versions.
 #   plan      picks what to build: every version of the newest Xcode major
-#             (betas included) plus the newest version of each older major.
+#             (betas included) plus the newest stable version of each older
+#             major, and its newest beta or RC when that is newer still.
 #             A manual run with all_xcodes builds everything discovered.
 #   build     one job per Xcode: the root package with SwiftPM, then each
 #             platform, then the macOS tests masterCI.yml runs. A platform
@@ -151,6 +153,10 @@ jobs:
 
           VERSION = re.compile(r"^\d+(\.\d+)*$")
           FIELDS = ("image", "app", "version", "build")
+          # A beta or release candidate has its release's version number. The
+          # runner images say which it is only in the install's name
+          # (Xcode_26.2_beta_2.app, Xcode_27.1_Release_Candidate.app).
+          PRERELEASE = re.compile(r"beta|release_candidate", re.IGNORECASE)
 
 
           def fail(message):
@@ -164,6 +170,10 @@ jobs:
 
           def major(entry):
               return version_key(entry)[0]
+
+
+          def prerelease(entry):
+              return bool(PRERELEASE.search(os.path.basename(entry["app"])))
 
 
           def load(directory):
@@ -194,16 +204,27 @@ jobs:
               chosen = list(unique.values())
               if not everything:
                   # Every version of the newest major, because that is where
-                  # betas and new breakage arrive; for older majors only the
-                  # newest version, which is what most users have.
+                  # betas and new breakage arrive. For an older major, its
+                  # newest stable version, which is what most users have,
+                  # and its newest beta or RC only when that is newer still.
                   newest_major = max(major(e) for e in chosen)
-                  newest = {}
+                  newest, newest_stable = {}, {}
                   for e in chosen:
-                      newest[major(e)] = max(newest.get(major(e), ()), version_key(e))
-                  chosen = [
-                      e for e in chosen
-                      if major(e) == newest_major or version_key(e) == newest[major(e)]
-                  ]
+                      m = major(e)
+                      newest[m] = max(newest.get(m, ()), version_key(e))
+                      if not prerelease(e):
+                          newest_stable[m] = max(newest_stable.get(m, ()), version_key(e))
+
+                  def keep(e):
+                      m = major(e)
+                      if m == newest_major:
+                          return True
+                      stable = newest_stable.get(m)
+                      if not prerelease(e):
+                          return version_key(e) == stable
+                      return version_key(e) == newest[m] and (stable is None or newest[m] > stable)
+
+                  chosen = [e for e in chosen if keep(e)]
               return sorted(chosen, key=lambda e: (version_key(e), e["build"]), reverse=True)
 
 
