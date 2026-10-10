@@ -31,9 +31,9 @@
 #   - Every other line is <platform> TAB <identifier> TAB <name>:
 #       platform    the directory holding that device_traits.db, without
 #                   ".platform" (iPhoneOS, AppleTVOS, WatchOS, XROS).
-#       identifier  the Devices table's ProductType (BillableProduct on older
-#                   Xcodes), cut at the first "-" ("iPad14,3-A" is
-#                   "iPad14,3"; the suffix is an app thinning variant).
+#       identifier  the Devices table's ProductType, cut at the first "-"
+#                   ("iPad14,3-A" is "iPad14,3"; the suffix is an app
+#                   thinning variant).
 #       name        the Devices table's ProductDescription.
 #   - One line per distinct (platform, identifier, name). An empty identifier
 #     or name, or a TAB or a line break in one, fails the job instead.
@@ -194,17 +194,12 @@ jobs:
               exit 1
             fi
 
-            # Current Xcodes name the identifier column ProductType, older
-            # ones BillableProduct.
             columns="$(sqlite3 -readonly -batch -init /dev/null "$db" "SELECT name FROM pragma_table_info('Devices')")"
-            if grep -qx ProductType <<< "$columns"; then
-              column=ProductType
-            elif grep -qx BillableProduct <<< "$columns"; then
-              column=BillableProduct
-            else
-              echo "::error::$db has no Devices table with a ProductType or BillableProduct column"
+            if ! grep -qx ProductType <<< "$columns"; then
+              echo "::error::$db has no Devices table with a ProductType column"
               exit 1
             fi
+            column=ProductType
             if ! grep -qx ProductDescription <<< "$columns"; then
               echo "::error::$db has no ProductDescription column in its Devices table"
               exit 1
