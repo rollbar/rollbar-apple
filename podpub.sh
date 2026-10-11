@@ -188,6 +188,11 @@ podspec_version() {
   sed -n 's/^[[:space:]]*s\.version[[:space:]]*=[[:space:]]*"\([^"]*\)".*$/\1/p' "$1.podspec"
 }
 
+# Prints the :git URL in s.source of pod $1, read from its podspec.
+podspec_source_url() {
+  sed -n 's/^[[:space:]]*s\.source[[:space:]]*=[[:space:]]*{[[:space:]]*:git[[:space:]]*=>[[:space:]]*"\([^"]*\)".*$/\1/p' "$1.podspec"
+}
+
 print_summary() {
   echo
   echo "Summary for $TAG:"
@@ -246,31 +251,44 @@ check_versions() {
   fi
 }
 
-# Refuses to go on unless the tag is on origin, at the same commit as the tag
-# here. 'pod trunk push' and every app download the source at the tag from
-# GitHub.
-check_tag_on_origin() {
-  local status remote origin_commit local_commit
-  if remote=$(git ls-remote --exit-code --tags origin "refs/tags/$TAG" "refs/tags/$TAG^{}"); then
+# Refuses to go on unless the tag is on the repo in s.source, at the same
+# commit as the tag here. 'pod trunk push' and every app download the source
+# at the tag from that repo, on GitHub. The URL comes from the podspecs, not
+# from a remote here: origin can be a fork, or have another name.
+check_tag_on_source() {
+  local name first="" url source_url="" status remote source_commit local_commit
+  for name in $(pods_from_round 1); do
+    url=$(podspec_source_url "$name")
+    case $url in
+      '' | *$'\n'*) die "Refusing to push: could not read one s.source :git URL from $name.podspec." ;;
+    esac
+    if [ -z "$first" ]; then
+      first=$name
+      source_url=$url
+    elif [ "$url" != "$source_url" ]; then
+      die "Refusing to push: the podspecs do not agree on s.source. $first.podspec has $source_url, and $name.podspec has $url."
+    fi
+  done
+  if remote=$(git ls-remote --exit-code --tags -- "$source_url" "refs/tags/$TAG" "refs/tags/$TAG^{}"); then
     :
   else
     status=$?
     if [ "$status" -eq 2 ]; then
-      die "Refusing to push: the tag $TAG is not on origin. Push it first: git push origin $TAG"
+      die "Refusing to push: the tag $TAG is not on $source_url, the repo in s.source. Push it there first: git push <its remote> $TAG"
     fi
-    die "Refusing to push: could not check origin for the tag $TAG (git ls-remote exit $status)."
+    die "Refusing to push: could not check $source_url for the tag $TAG (git ls-remote exit $status)."
   fi
   # For an annotated tag, the "TAG^{}" line has the commit it points at.
-  origin_commit=$(printf '%s\n' "$remote" | awk -v ref="refs/tags/$TAG" '
+  source_commit=$(printf '%s\n' "$remote" | awk -v ref="refs/tags/$TAG" '
     $2 == ref { plain = $1 }
     $2 == ref "^{}" { peeled = $1 }
     END { print (peeled != "" ? peeled : plain) }')
   local_commit=$(git rev-parse -q --verify "refs/tags/$TAG^{commit}" || true)
   if [ -z "$local_commit" ]; then
-    die "Refusing to push: the tag $TAG is on origin but not in this clone. Fetch it: git fetch origin tag $TAG"
+    die "Refusing to push: the tag $TAG is on $source_url but not in this clone. Fetch it: git fetch $source_url tag $TAG"
   fi
-  if [ "$origin_commit" != "$local_commit" ]; then
-    die "Refusing to push: the tag $TAG is at commit ${origin_commit:0:7} on origin and at ${local_commit:0:7} here. Make them the same first."
+  if [ "$source_commit" != "$local_commit" ]; then
+    die "Refusing to push: the tag $TAG is at commit ${source_commit:0:7} on $source_url and at ${local_commit:0:7} here. Make them the same first."
   fi
 }
 
@@ -402,7 +420,7 @@ push_round() {
 run_push() {
   local r
   check_versions
-  check_tag_on_origin
+  check_tag_on_source
   check_podspecs_at_tag
   print_plan
   if [ "$YES" -eq 0 ]; then

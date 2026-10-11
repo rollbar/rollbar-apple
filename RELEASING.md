@@ -108,10 +108,11 @@ Then push:
 ```
 
 Before it pushes, it checks that the tag equals `s.version` in every podspec.
-It checks that the tag is on GitHub at the same commit as here, and that the
-podspecs here are the ones at the tag. Then it shows the plan and asks. It
-skips a pod the CDN already serves at the tag. The three waits take about an
-hour in all.
+It checks that the tag is on GitHub at the same commit as here, in the repo
+the podspecs' `s.source` names, not in `origin`, which may be a fork. It also
+checks that the podspecs here are the ones at the tag. Then it shows the plan
+and asks. It skips a pod the CDN already serves at the tag. The three waits
+take about an hour in all.
 
 If a push fails or a wait times out, the script stops and says which round to
 rerun from:
