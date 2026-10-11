@@ -62,7 +62,7 @@ Pod::Spec.new do |s|
   s.subspec 'CocoaLumberjack' do |sp|
       sp.source_files  = "RollbarCocoaLumberjack/Sources/RollbarCocoaLumberjack/**/*.{h,m}"
       sp.public_header_files = "RollbarCocoaLumberjack/Sources/RollbarCocoaLumberjack/include/*.h"
-      sp.dependency "CocoaLumberjack", "~> 3.8.0"
+      sp.dependency "CocoaLumberjack", "~> 3.8"
   end
 
   s.subspec 'Deploys' do |sp|
