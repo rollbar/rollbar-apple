@@ -321,10 +321,11 @@ jobs:
             exit "$status"
           fi
 
-          # Only the "Available destinations" section counts. It ends at the
-          # first blank line; the "Ineligible destinations" section after it
-          # lists platforms that aren't installed, each with an error.
-          available="$(awk '/Available destinations for/ { on = 1; next } on && /^[[:space:]]*$/ { exit } on { print }' "$listing")"
+          # Only the "Available destinations" section counts (Xcode 27 calls
+          # it "Destinations compatible with"). It ends at the first blank
+          # line; the "Ineligible destinations" section after it lists
+          # platforms that aren't installed, each with an error.
+          available="$(awk '/Available destinations for|Destinations compatible with/ { on = 1; next } on && /^[[:space:]]*$/ { exit } on { print }' "$listing")"
 
           # Succeeds when the plain generic destination for a platform is
           # available, as in "{ platform:iOS, id:..., name:Any iOS Device }".
